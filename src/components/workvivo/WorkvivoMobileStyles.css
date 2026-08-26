@@ -1,0 +1,581 @@
+.wm-phone {
+  width: 393px;
+  height: 852px;
+  border-radius: 52px;
+  /* The bezel IS this background showing through the padding, so the glass edge is applied by
+     recolouring it rather than by adding .wv-glass-edge on top — which would give the phone
+     two concentric rings. See WorkvivoGlassEdge.css. */
+  /* The bezel: .wv-glass-phone's band gradient showing through this padding, with the
+     stroke drawn over its outer edge. The inner radius below is always this phone's radius
+     minus the padding. */
+  padding: 16.5px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  box-sizing: border-box;
+  font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wm-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 35.5px;
+  overflow: hidden;
+  background: #F7F7F7;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.wm-scroll {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  /* Always equal to .wm-hero's height — this is what holds the scrolling content clear of
+     the fixed hero, so the two move together. */
+  padding-top: 169.6px;
+}
+
+.wm-scroll-track {
+  width: 100%;
+  will-change: transform;
+}
+
+/* ---------- status bar ---------- */
+.wm-status {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 54px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px 0;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.wm-time {
+  font-size: 16px;
+  font-weight: 590;
+  letter-spacing: 0.2px;
+}
+
+.wm-sysico {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 12px;
+}
+
+.wm-sysico svg {
+  display: block;
+}
+
+/* ---------- hero ---------- */
+.wm-hero {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  /* 169.6px = 212 - 20%. The vertical offsets of everything inside scale by the same 0.8 so
+     the contents stay in proportion; the controls keep their own sizes, since shrinking the
+     header was about reclaiming vertical space, not about smaller buttons. */
+  height: 169.6px;
+  background: radial-gradient(120% 130% at 50% 15%, var(--wv-brand, #44D760) 0%, var(--wv-brand-d1, #2ECC71) 45%, var(--wv-brand-d3, #1E824C) 100%);
+  overflow: hidden;
+}
+
+/* The header's layers, bottom to top: photo, brand wash, texture, the outsized letter,
+   the top-and-bottom scrim, the controls.
+
+   Every one of them now names its own z-index. Before the photo went in, the order fell
+   out of the DOM for free — ::before is the first child, ::after the last — and the two
+   new layers cannot join that arrangement, because a child sits after ::before in DOM
+   order and would paint over the texture. Writing the whole ladder down is what stops the
+   next layer from having to rediscover this. */
+.wm-heroimg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  /* An <img> since the export fix: replaced elements don't stretch from `inset: 0`
+     alone, so the fill must be spelled out or the photo renders at intrinsic size. */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* The same gradient .wm-hero paints, over the photo instead of under it. Duplicated
+   rather than alpha-ed in place because a brand colour arrives as an opaque hex custom
+   property, and there is no way to give one of those an alpha inside a gradient stop.
+   0.78 is where an arbitrary operator photo still reads as a photo while the header still
+   reads as the brand colour. */
+.wm-herowash {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: radial-gradient(120% 130% at 50% 15%, var(--wv-hdr, var(--wv-brand, #44D760)) 0%, var(--wv-hdr-d1, var(--wv-brand-d1, #2ECC71)) 45%, var(--wv-hdr-d3, var(--wv-brand-d3, #1E824C)) 100%);
+  opacity: var(--wv-hdr-op, 0.78);
+}
+
+/* The starburst that used to sit here — a repeating-conic-gradient of white rays at
+   0.055 — is gone. It read as texture on the flat baseline green and as a lens artefact
+   over a photograph, and the header carries an operator upload, so a photograph is the
+   normal case. Both mobile headers draw .wm-hero, so removing it here covers the home
+   screen at 564 and the Spotlight tab at 1670 in one go. */
+
+.wm-hero:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0) 34%, rgba(0, 0, 0, 0) 55%, rgba(0, 0, 0, 0.40) 100%);
+}
+
+.wm-heroV {
+  display: none;
+  position: absolute;
+  left: 50%;
+  top: 41.6px;
+  /* 3, i.e. under the scrim: that is where it painted when it was the only child between
+     the two pseudo-elements, and it is a 10%-white watermark rather than something meant
+     to sit on top. */
+  z-index: 3;
+  transform: translateX(-50%);
+  font-size: 105.6px;
+  line-height: 1;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.10);
+  font-family: 'SF Pro Display', -apple-system, sans-serif;
+  letter-spacing: -6px;
+}
+
+.wm-avstack {
+  position: absolute;
+  left: 16px;
+  top: 64.4px;
+  display: flex;
+  z-index: 5;
+}
+
+/* The avatar is an <img> since the export fix (CSS background photos never paint in
+   @remotion/web-renderer). Element-type selectors are deliberately avoided here: the same
+   rules have to hold whether the child is the photo <img> or a placeholder <span>, and
+   sizing an <img> needs object-fit as well — width/height alone would squash the crop. */
+.wm-avstack > * {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  display: block;
+  object-fit: cover;
+  background: var(--wv-brand, #44D760);
+}
+
+.wm-avstack > span:nth-child(1) {
+  background: linear-gradient(150deg, #C98C6B, #8A4A38);
+}
+
+.wm-avstack > *:nth-child(2) {
+  margin-left: -14px;
+  background: linear-gradient(150deg, #E0A98B, #A55C46);
+}
+
+.wm-heroacts {
+  position: absolute;
+  right: 16px;
+  top: 62.4px;
+  display: flex;
+  gap: 12px;
+  z-index: 5;
+}
+
+.wm-gbtn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.24);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.wm-plus {
+  position: relative;
+}
+
+.wm-plus i {
+  position: absolute;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.wm-plus i:nth-child(1) {
+  width: 20px;
+  height: 2.6px;
+  left: 14px;
+  top: 22.7px;
+}
+
+.wm-plus i:nth-child(2) {
+  width: 2.6px;
+  height: 20px;
+  left: 22.7px;
+  top: 14px;
+}
+
+.wm-herotabs {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  gap: 34px;
+  z-index: 5;
+}
+
+.wm-herotabs a {
+  text-align: center;
+  padding: 10px 14px 14px;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 400;
+  text-decoration: none;
+  position: relative;
+  opacity: 0.92;
+}
+
+.wm-herotabs a.wm-on {
+  opacity: 1;
+  font-weight: 590;
+}
+
+.wm-herotabs a.wm-on:after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 0;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* ---------- segmented ---------- */
+.wm-seg {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px 6px;
+  background: #F7F7F7;
+}
+
+.wm-seg a {
+  padding: 9px 18px;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: 510;
+  color: #6B7280;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.wm-seg a.wm-on {
+  background: #fff;
+  color: #6103ED;
+  font-weight: 590;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* ---------- sections ---------- */
+.wm-sec {
+  padding: 18px 16px 0;
+}
+
+.wm-shead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.wm-shead h2 {
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 590;
+  color: #111827;
+  letter-spacing: -0.2px;
+  margin: 0;
+}
+
+.wm-shead a {
+  font-size: 14px;
+  font-weight: 590;
+  color: #6103ED;
+  text-decoration: none;
+}
+
+.wm-card {
+  background: #fff;
+  border-radius: 12px;
+}
+
+/* quick links */
+.wm-qrow {
+  display: flex;
+  gap: 12px;
+}
+
+.wm-qtile {
+  flex: 1;
+  background: #fff;
+  border-radius: 12px;
+  padding: 16px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  box-sizing: border-box;
+}
+
+.wm-qtile span {
+  font-size: 13px;
+  font-weight: 590;
+  color: #111827;
+  text-align: center;
+}
+
+.wm-logo {
+  width: 56px;
+  height: 56px;
+  border-radius: 13px;
+  overflow: hidden;
+  display: block;
+}
+
+.wm-zoomph {
+  width: 56px;
+  height: 56px;
+  border-radius: 13px;
+  background: linear-gradient(160deg, #4A8CFF, #2D8CFF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+/* shortcut grid */
+.wm-grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.wm-srow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 12px;
+}
+
+.wm-srow span {
+  font-size: 14.5px;
+  font-weight: 510;
+  color: #111827;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.wm-rsq {
+  width: 42px;
+  height: 42px;
+  flex: none;
+  border-radius: 11px;
+  background: var(--wv-brand, #44D760);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wm-rsq svg {
+  display: block;
+}
+
+.wm-white {
+  filter: brightness(0) invert(1);
+}
+
+/* documents */
+.wm-doclist {
+  padding: 4px 0;
+}
+
+.wm-doc {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+}
+
+.wm-doc + .wm-doc {
+  border-top: 1px solid #F1F2F4;
+}
+
+.wm-doc span {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 510;
+  color: #111827;
+}
+
+/* featured news */
+.wm-bignews {
+  position: relative;
+  height: 180px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: radial-gradient(120% 140% at 70% 20%, var(--wv-brand, #44D760) 0%, var(--wv-brand-d2, #27AE60) 55%, var(--wv-brand-d4, #145A32) 100%);
+}
+
+.wm-bignews:before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.16) 0 1.5px, transparent 2px) 0 0/22px 22px;
+}
+
+/* The readability scrim under the headline, meta line and date.
+   Four stops rather than two: the old ramp held at fully transparent for the first 30%
+   and only reached 0.62, which is not enough over a bright photograph — and the photo
+   here is an operator upload, so it could be anything. This starts falling immediately
+   and lands at 0.85, which keeps white type legible on a white-ish shot while leaving the
+   top of the picture essentially untouched. */
+.wm-bignews:after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.14) 34%,
+    rgba(0, 0, 0, 0.55) 66%,
+    rgba(0, 0, 0, 0.85) 100%);
+}
+
+.wm-bntx {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
+  z-index: 2;
+  color: #fff;
+}
+
+.wm-bntx h3 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 590;
+  margin: 0 0 8px 0;
+}
+
+.wm-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.wm-meta.wm-light {
+  color: #fff;
+}
+
+.wm-meta.wm-light svg {
+  color: #fff;
+}
+
+.wm-pub {
+  font-size: 14px;
+  line-height: 21px;
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 2px;
+}
+
+.wm-ngrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.wm-ncard img,
+.wm-nthumb {
+  width: 100%;
+  height: 104px;
+  border-radius: 12px;
+  display: block;
+}
+
+.wm-nthumb.wm-sea {
+  background: linear-gradient(180deg, #7EC8DA 0%, #3E92AE 45%, #C9B79A 100%);
+}
+
+.wm-nthumb.wm-ai {
+  background: radial-gradient(90% 90% at 60% 45%, var(--wv-brand, #44D760), var(--wv-brand-d2, #27AE60));
+}
+
+.wm-ncard h4 {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 590;
+  color: #111827;
+  margin: 10px 0 6px;
+}
+
+.wm-ncard .wm-meta {
+  color: #111827;
+}
+
+.wm-ncard .wm-meta svg {
+  color: #6103ED;
+}
+
+.wm-ncard .wm-pub {
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.wm-pad {
+  height: 28px;
+}
+/* The company mark, centred on the phone's header. Sits at the scrim's level so the
+   top-and-bottom darkening still reads over it, like every other layer up here. */
+.wm-heroM {
+  position: absolute;
+  left: 50%;
+  /* 86.4px is the centre line of the avatar (top 64.4 + 44/2) and of the two round
+     controls (top 62.4 + 48/2), so the mark sits on the same row rather than floating
+     between rows. */
+  top: 86.4px;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  height: 26px;
+  width: auto;
+  /* The screen is 379px inside the bezel; the avatar ends at x=60 and the controls start
+     at x=255. Centred on the screen, 26% (98px) spans 140-238, leaving a real gap either
+     side. A wider mark runs under the search button — wordmarks are the common case and
+     they bind on width here, not height. */
+  max-width: 26%;
+  object-fit: contain;
+  display: block;
+}

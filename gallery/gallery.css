@@ -1,0 +1,368 @@
+/* Workvivo's own design language, applied to the gallery chrome: flat white cards on
+   #F3F4F6, 1px #E5E7EB borders instead of shadows, and #6103ED kept for actions and
+   active states only. */
+
+:root {
+  --primary-500: #6103ed;
+  --primary-50: #f0e6fe;
+  --grey-900: #111827;
+  --grey-500: #6b7280;
+  --grey-400: #9ca3af;
+  --grey-200: #e5e7eb;
+  --grey-100: #f3f4f6;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--grey-100);
+  color: var(--grey-900);
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+}
+
+.g-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 32px 80px;
+}
+
+/* --- header ------------------------------------------------------------------ */
+
+.g-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 24px;
+}
+
+.g-head h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+}
+
+.g-head p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--grey-500);
+}
+
+.g-search {
+  flex: 0 0 300px;
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--grey-200);
+  border-radius: 32px;
+  background: #fff;
+  font: inherit;
+  font-size: 14px;
+  outline: none;
+}
+
+.g-search:focus {
+  border-color: var(--primary-500);
+}
+
+/* --- tabs -------------------------------------------------------------------- */
+
+.g-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.g-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--grey-200);
+  border-radius: 20px;
+  background: #fff;
+  color: var(--grey-500);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.g-tab em {
+  font-style: normal;
+  font-size: 11px;
+  color: var(--grey-400);
+}
+
+.g-tab.g-on {
+  background: var(--primary-50);
+  border-color: var(--primary-50);
+  color: var(--primary-500);
+}
+
+.g-tab.g-on em {
+  color: var(--primary-500);
+}
+
+/* --- grid -------------------------------------------------------------------- */
+
+.g-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+  gap: 20px;
+}
+
+.g-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  border: 1px solid var(--grey-200);
+  border-radius: 8px;
+  background: #fff;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.g-card:hover {
+  border-color: var(--primary-500);
+}
+
+.g-card-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 252px;
+  padding: 8px;
+  background:
+    linear-gradient(45deg, #eceef1 25%, transparent 25%) -8px 0/16px 16px,
+    linear-gradient(-45deg, #eceef1 25%, transparent 25%) -8px 0/16px 16px,
+    linear-gradient(45deg, transparent 75%, #eceef1 75%) 0 0/16px 16px,
+    linear-gradient(-45deg, transparent 75%, #eceef1 75%) 0 0/16px 16px,
+    #f7f8f9;
+  border-bottom: 1px solid var(--grey-200);
+  overflow: hidden;
+}
+
+.g-card-meta {
+  padding: 14px 16px 16px;
+}
+
+.g-card-title {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+
+.g-dims {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--grey-400);
+  white-space: nowrap;
+}
+
+.g-card-meta p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 19px;
+  color: var(--grey-500);
+}
+
+.g-empty {
+  margin-top: 40px;
+  color: var(--grey-500);
+}
+
+.g-thumb-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 6px;
+}
+
+/* --- detail sheet ------------------------------------------------------------ */
+
+.g-sheet {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  z-index: 10;
+}
+
+.g-sheet-inner {
+  display: flex;
+  width: min(1360px, 100%);
+  max-height: 100%;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.g-sheet-stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 24px;
+  background: #f7f8f9;
+  overflow: auto;
+}
+
+.g-sheet-side {
+  position: relative;
+  flex: 0 0 320px;
+  padding: 24px;
+  border-left: 1px solid var(--grey-200);
+  overflow-y: auto;
+}
+
+.g-sheet-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: var(--grey-100);
+  color: var(--grey-500);
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.g-chip {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: var(--primary-50);
+  color: var(--primary-500);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.g-sheet-side h2 {
+  margin: 12px 0 4px;
+  font-size: 19px;
+  line-height: 24px;
+  font-weight: 600;
+}
+
+.g-path {
+  display: block;
+  color: var(--grey-400);
+  font-size: 11px;
+  margin-bottom: 12px;
+  word-break: break-all;
+}
+
+.g-sheet-side p {
+  margin: 0 0 16px;
+  font-size: 13px;
+  line-height: 20px;
+  color: var(--grey-500);
+}
+
+.g-facts {
+  display: flex;
+  gap: 24px;
+  margin: 0 0 20px;
+  padding: 12px 0;
+  border-top: 1px solid var(--grey-200);
+  border-bottom: 1px solid var(--grey-200);
+}
+
+.g-facts dt {
+  font-size: 11px;
+  color: var(--grey-400);
+  margin-bottom: 2px;
+}
+
+.g-facts dd {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* --- controls ---------------------------------------------------------------- */
+
+.g-ctl {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.g-ctl-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--grey-500);
+  margin-bottom: 6px;
+}
+
+.g-ctl-label em {
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  color: var(--primary-500);
+}
+
+.g-ctl input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary-500);
+}
+
+.g-ctl input[type="checkbox"] {
+  accent-color: var(--primary-500);
+  width: 16px;
+  height: 16px;
+}
+
+.g-ctl select {
+  width: 100%;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--grey-200);
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+}
+
+@media (max-width: 900px) {
+  .g-sheet-inner {
+    flex-direction: column;
+  }
+  .g-sheet-side {
+    flex: 1 1 auto;
+    border-left: none;
+    border-top: 1px solid var(--grey-200);
+  }
+}

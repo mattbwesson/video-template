@@ -1,0 +1,418 @@
+/* HQ Agent enterprise-search overlay — the results state.
+ *
+ * The modal shell and the chat-history rail are in WorkvivoHqSidebarStyles.css, shared
+ * with WorkvivoHqChat. Only what is specific to the results state lives here.
+ *
+ * Sizes are design units — the modal is 988 wide and the scene scales it up. Do not
+ * rewrite these to 1920-space.
+ */
+
+/* --- main pane ---------------------------------------------------------------- */
+
+.whq-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  padding: 20px 16px 0 18px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.whq-searchbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 39px;
+  margin: 30px 0 0;
+  padding: 0 14px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.whq-searchbar svg {
+  color: #6103ed;
+  flex: 0 0 auto;
+}
+
+.whq-query {
+  flex: 1;
+  font-size: 12.5px;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* The text caret. Static rather than blinking — this is a still. */
+.whq-caret {
+  display: inline-block;
+  width: 1px;
+  height: 15px;
+  margin-left: 1px;
+  background: #111827;
+  vertical-align: -3px;
+}
+
+.whq-clear {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+/* --- filter row --------------------------------------------------------------- */
+
+.whq-filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 18px 0 15px;
+}
+
+.whq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 11px;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: #ffffff;
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.whq-sort {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+  color: #374151;
+}
+
+.whq-sort .whq-chip {
+  color: #6103ed;
+  font-weight: 500;
+}
+
+.whq-sort .whq-chip svg {
+  color: #6103ed;
+}
+
+/* --- the two content columns -------------------------------------------------- */
+
+.whq-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  gap: 16px;
+}
+
+.whq-results {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.whq-apps {
+  flex: 0 0 174px;
+  width: 174px;
+  padding-left: 14px;
+  border-left: 1px solid #eceef1;
+}
+
+/* --- HQ agent answer ---------------------------------------------------------- */
+
+.whq-agent {
+  flex: 0 0 auto;
+  padding: 14px 16px 16px;
+  border-radius: 12px;
+  /* White on the left, running into the lilac and then the warm pink that mark an
+     agent-generated answer rather than an indexed result. */
+  background: linear-gradient(96deg, #ffffff 0%, #faf4ff 52%, #fceff5 100%);
+}
+
+.whq-agent-head {
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin-bottom: 14px;
+}
+
+.whq-viewmore {
+  margin-left: auto;
+  height: 22px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 20px;
+  background: #ffffff;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: #6103ed;
+  cursor: pointer;
+}
+
+.whq-agent-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.whq-agent-body {
+  font-size: 11.5px;
+  line-height: 16px;
+  color: #111827;
+  max-width: 540px;
+}
+
+/* --- source header + result cards --------------------------------------------- */
+
+.whq-source {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.whq-card {
+  flex: 0 0 auto;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #ffffff;
+  display: flex;
+  gap: 10px;
+}
+
+.whq-card-icon {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f0e6fe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6103ed;
+}
+
+.whq-card-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.whq-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 5px;
+}
+
+/* The matched query terms, picked out in the primary. */
+.whq-title em {
+  font-style: normal;
+  color: #6103ed;
+}
+
+.whq-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.whq-meta .whq-space {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #6103ed;
+  font-weight: 500;
+}
+
+.whq-meta .whq-author {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #6103ed;
+  font-weight: 500;
+}
+
+.whq-avatar {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+.whq-desc {
+  font-size: 11px;
+  line-height: 15px;
+  color: #374151;
+  margin-bottom: 12px;
+}
+
+.whq-attach-label {
+  font-size: 10.5px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.whq-attach {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 45px;
+  padding: 0 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+}
+
+.whq-attach img {
+  width: 18px;
+  height: auto;
+  display: block;
+}
+
+.whq-attach-name {
+  font-size: 11px;
+  font-weight: 500;
+  color: #6103ed;
+}
+
+.whq-attach-kind {
+  font-size: 9.5px;
+  color: #6b7280;
+  margin-top: 1px;
+}
+
+.whq-attach-size {
+  margin-left: auto;
+  font-size: 9.5px;
+  color: #6b7280;
+}
+
+.whq-tag {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: #f3f4f6;
+  font-size: 9.5px;
+  color: #6b7280;
+}
+
+/* --- apps rail ---------------------------------------------------------------- */
+
+.whq-apps-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.whq-app {
+  display: flex;
+  white-space: nowrap;
+  align-items: center;
+  gap: 9px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.whq-app.whq-on {
+  background: #f0e6fe;
+}
+
+.whq-app-mark {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.whq-app-mark img,
+.whq-app-mark svg {
+  display: block;
+}
+
+.whq-radio {
+  margin-left: auto;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d5db;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.whq-radio.whq-on {
+  border: 3.5px solid #6103ed;
+}
+
+.whq-connect {
+  margin-left: auto;
+  flex: 0 0 auto;
+  font-size: 10.5px;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+/* Placeholders for marks the Workvivo icon library does not carry. Deliberately flat
+   and unbranded — an invented logo would be worse than an obvious gap. */
+.whq-mark-placeholder {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  background: #111827;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.whq-mark-placeholder.whq-unknown {
+  background: #e5e7eb;
+  border: 1px dashed #9ca3af;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* --- the demo cursor ---------------------------------------------------------- */
+
+.whq-cursor {
+  position: absolute;
+  width: 55px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+}

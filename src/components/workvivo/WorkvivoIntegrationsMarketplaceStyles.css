@@ -1,0 +1,182 @@
+/* Workvivo Integrations Marketplace — the app-connector modal, on the tenant brand field. */
+
+.wim-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background:
+    radial-gradient(1300px 750px at 50% 20%, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0) 68%),
+    var(--wim-brand, #d40000);
+  font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1f2328;
+}
+
+.wim-modal {
+  position: absolute;
+  left: 260px;
+  top: 64px;
+  width: 1400px;
+  height: 1428px;
+  padding: 40px 56px 0;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+
+/* ---------- header ---------- */
+
+.wim-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wim-star {
+  flex: none;
+}
+
+.wim-h1 {
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ---------- notice bar ---------- */
+
+.wim-notice {
+  margin-top: 20px;
+  height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4b5563;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.wim-notice svg {
+  color: #6103ed;
+}
+
+.wim-link-inline {
+  color: #6103ed;
+  font-weight: 600;
+}
+
+/* ---------- hero ---------- */
+
+.wim-hero {
+  margin-top: 24px;
+  height: 208px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.wim-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---------- search ---------- */
+
+.wim-search {
+  margin-top: 24px;
+  width: 380px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9ca3af;
+}
+
+.wim-search span {
+  font-size: 14px;
+  line-height: 20px;
+  color: #6b7280;
+}
+
+/* ---------- browse ---------- */
+
+.wim-browse {
+  margin-top: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wim-h2 {
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wim-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #6103ed;
+}
+
+.wim-grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.wim-card {
+  height: 222px;
+  padding: 24px 22px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wim-card-cat {
+  font-size: 13px;
+  line-height: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.wim-card-t {
+  margin-top: 6px;
+  font-size: 23px;
+  line-height: 30px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.wim-card-s {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 22px;
+  letter-spacing: -0.01em;
+  color: #6b7280;
+}
+
+.wim-card .wim-link {
+  margin-top: auto;
+  font-size: 17px;
+  line-height: 22px;
+}

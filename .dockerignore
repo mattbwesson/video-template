@@ -1,0 +1,42 @@
+# Build inputs the image does not need, and secrets it must never contain.
+
+# Secrets. The keys live in `fly secrets`, never in a layer — an image is not private,
+# and a leaked layer cannot be un-leaked by rotating the file.
+.env
+.env.*
+.certs
+
+# Rebuilt inside the container.
+node_modules
+build
+out
+
+# The Remotion side. The deployed app is the wizard; renders happen elsewhere.
+remotion.config.ts
+skills
+docs
+test_792.png
+video-customizer-reveal-dark.html
+
+# 310 MB of source video. public/img/l2-reference-212s.mp4 is the same 212 seconds at
+# CRF 24 — 45 MB, audio included — and is what the wizard lays down; see REFERENCE_VIDEO
+# in src/WorkvivoCut.tsx. Shipping both would be a 400 MB image.
+public/img/L2 Video(Virgin Airline).mp4
+
+# The old 54-second trim, from when the customised cut stopped at frame 1350. Nothing
+# references it now that the wizard runs the whole film.
+public/img/l2-reference-54s.mp4
+
+# Design references: the HTML captures the Workvivo screens were ported FROM, plus a
+# 15 MB library zip. Useful in the repo, dead weight in the image.
+public/refs
+
+# Duplicate of webinar.mp4 with a typo'd name, referenced by nothing.
+public/img/webianr.mp4
+
+.git
+.gitignore
+.DS_Store
+**/.DS_Store
+.claude
+web/**/*.test.*

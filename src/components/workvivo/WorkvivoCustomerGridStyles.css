@@ -1,0 +1,104 @@
+/* Workvivo Customer Logo Wall & Grid Scene
+   16:9 aspect ratio with square tiles in a 7x13 matrix with edge bleed on radiant red mesh background. */
+
+.wcg-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  /* Flat, not a radial falloff — the component overrides this with the tenant's own hex.
+     See WorkvivoCustomerGrid.tsx for why the wall stopped being a vignette. */
+  background: #e10613;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Ambient illumination layer behind the grid. The component sets --wcg-ambient-glow to
+   `none`: a radial wash here is a gradient over the flat field, which is the thing the
+   background deliberately stopped doing. Kept as a hook rather than deleted, because the
+   layer is what a future lighting treatment would paint into. */
+.wcg-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--wcg-ambient-glow, none);
+  pointer-events: none;
+}
+
+/* 7x13 Grid of Square Tiles centered across 1920x1080 with edge bleed */
+.wcg-grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(13, 146px);
+  grid-template-rows: repeat(7, 146px);
+  gap: 18px 18px;
+  justify-content: center;
+  align-content: center;
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+/* Individual Square Logo Card */
+.wcg-card {
+  position: relative;
+  width: 146px;
+  height: 146px;
+  background: #ffffff;
+  border-radius: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 12px;
+  box-sizing: border-box;
+  box-shadow: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+/* Center Hero Workvivo Card */
+.wcg-card-center {
+  padding: 0;
+  box-shadow: none;
+  z-index: 4;
+}
+
+/* Logo Image inside card */
+.wcg-logo-img {
+  max-width: 84%;
+  max-height: 66%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Full tile image for center card */
+.wcg-logo-tile {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 22px;
+}
+
+/* Vector Component Logo wrapper */
+.wcg-logo-wrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Most logo components are inline <svg> with small hardcoded width/height attributes
+   (~85x30, meant to sit in a much smaller card in an earlier layout) — those attributes
+   otherwise win over the flex parent's size, so the artwork never grows to fill the
+   146px tile. Sizing the svg itself in CSS, same box as .wcg-logo-img, makes object-fit
+   scale it up (or down) from its own aspect ratio instead of rendering at the literal
+   pixel size in the markup. */
+.wcg-logo-wrap svg {
+  width: 84%;
+  height: 66%;
+  object-fit: contain;
+}

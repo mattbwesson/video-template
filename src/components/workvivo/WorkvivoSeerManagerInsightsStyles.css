@@ -1,0 +1,432 @@
+/* Seer Insights — Engagement tab, manager view.
+   Prefixed `wsmi-` per docs/PORTING-HTML-REFS.md.
+
+   Only the page below the tab strip is here. The device box, top bar, rail and page head
+   (title, Manage button, tabs) come from WorkvivoSeerChrome /
+   WorkvivoSeerChromeStyles.css, shared verbatim with the other two Seer screens.
+
+   ── The one conversion everything here comes from ────────────────────────────────
+   The reference is a 1477px-wide capture of the whole app window; content measurements
+   were taken at `reference px x 0.7014`, the old 1036-body factor. They are KEPT in
+   those px rather than re-measured: .wsmi-page lays out at 997 — the 1036 body minus
+   the 39 rail — and scales by 1376 / 997 = 1.3801 to fill the chrome's main box. Total
+   magnification is 1.3801 x 1.2222 = 1.687 against the old arrangement's 1.699, i.e.
+   the content renders within 1% of the size it always did and nothing below needed
+   converting. Cross-checks on the original factor:
+
+       window   1477 -> 1036   (the old body width, by definition)
+       score tile 124 ->   87
+       overview  84..1440 -> 59..1010, i.e. 951 of content
+       metrics  670 : 330 : 332 -> 470 : 231 : 233, i.e. exactly 2 : 1 : 1
+
+   ── Visible height ──────────────────────────────────────────────────────────────
+   The chrome leaves about 694 design px below the tab strip, which is 694 / 1.3801 = 503
+   page px. The 505 height covers that and the shell clips the rest — the reference
+   capture ends part-way through the metrics cards for the same reason. */
+
+.wsmi-page {
+  --wsmi-accent: #ee6a35;
+  --wsmi-text: #111827;
+  --wsmi-muted: #6b7280;
+  --wsmi-card: #ffffff;
+  --wsmi-line: #e5e7eb;
+  --wsmi-field: #f4f5f7;
+
+  width: 997px;
+  height: 505px;
+  transform: scale(1.3801404);
+  background: var(--wsmi-field);
+  /* 2 + the filters' 18 = 20 page px below the divider — 27.6 design px, the same air
+     the Rater's filter row gets. */
+  padding: 2px 26px 0 20px;
+  color: var(--wsmi-text);
+}
+
+.wsmi-page * {
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Filter pills ────────────────────────────────────────────────────────────── */
+
+.wsmi-filters {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wsmi-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 25px;
+  padding: 0 12px;
+  border-radius: 12.5px;
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wsmi-pill-on {
+  background: var(--wsmi-accent);
+  color: #fff;
+}
+
+.wsmi-pill-off {
+  background: #eceef1;
+  color: #374151;
+}
+
+/* The library has no chevron; this is the border-box caret the ported screens use. */
+.wsmi-caret {
+  width: 4.5px;
+  height: 4.5px;
+  flex: none;
+  border-right: 1.3px solid currentColor;
+  border-bottom: 1.3px solid currentColor;
+  transform: rotate(45deg) translate(-1.5px, -1.5px);
+}
+
+/* ── Section labels ──────────────────────────────────────────────────────────── */
+
+.wsmi-sec {
+  font-size: 10.5px;
+  line-height: 14px;
+  font-weight: 700;
+}
+
+.wsmi-sec-overview {
+  margin-top: 23px;
+}
+
+/* The capture gives these two labels noticeably more air than "Overview" gets. */
+.wsmi-sec-question {
+  margin-top: 30px;
+}
+
+.wsmi-sec-metrics {
+  margin-top: 34px;
+}
+
+/* ── Cards ───────────────────────────────────────────────────────────────────── */
+
+.wsmi-card {
+  background: var(--wsmi-card);
+  border-radius: 8px;
+  border: 1px solid #f0f1f3;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+/* ── Overview row ────────────────────────────────────────────────────────────── */
+
+/* 342 + 10 + 426 + 10 + 163 = 951, exactly the content width. */
+.wsmi-overview {
+  margin-top: 6px;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  height: 110px;
+}
+
+.wsmi-score {
+  flex: 0 0 342px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 11px;
+}
+
+.wsmi-tile {
+  width: 87px;
+  height: 87px;
+  flex: none;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Green into lime across the diagonal, as the capture shows — not a flat green ramp. */
+  background: linear-gradient(140deg, #86d99a 0%, #a9e186 55%, #cfe878 100%);
+}
+
+.wsmi-tile span {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #14532d;
+}
+
+.wsmi-score-label {
+  flex: 0 0 66px;
+  font-size: 10.5px;
+  line-height: 14px;
+  color: #374151;
+}
+
+.wsmi-score-label b {
+  display: block;
+  font-weight: 700;
+  color: var(--wsmi-text);
+}
+
+.wsmi-sents {
+  margin-left: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.wsmi-sent {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.wsmi-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 55px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.wsmi-badge svg {
+  display: block;
+}
+
+.wsmi-badge-green {
+  background: #dcf5e3;
+  color: #1a7f47;
+}
+
+.wsmi-badge-amber {
+  background: #fdf3d3;
+  color: #97710f;
+}
+
+.wsmi-badge-red {
+  background: #fbdfdf;
+  color: #b03a3a;
+}
+
+.wsmi-sent-name {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--wsmi-muted);
+}
+
+/* Six stats, three columns of two. Column-flow keeps the markup in reading order while
+   filling down each column, which is the reference's arrangement. */
+.wsmi-stats {
+  flex: 0 0 426px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-columns: max-content max-content max-content;
+  grid-template-rows: repeat(2, 1fr);
+  justify-content: space-between;
+  align-content: center;
+  gap: 10px 8px;
+  padding: 9px 12px;
+}
+
+.wsmi-dates {
+  flex: 0 0 163px;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  align-content: center;
+  gap: 10px;
+  padding: 9px 11px;
+}
+
+.wsmi-stat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.wsmi-ico {
+  width: 27px;
+  height: 27px;
+  flex: none;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wsmi-ico svg {
+  display: block;
+}
+
+.wsmi-ico-red {
+  background: #fde8e8;
+  color: #e04f5f;
+}
+
+.wsmi-ico-orange {
+  background: #fdeee5;
+  color: var(--wsmi-accent);
+}
+
+.wsmi-stat-name {
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: 500;
+  color: var(--wsmi-muted);
+  white-space: nowrap;
+}
+
+.wsmi-stat-val {
+  font-size: 10.5px;
+  line-height: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ── Question ────────────────────────────────────────────────────────────────── */
+
+.wsmi-question {
+  margin-top: 8px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+}
+
+.wsmi-q-ico {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  border-radius: 50%;
+  background: #fde8e8;
+  color: #e04f5f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wsmi-q-ico svg {
+  display: block;
+}
+
+.wsmi-q-text {
+  font-size: 10px;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+/* ── Metrics ─────────────────────────────────────────────────────────────────── */
+
+/* 470 : 231 : 233 in the capture — the chart is exactly twice a donut card. Taller than
+   the visible area allows on purpose: the shell clips it where the capture ends. */
+.wsmi-metrics {
+  margin-top: 9px;
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  height: 170px;
+}
+
+.wsmi-chart {
+  flex: 2 1 0;
+  min-width: 0;
+  padding: 10px 12px 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wsmi-chart-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wsmi-card-title {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.wsmi-chart-nav {
+  display: inline-flex;
+  border: 1px solid var(--wsmi-line);
+  border-radius: 3px;
+  overflow: hidden;
+  color: var(--wsmi-muted);
+}
+
+.wsmi-chart-nav span {
+  padding: 1px 4px;
+  display: flex;
+  align-items: center;
+}
+
+.wsmi-chart-nav span:first-child {
+  border-right: 1px solid var(--wsmi-line);
+}
+
+.wsmi-chart-svg {
+  flex: 1 1 0;
+  min-height: 0;
+  margin-top: 2px;
+}
+
+.wsmi-chart-svg svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.wsmi-donut {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 10px 11px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wsmi-donut-body {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.wsmi-donut-body svg {
+  display: block;
+  flex: none;
+}
+
+.wsmi-donut-stats {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+/* The capture draws these as filled tiles on the page grey, not as bare text. */
+.wsmi-kv {
+  background: var(--wsmi-field);
+  border-radius: 6px;
+  padding: 7px 10px;
+}
+
+.wsmi-kv-name {
+  font-size: 8.5px;
+  line-height: 11px;
+  font-weight: 500;
+  color: var(--wsmi-muted);
+}
+
+.wsmi-kv-val {
+  font-size: 10.5px;
+  line-height: 14px;
+  font-weight: 700;
+}

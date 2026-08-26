@@ -1,0 +1,137 @@
+/* The chrome every Seer screen shares — device box, top bar, collapsed rail and the page
+   head (title, Manage button, tab strip). Prefixed `wsc-` per docs/PORTING-HTML-REFS.md.
+
+   The three Seer screens each drew this themselves, at three different page scales:
+   WorkvivoSeerInsights laid out at 1481 and scaled 1.296, WorkvivoSeerManagerInsights at
+   1036 and scaled 1.699, WorkvivoSeerRater at 1440 and scaled 1.222. Cutting between the
+   shots therefore moved the top bar, resized the rail and shifted the tabs. They share
+   this one component now, at the Rater's geometry, so they cannot drift.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   The body is designed at 1440 on the 1760 device and scaled by 1760/1440 = 1.2222 in
+   one place. 1080 minus the 62.857 top bar leaves 1017.143, which is 832 of design
+   height at that scale.
+
+   Each screen's own content goes in as children of .wsc-main, which is the padded box
+   below the tab strip. A screen whose page field is not white — the manager dashboard's
+   is grey — paints it on its own content wrapper rather than here, so that the strip
+   behind the head stays identical across all three.
+
+   Seer's accent is orange, set per-surface through `--wsc-accent` rather than hardcoded,
+   because the deck drives it from the same customer-brand override. */
+
+.wsc-shell {
+  width: 1760px;
+  height: 1017.143px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.wsc-body {
+  --wsc-accent: #ee6a35;
+  --wsc-accent-soft: #fdece5;
+  width: 1440px;
+  height: 832px;
+  transform: scale(1.2222222);
+  transform-origin: top left;
+  display: flex;
+  background: #fff;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.wsc-body * {
+  box-sizing: border-box;
+}
+
+/* --- page --------------------------------------------------------------------- */
+
+.wsc-main {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 38px 0 0 28px;
+  overflow: hidden;
+}
+
+.wsc-head {
+  display: flex;
+  align-items: center;
+  padding-right: 28px;
+}
+
+.wsc-title {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 27px;
+  line-height: 34px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wsc-manage {
+  margin-left: auto;
+  flex: none;
+  height: 34px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 17px;
+  background: var(--wsc-accent);
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 500;
+  border: none;
+  white-space: nowrap;
+}
+
+/* --- tabs --------------------------------------------------------------------- */
+
+.wsc-tabs {
+  margin-top: 29px;
+  margin-right: 28px;
+  display: flex;
+  gap: 38px;
+  border-bottom: 1px solid #eceef1;
+}
+
+.wsc-tab {
+  position: relative;
+  padding-bottom: 17px;
+  font-size: 14.5px;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.wsc-tab.wsc-on {
+  color: #111827;
+}
+
+/* The 2px underline sits on the tab, not the strip, so it tracks the label's width. */
+.wsc-tab.wsc-on::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--wsc-accent);
+  border-radius: 2px;
+}
+
+/* --- content ------------------------------------------------------------------- */
+
+/* A screen whose content was authored at a different page scale wears this: it keeps its
+   own px and magnifies, rather than every number in it being rewritten against 1440. The
+   screen sets its own `width` and `transform: scale()`, chosen so width x scale is the
+   1376 the main box gives — which also makes the content render at exactly the size it
+   did before it was moved under this chrome.
+
+   The negative left margin cancels .wsc-main's padding so a wrapper that paints its own
+   page background runs from the rail to the right edge, as it did before. */
+.wsc-page {
+  margin-left: -28px;
+  transform-origin: top left;
+}

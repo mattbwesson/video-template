@@ -1,0 +1,374 @@
+/* Workvivo Admin Hub screen.
+   Prefixed `wah-` per docs/PORTING-HTML-REFS.md — WorkvivoStyles.css owns bare names
+   like .topbar, .rail, .card and .chip, and two screens in one composition would collide.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   Same arrangement as WorkvivoNewsletters: the reference is a 1440-wide app window, the
+   device is 1760, so the body is designed at 1440 and scaled by 1760/1440 = 1.2222 in
+   one place rather than every measurement carrying the ratio. 1080 minus the 62.857
+   top bar leaves 1017.143, which is 832 of design height at that scale.
+
+   1440 - 64 rail - 24 - 24 padding = 1328 of content. The quick-link row is
+   5 * 250 + 4 * 19.5 = 1328 exactly, and the products/what's-new split below it is
+   940 + 16 + 372 = 1328 too, so both grids share one right edge. */
+
+.wah-shell {
+  width: 1760px;
+  height: 1017.143px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.wah-body {
+  width: 1440px;
+  height: 832px;
+  transform: scale(1.2222222);
+  transform-origin: top left;
+  display: flex;
+  background: #fff;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+/* --- collapsed nav rail ------------------------------------------------------- */
+
+.wah-rail {
+  width: 64px;
+  flex: none;
+  background: #fff;
+  border-right: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 14px;
+  gap: 2px;
+  color: #6b7280;
+}
+
+.wah-navico {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.wah-railav {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+  border: 2px solid #e11d48;
+  margin: 10px 0 12px;
+  flex: none;
+}
+
+.wah-navgap {
+  height: 20px;
+  flex: none;
+}
+
+/* --- page ---------------------------------------------------------------------- */
+
+.wah-main {
+  flex: 1 1 0;
+  min-width: 0;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* The lavender wash runs full-bleed behind the title, the admin search and the quick
+   links, and stops before Products — it is a header band, not a card. */
+.wah-hero {
+  position: relative;
+  padding: 30px 24px 0;
+  background: linear-gradient(180deg, #f4effe 0%, #f1ecfc 62%, #efeafb 100%);
+  overflow: hidden;
+}
+
+/* The pale arc sweeping through the band. Two soft radial washes rather than an
+   image, because the reference's is a flat vector gradient with no detail in it. */
+.wah-hero::before {
+  content: "";
+  position: absolute;
+  left: 38%;
+  top: -180px;
+  width: 900px;
+  height: 460px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0));
+  pointer-events: none;
+}
+
+.wah-headrow {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.wah-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600;
+  color: #1b1d22;
+}
+
+.wah-title svg {
+  color: #6103ed;
+  flex: none;
+}
+
+/* Washed-out photo strip behind the header, centred over the band. The outer frames
+   fade rather than ending on a hard edge — one mask instead of per-image opacities. */
+.wah-collage {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 10px;
+  opacity: 0.3;
+  mask-image: linear-gradient(90deg, transparent 0%, #000 28%, #000 72%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 28%, #000 72%, transparent 100%);
+}
+
+.wah-collage img {
+  width: 113px;
+  height: 112px;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+}
+
+.wah-fav {
+  flex: none;
+  height: 33px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #6103ed;
+  border-radius: 20px;
+  background: #fff;
+  color: #6103ed;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.wah-field {
+  position: relative;
+  margin-top: 26px;
+  width: 420px;
+  height: 44px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 14px;
+  color: #9ca3af;
+  font-size: 14px;
+}
+
+/* --- section labels ------------------------------------------------------------ */
+
+.wah-sec {
+  font-size: 15px;
+  font-weight: 600;
+  color: #1b1d22;
+}
+
+.wah-hero .wah-sec {
+  position: relative;
+  margin: 30px 0 10px;
+}
+
+/* --- quick links --------------------------------------------------------------- */
+
+.wah-quick {
+  position: relative;
+  display: flex;
+  gap: 19.5px;
+  padding-bottom: 22px;
+}
+
+.wah-quicklink {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 47px;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1b1d22;
+  white-space: nowrap;
+}
+
+/* --- products + what's new ----------------------------------------------------- */
+
+.wah-lower {
+  display: flex;
+  gap: 16px;
+  padding: 18px 24px 0;
+}
+
+.wah-col-products {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wah-col-new {
+  flex: 0 0 372px;
+  width: 372px;
+}
+
+.wah-products {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px 17px;
+  margin-bottom: 22px;
+}
+
+.wah-product {
+  position: relative;
+  height: 148px;
+  padding: 18px 34px 18px 22px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* The violet spine down the left edge of every product tile. */
+.wah-product::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 5px;
+  background: #6103ed;
+}
+
+.wah-product svg,
+.wah-product img {
+  color: #6103ed;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.wah-product-title {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 600;
+  color: #1b1d22;
+  margin-bottom: 6px;
+}
+
+.wah-product-desc {
+  font-size: 12px;
+  line-height: 16px;
+  color: #6b7280;
+}
+
+.wah-product-go {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* --- what's new ---------------------------------------------------------------- */
+
+.wah-new {
+  position: relative;
+  height: 471px;
+  border-radius: 13px;
+  overflow: hidden;
+  background: #c8102e;
+}
+
+.wah-new img.wah-new-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The reference's card is a single-hue duotone, not a photo with a tint floated over it —
+   `multiply` over a flat plate is what collapses it to one colour.
+
+   The plate was #e01029, Virgin red, hardcoded. That crushed this card to red for every
+   tenant, which was invisible while the photo under it was fixed too and obvious the
+   moment the photo became swappable. It is the brand plate now, and the shadow over it is
+   the ramp's deep stop, so the duotone lands in whatever hue the operator picked. */
+.wah-new-wash {
+  position: absolute;
+  inset: 0;
+  background: var(--wv-brand, #e01029);
+  mix-blend-mode: multiply;
+  opacity: 0.92;
+}
+
+.wah-new-lift {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--wv-brand-soft, rgba(200, 16, 46, 0.15)) 0%,
+    var(--wv-brand-65, rgba(140, 8, 28, 0.55)) 100%
+  );
+}
+
+.wah-new-logo {
+  position: absolute;
+  right: 22px;
+  top: 20px;
+  width: 96px;
+  height: auto;
+}
+
+.wah-new-title {
+  position: absolute;
+  left: 26px;
+  bottom: 30px;
+  width: 240px;
+  font-size: 25px;
+  line-height: 30px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+/* --- admin tools --------------------------------------------------------------- */
+
+.wah-tools {
+  padding: 0 24px;
+}
+
+/* Placeholder for a product glyph the Workvivo icon library does not carry. Flat and
+   unbranded on purpose — an invented mark is the failure that ships unnoticed. */
+.wah-glyph-missing {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  border: 1.5px dashed #b9a6e8;
+  background: #f7f3ff;
+  margin-bottom: 10px;
+}

@@ -1,0 +1,370 @@
+/* Workvivo Analytics & Reporting.
+   Prefixed `an-` per docs/PORTING-HTML-REFS.md — WorkvivoStyles.css owns bare names like
+   .rail, .card, .tabs, .chip and two screens in one composition would collide.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   No Figma export came with this one, only a screenshot, so unlike the Spaces and
+   Newsletters ports there is no scale factor to divide out. The scale is pinned by the
+   top bar instead: it measures ~33px in a screenshot whose screen is ~928px wide, and
+   62.857 / 1760 is the same ratio — so this is the standard 1760px device, and every
+   value below is that ratio applied to the screenshot and then snapped to Workvivo's 4px
+   grid. Treat the layout as proportionally right and the individual numbers as measured
+   to about +/-8px, not to the pixel.
+
+   ── Second pass, against a fuller reference ──────────────────────────────────────
+   The first cut ran ~30% small on type and about half on every vertical gap. Measuring
+   the second screenshot off the top bar again (its .tsearch is 318px of a shot whose
+   screen is 915px, and 611.429/1760 is the same ratio, so scale = 0.520):
+
+     title "Analytics & Reporting"  250px of image -> 481 device -> ~48px at 0.45em/char
+     tab   "Governance"              55px          -> 106        -> ~20px
+     label "Primary Team"            58px          -> 112        -> ~18px
+     rail  "Activity Feed"           52px          -> 100        -> ~16px
+
+   So the analytics module runs a size up from the rest of the app — 18px labels where
+   the feed uses 14 — and the panel breathes far more than a default card. That is real,
+   not an artefact: the top bar in the same shot measures its native 62.857.
+
+   1760 device - 302 rail = 1458 of content, less 32px padding a side = 1394 inside,
+   less the panel's own 24px = 1346. Four gauges: (1346 - 72) / 4 = 318 each. */
+
+.an-shell {
+  width: 1760px;
+  min-height: 1017.143px;
+  display: flex;
+  background: #F3F4F6;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.an-shell * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Nav rail ───────────────────────────────────────────────────────────────── */
+
+/* This is not the main nav rail WorkvivoSidebar draws — the reference shows the activity
+   sub-nav, a different list entirely. Same 36px item height and 2px/20px group gaps. */
+.an-rail {
+  width: 302px;
+  flex: none;
+  background: #fff;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.an-nav {
+  height: 40px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 12px;
+  border-radius: 6px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.an-nav .li {
+  color: #6103ED;
+  flex: none;
+}
+
+.an-nav-label {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.an-navgap {
+  height: 24px;
+  flex: none;
+}
+
+.an-me-av {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+  border: 2px solid #E11D48;
+}
+
+.an-me-badge {
+  flex: none;
+  padding: 2px 12px;
+  border-radius: 12px;
+  background: #6103ED;
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+/* The library has no chevron glyph; this is the same border-box caret
+   WorkvivoPostComposer and WorkvivoLivestream use. */
+.an-caret {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-right: 1.5px solid #6B7280;
+  border-bottom: 1.5px solid #6B7280;
+  transform: rotate(45deg) translate(-2px, -2px);
+}
+
+.an-caret-right {
+  transform: rotate(-45deg) translate(-1px, 1px);
+}
+
+/* ── Content ────────────────────────────────────────────────────────────────── */
+
+.an-main {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 32px 32px 64px;
+  position: relative;
+}
+
+/* Faded photography behind the page title, the same device the Newsletters header uses.
+   A mask does the falloff without a stack of per-image opacities. */
+.an-banner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 190px;
+  display: flex;
+  opacity: 0.28;
+  mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
+  -webkit-mask-image: linear-gradient(180deg, #000 0%, transparent 72%);
+}
+
+.an-banner img {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 190px;
+  object-fit: cover;
+}
+
+.an-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 40px 0 40px;
+}
+
+.an-title {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 48px;
+  line-height: 60px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.an-title .li {
+  color: #6103ED;
+}
+
+.an-headacts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.an-btn {
+  display: inline-flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: #111827;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  white-space: nowrap;
+}
+
+/* 32px gap and a 2px #6103ED underline on active is the token treatment. */
+.an-tabs {
+  position: relative;
+  display: flex;
+  gap: 32px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.an-tab {
+  padding-bottom: 14px;
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 500;
+  color: #6B7280;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.an-tab.an-on {
+  color: #6103ED;
+  border-bottom-color: #6103ED;
+}
+
+/* ── Panel ──────────────────────────────────────────────────────────────────── */
+
+.an-panel {
+  position: relative;
+  margin-top: 20px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 40px 24px 32px;
+}
+
+.an-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+/* Section headings sit further off their card than a field label does off its input. */
+.an-label-section {
+  margin-bottom: 16px;
+}
+
+/* The library has no info glyph, so this is a deliberately generic circle rather than an
+   invented Workvivo one. */
+.an-info {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid #9CA3AF;
+  color: #9CA3AF;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.an-field {
+  height: 40px;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 22px;
+  color: #111827;
+}
+
+.an-field > span:first-child {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.an-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.an-dates {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* ── Gauges ─────────────────────────────────────────────────────────────────── */
+
+.an-gauges {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  margin-top: 56px;
+}
+
+.an-gauge {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+}
+
+.an-gauge svg {
+  display: block;
+}
+
+/* ── Bar charts ─────────────────────────────────────────────────────────────── */
+
+.an-charts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 52px;
+}
+
+.an-chart {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 20px 16px 12px;
+}
+
+.an-chart svg {
+  display: block;
+  width: 100%;
+}
+
+/* ── Line charts ─────────────────────────────────────────────────────────────── */
+
+.an-line-charts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-top: 48px;
+}
+
+.an-line-chart-card {
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 20px 16px 12px;
+  background: #fff;
+}
+
+.an-line-chart-card .an-label {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.an-line-chart-subtitle {
+  font-size: 13px;
+  color: #9CA3AF;
+  margin-bottom: 12px;
+}

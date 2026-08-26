@@ -1,0 +1,132 @@
+/* The HQ Agent modal shell and its chat-history rail.
+ *
+ * Shared by WorkvivoHqSearch and WorkvivoHqChat — they are the same overlay in two
+ * states, and the rail is identical in both down to the pixel. Anything that differs
+ * between the two lives in their own stylesheets, not here.
+ *
+ * Every class is `whq-` prefixed per the folder convention; this file loads globally
+ * through the barrel, so an unprefixed name would leak into other scenes.
+ *
+ * Sizes are design units — the modal is drawn at 988 wide and the scene scales it. Do
+ * not rewrite these to 1920-space.
+ */
+
+.whq-modal {
+  position: relative;
+  display: flex;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  color: #111827;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- sidebar ------------------------------------------------------------------ */
+
+.whq-side {
+  flex: 0 0 208px;
+  width: 208px;
+  padding: 12px;
+  background: #f7f7f8;
+  display: flex;
+  flex-direction: column;
+}
+
+.whq-side-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 28px;
+  margin-bottom: 22px;
+}
+
+.whq-spark {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #f1eaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7915f0;
+}
+
+.whq-side-collapse {
+  color: #6b7280;
+  display: flex;
+  padding-right: 2px;
+}
+
+.whq-nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.whq-nav svg {
+  color: #374151;
+  flex: 0 0 auto;
+}
+
+/* The row the overlay opened on. Grey rather than lilac: this rail is a history
+   list, not primary navigation, so the active state stays neutral. */
+.whq-nav.whq-on {
+  background: #ececef;
+}
+
+.whq-hist-label {
+  margin: 18px 0 6px;
+  padding: 0 10px;
+  font-size: 10.5px;
+  font-weight: 500;
+  color: #9ca3af;
+}
+
+.whq-hist {
+  /* Less inset than the nav rows above, as in the reference — the history text starts
+     a few pixels left of the "Search"/"New chat" glyphs, which is also what buys the
+     longest entry the room to stay on one line. */
+  padding: 0 4px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  /* Sized so the longest entry — "Write a short paragraph about today" — sits on one
+     line inside the 208px rail, as it does in the reference. */
+  font-size: 10.5px;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Empty account strip at the foot of the rail. `margin-top: auto` rather than a fixed
+   offset, so it stays pinned however long the history list runs. */
+.whq-side-foot {
+  margin-top: auto;
+  height: 40px;
+  flex: none;
+  border-top: 1px solid #e5e7eb;
+  /* Cancels the rail's 12px padding so the rule runs the full width, as in the
+     reference. */
+  margin-left: -12px;
+  margin-right: -12px;
+}
+
+/* --- shared main-pane chrome --------------------------------------------------- */
+
+.whq-close {
+  position: absolute;
+  top: 16px;
+  right: 17px;
+  color: #6b7280;
+  display: flex;
+  z-index: 2;
+}

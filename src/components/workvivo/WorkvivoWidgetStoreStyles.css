@@ -1,0 +1,328 @@
+/* Workvivo Widget Store — the category browser modal, on the tenant brand field.
+   Every class is prefixed wws- per the folder convention in README.md.
+
+   The modal bleeds off the bottom of the frame, as the reference does: it is a tall
+   surface and the shot is a crop of it, not a modal that happens to end at 1080.
+
+   #6103ED is Workvivo's semantic primary and is used only for links here — "See all
+   widgets" and each card's "View Widgets". The red field is the per-tenant brand slot,
+   passed in through --wws-brand, and is never used for a control. The card tints are the
+   reference's own and are not brand-derived; they stay put when the brand changes. */
+
+.wws-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--wws-brand, #d40000);
+  font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1f2328;
+}
+
+.wws-modal {
+  position: absolute;
+  left: 285px;
+  top: 78px;
+  width: 1352px;
+  /* Past the frame on purpose — see the header note. */
+  height: 1060px;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+}
+
+/* ---------- category rail ---------- */
+
+.wws-side {
+  width: 278px;
+  flex: none;
+  background: #f5f5f7;
+  display: flex;
+  flex-direction: column;
+}
+
+.wws-brand {
+  padding: 30px 24px 26px;
+  font-size: 21px;
+  line-height: 28px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.wws-rule {
+  height: 1px;
+  background: #e6e7e9;
+}
+
+.wws-side-body {
+  padding: 22px 16px;
+}
+
+.wws-caption {
+  padding: 0 8px;
+  margin-bottom: 12px;
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.wws-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.wws-nav-item {
+  height: 35px;
+  padding: 0 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  font-size: 15px;
+  line-height: 20px;
+  color: #374151;
+}
+
+/* Flat white on a hairline border rather than a fill — the Workvivo selected treatment. */
+.wws-nav-item.is-on {
+  background: #ffffff;
+  border: 1px solid #e6e7e9;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: #111827;
+}
+
+/* ---------- main pane ---------- */
+
+.wws-main {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 34px 50px 0;
+}
+
+.wws-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.wws-h1 {
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.wws-close {
+  color: #6b7280;
+  flex: none;
+}
+
+.wws-sub {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #6b7280;
+}
+
+.wws-search {
+  margin-top: 21px;
+  width: 363px;
+  height: 35px;
+  padding: 0 16px;
+  border-radius: 18px;
+  background: #f1f2f4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #9ca3af;
+}
+
+.wws-search span {
+  font-size: 15px;
+  line-height: 20px;
+  color: #6b7280;
+}
+
+/* ---------- hero ---------- */
+
+.wws-hero {
+  margin-top: 25px;
+  height: 215px;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+}
+
+.wws-hero-copy {
+  width: 419px;
+  flex: none;
+  padding: 36px 20px 36px 36px;
+  background: #f0f1f2;
+}
+
+.wws-eyebrow {
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.wws-hero-t {
+  margin-top: 12px;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.wws-hero-b {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #6b7280;
+}
+
+/* Decorative, not an icon: an abstract widget board under a warm-to-cool wash. */
+.wws-hero-art {
+  flex: 1 1 0;
+  position: relative;
+  background: linear-gradient(
+    118deg,
+    #f9b776 0%,
+    #f6c9df 40%,
+    #e2e8f7 70%,
+    #a8e4ee 100%
+  );
+  overflow: hidden;
+}
+
+.wws-board {
+  position: absolute;
+  left: 262px;
+  top: 18px;
+  width: 300px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.72);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wws-board-row {
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.wws-board-col {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wws-tile {
+  border-radius: 6px;
+}
+
+/* ---------- browse ---------- */
+
+.wws-browse {
+  margin-top: 31px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wws-h2 {
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.wws-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #6103ed;
+}
+
+.wws-grid {
+  margin-top: 14px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* Row gap is tighter than the column gap in the reference. Kept as measured rather
+     than evened up — see "match the reference's spacing" in the skill notes. */
+  gap: 12px 18px;
+}
+
+.wws-card {
+  height: 165px;
+  padding: 18px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.wws-card-cat {
+  font-size: 11px;
+  line-height: 14px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.wws-card-t {
+  margin-top: 4px;
+  font-size: 19px;
+  line-height: 26px;
+  font-weight: 600;
+  color: #1f2328;
+}
+
+.wws-card-s {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: -0.01em;
+  color: #6b7280;
+}
+
+.wws-card .wws-link {
+  margin-top: auto;
+}
+
+/* ---- cards-only, for the reveal at 2823 ------------------------------------------------
+   The reveal lays a second copy of this whole component over the real one and paints only
+   the top row of category cards from it. Same component, same grid, so when the copy's
+   transform reaches identity its cards are sitting exactly on the modal's — the handover
+   needs no measuring and cannot drift if the grid is ever retuned.
+
+   `visibility` rather than `display`, because the cards have to keep their grid slots: it
+   is inherited, so hiding the modal hides everything in it, and the row turns itself back
+   on. nth-child(-n + 3) is the first row of the 3-column grid. */
+.wws-cards-only,
+.wws-cards-only .wws-modal {
+  background: transparent;
+}
+
+.wws-cards-only .wws-modal {
+  visibility: hidden;
+}
+
+.wws-cards-only .wws-card:nth-child(-n + 3) {
+  visibility: visible;
+}

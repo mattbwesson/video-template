@@ -1,0 +1,1237 @@
+<!doctype html>
+<html lang="en">
+<head >
+<script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="1c461781-97f4-415f-b74f-19870311ce13" type="text/javascript"></script>
+<script type="text/javascript">document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('#html-body > div.page-wrapper > footer > ul')
+    .appendChild(document.createElement('li'))
+    .appendChild(
+      Object.assign(document.createElement('a'), {
+        href: 'https://www.uniphar.ie/european-accessibility-act',
+        textContent: 'Accessibility Statement'
+      })
+    );
+});</script>
+    <meta charset="utf-8"/>
+<meta name="title" content="Log In"/>
+<meta name="keywords" content="Magento, Varien, E-commerce"/>
+<meta name="robots" content="INDEX,FOLLOW"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Log In</title>
+        <link  rel="stylesheet" type="text/css"  media="all" href="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/css/styles.css" />
+<link  rel="icon" type="image/x-icon" href="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/Magento_Enterprise/favicon.ico" />
+<link  rel="shortcut icon" type="image/x-icon" href="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/Magento_Enterprise/favicon.ico" />
+<script  type="text/javascript"  src="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/Smile_ElasticsuiteTracker/js/tracking.js"></script>
+<link  rel="preconnect" href="https://fonts.googleapis.com" />
+<link  rel="preconnect" href="https://fonts.gstatic.com/" />
+<link  rel="stylesheet" as="font" type="text/css" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-48G760NVHK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-48G760NVHK');
+</script>
+
+<script type="text/javascript">
+(function () {
+    // Pages (URIs) where MS Clarity is allowed to load.
+    var allowed = [
+        "consumer",
+        "flipbook",
+        "christmas-preorder",
+        "consumer/new-in-2026.html",
+        "consumer/suncare.html",
+        "consumer/support-irish.html",
+        "consumer/skincare.html",
+        "consumer/wellness.html",
+        "consumer/offers.html",
+        "consumer/k-beauty.html",
+        "consumer/trending.html",
+        "brands",
+        "consumer.html",
+        "flipbook-christmas-2026",
+        "presale/christmas-kids.html",
+        "presale/electrical-gifting.html",
+        "presale/candles-and-diffusers.html",
+        "presale/electrical-gifting.html",
+        "presale/gifts-for-her.html",
+        "presale/gifts-for-him.html",
+        "presale/dental-giftsets.html",
+        "presale/winter-warmers.html",
+        "presale.html",
+        "customer/account/"
+    ];
+
+    function trimSlashes(value) {
+        return value.replace(/^\/+/, "").replace(/\/+$/, "");
+    }
+
+    function pathMatches(currentPath, patternPath) {
+        if (!patternPath) {
+            return true;
+        }
+        // Exact match, or match from the end of the path (store code / subfolder in URL).
+        return currentPath === patternPath ||
+            currentPath.slice(-(patternPath.length + 1)) === "/" + patternPath;
+    }
+
+    function normalizeQuery(params) {
+        var pairs = [];
+        params.forEach(function (value, key) {
+            pairs.push(key + "=" + value);
+        });
+        pairs.sort();
+        return pairs.join("&");
+    }
+
+    var currentPath = trimSlashes(window.location.pathname);
+    var currentQuery = normalizeQuery(new URLSearchParams(window.location.search));
+
+    var isAllowed = allowed.some(function (uri) {
+        var parts = uri.split("?");
+        var patternPath = trimSlashes(parts[0]);
+        var patternQuery = normalizeQuery(new URLSearchParams(parts[1] || ""));
+        return pathMatches(currentPath, patternPath) && currentQuery === patternQuery;
+    });
+
+    if (!isAllowed) {
+        return;
+    }
+
+    (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+    })(window, document, "clarity", "script", "xmav9e4xoc");
+})();
+</script>
+    <script type="text&#x2F;javascript" src="https&#x3A;&#x2F;&#x2F;chimpstatic.com&#x2F;mcjs-connected&#x2F;js&#x2F;users&#x2F;4fad2989adcab1555415adc97&#x2F;a9a37db8238c8fafc051ffa2c.js" defer="defer">
+</script><style>
+:root {
+    --primary-color: hsl(226, 63%, 45%);
+    --primary-color-lighter: hsl(224, 73%, 88%);
+    --primary-color-darker: hsl(223, 89%, 18%);
+    --secondary-color: hsl(226, 63%, 45%);
+    --secondary-color-lighter: hsl(226, 63%, 55%);
+    --secondary-color-darker: hsl(226, 63%, 35%);
+    --tertiary-color: hsl(226, 63%, 45%);
+    --tertiary-color-lighter: hsl(226, 63%, 55%);
+    --tertiary-color-darker: hsl(226, 63%, 55%);
+    --success-message-background: hsl(169, 38%, 94%);
+    --error-message-background: hsl(10, 59%, 94%);
+    --warning-message-background: hsl(37, 92%, 50%);
+}
+</style>
+<script>
+    var BASE_URL = 'https://www.uniphar.ie/';
+    var THEME_PATH = 'https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE';
+    var COOKIE_CONFIG = {
+        "expires": null,
+        "path": "\u002F",
+        "domain": ".www.uniphar.ie",
+        "secure": true,
+        "lifetime": "14400",
+        "cookie_restriction_enabled": false    };
+    var CURRENT_STORE_CODE = 'default';
+    var CURRENT_WEBSITE_ID = '1';
+
+    window.hyva = window.hyva || {}
+
+    window.cookie_consent_groups = window.cookie_consent_groups || {}
+    window.cookie_consent_groups['necessary'] = true;
+
+    window.cookie_consent_config = window.cookie_consent_config || {};
+    window.cookie_consent_config['necessary'] = [].concat(
+        window.cookie_consent_config['necessary'] || [],
+        [
+            'user_allowed_save_cookie',
+            'form_key',
+            'mage-messages',
+            'private_content_version',
+            'mage-cache-sessid',
+            'last_visited_store',
+            'section_data_ids'
+        ]
+    );
+</script>
+<script>
+    'use strict';
+    (function( hyva, undefined ) {
+
+        function lifetimeToExpires(options, defaults) {
+
+            const lifetime = options.lifetime || defaults.lifetime;
+
+            if (lifetime) {
+                const date = new Date;
+                date.setTime(date.getTime() + lifetime * 1000);
+                return date;
+            }
+
+            return null;
+        }
+
+        function generateRandomString() {
+
+            const allowedCharacters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                length = 16;
+
+            let formKey = '',
+                charactersLength = allowedCharacters.length;
+
+            for (let i = 0; i < length; i++) {
+                formKey += allowedCharacters[Math.round(Math.random() * (charactersLength - 1))]
+            }
+
+            return formKey;
+        }
+
+        const sessionCookieMarker = {noLifetime: true}
+
+        const cookieTempStorage = {};
+
+        const internalCookie = {
+            get(name) {
+                const v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+                return v ? v[2] : null;
+            },
+            set(name, value, days, skipSetDomain) {
+                let expires,
+                    path,
+                    domain,
+                    secure,
+                    samesite;
+
+                const defaultCookieConfig = {
+                    expires: null,
+                    path: '/',
+                    domain: null,
+                    secure: false,
+                    lifetime: null,
+                    samesite: 'lax'
+                };
+
+                const cookieConfig = window.COOKIE_CONFIG || {};
+
+                expires = days && days !== sessionCookieMarker
+                    ? lifetimeToExpires({lifetime: 24 * 60 * 60 * days, expires: null}, defaultCookieConfig)
+                    : lifetimeToExpires(window.COOKIE_CONFIG, defaultCookieConfig) || defaultCookieConfig.expires;
+
+                path = cookieConfig.path || defaultCookieConfig.path;
+                domain = !skipSetDomain && (cookieConfig.domain || defaultCookieConfig.domain);
+                secure = cookieConfig.secure || defaultCookieConfig.secure;
+                samesite = cookieConfig.samesite || defaultCookieConfig.samesite;
+
+                document.cookie = name + "=" + encodeURIComponent(value) +
+                    (expires && days !== sessionCookieMarker ? '; expires=' + expires.toGMTString() : '') +
+                    (path ? '; path=' + path : '') +
+                    (domain ? '; domain=' + domain : '') +
+                    (secure ? '; secure' : '') +
+                    (samesite ? '; samesite=' + samesite : 'lax');
+            },
+            isWebsiteAllowedToSaveCookie() {
+                const allowedCookies = this.get('user_allowed_save_cookie');
+                if (allowedCookies) {
+                    const allowedWebsites = JSON.parse(unescape(allowedCookies));
+
+                    return allowedWebsites[CURRENT_WEBSITE_ID] === 1;
+                }
+                return false;
+            },
+            getGroupByCookieName(name) {
+                const cookieConsentConfig = window.cookie_consent_config || {};
+                let group = null;
+                for (let prop in cookieConsentConfig) {
+                    if (!cookieConsentConfig.hasOwnProperty(prop)) continue;
+                    if (cookieConsentConfig[prop].includes(name)) {
+                        group = prop;
+                        break;
+                    }
+                }
+                return group;
+            },
+            isCookieAllowed(name) {
+                const cookieGroup = this.getGroupByCookieName(name);
+                return cookieGroup
+                    ? window.cookie_consent_groups[cookieGroup]
+                    : this.isWebsiteAllowedToSaveCookie();
+            },
+            saveTempStorageCookies() {
+                for (const [name, data] of Object.entries(cookieTempStorage)) {
+                    if (this.isCookieAllowed(name)) {
+                        this.set(name, data['value'], data['days'], data['skipSetDomain']);
+                        delete cookieTempStorage[name];
+                    }
+                }
+            }
+        };
+
+        hyva.getCookie = (name) => {
+            const cookieConfig = window.COOKIE_CONFIG || {};
+
+            if (cookieConfig.cookie_restriction_enabled && ! internalCookie.isCookieAllowed(name)) {
+                return cookieTempStorage[name] ? cookieTempStorage[name]['value'] : null;
+            }
+
+            return internalCookie.get(name);
+        }
+
+        hyva.setCookie = (name, value, days, skipSetDomain) => {
+            const cookieConfig = window.COOKIE_CONFIG || {};
+
+            if (cookieConfig.cookie_restriction_enabled && ! internalCookie.isCookieAllowed(name)) {
+                cookieTempStorage[name] = {value, days, skipSetDomain};
+                return;
+            }
+            return internalCookie.set(name, value, days, skipSetDomain);
+        }
+
+
+        hyva.setSessionCookie = (name, value, skipSetDomain) => {
+            return hyva.setCookie(name, value, sessionCookieMarker, skipSetDomain)
+        }
+
+        hyva.getBrowserStorage = () => {
+            const browserStorage = window.localStorage || window.sessionStorage;
+            if (!browserStorage) {
+                console.warn('Browser Storage is unavailable');
+                return false;
+            }
+            try {
+                browserStorage.setItem('storage_test', '1');
+                browserStorage.removeItem('storage_test');
+            } catch (error) {
+                console.warn('Browser Storage is not accessible', error);
+                return false;
+            }
+            return browserStorage;
+        }
+
+        hyva.postForm = (postParams) => {
+            const form = document.createElement("form");
+
+            let data = postParams.data;
+
+            if (! postParams.skipUenc && ! data.uenc) {
+                data.uenc = btoa(window.location.href);
+            }
+            form.method = "POST";
+            form.action = postParams.action;
+
+            Object.keys(postParams.data).map(key => {
+                const field = document.createElement("input");
+                field.type = 'hidden'
+                field.value = postParams.data[key];
+                field.name = key;
+                form.appendChild(field);
+            });
+
+            const form_key = document.createElement("input");
+            form_key.type = 'hidden';
+            form_key.value = hyva.getFormKey();
+            form_key.name="form_key";
+            form.appendChild(form_key);
+
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+
+        hyva.getFormKey = function () {
+            let formKey = hyva.getCookie('form_key');
+
+            if (!formKey) {
+                formKey = generateRandomString();
+                hyva.setCookie('form_key', formKey);
+            }
+
+            return formKey;
+        }
+
+        hyva.formatPrice = (value, showSign, options = {}) => {
+            const formatter = new Intl.NumberFormat(
+                'en\u002DIE',
+                Object.assign({
+                    style: 'currency',
+                    currency: 'EUR',
+                    signDisplay: showSign ? 'always' : 'auto'
+                }, options)
+            );
+            return (typeof Intl.NumberFormat.prototype.formatToParts === 'function') ?
+                formatter.formatToParts(value).map(({type, value}) => {
+                    switch (type) {
+                        case 'currency':
+                            return '\u20AC' || value;
+                        case 'minusSign':
+                            return '- ';
+                        case 'plusSign':
+                            return '+ ';
+                        default :
+                            return value;
+                    }
+                }).reduce((string, part) => string + part) :
+                formatter.format(value);
+        }
+
+        const formatStr = function (str, nStart) {
+            const args = Array.from(arguments).slice(2);
+
+            return str.replace(/(%+)([0-9]+)/g, (m, p, n) => {
+                const idx = parseInt(n) - nStart;
+
+                if (args[idx] === null || args[idx] === void 0) {
+                    return m;
+                }
+                return p.length % 2
+                    ? p.slice(0, -1).replace('%%', '%') + args[idx]
+                    : p.replace('%%', '%') + n;
+            })
+        }
+
+        hyva.str = function (string) {
+            const args = Array.from(arguments);
+            args.splice(1, 0, 1);
+
+            return formatStr.apply(undefined, args);
+        }
+
+        hyva.strf = function () {
+            const args = Array.from(arguments);
+            args.splice(1, 0, 0);
+
+            return formatStr.apply(undefined, args);
+        }
+
+        /**
+         * Take a html string as `content` parameter and
+         * extract an element from the DOM to replace in
+         * the current page under the same selector,
+         * defined by `targetSelector`
+         */
+        hyva.replaceDomElement = (targetSelector, content) => {
+            // Parse the content and extract the DOM node using the `targetSelector`
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            const contentNode = doc.querySelector(targetSelector);
+
+            // Bail if content can't be found
+            if (!contentNode) {
+                return;
+            }
+
+            hyva.activateScripts(contentNode)
+
+            // Replace the old DOM node with the new content
+            document.querySelector(targetSelector).replaceWith(contentNode);
+
+            // Reload customerSectionData and display cookie-messages if present
+            window.dispatchEvent(new CustomEvent("reload-customer-section-data"));
+            hyva.initMessages();
+        }
+
+        hyva.activateScripts = (contentNode) => {
+            // Extract all the script tags from the content.
+            // Script tags won't execute when inserted into a dom-element directly,
+            // therefore we need to inject them to the head of the document.
+            const tmpScripts = contentNode.getElementsByTagName('script');
+
+            if (tmpScripts.length > 0) {
+                // Push all script tags into an array
+                // (to prevent dom manipulation while iterating over dom nodes)
+                const scripts = [];
+                for (let i = 0; i < tmpScripts.length; i++) {
+                    scripts.push(tmpScripts[i]);
+                }
+
+                // Iterate over all script tags and duplicate+inject each into the head
+                for (let i = 0; i < scripts.length; i++) {
+                    let script = document.createElement('script');
+                    script.innerHTML = scripts[i].innerHTML;
+
+                    document.head.appendChild(script);
+
+                    // Remove the original (non-executing) node from the content
+                    scripts[i].parentNode.removeChild(scripts[i]);
+                }
+            }
+            return contentNode;
+        }
+
+        const replace = {['+']: '-', ['/']: '_', ['=']: ','};
+        hyva.getUenc = () => btoa(window.location.href).replace(/[+/=]/g, match => replace[match]);
+
+        let currentTrap;
+
+        const focusableElements = (rootElement) => {
+            const selector = 'button, [href], input, select, textarea, details, [tabindex]:not([tabindex="-1"]';
+            return Array.from(rootElement.querySelectorAll(selector))
+                .filter(el => {
+                    return el.style.display !== 'none'
+                        && !el.disabled
+                        && el.tabIndex !== -1
+                        && (el.offsetWidth || el.offsetHeight || el.getClientRects().length)
+                })
+        }
+
+        const focusTrap = (e) => {
+            const isTabPressed = e.key === 'Tab' || e.keyCode === 9;
+            if (!isTabPressed) return;
+
+            const focusable = focusableElements(currentTrap)
+            const firstFocusableElement = focusable[0]
+            const lastFocusableElement = focusable[focusable.length - 1]
+
+            e.shiftKey
+                ? document.activeElement === firstFocusableElement && (lastFocusableElement.focus(), e.preventDefault())
+                : document.activeElement === lastFocusableElement && (firstFocusableElement.focus(), e.preventDefault())
+        };
+
+        hyva.releaseFocus = (rootElement) => {
+            if (currentTrap && (!rootElement || rootElement === currentTrap)) {
+                currentTrap.removeEventListener('keydown', focusTrap)
+                currentTrap = null
+            }
+        }
+        hyva.trapFocus = (rootElement) => {
+            if (!rootElement) return;
+            hyva.releaseFocus()
+            currentTrap = rootElement
+            rootElement.addEventListener('keydown', focusTrap)
+            const firstElement = focusableElements(rootElement)[0]
+            firstElement && firstElement.focus()
+        }
+
+                hyva.alpineInitialized = (fn) => window.addEventListener('alpine:initialized', fn, {once: true})
+                window.addEventListener('user-allowed-save-cookie', () => internalCookie.saveTempStorageCookies())
+
+    }( window.hyva = window.hyva || {} ));
+</script>
+<script>
+    if (!window.IntersectionObserver) {
+        window.IntersectionObserver = function (callback) {
+            this.observe = el => el && callback(this.takeRecords());
+            this.takeRecords = () => [{isIntersecting: true, intersectionRatio: 1}];
+            this.disconnect = () => {};
+            this.unobserve = () => {};
+        }
+    }
+</script>
+</head>
+<body id="html-body" class="nologin customer-account-login page-layout-empty">
+<div class="fixed inset-0 z-[-1] hidden md:block">
+    <img
+        src="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/images/background.jpg"
+        alt="Uniphar&#x20;Background&#x20;Image"
+        loading="lazy"
+        class="w-full h-full object-cover">
+</div>
+<input name="form_key" type="hidden" value="a5s4KsJRxYPl2N8U" />
+    <noscript>
+        <section class="message global noscript border-b-2 border-blue-500 bg-blue-50 shadow-none m-0 px-0 rounded-none font-normal">
+            <div class="container text-center">
+                <p>
+                    <strong>JavaScript seems to be disabled in your browser.</strong>
+                    <span>
+                        For the best experience on our site, be sure to turn on Javascript in your browser.                    </span>
+                </p>
+            </div>
+        </section>
+    </noscript>
+
+
+<script>
+    document.body.addEventListener('touchstart', () => {}, {passive: true})
+</script>
+<div class="widget block block-static-block">
+    </div>
+<div class="page-wrapper items-center justify-center"><main id="maincontent" class="page-main w-screen bg-white relative gap-5 md:shadow-2xl md:gap-12 md:p-11"><header class="flex items-center bg-primary md:bg-transparent p-4 md:p-0 mb-12">
+    <picture class="max-w-[121px] md:max-w-none">
+        <source srcset="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/images/logo-filled.svg"
+            type="image/svg+xml" media="(min-width: 768px)">
+        <img src="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/images/logo.svg"
+            alt="Logo"
+            width="165"
+            height="42">
+    </picture>
+</header>
+<div id="contentarea" tabindex="-1"></div>
+<div class="page messages mb-4"><script>
+        window.defaultSuccessMessageTimeout = 5000;
+        function initMessages() {
+        "use strict";
+        return {
+            messages: window.mageMessages || [],
+            isEmpty() {
+                return this.messages.reduce(
+                    function (isEmpty, message) {
+                        return isEmpty && message === undefined
+                    }, true
+                )
+            },
+            removeMessage(messageIndex) {
+                this.messages[messageIndex] = undefined;
+            },
+            addMessages(messages, hideAfter) {
+                messages.map((message) => {
+                    this.messages = this.messages.concat(message);
+                    if (hideAfter === undefined && message.type === 'success' && window.defaultSuccessMessageTimeout) {
+                        hideAfter = window.defaultSuccessMessageTimeout;
+                    }
+                    if (hideAfter) {
+                        this.setHideTimeOut(this.messages.length -1, hideAfter);
+                    }
+                });
+            },
+            setHideTimeOut(messageIndex, hideAfter) {
+                setTimeout((messageIndex) => {
+                    this.removeMessage(messageIndex);
+                }, hideAfter, messageIndex);
+            },
+            eventListeners: {
+                ['@messages-loaded.window'](event) {
+                    this.addMessages(event.detail.messages, event.detail.hideAfter)
+                },
+                ['@private-content-loaded.window'](event) {
+                    const data = event.detail.data;
+                    if (
+                        data.messages &&
+                        data.messages.messages &&
+                        data.messages.messages.length
+                    ) {
+                        this.addMessages(data.messages.messages);
+                    }
+                },
+                ['@clear-messages.window']() {
+                    this.messages = [];
+                }
+            }
+        }
+    }
+</script>
+<div class="page toast-messages fixed z-50 bottom-0 right-0 max-w-md w-full text-white">
+    <section id="messages"
+             x-data="initMessages()"
+             x-bind="eventListeners"
+             aria-live="assertive"
+             role="alert"
+    >
+        <template x-if="!isEmpty()">
+            <div class="w-full">
+                <div class="messages container mx-auto py-3">
+                    <template x-for="(message, index) in messages" :key="index">
+                        <div>
+                            <template x-if="message">
+                                <div class="message" :class="message.type"
+                                     :ui-id="'message-' + message.type"
+                                >
+                                    <span x-show="message.type === 'success'"
+                                          class="min-w-[unset]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="24" height="24" role="img">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+<title>check-circle</title></svg>
+                                    </span>
+                                    <span x-show="message.type === 'error'"
+                                          class="min-w-[unset]">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="24" height="24" role="img">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+<title>exclamation</title></svg>
+                                    </span>
+                                    <span x-html="message.text"></span>
+                                    <button
+                                        type="button"
+                                        class="text-white hover:text-gray-200 ml-auto"
+                                        aria-label="Close message"
+                                        @click.prevent="removeMessage(index)"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="stroke-current" width="24" height="24" aria-hidden="true">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+</svg>
+                                    </button>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </section>
+</div>
+</div><div class="font-light&#x20;mb-11&#x20;md&#x3A;mb-14&#x20;text-center&#x20;md&#x3A;text-left &#x20;text-3xl&#x20;md&#x3A;text-4xl">
+    <h1 class="page-title title-font"
+        >
+        <span class="base" data-ui-id="page-title-wrapper" >Log In</span>    </h1>
+    </div>
+<div class="px-4 md:px-0"><div class="column main"><div id="monkey_campaign" style="display:none;"
+     data-mage-init='{"campaigncatcher":{"checkCampaignUrl": "https://www.uniphar.ie/mailchimp/campaign/check/"}}'>
+</div>
+<div id="customer-login-container" class="login-container"><form class="form form-login"
+        action="https://www.uniphar.ie/customer/account/loginPost/referer/aHR0cHM6Ly93d3cudW5pcGhhci5pZS8~/"
+        method="post"
+        x-data="initCustomerLoginForm()"
+        @submit.prevent="submitForm()"
+        id="customer-login-form">
+    <input name="form_key" type="hidden" value="a5s4KsJRxYPl2N8U" />    <fieldset class="fieldset login">
+        <div class="flex flex-col gap-6 md:mb-5">
+            <div class="field email required">
+                <input name="login[username]"
+                    class="form-input w-full"
+                    required
+                    value=""
+                    autocomplete="off"
+                    placeholder="Email&#x20;Address"
+                    id="email"
+                    title="Email&#x20;Address&#x20;&#x2F;&#x20;Username"
+                />
+                <label class="label" for="email">
+                    Email Address / Username                </label>
+            </div>
+            <div class="field password required relative">
+
+                <div class="sr-only" aria-live="polite">
+                    <template x-if="!showPassword">
+                        <span>
+                            Password hidden                        </span>
+                    </template>
+                    <template x-if="showPassword">
+                        <span>
+                            Password shown                        </span>
+                    </template>
+                </div>
+                <input name="login[password]"
+                    class="form-input w-full"
+                    required
+                    :type="showPassword ? 'text' : 'password'"
+                    placeholder="Password"
+                    autocomplete="off"
+                    id="pass"
+                    title="Password"
+                />
+                <button
+                    type="button"
+                    x-on:click="showPassword = !showPassword"
+                    :aria-pressed="showPassword ? 'true' : 'false'"
+                    class="px-4 py-3 absolute top-1/2 -translate-y-1/2 right-0"
+                    :aria-label="
+                        showPassword ?
+                            'Hide\u0020Password' :
+                            'Show\u0020Password'
+                    ">
+                    <template x-if="!showPassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" width="24" height="24" role="img">
+  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+<title>eye</title></svg>
+                    </template>
+                    <template x-if="showPassword">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5" width="24" height="24" role="img">
+  <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"/>
+  <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"/>
+<title>eye-off</title></svg>
+                    </template>
+                </button>
+                <label for="pass" class="label">
+                    Password                </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary disabled:opacity-75" name="send"
+                >
+                <span x-show="!loading">
+                    Log In                </span>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" xml:space="preserve"
+                    width="24"
+                    height="24"
+                    x-show="loading">
+                    <path fill="#fff"
+                        d="M73 50c0-12.7-10.3-23-23-23S27 37.3 27 50m3.9 0c0-10.5 8.5-19.1 19.1-19.1S69.1 39.5 69.1 50">
+                        <animateTransform attributeName="transform" attributeType="XML" type="rotate" dur="1s"
+                            from="0 50 50" to="360 50 50"
+                            repeatCount="indefinite"/>
+                    </path>
+                </svg>
+            </button>
+
+            <a class="underline text-secondary font-semibold"
+                href="https://www.uniphar.ie/customer/account/forgotpassword/">
+                Forgot Your Password?            </a>
+
+            <div class="control">
+    <input type="hidden"
+           value=""
+           name="g-recaptcha-response"
+    />
+</div>
+                        <div>
+                <p>
+                    <span class="block">Dear Customer,</span>
+                    <span>
+                        If you are experiencing login issues on the site, please phone customer services on                        <a class="underline text-secondary font-semibold" href="tel:014687501">01 468 7501.</a>
+                    </span>
+                </p>
+            </div>
+
+            <div>
+                <template x-if="displayErrorMessage">
+                    <p class="text-red flex items-center">
+                        <span class="inline-block w-8 h-8 mr-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="24" height="24" role="img">
+  <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+<title>exclamation-circle</title></svg>
+                        </span>
+                        <template x-for="errorMessage in errorMessages">
+                            <span x-html="errorMessage"></span>
+                        </template>
+                    </p>
+                </template>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <p>
+                Having issues?            </p>
+            <a class="underline text-primary font-semibold"
+                href="mailto:noreplyweb@uniphar.ie">
+                Get in Touch            </a>
+        </div>
+    </fieldset>
+</form>
+<div class="w-full">
+    <p class="my-4 text-sm text-gray-900">
+This form is protected by reCAPTCHA - the <a class="underline" href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a> and <a class="underline" href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.</p>
+</div>
+<script>
+function initCustomerLoginForm() {
+    return {
+        errors: 0,
+        hasCaptchaToken: 0,
+        showPassword: false,
+        displayErrorMessage: false,
+        errorMessages: [],
+        loading: false,
+        init() {
+            localStorage.removeItem('allow-resources');
+        },
+        setErrorMessages(messages) {
+            this.errorMessages = [messages]
+            this.displayErrorMessage = this.errorMessages.length
+        },
+        submitForm() {
+            // do not rename $form, the variable is the expected name in the recaptcha output
+            const $form = document.querySelector('#customer-login-form');
+                if (!this.hasCaptchaToken) {
+        this.errors = 1;
+
+
+        const executeGreCaptcha = () => {
+            grecaptcha.ready(() => {
+                grecaptcha.execute(
+                    '6Ld8SDYqAAAAAFvOZhPvWnCei8U\u002D\u002Dtuk5FHTtLJN',
+                    {action: 'submit'}
+                ).then((token) => {
+                    if (token && token.length > 0) {
+                        $form['g\u002Drecaptcha\u002Dresponse'].value = token;
+                        this.errors = 0;
+                        this.hasCaptchaToken = 1;
+                        (this.submitForm || $form.submit).call(this);
+                    } else {
+                        this.errors = 1;
+                        const error = 'ReCaptcha\u0020validation\u0020failed,\u0020please\u0020try\u0020again';
+                        if (this.setErrorMessages) {
+                            this.setErrorMessages([error])
+                            this.displayErrorMessage = true;
+                        } else {
+                            window.dispatchMessages && window.dispatchMessages([{type: "error", text: error}], 5000);
+                        }
+                    }
+                }).catch(exception => {
+                    console.error(exception || `An unknown error occurred during ReCaptcha validation. Are the tokens and the domain correctly set up in the Google console?`)
+                });
+            })
+        }
+
+        if (window.grecaptcha) {
+            executeGreCaptcha();
+        } else {
+            const recaptchaUrl = "https://www.google.com/recaptcha/api.js?render=6Ld8SDYqAAAAAFvOZhPvWnCei8U\u002D\u002Dtuk5FHTtLJN";
+            const script = document.createElement('script');
+            script.setAttribute('type', 'text/javascript');
+            script.setAttribute('src', recaptchaUrl);
+            document.head.appendChild(script);
+
+            script.addEventListener("load", executeGreCaptcha, false);
+        }
+    }
+    
+            if (this.errors === 0 && !this.loading) {
+                this.loading = true;
+                $form.submit();
+            }
+        }
+    }
+}
+</script>
+
+</div></div></div></main></div>
+<script>
+    (() => {
+        function src_default(Alpine) {
+            Alpine.directive("intersect", (el, { value, expression, modifiers }, { evaluateLater, cleanup }) => {
+                let evaluate = evaluateLater(expression);
+                let options = {
+                    rootMargin: getRootMargin(modifiers),
+                    threshold: getThreshhold(modifiers)
+                };
+                let observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting === (value === "leave"))
+                            return;
+                        evaluate();
+                        modifiers.includes("once") && observer.disconnect();
+                    });
+                }, options);
+                observer.observe(el);
+                cleanup(() => {
+                    observer.disconnect();
+                });
+            });
+        }
+        function getThreshhold(modifiers) {
+            if (modifiers.includes("full"))
+                return 0.99;
+            if (modifiers.includes("half"))
+                return 0.5;
+            if (!modifiers.includes("threshold"))
+                return 0;
+            let threshold = modifiers[modifiers.indexOf("threshold") + 1];
+            if (threshold === "100")
+                return 1;
+            if (threshold === "0")
+                return 0;
+            return Number(`.${threshold}`);
+        }
+        function getLengthValue(rawValue) {
+            let match = rawValue.match(/^(-?[0-9]+)(px|%)?$/);
+            return match ? match[1] + (match[2] || "px") : void 0;
+        }
+        function getRootMargin(modifiers) {
+            const key = "margin";
+            const fallback = "0px 0px 0px 0px";
+            const index = modifiers.indexOf(key);
+            if (index === -1)
+                return fallback;
+            let values = [];
+            for (let i = 1; i < 5; i++) {
+                values.push(getLengthValue(modifiers[index + i] || ""));
+            }
+            values = values.filter((v) => v !== void 0);
+            return values.length ? values.join(" ").trim() : fallback;
+        }
+
+        document.addEventListener("alpine:init", () => {
+            window.Alpine.plugin(src_default);
+        });
+    })();
+</script>
+<script>
+    for (const [selector, deferUntil] of Object.entries({".product-slider section[x-data]":"intersect","#filters-content [x-data]":"intersect","#review_form":"intersect","section[x-data^=initRecentlyViewedProductsComponent]":"intersect","div[x-data^=initBundleOptions]":"intersect","#notice-cookie-block":"intersect"})) {
+        document.querySelectorAll(selector).forEach(el => el.setAttribute('x-defer', `${deferUntil}`));
+    }
+</script>
+<script>
+    (function () {
+        "use strict";
+
+        const hasAlpine = new Promise(resolve => {
+            window.addEventListener('alpine:initialized', resolve, {once: true, passive: true});
+        });
+
+        const hasInteract = new Promise(resolve => {
+            (events => {
+                const onInteract = () => {
+                    resolve();
+                    events.forEach(type => window.removeEventListener(type, onInteract));
+                }
+                events.forEach(type => window.addEventListener(type, onInteract, {once: true, passive: true}))
+            })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
+        });
+
+        const onIntersect = (el) => {
+            return new Promise(resolve => {
+                const observer = new IntersectionObserver(entries => {
+                    for (const entry of entries) {
+                        if (entry.isIntersecting) {
+                            observer.disconnect()
+                            resolve();
+                        }
+                    }
+                }, {});
+                observer.observe(el);
+            });
+        }
+
+        function runComponent(el) {
+            hasAlpine.then(() => {
+                el.removeAttribute('x-ignore');
+                queueMicrotask(() => Alpine.initTree(el));
+            });
+        }
+
+        function initDeferredComponents() {
+            document.querySelectorAll('[x-data][x-defer]').forEach(el => {
+                el.setAttribute('x-ignore', '');
+                const deferUntil = (el.getAttribute('x-defer') || '').trim();
+                switch (deferUntil) {
+                    case 'interact':
+                        hasInteract.then(() => runComponent(el));
+                        break;
+                    case 'intersect':
+                        onIntersect(el).then(() => runComponent(el))
+                        break;
+                    case 'idle':
+                        window.requestIdleCallback
+                            ? window.requestIdleCallback(() => runComponent(el), {timeout: 4000})
+                            : setTimeout(() => runComponent(el), 4000);
+                        break;
+                    case 'eager':
+                        runComponent(el);
+                        break;
+                    default:
+                        if (deferUntil.startsWith('event:') && deferUntil.length > 6) {
+                            window.addEventListener(deferUntil.substring(6), () => runComponent(el), {once: true, passive: true});
+                        }
+                }
+            });
+        }
+
+        window.addEventListener('alpine:init', initDeferredComponents, {once: true, passive: true});
+    })()
+</script>
+<script>
+(()=>{function g(n){n.directive("collapse",e),e.inline=(t,{modifiers:i})=>{i.includes("min")&&(t._x_doShow=()=>{},t._x_doHide=()=>{})};function e(t,{modifiers:i}){let r=l(i,"duration",250)/1e3,u=l(i,"min",0),h=!i.includes("min");t._x_isShown||(t.style.height=`${u}px`),!t._x_isShown&&h&&(t.hidden=!0),t._x_isShown||(t.style.overflow="hidden");let c=(d,s)=>{let o=n.setStyles(d,s);return s.height?()=>{}:o},f={transitionProperty:"height",transitionDuration:`${r}s`,transitionTimingFunction:"cubic-bezier(0.4, 0.0, 0.2, 1)"};t._x_transition={in(d=()=>{},s=()=>{}){h&&(t.hidden=!1),h&&(t.style.display=null);let o=t.getBoundingClientRect().height;t.style.height="auto";let a=t.getBoundingClientRect().height;o===a&&(o=u),n.transition(t,n.setStyles,{during:f,start:{height:o+"px"},end:{height:a+"px"}},()=>t._x_isShown=!0,()=>{t.getBoundingClientRect().height==a&&(t.style.overflow=null)})},out(d=()=>{},s=()=>{}){let o=t.getBoundingClientRect().height;n.transition(t,c,{during:f,start:{height:o+"px"},end:{height:u+"px"}},()=>t.style.overflow="hidden",()=>{t._x_isShown=!1,t.style.height==`${u}px`&&h&&(t.style.display="none",t.hidden=!0)})}}}}function l(n,e,t){if(n.indexOf(e)===-1)return t;let i=n[n.indexOf(e)+1];if(!i)return t;if(e==="duration"){let r=i.match(/([0-9]+)ms/);if(r)return r[1]}if(e==="min"){let r=i.match(/([0-9]+)px/);if(r)return r[1]}return i}document.addEventListener("alpine:init",()=>{window.Alpine.plugin(g)});})();
+</script>
+
+<script type="module"
+        src="https://www.uniphar.ie/static/version1787209113/frontend/Uniphar/hyva-base/en_IE/Hyva_Theme/js/alpine3.min.js"
+        defer
+        crossorigin
+></script>
+<script>
+    'use strict';
+    function dispatchMessages(messages, hideAfter) {
+        const messagesEvent = new CustomEvent("messages-loaded", {
+            detail: {
+                messages: messages,
+                hideAfter: hideAfter
+            }
+        });
+        window.dispatchEvent(messagesEvent);
+    }
+
+    if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
+        console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
+    }
+
+    (function( hyva, undefined ) {
+
+        hyva.initFormKey = () => {
+            const inputSelector = 'input[name="form_key"]',
+                formKey = hyva.getFormKey();
+
+            Array.from(document.querySelectorAll(inputSelector)).map(function (input) {
+                input.value = formKey
+            });
+        }
+
+        hyva.initMessages = () => {
+            try {
+                const messages = hyva.getCookie('mage-messages');
+                window.mageMessages = messages ? JSON.parse(decodeURIComponent(messages).replace(/\+/g, ' ')) : [];
+
+                dispatchMessages(window.mageMessages);
+
+                                // empty `mage-messages` cookie
+                const skipSetDomain = true;
+                hyva.setCookie('mage-messages','', -1, skipSetDomain);
+
+            } catch (error) {
+                console.warn('Error parsing Cookie Messages:', error);
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', hyva.initFormKey);
+        hyva.alpineInitialized(hyva.initMessages)
+
+    }( window.hyva = window.hyva || {} ));
+</script>
+<script>
+    'use strict';
+    {
+        const private_content_key = 'mage-cache-storage';
+        const private_content_expire_key = 'mage-cache-timeout';
+        const private_content_version_key = 'private_content_version';
+        const section_data_ids_key = 'section_data_ids';
+        const mage_cache_session_id_key = 'mage-cache-sessid';
+        const last_visited_store_key = 'last_visited_store';
+
+        const ttl = 3600;
+
+        if (typeof hyva === 'undefined' || (!hyva.getBrowserStorage || !hyva.getCookie || !hyva.setCookie)) {
+            console.warn("Hyvä helpers are not loaded yet. Make sure they are included before this script");
+        }
+
+        function loadSectionData () {
+            const browserStorage = hyva.getBrowserStorage();
+            if (!browserStorage) {
+                typeof window.dispatchMessages !== "undefined" && window.dispatchMessages(
+                    [{
+                        type: "warning",
+                        text: "Please enable LocalStorage in your browser."
+                    }]
+                );
+                return;
+            }
+            try {
+                let isInvalid = false;
+
+                if (hyva.getCookie(last_visited_store_key) !== CURRENT_STORE_CODE) {
+                    isInvalid = true;
+                }
+                hyva.setCookie(last_visited_store_key, CURRENT_STORE_CODE, false, false);
+
+                if (!hyva.getCookie(mage_cache_session_id_key)) {
+                    isInvalid = true;
+                    browserStorage.removeItem(private_content_key);
+                    const skipSetDomain = true;
+                    const days = false;
+                    hyva.setCookie(mage_cache_session_id_key, true, days, skipSetDomain)
+                }
+
+                const cookieVersion = hyva.getCookie(private_content_version_key);
+                const storageVersion = browserStorage.getItem(private_content_version_key);
+
+                if (cookieVersion && !storageVersion || cookieVersion !== storageVersion) {
+                    isInvalid = true;
+                }
+
+                const privateContentExpires = browserStorage.getItem(private_content_expire_key);
+                if (privateContentExpires && new Date(privateContentExpires) < new Date()) {
+                    browserStorage.removeItem(private_content_key);
+                }
+
+                if (isInvalid && cookieVersion) {
+                    fetchPrivateContent([]);
+                } else if (cookieVersion && storageVersion && cookieVersion === storageVersion) {
+                    const privateContent = JSON.parse(browserStorage.getItem(private_content_key));
+                    if (
+                        privateContent &&
+                        privateContentExpires &&
+                        privateContent.cart &&
+                        privateContent.customer
+                    ) {
+                        dispatchPrivateContent(privateContent);
+                    } else {
+                        fetchPrivateContent([]);
+                    }
+                } else {
+                    if (document.getElementById('default-section-data')) {
+                        const privateContent = JSON.parse(document.getElementById('default-section-data').innerText.trim());
+                        dispatchPrivateContent(privateContent);
+                    } else {
+                        dispatchPrivateContent({});
+                    }
+                }
+
+            } catch (error) {
+                console.warn('Error retrieving Private Content:', error);
+            }
+        }
+
+        hyva.alpineInitialized(loadSectionData)
+        window.addEventListener('reload-customer-section-data', loadSectionData);
+
+        function dispatchPrivateContent(data) {
+            const privateContentEvent = new CustomEvent("private-content-loaded", {
+                detail: {
+                    data: data
+                }
+            });
+            window.dispatchEvent(privateContentEvent);
+        }
+
+        function fetchPrivateContent(sections) {
+            fetch(`${BASE_URL}customer/section/load/?sections=${encodeURIComponent(sections.join(','))}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.json())
+                .then(
+                    data => {
+                        if (data) {
+                            try {
+                                const browserStorage = hyva.getBrowserStorage();
+
+                                // merge new data preserving non-invalidated sections
+                                const oldSectionData = JSON.parse(browserStorage.getItem(private_content_key) || '{}') || {};
+
+                                if ((! data.cart || ! data.cart.cartId) && oldSectionData['checkout-data']) {
+                                    delete oldSectionData['checkout-data'];
+                                }
+                                const newSectionData = Object.assign(oldSectionData, data);
+
+                                dispatchPrivateContent(newSectionData);
+
+                                // don't persist messages, they've been dispatched already
+                                if (newSectionData.messages && newSectionData.messages.messages ) {
+                                    newSectionData.messages.messages = [];
+                                }
+
+                                browserStorage.setItem(private_content_key, JSON.stringify(newSectionData));
+
+                                const expiresAt = new Date(Date.now() + (ttl * 1000)).toISOString();
+                                browserStorage.setItem(private_content_expire_key, expiresAt);
+
+                                const newCookieVersion = hyva.getCookie(private_content_version_key);
+                                browserStorage.setItem(private_content_version_key, newCookieVersion);
+
+                                // We don't need the section_data_ids in Hyvä, but we store them for compatibility
+                                // with Luma Fallback. Otherwise, not all sections are loaded in Luma Checkout
+                                hyva.setCookie(
+                                    section_data_ids_key,
+                                    JSON.stringify(
+                                        Object.keys(data).reduce((sectionDataIds, sectionKey) => {
+                                            sectionDataIds[sectionKey] = data[sectionKey]['data_id'];
+                                            return sectionDataIds;
+                                        }, {})
+                                    ),
+                                    false,
+                                    true
+                                );
+                            } catch (error) {
+                                console.warn("Couldn't store privateContent", error);
+                            }
+                        }
+                    }
+                );
+        }
+    }
+</script>
+<script>
+    (() => {
+        document.addEventListener('submit', event => event.target.action = event.target.action.replace('%25uenc%25', hyva.getUenc()));
+    })()
+</script>
+<script>
+    (events => {
+        const dispatchUserInteractionEvent = () => {
+            events.forEach(type => window.removeEventListener(type, dispatchUserInteractionEvent))
+            window.dispatchEvent(new Event('init-external-scripts'))
+        };
+        events.forEach(type => window.addEventListener(type, dispatchUserInteractionEvent, {once: true, passive: true}))
+    })(['touchstart', 'mouseover', 'wheel', 'scroll', 'keydown'])
+</script>
+</body>
+</html>

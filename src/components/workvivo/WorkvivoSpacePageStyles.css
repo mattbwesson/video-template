@@ -1,0 +1,1189 @@
+/* Workvivo Space page — "Annual Employee Summit".
+   A 1:1 recreation of the supplied 1440px Figma export. Every class is prefixed wsp-
+   so nothing collides with WorkvivoStyles.css (which owns the bare .rail/.nav/.topbar
+   names) or WorkvivoDesktopStyles.css (which owns wvd-).
+
+   Numbers are the export's own. Figma scales nested frames, so the centre feed arrives
+   at 1.0234x and the right rail at 1.0267x — that is why paddings read 16.37 and 8.21
+   rather than 16 and 8. They are kept verbatim here because the brief was "recreate this
+   exactly"; divide by the column's factor if you ever lift a value out into fresh work.
+
+   Colour split worth keeping straight: #6103ED is Workvivo's own semantic primary
+   (buttons, links, active tab) and #7F39F3 is the per-tenant customer brand slot
+   (banner, avatar fills). They are not interchangeable. */
+
+.wsp-frame {
+  position: relative;
+  width: 1440px;
+  /* The export's own frame stops at 1415, which clips the countdown card mid-card.
+     65px more lets the feed column finish; the grey field below is extended to match. */
+  height: 1480px;
+  overflow: hidden;
+  background: #ffffff;
+  font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.wsp-frame img {
+  display: block;
+}
+
+/* The grey page field. First in the stack, so everything paints over it. */
+.wsp-pagebg {
+  position: absolute;
+  left: 49px;
+  top: 224px;
+  width: 1391px;
+  height: 1256px;
+  background: #f3f4f6;
+}
+
+/* ---------- banner ---------- */
+
+.wsp-banner {
+  position: absolute;
+  left: 56px;
+  top: 60px;
+  width: 1384px;
+  height: 228px;
+  background: #7f39f3;
+  overflow: hidden;
+}
+
+.wsp-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- top bar ---------- */
+
+.wsp-top {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 1440px;
+  height: 60px;
+  padding: 10px 10px 10px 20px;
+  background: #00031f;
+  border-radius: 12px 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.wsp-top-inner {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.wsp-logo {
+  width: 200px;
+  height: 43.84px;
+  display: flex;
+  align-items: center;
+}
+
+.wsp-logo img {
+  height: 30.74px;
+  width: auto;
+  max-width: 200px;
+  object-fit: contain;
+}
+
+.wsp-tsearch-wrap {
+  flex: 1 1 0;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wsp-tsearch {
+  width: 600px;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, rgba(122, 105, 147, 0.4) 0%, rgba(78, 55, 111, 0.4) 100%);
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #ffffff;
+}
+
+.wsp-tsearch span {
+  flex: 1 1 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #ffffff;
+}
+
+.wsp-tacts {
+  width: 200px;
+  align-self: stretch;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}
+
+.wsp-tacts-pill {
+  align-self: stretch;
+  padding: 6px 8px 6px 16px;
+  background: linear-gradient(90deg, rgba(122, 105, 147, 0.3) 0%, rgba(78, 55, 111, 0.3) 100%);
+  border-radius: 32px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  color: #ffffff;
+}
+
+.wsp-tav {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #7f39f3;
+  flex: none;
+}
+
+.wsp-tav img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ---------- collapsed nav rail ---------- */
+
+.wsp-rail {
+  position: absolute;
+  left: 0;
+  top: 60px;
+  width: 58px;
+  height: calc(100% - 60px);
+  padding: 16px 10px;
+  background: #ffffff;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wsp-rail-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  overflow: hidden;
+}
+
+/* The collapse control, and under it the signed-in face — WorkvivoStyles.css's .railtop
+   and .me with the name and role taken away. The glyph and its colour are .collapse's,
+   value for value; the avatar keeps .meav's plain circle rather than .me's tinted box,
+   which exists to hold two lines of text this rail does not show. */
+.wsp-collapse {
+  width: 40px;
+  height: 26px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wsp-collapsemark {
+  font-size: 17.143px;
+  color: #9aa1ac;
+  letter-spacing: -1.429px;
+  line-height: 1;
+}
+
+.wsp-railme {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center;
+  flex: none;
+}
+
+.wsp-railcol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* The gap between groups stands in for the sidebar's section headings — EXPLORE, CONNECT
+   and RESOURCES have no room to be set in a collapsed rail, so the space they occupied is
+   all that is left to separate the groups. */
+.wsp-railcol-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+}
+
+.wsp-railgrp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+/* WorkvivoStyles.css's .navdiv, at this pane's scale and inset to the rail's width. */
+.wsp-raildiv {
+  align-self: stretch;
+  height: 1px;
+  background: #f1f1f3;
+  margin: 10px 4px;
+}
+
+/* 36px tall, 16px glyph — the sidebar nav item size from the Workvivo control set. The
+   colour and the .85 are .nav .li and .nav-ico from WorkvivoStyles.css: this is the same
+   nav, so the glyphs are the same grey at the same strength. */
+.wsp-railitem {
+  height: 36px;
+  padding: 8px 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #8e959e;
+  opacity: 0.85;
+}
+
+/* ---------- space header ---------- */
+
+.wsp-head {
+  position: absolute;
+  left: 88px;
+  top: 241px;
+  width: 1320px;
+  height: 145px;
+}
+
+.wsp-avatar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 92px;
+  border-radius: 9999px;
+  background: #7f39f3;
+  border: 3.08px solid #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wsp-headrow {
+  position: absolute;
+  left: 104px;
+  top: 53px;
+  width: 1216px;
+  display: flex;
+  align-items: center;
+}
+
+.wsp-headleft {
+  flex: 1 1 0;
+  padding: 4px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wsp-back {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #111827;
+  flex: none;
+}
+
+.wsp-title {
+  flex: 1 1 0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
+  color: #111827;
+}
+
+.wsp-headright {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+
+.wsp-adminlink {
+  padding: 8px 6px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #4e03be;
+}
+
+.wsp-adminlink .wsp-chev {
+  color: #6103ed;
+}
+
+/* Pill buttons — radius 20 at 36px-and-under reads as fully rounded. */
+.wsp-btn-primary {
+  padding: 8px 16px;
+  background: #6103ed;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #ffffff;
+}
+
+.wsp-iconbtn {
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  background: #f3f4f6;
+  border-radius: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: none;
+}
+
+.wsp-tabs {
+  position: absolute;
+  left: 0;
+  top: 109px;
+  width: 1320px;
+  height: 36px;
+}
+
+.wsp-tabrule {
+  position: absolute;
+  left: 0;
+  top: 35px;
+  width: 1320px;
+  height: 1px;
+  background: #e5e7eb;
+}
+
+.wsp-tablist {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.wsp-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wsp-tab-lbl {
+  padding: 0 4px 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.wsp-tab-bar {
+  align-self: stretch;
+  height: 2px;
+}
+
+.wsp-tab.is-on .wsp-tab-lbl {
+  color: #6103ed;
+}
+
+.wsp-tab.is-on .wsp-tab-bar {
+  background: #6103ed;
+}
+
+/* ---------- left rail ---------- */
+
+.wsp-left {
+  position: absolute;
+  left: 165px;
+  top: 411px;
+  width: 270px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.wsp-search {
+  align-self: stretch;
+  padding: 8px 12px;
+  background: #ffffff;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #6b7280;
+}
+
+/* Flat white on grey with a hairline border, not a shadow — the Workvivo card default. */
+.wsp-lcard {
+  align-self: stretch;
+  background: #ffffff;
+  border-radius: 6px;
+}
+
+.wsp-lcard-about {
+  padding: 12px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wsp-lcard-admins {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wsp-caplabel {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #9ca3af;
+}
+
+.wsp-about-top {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wsp-chips {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wsp-chip {
+  height: 28px;
+  padding: 2px 10px;
+  background: #f0e6fe;
+  border-radius: 20px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #4e03be;
+  text-align: center;
+}
+
+.wsp-chip svg {
+  color: #6103ed;
+  flex: none;
+}
+
+.wsp-about-text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: #111827;
+}
+
+.wsp-members {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wsp-members-count {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #111827;
+}
+
+.wsp-avrow {
+  height: 36.33px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+}
+
+.wsp-av {
+  width: 36.33px;
+  height: 36.33px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wsp-avrow-fill .wsp-av {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+.wsp-avmore {
+  width: 36.33px;
+  height: 36.33px;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: #111827;
+  flex: none;
+}
+
+/* ---------- centre feed ---------- */
+
+.wsp-feed {
+  position: absolute;
+  left: 467px;
+  top: 411px;
+  width: 568px;
+  display: flex;
+  flex-direction: column;
+  gap: 24.56px;
+}
+
+.wsp-composer {
+  align-self: stretch;
+  padding: 16.37px 16.37px 4.09px;
+  background: #ffffff;
+  border-radius: 8.19px;
+  outline: 1.02px #e8e8e9 solid;
+  outline-offset: -1.02px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4.09px;
+}
+
+.wsp-comp-row {
+  align-self: stretch;
+  height: 57.31px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18.42px;
+}
+
+.wsp-comp-av {
+  width: 40.94px;
+  height: 40.94px;
+  border-radius: 102.34px;
+  overflow: hidden;
+  background: #7f39f3;
+  flex: none;
+}
+
+.wsp-comp-av img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wsp-comp-ph {
+  width: 225px;
+  height: 41px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  font-size: 18.42px;
+  font-weight: 400;
+  line-height: 28.66px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.wsp-hr {
+  align-self: stretch;
+  height: 0;
+  border-top: 1.02px solid #e5e7eb;
+}
+
+.wsp-comp-acts {
+  align-self: stretch;
+  height: 34.8px;
+  padding: 0 16.37px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wsp-comp-act {
+  display: flex;
+  align-items: center;
+  gap: 8.19px;
+  font-size: 14.33px;
+  font-weight: 500;
+  line-height: 20.47px;
+  color: #6c757d;
+}
+
+.wsp-comp-act svg {
+  color: #6103ed;
+  flex: none;
+}
+
+.wsp-survey {
+  align-self: stretch;
+  height: 258.93px;
+  padding: 12.28px;
+  border-radius: 8.19px;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-color: #7f39f3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.wsp-survey-panel {
+  align-self: stretch;
+  padding: 16.37px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 8.19px;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wsp-survey-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4.09px;
+}
+
+.wsp-survey-t {
+  font-size: 16.37px;
+  font-weight: 600;
+  line-height: 24.56px;
+  color: #6103ed;
+}
+
+.wsp-survey-s {
+  font-size: 14.33px;
+  font-weight: 400;
+  line-height: 20.47px;
+  color: #9ca3af;
+}
+
+.wsp-btn-start {
+  padding: 8.19px 16.37px;
+  background: #6103ed;
+  border-radius: 20.47px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 14.33px;
+  font-weight: 400;
+  line-height: 20.47px;
+  color: #ffffff;
+  flex: none;
+}
+
+.wsp-post {
+  align-self: stretch;
+  padding: 16.37px;
+  background: #ffffff;
+  border-radius: 8.19px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8.19px;
+}
+
+.wsp-post-row {
+  align-self: stretch;
+  height: 55px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8.19px;
+}
+
+.wsp-post-av {
+  width: 40.94px;
+  height: 40.94px;
+  border-radius: 102.34px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wsp-post-head {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4.09px;
+}
+
+.wsp-post-by {
+  font-size: 16.37px;
+  line-height: 24.56px;
+  color: #000000;
+  font-weight: 400;
+}
+
+.wsp-post-by b {
+  color: #5a31f4;
+  font-weight: 500;
+}
+
+.wsp-post-meta {
+  display: flex;
+  align-items: center;
+  gap: 4.09px;
+  font-size: 12.28px;
+  font-weight: 400;
+  line-height: 16.37px;
+  color: #9ca3af;
+}
+
+.wsp-post-meta svg {
+  color: #9ca3af;
+  flex: none;
+}
+
+.wsp-post-body {
+  align-self: stretch;
+  font-size: 16.37px;
+  font-weight: 400;
+  line-height: 24.56px;
+  color: #000000;
+}
+
+.wsp-hooray {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4.09px;
+}
+
+.wsp-hooray-lbl {
+  align-self: stretch;
+  font-size: 16.37px;
+  font-weight: 400;
+  line-height: 24.56px;
+  color: #adb5bd;
+}
+
+.wsp-hooray-chip {
+  height: 30.7px;
+  padding-left: 8.19px;
+  padding-right: 16.37px;
+  background: #ece1fd;
+  border-radius: 4.09px;
+  display: flex;
+  align-items: center;
+  gap: 10.23px;
+  font-size: 12.28px;
+  font-weight: 400;
+  line-height: 16.37px;
+  color: #6203ed;
+}
+
+.wsp-hooray-chip img {
+  width: 20.47px;
+  height: 20.47px;
+  border-radius: 102.34px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wsp-post-hr {
+  align-self: stretch;
+  height: 0;
+  border-top: 1.02px solid #e6e7eb;
+}
+
+.wsp-post-foot {
+  align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.wsp-post-counts {
+  display: flex;
+  align-items: center;
+  gap: 4.09px;
+  font-size: 14.33px;
+  line-height: 20.47px;
+  color: #5a31f4;
+  font-weight: 400;
+}
+
+.wsp-post-counts .wsp-sep {
+  color: #9ca3af;
+}
+
+.wsp-post-counts b {
+  font-weight: 500;
+}
+
+.wsp-share {
+  display: flex;
+  align-items: center;
+  gap: 4.09px;
+  font-size: 14.33px;
+  font-weight: 500;
+  line-height: 20.47px;
+  color: #5a31f4;
+}
+
+.wsp-reactpill {
+  height: 28.66px;
+  padding: 0 12.28px;
+  background: #f3f4f6;
+  border-radius: 102.34px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12.28px;
+  font-weight: 400;
+  line-height: 16.37px;
+  color: #212529;
+}
+
+/* Countdown card — the one place a shadow appears, and it stays at 1px/2px. */
+.wsp-count {
+  width: 567px;
+  height: 236.92px;
+  padding: 7.99px;
+  background: #ffffff;
+  border-radius: 7.99px;
+  box-shadow:
+    0 0.665px 1.331px rgba(0, 0, 0, 0.06),
+    0 0.665px 1.996px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  gap: 6.65px;
+}
+
+.wsp-count-img {
+  width: 340.07px;
+  height: 220.94px;
+  padding: 5.32px;
+  background: #7f39f3;
+  border-radius: 3.99px;
+  position: relative;
+  overflow: hidden;
+  flex: none;
+}
+
+.wsp-count-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3.99px;
+  mix-blend-mode: multiply;
+}
+
+.wsp-count-side {
+  width: 204.31px;
+  height: 220.94px;
+  border-radius: 5.32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex: none;
+}
+
+.wsp-count-hdr {
+  align-self: stretch;
+  padding: 1.33px 0;
+  display: flex;
+  align-items: center;
+  gap: 2.66px;
+  font-size: 9.32px;
+  font-weight: 500;
+  line-height: 13.31px;
+  color: #374151;
+}
+
+.wsp-count-hdr svg {
+  color: #374151;
+  flex: none;
+}
+
+.wsp-count-mid {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6.65px;
+}
+
+.wsp-count-title {
+  align-self: stretch;
+  text-align: center;
+  font-size: 10.65px;
+  font-weight: 500;
+  line-height: 15.97px;
+  color: #1f2937;
+}
+
+.wsp-count-nums {
+  align-self: stretch;
+  height: 39.93px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 5.32px;
+}
+
+.wsp-count-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.66px;
+}
+
+.wsp-count-num {
+  text-align: center;
+  font-size: 19.96px;
+  font-weight: 500;
+  line-height: 23.96px;
+  color: #1f2937;
+}
+
+.wsp-count-lbl {
+  align-self: stretch;
+  text-align: center;
+  font-size: 7.99px;
+  font-weight: 400;
+  line-height: 10.65px;
+  color: #6b7280;
+}
+
+.wsp-btn-viewmore {
+  align-self: stretch;
+  height: 23.96px;
+  padding: 3.99px 7.99px;
+  background: #ffffff;
+  border-radius: 21.96px;
+  outline: 0.67px #e5e7eb solid;
+  outline-offset: -0.67px;
+  box-shadow: 0 0.665px 1.331px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 7.99px;
+  font-weight: 500;
+  line-height: 10.65px;
+  color: #6103ed;
+}
+
+/* ---------- right rail ---------- */
+
+.wsp-right {
+  position: absolute;
+  left: 1066px;
+  top: 411px;
+  width: 269px;
+  display: flex;
+  flex-direction: column;
+  gap: 24.64px;
+}
+
+.wsp-rcard {
+  align-self: stretch;
+  background: #ffffff;
+  border-radius: 8.21px;
+  box-shadow: 0 1.027px 2.053px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8.21px;
+}
+
+.wsp-rimg {
+  align-self: stretch;
+  height: 135.53px;
+  position: relative;
+  overflow: hidden;
+}
+
+.wsp-rimg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wsp-rimg-grad {
+  background: linear-gradient(180deg, #7f39f3 0%, #000000 100%);
+}
+
+.wsp-rbody {
+  align-self: stretch;
+  padding: 8.21px 12.32px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16.43px;
+}
+
+.wsp-rkicker {
+  font-size: 14.37px;
+  font-weight: 400;
+  line-height: 20.53px;
+  color: #adb5be;
+}
+
+.wsp-rtitle {
+  font-size: 19px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #6103ed;
+}
+
+.wsp-rtitle-loose {
+  line-height: 28.75px;
+}
+
+.wsp-rmeta {
+  display: flex;
+  flex-direction: column;
+  gap: 4.11px;
+  font-size: 12.32px;
+  font-weight: 400;
+  line-height: 16.43px;
+  color: #9ca3af;
+}
+
+.wsp-rmeta-row {
+  display: flex;
+  align-items: center;
+  gap: 8.21px;
+}
+
+.wsp-rmeta-row svg {
+  color: #9ca3af;
+  flex: none;
+}
+
+.wsp-rfoot {
+  align-self: stretch;
+  padding: 0 12.32px 12.32px;
+}
+
+.wsp-rfoot-pad {
+  padding: 12.32px;
+}
+
+.wsp-btn-secondary {
+  width: 100%;
+  padding: 8.21px 16.43px;
+  background: #dee2e6;
+  border-radius: 20.53px;
+  box-shadow: 0 1.027px 2.053px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6.16px;
+  font-size: 14.37px;
+  font-weight: 400;
+  line-height: 20.53px;
+  color: #212529;
+}
+
+.wsp-btn-secondary svg {
+  color: #7f8387;
+  flex: none;
+}
+
+.wsp-dots {
+  align-self: stretch;
+  padding: 10.27px 155.03px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4.11px;
+}
+
+.wsp-dot {
+  width: 6.16px;
+  height: 6.16px;
+  border-radius: 9999px;
+  background: #d1d5db;
+  flex: none;
+}
+
+.wsp-dot.is-on {
+  background: #6b7280;
+}
+
+/* The event wordmark burnt into the artwork. "Delight" is Workvivo's display face and
+   is not bundled with this project, so it falls back to a heavy grotesque. */
+.wsp-wordmark {
+  position: absolute;
+  color: #ffffff;
+  font-family: Delight, "Arial Black", Impact, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Chevrons. The export ships these as bare rectangles with no path data — they are
+   generic geometry, not Workvivo glyphs, so they are drawn in CSS rather than faked
+   as SVG. See the note in WorkvivoSpacePage.tsx. */
+.wsp-chev {
+  display: block;
+  border-right: 1.25px solid currentColor;
+  border-bottom: 1.25px solid currentColor;
+  width: 5.9px;
+  height: 5.9px;
+}
+
+.wsp-chev-left {
+  transform: rotate(135deg);
+}
+
+.wsp-chev-down {
+  transform: rotate(45deg);
+  margin-top: -3px;
+}
+
+.wsp-chev-back {
+  width: 9px;
+  height: 9px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  transform: rotate(135deg);
+  margin-left: 3px;
+}

@@ -1,0 +1,454 @@
+/* Workvivo Newsletters screen.
+   Prefixed `nl-` per docs/PORTING-HTML-REFS.md — WorkvivoStyles.css owns bare names like
+   .topbar, .rail, .chip, .card and two screens in one composition would collide.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   The supplied Figma CSS is a scaled nested frame, so the values arrived as decimals.
+   The factor is 1.0583333, and dividing by it lands the whole set exactly on Workvivo's
+   4px grid — which is what makes the normalisation trustworthy rather than rounding by eye:
+
+     2.12 -> 2      6.35 -> 6      8.47 -> 8     10.58 -> 10    12.70 -> 12
+    14.82 -> 14    16.93 -> 16    21.17 -> 20   336.55 -> 318  370.42 -> 350
+
+   The one value that does not is the folder glyph's 1.81px outline -> 1.71px. That is a
+   stroke width, not a spacing token, so it has no grid to land on.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   The reference is a 1440-wide app: its 62px top bar is the same 62px WorkvivoDesktop
+   draws, which is what pins the scale. 1440 - 64 rail - 24 - 24 padding = 1328 of content,
+   and the card row is 4 * 318 + 3 * 16 = 1320 — so all four cards fit with 8px to spare,
+   and the carousel chevron overlaps the fourth rather than clipping it. */
+
+/* The device is 1760 wide and the reference window is 1440, so the body is designed at
+   1440 and scaled by 1760/1440 = 1.2222 in one place. 1080 - the 62.857 top bar leaves
+   1017.143, which is 832 of design height at that scale. */
+.nl-shell {
+  width: 1760px;
+  height: 1017.143px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.nl-body {
+  width: 1440px;
+  height: 832px;
+  transform: scale(1.2222222);
+  transform-origin: top left;
+  display: flex;
+  background: #fff;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.nl-body * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Nav rail ───────────────────────────────────────────────────────────────── */
+
+.nl-rail {
+  width: 64px;
+  flex: none;
+  background: #fff;
+  border-right: 1px solid #F3F4F6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 14px;
+  gap: 2px;
+  color: #6B7280;
+}
+
+.nl-railav {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+  border: 2px solid #E11D48;
+  margin: 10px 0 12px;
+}
+
+.nl-navico {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+.nl-navico.nl-on {
+  background: #F0E6FE;
+  color: #6103ED;
+}
+
+/* The reference breaks the rail into two groups. 20px is the token gap between nav
+   groups; 4px is the gap within one. */
+.nl-navgap {
+  height: 20px;
+  flex: none;
+}
+
+/* ── Content ────────────────────────────────────────────────────────────────── */
+
+.nl-main {
+  flex: 1 1 0;
+  min-width: 0;
+  background: #fff;
+  border-top-left-radius: 12px;
+  padding: 12px 24px 24px;
+  overflow: hidden;
+}
+
+/* Header: title left, buttons right, decorative photo strip absolutely centred behind
+   them so it can overlap without pushing the row around. */
+.nl-head {
+  position: relative;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nl-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.nl-title .li {
+  color: #6103ED;
+}
+
+.nl-collage {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  height: 100px;
+  display: flex;
+  gap: 8px;
+  /* The outer photos fade rather than ending on a hard edge, which is what the reference
+     shows. A mask does that without a stack of per-image opacities. */
+  mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
+}
+
+.nl-collage img {
+  width: 96px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.nl-headacts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 20px;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* #6103ED is the semantic primary — the brand slot #7F39F3 is for banners and avatars,
+   never for a button. */
+.nl-btn-primary {
+  background: #6103ED;
+  border-color: #6103ED;
+  color: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.10);
+}
+
+/* Same border-box caret WorkvivoPostComposer and WorkvivoLivestream use — the library has
+   no chevron glyph, and this is the established stand-in rather than invented art. */
+.nl-caret {
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translate(-2px, -2px);
+}
+
+.nl-field {
+  margin-top: 16px;
+  width: 311px;
+  height: 40px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  color: #9CA3AF;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.nl-chips {
+  margin-top: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.nl-chip {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  color: #111827;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.nl-chip.nl-on {
+  background: #6103ED;
+  border-color: #6103ED;
+  color: #fff;
+}
+
+.nl-sec {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.nl-sec-recent {
+  margin-top: 44px;
+}
+
+.nl-sec-folders {
+  margin-top: 36px;
+}
+
+/* ── Newsletter card row ────────────────────────────────────────────────────── */
+
+.nl-row {
+  position: relative;
+  margin-top: 12px;
+  display: flex;
+  gap: 16px;
+}
+
+.nl-card {
+  position: relative;
+  width: 318px;
+  height: 350px;
+  border-radius: 14px;
+  overflow: hidden;
+  flex: none;
+}
+
+.nl-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The reference's exact scrim: transparent at the top-left, solid #21054A at the
+   bottom-right. It is what makes white type legible over any photo. */
+.nl-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(33, 5, 74, 0) 40%, rgba(33, 5, 74, 0.55) 100%),
+    linear-gradient(136deg, rgba(217, 217, 217, 0) 0%, #21054A 100%);
+}
+
+.nl-card-body {
+  position: absolute;
+  inset: 0;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 12px;
+  color: #fff;
+}
+
+.nl-card-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nl-card-title {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.nl-card-scope {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+}
+
+.nl-card-folder {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+}
+
+.nl-card-foot {
+  display: flex;
+  align-items: flex-start;
+}
+
+.nl-card-date {
+  flex: 1 1 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+}
+
+.nl-badge {
+  flex: none;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.nl-badge-sent {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+/* Inferred, not supplied: the Figma only specified the green Sent badge. This is the
+   same shape in Workvivo's amber, matching the reference's fourth card. */
+.nl-badge-scheduled {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.nl-next {
+  position: absolute;
+  right: -14px;
+  top: 50%;
+  margin-top: -18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+}
+
+.nl-next .nl-caret {
+  width: 8px;
+  height: 8px;
+  border-width: 2px;
+  transform: rotate(-45deg) translate(-2px, 2px);
+}
+
+/* ── Folders ────────────────────────────────────────────────────────────────── */
+
+/* Overflows the 1328 content column on purpose: "View Folders" plus five 250px chips is
+   1468 wide, so the fifth is clipped exactly as it is in the reference. */
+.nl-folders {
+  margin-top: 16px;
+  display: flex;
+  gap: 16px;
+  overflow: hidden;
+}
+
+.nl-folder {
+  width: 250px;
+  height: 52px;
+  flex: none;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.nl-viewfolders {
+  height: 52px;
+  padding: 0 20px;
+  flex: none;
+  white-space: nowrap;
+}
+
+/* ── Chrome reveal ──────────────────────────────────────────────────────────────
+   Driven by --nl-chrome on the root (see WorkvivoNewslettersProps). Everything except the
+   card row fades on that variable; the row is untouched, so it holds its final position
+   throughout and the UI assembles around a fixed anchor instead of the cards sliding into
+   place twice.
+
+   Scoped to .nl-device rather than .device: WorkvivoStyles.css's .device/.app/.topbar are
+   shared with the home container and the other ported screens, and a bare `.device .topbar`
+   rule here would reach all of them.
+
+   The surfaces fade their BACKGROUND rather than their opacity — fading the element itself
+   would take the cards down with it. */
+.nl-device,
+.nl-device .app {
+  background-color: transparent;
+}
+
+.nl-device .nl-shell,
+.nl-device .nl-body,
+.nl-device .nl-main {
+  background-color: rgba(255, 255, 255, var(--nl-chrome, 1));
+}
+
+.nl-device .nl-rail {
+  background-color: rgba(255, 255, 255, var(--nl-chrome, 1));
+  border-right-color: rgba(243, 244, 246, var(--nl-chrome, 1));
+}
+
+.nl-device .topbar,
+.nl-device .nl-rail > *,
+.nl-device .nl-head,
+.nl-device .nl-field,
+.nl-device .nl-chips,
+.nl-device .nl-sec,
+.nl-device .nl-folders,
+.nl-device .nl-next {
+  opacity: var(--nl-chrome, 1);
+}

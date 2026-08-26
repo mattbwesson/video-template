@@ -1,0 +1,96 @@
+/* Ported from public/refs/workvivo-livestream.html — that file is the design source.
+   Every class is prefixed lv- so nothing collides with WorkvivoStyles.css (which owns
+   bare names like .video/.kebab/.caret) when both are mounted in one composition.
+   Values are copied verbatim from the ref; edit the ref first, then mirror here. */
+
+.lv-frame{--wv-glass-radius:16px;width:1280px;background:#1A1A1C;border-radius:16px;padding:14px;
+       box-shadow:0 30px 90px rgba(0,0,0,.45);box-sizing:border-box;
+       font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+       -webkit-font-smoothing:antialiased}
+.lv-frame *{box-sizing:border-box;margin:0;padding:0}
+.lv-stage{display:flex;gap:14px;align-items:stretch}
+
+/* ---------- video side ---------- */
+.lv-left{flex:1;min-width:0;display:flex;flex-direction:column}
+.lv-vbar{height:52px;background:#2A2A2E;border-radius:10px 10px 0 0;display:flex;
+      align-items:center;gap:12px;padding:0 16px}
+.lv-live{height:26px;border-radius:14px;background:#E8121F;color:#fff;font-size:13px;
+      font-weight:700;letter-spacing:.6px;display:flex;align-items:center;padding:0 12px}
+.lv-aud{height:28px;border-radius:15px;background:#EDE3FD;color:#3B1C6E;font-size:14px;
+     font-weight:600;display:flex;align-items:center;gap:7px;padding:0 13px}
+.lv-aud svg{color:#6103ED}
+.lv-count{margin-left:auto;height:24px;border-radius:12px;background:#E8121F;color:#fff;
+       font-size:12px;font-weight:700;display:flex;align-items:center;padding:0 9px}
+/* Shown only while the comments panel is collapsed; arrows point left, back toward the
+   edge the panel comes out of. */
+.lv-open-comments{width:30px;height:30px;border-radius:8px;background:#3C3C42;color:#C9CBD0;
+       display:flex;align-items:center;justify-content:center;flex:none}
+
+.lv-video{position:relative;height:540px;background:#000;overflow:hidden}
+.lv-video:before{display:none}
+.lv-vfoot{height:64px;background:#2A2A2E;border-radius:0 0 10px 10px;display:flex;
+       align-items:center;justify-content:flex-end;padding:0 18px}
+.lv-stats{height:36px;border-radius:18px;background:#3C3C42;display:flex;align-items:center;
+       gap:14px;padding:0 8px 0 6px;color:#E7E8EA;font-size:13px}
+.lv-stats .lv-caret{border-color:#E7E8EA;transform:rotate(135deg);margin:0 2px 0 6px}
+.lv-stats .lv-hot{color:#FF5A63}
+
+/* ---------- meta ---------- */
+.lv-meta{padding:18px 4px 4px;color:#fff}
+.lv-mtop{display:flex;align-items:center;gap:16px}
+.lv-mtop h1{font-size:22px;font-weight:500;letter-spacing:-.2px}
+.lv-rbar{margin-left:auto;height:44px;border-radius:22px;background:#3C3C42;display:flex;
+      align-items:center;gap:16px;padding:0 18px;font-size:19px}
+.lv-rbar span{cursor:pointer}
+.lv-watch{display:flex;align-items:center;gap:12px;font-size:14px;color:#D5D7DB;margin-top:10px}
+.lv-watch b{color:#fff;font-weight:600}
+.lv-chip{width:32px;height:32px;border-radius:50%;background:#3C3C42;display:flex;
+      align-items:center;justify-content:center;color:#C9CBD0}
+.lv-g-link{width:15px;height:15px;position:relative}
+.lv-g-link i{position:absolute;width:9px;height:6px;border:1.8px solid currentColor;
+          border-radius:3px;display:block}
+.lv-g-link i:nth-child(1){left:0;top:2px;transform:rotate(-40deg)}
+.lv-g-link i:nth-child(2){left:6px;top:7px;transform:rotate(-40deg)}
+.lv-dsc{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-top:14px}
+.lv-dsc p{flex:1;font-size:14px;line-height:22px;color:#C9CBD0}
+.lv-dsc-actions{margin-left:auto;display:flex;align-items:center;gap:16px;flex:none}
+.lv-kebab{display:flex;gap:5px;cursor:pointer}
+.lv-kebab i{width:6px;height:6px;border-radius:50%;background:#C9CBD0;display:block}
+.lv-end{height:36px;padding:0 18px;border-radius:18px;background:#E8121F;color:#fff;border:none;
+     font-size:14px;font-weight:600;cursor:pointer;margin-bottom:0;font-family:inherit;white-space:nowrap}
+
+/* ---------- comments ---------- */
+.lv-panel{width:360px;flex:none;background:#26262A;border-radius:10px;display:flex;
+       flex-direction:column;overflow:hidden}
+.lv-phead{height:56px;display:flex;align-items:center;gap:12px;padding:0 16px;color:#fff;
+       font-size:15px;border-bottom:1px solid #34343A;flex:none}
+.lv-phead .lv-g-out{color:#C9CBD0;transform:scaleX(-1);display:flex}
+.lv-phead .lv-caret{border-color:#C9CBD0;margin-left:auto}
+.lv-phead .lv-all{font-size:14px;color:#C9CBD0}
+.lv-clist{flex:1;overflow-y:hidden;padding:16px 16px 8px;display:flex;flex-direction:column;gap:16px}
+.lv-cname{font-size:13px;font-weight:600;color:#fff;margin:0 0 6px 42px}
+.lv-stamp{font-weight:400;color:#9CA0A8;margin-left:8px}
+.lv-crow{display:flex;align-items:flex-end;gap:10px}
+.lv-cav{width:32px;height:32px;border-radius:50%;flex:none;display:block}
+.lv-bub{background:#3C3C42;color:#EDEEF0;font-size:14px;line-height:20px;border-radius:14px;
+     padding:8px 14px}
+.lv-replies{display:flex;align-items:center;gap:10px;margin:8px 0 0 42px}
+.lv-stack{display:flex}
+.lv-sav{width:22px;height:22px;border-radius:50%;border:2px solid #26262A;display:block;
+      margin-left:-6px}
+.lv-sav:first-child{margin-left:0}
+.lv-sav.lv-rp{background:#6103ED;display:flex;align-items:center;justify-content:center;color:#fff}
+.lv-g-reply{width:11px;height:9px;position:relative}
+.lv-g-reply i{position:absolute;display:block;background:currentColor;border-radius:1px}
+.lv-g-reply i:nth-child(1){width:9px;height:1.8px;left:2px;top:3.6px}
+.lv-g-reply i:nth-child(2){width:5px;height:1.8px;left:1px;top:3.6px;transform:rotate(45deg);
+                        transform-origin:left center}
+.lv-rtx{font-size:13px;color:#C9CBD0}
+
+.lv-ccompose{margin:8px 12px 12px;background:#3C3C42;border-radius:10px;padding:12px 14px 10px}
+.lv-ccompose .lv-ph{font-size:14px;color:#9CA0A8;margin-bottom:14px}
+.lv-ctools{display:flex;align-items:center;color:#C9CBD0}
+.lv-ctools .lv-snd{margin-left:auto;color:#C9CBD0}
+
+.lv-caret{width:7px;height:7px;border-right:2px solid;border-bottom:2px solid;
+       transform:rotate(45deg);display:block;flex:none}

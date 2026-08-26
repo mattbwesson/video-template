@@ -1,0 +1,407 @@
+/* Seer UI — extracted from the Seer pitch deck (seer-pitch-deck.html).
+   Lifted verbatim from that deck's stylesheet, so the mock matches it exactly.
+   The deck's :root custom properties are scoped to .wsi-seersurveymobile so importing this
+   cannot repaint anything else, and each bundler asset UUID became its own
+   --wsi-* property the component fills with staticFile(). The deck's own class
+   prefixes (mis-) are kept so a re-extract diffs cleanly. */
+
+.wsi-seersurveymobile {
+  --customer-brand-accent: /* cust-id: customer-brand-accent */ #ff6b3d;
+  --mis-badge-bg: #fde4d0;
+  --mis-badge-text: #3a2a18;
+  --mis-border-gray: #e8e8ec;
+  --mis-border-selected: /* cust-id: customer-brand-accent */ #ff6b3d !important;
+  --mis-comment-bg: #f0f0f3;
+  --mis-content-bg: #f8f8f9;
+  --mis-navy: #0d1230;
+  --mis-orange: /* cust-id: customer-brand-accent */ #ff6b3d !important;
+  --mis-orange-text: /* cust-id: customer-brand-accent */ #ff6b3d !important;
+  --mis-text-dark: #1a2540;
+  --mis-track-gray: #e8e8ec;
+}
+
+/* ---------- Manager Insights Survey component (used on slide 10) ---------- */
+  .mis-survey {
+  --mis-navy: #0d1230;
+  --mis-content-bg: #f8f8f9;
+  --mis-track-gray: #e8e8ec;
+  --mis-orange: #f5712c;
+  --mis-orange-text: #ee5f1e;
+  --mis-orange-disabled: #f8b896;
+  --mis-text-dark: #1a2540;
+  --mis-text-muted: #9aa0a8;
+  --mis-badge-bg: #fde4d0;
+  --mis-badge-text: #3a2a18;
+  --mis-comment-bg: #f0f0f3;
+  --mis-border-gray: #e8e8ec;
+  --mis-border-selected: #f5712c;
+  --mis-red: #d84848;
+  --mis-red-orange: #e87238;
+  --mis-amber: #d9a838;
+  --mis-light-green: #5ec878;
+  --mis-green: #3da868;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased
+}
+.mis-survey * {
+  box-sizing: border-box
+}
+.mis-survey .mis-phone {
+  width: 360px;
+  height: 720px;
+  background: var(--mis-content-bg);
+  border-radius: 44px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35), 0 0 0 1.5px rgba(255,255,255,0.6) inset, 0 0 0 2px #0d1230;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative
+}
+/* The bezel the glass edge lives in — see the note at the wrapper in the .tsx. Its radius
+   is the screen's 44 plus the 16.5 of padding, which is what keeps the inner corner the
+   radius .mis-phone was drawn with. The drop shadow moves here from .mis-phone so the
+   device casts one shadow rather than two a bezel-width apart. */
+.mis-survey .mis-bezel {
+  padding: 16.5px;
+  border-radius: 60.5px;
+  box-sizing: border-box;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.mis-survey .mis-bezel .mis-phone {
+  box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.6) inset, 0 0 0 2px #0d1230;
+}
+
+/* Bottom padding is 20 rather than 14, and the title row has a floor: the header carries
+   the tenant's wordmark now, which needs more room than the 15px label it replaced. */
+.mis-survey .mis-header {
+  background: var(--mis-navy);
+  color: #fff;
+  padding: 12px 20px 20px;
+  flex-shrink: 0
+}
+.mis-survey .mis-statusbar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px
+}
+.mis-survey .mis-statusbar > div {
+  display: flex;
+  gap: 6px;
+  align-items: center
+}
+.mis-survey .mis-titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 30px
+}
+.mis-survey .mis-title {
+  font-size: 15px;
+  font-weight: 600
+}
+/* Height-constrained, width free: wordmarks differ wildly in aspect and a fixed width
+   would squash a long one and strand a square one. The max-width is the guard for the
+   long case — the back chevron and its 26px counterweight own the rest of the row. */
+.mis-survey .mis-logo {
+  height: 26px;
+  max-width: 150px;
+  object-fit: contain;
+  display: block
+}
+.mis-survey .mis-scroll {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column
+}
+.mis-survey .mis-progress-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px 0
+}
+.mis-survey .mis-progress-track {
+  flex: 1;
+  height: 6px;
+  background: var(--mis-track-gray);
+  border-radius: 999px;
+  overflow: hidden
+}
+.mis-survey .mis-progress-fill {
+  height: 100%;
+  background: var(--mis-orange);
+  border-radius: 999px;
+  transition: width 350ms cubic-bezier(0.16, 1, 0.3, 1)
+}
+.mis-survey .mis-progress-text {
+  font-size: 12px;
+  color: #3a3a48;
+  font-weight: 500
+}
+.mis-survey .mis-illustration {
+  display: flex;
+  justify-content: center;
+  padding: 18px 16px 6px
+}
+/* The illustration is drawn INLINE so it can take the tenant colour (see
+   surveyIllustrations.ts), and an inline <svg> with only a viewBox fills its parent's
+   width rather than sizing to its own art. Height plus width:auto is what pins it to the
+   same box the <img> occupied. The <img> rules stay for callers passing files. */
+.mis-survey .mis-illustration svg {
+  height: 120px;
+  max-width: 200px;
+  width: auto;
+  display: block
+}
+.mis-survey .mis-question {
+  display: flex;
+  gap: 10px;
+  padding: 12px 20px 14px;
+  align-items: flex-start
+}
+.mis-survey .mis-q-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--mis-badge-bg);
+  color: var(--mis-badge-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  margin-top: 1px
+}
+.mis-survey .mis-q-text {
+  font-size: 13px;
+  color: var(--mis-text-dark);
+  line-height: 1.4;
+  flex: 1
+}
+.mis-survey .mis-options {
+  display: flex;
+  gap: 5px;
+  padding: 0 14px 14px
+}
+.mis-survey .mis-option {
+  flex: 1;
+  background: #fff;
+  border: 1.5px solid var(--mis-border-gray);
+  border-radius: 9px;
+  padding: 9px 3px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  transition: border-color 150ms ease
+}
+.mis-survey .mis-option.mis-selected {
+  border-color: var(--mis-border-selected)
+}
+.mis-survey .mis-radio {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid #c8c8d0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 150ms ease, border-color 150ms ease
+}
+.mis-survey .mis-option.mis-selected .mis-radio {
+  background: var(--mis-orange);
+  border-color: var(--mis-orange)
+}
+.mis-survey .mis-option.mis-selected .mis-radio::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #fff
+}
+.mis-survey .mis-option-label {
+  font-size: 9px;
+  color: var(--mis-text-dark);
+  text-align: center;
+  line-height: 1.15;
+  white-space: pre-line;
+  font-weight: 500
+}
+.mis-survey .mis-comment-wrap {
+  padding: 0 18px 16px
+}
+.mis-survey .mis-comment {
+  width: 100%;
+  background: var(--mis-comment-bg);
+  border: none;
+  border-radius: 9px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--mis-text-dark);
+  font-family: inherit;
+  resize: none;
+  min-height: 88px;
+  outline: none
+}
+.mis-survey .mis-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px 16px;
+  border-top: 1px solid #ececef;
+  background: #fff;
+  flex-shrink: 0
+}
+.mis-survey .mis-btn-prev {
+  background: #fff;
+  border: 1px solid var(--mis-border-gray);
+  color: var(--mis-orange-text);
+  font-weight: 600;
+  font-size: 12px;
+  padding: 8px 18px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  font-family: inherit
+}
+.mis-survey .mis-btn-prev:disabled {
+  color: #d0d0d6;
+  box-shadow: none;
+  cursor: default
+}
+.mis-survey .mis-btn-skip {
+  background: transparent;
+  border: none;
+  color: var(--mis-orange-text);
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit
+}
+.mis-survey .mis-btn-skip:disabled {
+  color: #d0d0d6;
+  cursor: default
+}
+.mis-survey .mis-btn-next {
+  background: var(--mis-orange);
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 8px 22px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-family: inherit
+}
+.mis-survey .mis-btn-next:disabled {
+  background: #f8b896;
+  cursor: default
+}
+
+/* Completion Screen */
+.mis-survey .mis-completion-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 26px 20px 32px;
+  text-align: center;
+  flex: 1;
+}
+.mis-survey .mis-completion-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 22px;
+}
+.mis-survey .mis-completion-illustration img,
+.mis-survey .mis-completion-illustration svg {
+  height: 145px;
+  max-width: 210px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+.mis-survey .mis-completion-title {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: var(--mis-text-dark);
+  margin: 0 0 10px;
+  letter-spacing: -0.2px;
+}
+.mis-survey .mis-completion-desc {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: #8b92a0;
+  max-width: 265px;
+  margin: 0 auto 26px;
+  font-weight: 400;
+}
+.mis-survey .mis-btn-close {
+  background: var(--mis-orange);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 36px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(245, 113, 44, 0.35);
+  font-family: inherit;
+}
+
+/* Single customer-brand accent. Scoped to UI MOCKUP containers ONLY (.sid-dashboard, .mis-survey, .mid-dashboard, .nho-onboarding, .sf-feed, .sp2-spaces) so the rest of the deck is untouched. */
+  :root {
+  --customer-brand-accent: /* cust-id: customer-brand-accent */ #ff6b3d;
+  --customer-brand-accent-light: color-mix(in srgb, var(--customer-brand-accent) 12%, white)
+}
+.mis-survey {
+  --mis-orange: var(--customer-brand-accent) !important;
+  --mis-orange-text: var(--customer-brand-accent) !important;
+  --mis-border-selected: var(--customer-brand-accent) !important
+}
+.mis-survey [fill="#ee4d8e"], .sid-dashboard [fill="#ee4d8e"], .mid-dashboard [fill="#ee4d8e"], .nho-onboarding [fill="#ee4d8e"], .sf-feed [fill="#ee4d8e"], .sp2-spaces [fill="#ee4d8e"] {
+  fill: var(--customer-brand-accent) !important
+}
+
+/* Completion sparkles.
+   They sit OUTSIDE the device, scattered over the field around it, so the layer is a
+   sibling of the phone rather than a child of the completion screen — that also keeps
+   them clear of the phone's scale transform and its rounded overflow clip. */
+.wsi-seersurveymobile {
+  position: relative;
+}
+.wsi-seersurveymobile .mis-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 3;
+}
+/* Each star is a box painted its own violet and cut to shape by basic-star.svg as a mask.
+   The file is a solid black path, so it was previously being pushed through
+   invert/sepia/saturate/hue-rotate and a screen blend just to come out light and violet —
+   a stack that guesses at a hue and cannot give two stars different ones. Masking paints
+   the colour directly, so the tint is a value in the data and the artwork stays one file. */
+.wsi-seersurveymobile .mis-sparkles i {
+  position: absolute;
+  display: block;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  will-change: transform, opacity;
+}

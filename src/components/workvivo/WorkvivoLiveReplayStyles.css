@@ -1,0 +1,91 @@
+/* Ported from public/refs/workvivo-live-replay.html — that file is the design source.
+   Classes prefixed lr- to avoid collisions (the mobile home CSS owns wm-, the desktop CSS
+   owns bare names).
+
+   ── Spacing pass against the supplied reference ──────────────────────────────────
+   Scale pinned off the phone body: it measures 593px in a reference whose .lr-phone is
+   393 CSS px, so CSS = image / 1.509. Everything below is that conversion, and the whole
+   screen came in ~25% tight against what was here before:
+
+     LIVE REPLAY pill   28h -> 19h,  14px -> 11px   (measured 85 x 18.6 CSS)
+     title              19px -> 16px               (228 image / 17 chars at 590)
+     header icons       26 -> 20, gap 16 -> 24      (44 centre-to-centre)
+     video               flex:1 -> 178px fixed      (337..605 image)
+     "Chapters"         23px -> 18px
+     close button       46 -> 32
+     chapter thumb      116x78 -> 85x58             (128 x 88 image)
+     row pitch          102 -> 83
+
+   The video was the load-bearing one: at `flex:1` it ate every pixel the sheet did not
+   claim, so the sheet sat at the bottom of an 852px screen instead of at 292. */
+
+/* The bezel: .wv-glass-phone's band showing through this padding. See WorkvivoGlassEdge.css. */
+.lr-phone{width:393px;height:852px;border-radius:44px;padding:16.5px;
+       box-sizing:border-box;
+       font-family:-apple-system,"SF Pro Text","SF Pro Display",
+       "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+.lr-phone *{box-sizing:border-box;margin:0;padding:0}
+.lr-screen{width:100%;height:100%;border-radius:28px;overflow:hidden;background:#000;
+        position:relative;display:flex;flex-direction:column}
+
+/* status bar (host OS chrome — approximated) */
+.lr-status{height:48px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;
+        padding:0 22px 6px;color:#fff}
+.lr-time{font-size:15px;font-weight:590;letter-spacing:.2px}
+.lr-sysico{display:flex;align-items:center;gap:7px}
+.lr-sysico svg{display:block}
+
+/* header */
+.lr-head{flex:none;padding:4px 16px 14px;display:flex;align-items:center;gap:8px;color:#fff}
+.lr-back{width:10px;height:10px;border-left:2px solid #fff;border-bottom:2px solid #fff;
+      transform:rotate(45deg);flex:none;margin-right:4px;cursor:pointer}
+.lr-htx{flex:1}
+.lr-pill{display:inline-flex;align-items:center;height:19px;padding:0 10px;border-radius:10px;
+      background:#EDE3FD;color:#6103ED;font-size:11px;font-weight:700;letter-spacing:.4px}
+.lr-htx h1{font-size:16px;font-weight:590;margin-top:5px;white-space:nowrap}
+.lr-hacts{display:flex;align-items:center;gap:24px;flex:none;align-self:flex-end;
+       padding-bottom:2px}
+.lr-ic{cursor:pointer;color:#fff}
+
+/* Supplied art (public/img/webinar-icon-*.svg), placed as <img> so each file's `.cls-1`
+   stays in its own document — an inlined <svg><style> would apply document-wide and the
+   two would fight. The mute file ships #606060; the reference draws it white, so it is
+   knocked out here rather than edited. */
+.lr-ic img{display:block;width:20px;height:20px}
+.lr-ic .lr-knockout{filter:brightness(0) invert(1)}
+
+/* video */
+.lr-video{flex:none;height:178px;position:relative;overflow:hidden;background:#1E1710}
+.lr-video video,.lr-video img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+
+/* chapters sheet */
+.lr-sheet{flex:1;min-height:0;background:#1B1B1D;padding:16px 12px 20px;overflow:hidden}
+.lr-shead{display:flex;align-items:center;margin:0 4px 14px}
+.lr-shead h2{font-size:18px;font-weight:590;color:#fff}
+.lr-xbtn{margin-left:auto;width:32px;height:32px;border-radius:50%;background:#333336;
+      display:flex;align-items:center;justify-content:center;cursor:pointer}
+.lr-g-x{width:13px;height:13px;position:relative}
+.lr-g-x i{position:absolute;left:0;top:5.6px;width:13px;height:1.8px;background:#E8E9EB;
+       border-radius:2px;display:block}
+.lr-g-x i:nth-child(1){transform:rotate(45deg)}
+.lr-g-x i:nth-child(2){transform:rotate(-45deg)}
+
+.lr-chap{display:flex;align-items:center;gap:12px;padding:8px;border-radius:8px;cursor:pointer}
+.lr-chap.lr-on{background:#303032}
+.lr-thumb{width:85px;height:58px;border-radius:5px;flex:none;display:block;object-fit:cover}
+
+/* The first chapter's tile is a title card rather than a still, so .lr-thumb lands on a
+   container here instead of the <img>. Same 85x58 box; the photo, the scrim that keeps a
+   pale logo legible over a pale shot, and the logo itself stack inside it. `overflow`
+   clips all three to the tile's radius, so nothing needs its own corner rounding. */
+.lr-thumb-title{position:relative;overflow:hidden;background:#1c1c1e}
+.lr-thumb-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.lr-thumb-scrim{position:absolute;inset:0;background:rgba(0,0,0,.45)}
+/* Contained, not covered: a wordmark cropped to fill an 85x58 tile is unreadable, and
+   logos arrive at wildly different aspect ratios. */
+.lr-thumb-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+        width:64px;height:34px;object-fit:contain;object-position:center}
+.lr-ctx{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:6px}
+.lr-cttl{font-size:16px;line-height:21px;white-space:nowrap;font-weight:400;color:#fff}
+.lr-tstamp{background:#3A3A3D;color:#fff;font-size:14px;font-weight:500;border-radius:6px;
+        padding:3px 10px}

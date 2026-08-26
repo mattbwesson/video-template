@@ -1,0 +1,540 @@
+/* Two Workvivo mobile phones on a purple field — Chat on the left, a video call on
+   the right. Every class is prefixed wp- so nothing collides with the mobile library's
+   wm- names, which this scene reuses for the phone shell and status bar.
+
+   Sizes are the mobile library's own: 393x852 shell, 16.5px bezel, 35.5px screen radius,
+   SF Pro. Mobile type runs looser than desktop (~1.5x vs ~1.43x) and that is deliberate,
+   so nothing here is flattened onto the desktop ramp.
+
+   #6103ED stays Workvivo's semantic primary (send, the plus, links). The bubble violet
+   is sampled from the reference, not taken from a token — see the note in the scene. */
+
+.wp-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #0a0421 0%, #170a3c 48%, #2a1173 100%);
+  font-family: -apple-system, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* The halo the phones sit in. Separate from the base gradient so the two can be tuned
+   without one swallowing the other. */
+.wp-stage::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 1500px;
+  height: 1000px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(
+    closest-side,
+    rgba(126, 58, 242, 0.55) 0%,
+    rgba(92, 40, 190, 0.3) 45%,
+    rgba(40, 16, 100, 0) 78%
+  );
+  pointer-events: none;
+}
+
+.wp-pair {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 159px;
+  transform: scale(1.082);
+}
+
+.wp-glow {
+  border-radius: 52px;
+  box-shadow:
+    0 0 90px rgba(150, 96, 255, 0.55),
+    0 34px 90px rgba(6, 2, 24, 0.6);
+}
+
+/* ---------- shared phone chrome ---------- */
+
+.wp-screen-light {
+  background: #ffffff;
+}
+
+/* The library's status-bar glyphs are baked white for dark headers; this screen's bar is
+   light, so they are inverted rather than redrawn. */
+.wp-status-dark {
+  color: #000000;
+}
+
+.wp-status-dark .wm-sysico svg {
+  filter: invert(1);
+}
+
+.wp-home {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  width: 134px;
+  height: 5px;
+  border-radius: 9999px;
+  transform: translateX(-50%);
+}
+
+/* ---------- left phone: chat ---------- */
+
+.wp-chat {
+  position: absolute;
+  inset: 54px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+}
+
+.wp-chat-head {
+  height: 58px;
+  flex: none;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-bottom: 1px solid #f0f0f3;
+}
+
+.wp-chev-back {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-left: 1.8px solid currentColor;
+  border-bottom: 1.8px solid currentColor;
+  transform: rotate(45deg);
+}
+
+.wp-chat-head .wp-back {
+  color: #8b8b95;
+  flex: none;
+}
+
+.wp-chat-av {
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wp-chat-id {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wp-chat-t {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 590;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.wp-chat-s {
+  font-size: 11px;
+  line-height: 15px;
+  color: #9ca3af;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.wp-chat-acts {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: #6103ed;
+  flex: none;
+}
+
+.wp-thread {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 10px 14px 4px;
+  display: flex;
+  flex-direction: column;
+  /* Anchored to the bottom, the way a thread sits when it is scrolled to the newest
+     message — top-aligned left a dead band above the composer. */
+  justify-content: flex-end;
+  gap: 9px;
+  overflow: hidden;
+}
+
+/* Bubbles */
+
+.wp-out {
+  align-self: flex-end;
+  max-width: 74%;
+  padding: 7px 12px;
+  position: relative;
+  border-radius: 16px;
+  background: var(--wp-bubble, #7b3fe8);
+  color: #ffffff;
+  font-size: 12.5px;
+  line-height: 17px;
+}
+
+.wp-out::after {
+  content: "";
+  position: absolute;
+  right: -5px;
+  bottom: 0;
+  width: 13px;
+  height: 15px;
+  background: var(--wp-bubble, #7b3fe8);
+  clip-path: polygon(0 0, 100% 100%, 0 100%);
+  border-bottom-left-radius: 12px;
+}
+
+.wp-sender {
+  font-size: 10.5px;
+  line-height: 14px;
+  color: #9ca3af;
+  margin-left: 2px;
+}
+
+.wp-grid {
+  align-self: flex-start;
+  width: 275px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.wp-grid img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  display: block;
+}
+
+.wp-grid-more {
+  position: relative;
+}
+
+.wp-grid-more span {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ffffff;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.wp-in-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.wp-in-av {
+  width: 20px;
+  height: 20px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wp-in {
+  max-width: 80%;
+  padding: 7px 11px;
+  border-radius: 14px 14px 14px 4px;
+  background: #ffffff;
+  border: 1px solid #ececf1;
+  color: #111827;
+  font-size: 12.5px;
+  line-height: 17px;
+}
+
+.wp-reacts {
+  margin-left: 26px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wp-react {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #ececf1;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10.5px;
+  line-height: 14px;
+  color: #4b5563;
+}
+
+.wp-react-add {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #ffffff;
+  border: 1px solid #ececf1;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: #9ca3af;
+}
+
+/* Catch-up strip */
+
+.wp-catchup {
+  flex: none;
+  margin: 0 12px 8px;
+  height: 34px;
+  padding: 0 5px 0 12px;
+  border-radius: 9px;
+  background: #f2f1f7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.wp-catchup-t {
+  font-size: 11.5px;
+  line-height: 15px;
+  color: #4b5563;
+}
+
+.wp-summarize {
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  background: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  line-height: 15px;
+  font-weight: 500;
+  color: #4e03be;
+}
+
+.wp-summarize svg {
+  color: #6103ed;
+  flex: none;
+}
+
+/* Composer */
+
+.wp-composer {
+  flex: none;
+  height: 52px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wp-plus {
+  width: 22px;
+  height: 22px;
+  position: relative;
+  flex: none;
+}
+
+.wp-plus i {
+  position: absolute;
+  background: #6103ed;
+  border-radius: 2px;
+}
+
+.wp-plus i:nth-child(1) {
+  left: 2px;
+  top: 10px;
+  width: 18px;
+  height: 2px;
+}
+
+.wp-plus i:nth-child(2) {
+  left: 10px;
+  top: 2px;
+  width: 2px;
+  height: 18px;
+}
+
+.wp-field {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  border: 1px solid #ececf1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wp-field span {
+  flex: 1 1 0;
+  font-size: 12.5px;
+  color: #9ca3af;
+}
+
+.wp-field .wp-mic {
+  color: #9ca3af;
+  flex: none;
+}
+
+.wp-send {
+  color: #6103ed;
+  flex: none;
+}
+
+/* ---------- right phone: video call ---------- */
+
+.wp-call {
+  position: absolute;
+  inset: 0;
+  background: #101014;
+  display: flex;
+  flex-direction: column;
+}
+
+.wp-call-video {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.wp-call-video video,
+.wp-call-video img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The recording chip the OS draws behind the clock during a call. */
+.wp-status-call .wm-time {
+  padding: 2px 8px;
+  border-radius: 9999px;
+  background: #30d158;
+  color: #ffffff;
+}
+
+.wp-call-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 54px;
+  height: 44px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+}
+
+.wp-call-title {
+  flex: 1 1 0;
+  text-align: center;
+  font-size: 12.5px;
+  line-height: 17px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wp-leave {
+  height: 24px;
+  padding: 0 12px;
+  border-radius: 6px;
+  background: #e8453c;
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #ffffff;
+  flex: none;
+}
+
+.wp-pip {
+  position: absolute;
+  right: 12px;
+  bottom: 92px;
+  width: 78px;
+  height: 108px;
+  border-radius: 9px;
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  background: #2a2733;
+}
+
+.wp-pip video,
+.wp-pip img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wp-call-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 82px;
+  padding: 12px 6px 0;
+  background: #26232f;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-around;
+}
+
+.wp-ctl {
+  width: 66px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #ffffff;
+}
+
+.wp-ctl-ico {
+  position: relative;
+  width: 26px;
+  height: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wp-ctl span {
+  font-size: 10.5px;
+  line-height: 14px;
+  color: #ffffff;
+}
+
+.wp-badge {
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  min-width: 14px;
+  height: 14px;
+  padding: 0 3px;
+  border-radius: 9999px;
+  background: #e8453c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  line-height: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}

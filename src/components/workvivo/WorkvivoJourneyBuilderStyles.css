@@ -1,0 +1,141 @@
+/* Workvivo Journeys builder — the phone preview flanked by two columns of draggable
+   step cards.
+   Prefixed `wjb-` per docs/PORTING-HTML-REFS.md.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   The supplied Figma CSS for the phone is a scaled nested frame; the factor is 1.0534
+   and dividing by it lands the whole set on whole points against a 393pt frame — the
+   mobile frame Workvivo's own tokens document:
+
+     413.54 -> 393   377.95 -> 359    50.25 -> 48    33.50 -> 32    28.27 -> 27
+      25.13 -> 24     21.99 -> 21     18.85 -> 18    16.75 -> 16    14.66 -> 14
+      12.56 -> 12     10.47 -> 10      8.38 ->  8
+
+   So the phone is authored at 393pt in SF Pro, per the platform split — mobile is SF
+   Pro, desktop is Inter. The builder around it is desktop chrome and stays Inter. */
+
+/* --- the board ----------------------------------------------------------------- */
+
+.wjb-board {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 53px;
+  background: #e10a0a;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+.wjb-col {
+  width: 591px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 27px;
+}
+
+/* --- a step card ---------------------------------------------------------------- */
+
+/* Translucent white rather than a mixed pink: the card has to sit on whatever backdrop
+   the tenant's brand colour gives it, and 72% white over any hue lands in the right
+   place on its own. */
+.wjb-card {
+  height: 130px;
+  padding: 0 25px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  background: rgba(255, 255, 255, 0.72);
+  border-radius: 18px;
+  box-sizing: border-box;
+}
+
+.wjb-card-tile {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6103ed;
+}
+
+.wjb-card-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.wjb-card-title {
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 600;
+  color: #1b1d22;
+  margin-bottom: 2px;
+}
+
+.wjb-card-sub {
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 400;
+  color: #3f3f46;
+}
+
+/* The drag affordance: two columns of three dots. Plain geometry, not a library glyph. */
+.wjb-grip {
+  flex: none;
+  display: grid;
+  grid-template-columns: repeat(2, 6px);
+  gap: 6px;
+}
+
+.wjb-grip i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(17, 24, 39, 0.28);
+  display: block;
+}
+
+/* Placeholder for a glyph the Workvivo icon library does not carry. Deliberately flat
+   and unbranded — an invented mark is the failure that ships unnoticed. */
+.wjb-glyph-missing {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 1.5px dashed #9d7ad6;
+  background: rgba(97, 3, 237, 0.06);
+}
+
+/* --- the device ----------------------------------------------------------------- */
+
+.wjb-phone {
+  position: relative;
+  flex: none;
+  width: 445px;
+  height: 952px;
+  padding: 10px;
+  border-radius: 46px;
+  box-sizing: border-box;
+}
+
+.wjb-screen {
+  width: 425px;
+  height: 932px;
+  border-radius: 38px;
+  overflow: hidden;
+  background: #f7f7f7;
+}
+
+/* 393pt of design scaled to the 425px screen. One transform, applied once, so every
+   number inside the phone stays in design points. */
+.wjb-scaler {
+  width: 393px;
+  transform: scale(1.0814);
+  transform-origin: top left;
+}

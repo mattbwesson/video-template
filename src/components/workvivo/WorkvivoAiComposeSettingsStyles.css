@@ -1,0 +1,52 @@
+/* Ported from public/refs/workvivo-ai-compose-settings.html — that file is the design
+   source. Classes prefixed acs-; values copied verbatim. Edit the ref first, then mirror. */
+
+.acs-panel{width:880px;background:#fff;border-radius:18px;padding:38px 44px 44px;
+       box-shadow:0 26px 80px rgba(0,0,0,.4);box-sizing:border-box;
+       font-family:Inter,-apple-system,"Segoe UI",Helvetica,Arial,sans-serif;
+       -webkit-font-smoothing:antialiased}
+.acs-panel *{box-sizing:border-box;margin:0;padding:0}
+.acs-panel a{text-decoration:none}
+
+/* purple-ises a glyph whose stroke colour is baked into the source */
+.acs-toPurple{filter:brightness(0) saturate(100%) invert(13%) sepia(97%) saturate(7237%)
+                 hue-rotate(272deg) brightness(97%) contrast(125%)}
+
+.acs-phead{display:flex;align-items:center;gap:20px;margin-bottom:38px}
+.acs-phead h1{font-size:27px;font-weight:700;color:#111827;letter-spacing:-.3px}
+
+.acs-panel h2{font-size:24px;font-weight:700;color:#111827;margin-bottom:10px}
+.acs-lede{font-size:19px;line-height:28px;color:#6B7280;margin-bottom:34px}
+
+.acs-row{display:flex;align-items:flex-start;gap:24px;padding:0 0 30px}
+.acs-row .acs-tx{flex:1;max-width:560px}
+.acs-row h3{font-size:19px;line-height:28px;font-weight:700;color:#111827;margin-bottom:4px}
+.acs-row p{font-size:18px;line-height:28px;color:#6B7280}
+.acs-row p a{color:#6103ED;font-weight:500}
+.acs-sub{padding-left:52px;position:relative}
+.acs-sub .acs-spark{position:absolute;left:0;top:34px}
+
+/* toggle */
+.acs-tog{width:62px;height:34px;border-radius:17px;background:#C4C7CC;display:block;
+     position:relative;flex:none;cursor:pointer}
+.acs-tog:after{content:"";position:absolute;top:3px;left:3px;width:28px;height:28px;
+           border-radius:50%;background:#fff;
+           box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.acs-tog.acs-on{background:#6103ED}
+.acs-tog.acs-on:after{left:31px}
+.acs-row .acs-tog{margin-top:20px}
+
+/* profiles table */
+.acs-addwrap{display:flex;justify-content:flex-end;margin:6px 0 22px}
+.acs-add{height:52px;padding:0 30px;border-radius:26px;border:1px solid #E5E7EB;background:#fff;
+     color:#6103ED;font-size:19px;font-weight:600;cursor:pointer;font-family:inherit}
+.acs-table{border:1px solid #EDEEF0;border-radius:12px;overflow:hidden}
+.acs-thead,.acs-trow{display:grid;grid-template-columns:1fr 200px 60px;align-items:center}
+.acs-thead{background:#FAFAFB;padding:20px 26px;font-size:19px;font-weight:700;color:#111827;
+       border-bottom:1px solid #EDEEF0}
+.acs-trow{padding:22px 26px}
+.acs-trow + .acs-trow{border-top:1px solid #EDEEF0}
+.acs-pname{font-size:20px;font-weight:500;color:#6103ED;cursor:pointer}
+.acs-cell{display:flex;justify-content:flex-start}
+.acs-kebab{display:flex;gap:5px;justify-content:flex-end;cursor:pointer}
+.acs-kebab i{width:7px;height:7px;border-radius:50%;background:#6103ED;display:block}

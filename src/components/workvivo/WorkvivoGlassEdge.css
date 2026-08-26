@@ -1,0 +1,101 @@
+/* One glass edge for every device frame — desktop windows and phone bezels alike.
+ *
+ * Two concentric parts, both translucent and both on a gradient:
+ *   BAND   — the thick body of the bezel. Still mostly background: under half white at the
+ *            lit corner, falling off from there, so the field colour reads through it (pink
+ *            on the Virgin red, mint on the green, periwinkle on the navy).
+ *   STROKE — a bright near-white hairline tracing the band's OUTER edge, fading around the
+ *            frame on the same axis.
+ * Both fade from lit at the top-left to nearly nothing at the bottom-right, as though one
+ * light source were raking across the device. A flat band reads as painted plastic; the
+ * falloff is what makes it read as glass.
+ */
+:root {
+  --wv-glass-band: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.36) 0%,
+    rgba(255, 255, 255, 0.19) 45%,
+    rgba(255, 255, 255, 0.08) 100%
+  );
+  --wv-glass-stroke: linear-gradient(
+    155deg,
+    rgba(255, 255, 255, 0.82) 0%,
+    rgba(255, 255, 255, 0.44) 50%,
+    rgba(255, 255, 255, 0.20) 100%
+  );
+
+  /* Band thickness for desktop frames: twice as big (21px band, 3.75px stroke).
+     Mobile phones set their own bezel padding and use 1.875px hairline stroke. */
+  --wv-glass-width: 21px;
+  --wv-glass-stroke-width: 3.75px;
+  /* Per-frame outer corner radius, so the rings can be sized OUT from it. Overridden by each
+     host; this default only keeps the rule valid if one forgets. */
+  --wv-glass-radius: 14px;
+}
+
+/* HOW THE RINGS ARE BUILT — and why there is no mask here any more.
+ *
+ * The first construction punched each ring's middle out with a two-layer mask
+ * (`mask-composite: exclude`). That is the one part of this file the in-browser export
+ * cannot draw: @remotion/web-renderer ignores the mask, the pseudo-element paints its
+ * whole box, and every device came out wearing a translucent veil over its own screen
+ * (docs/browser-render-best-practices.md §5). Everything else here — translucent
+ * linear-gradients, rounded borders — is plain box painting that renders everywhere.
+ *
+ * So the rings are now built from exactly those two primitives:
+ *
+ *   BAND   — a single ::before, inset past the frame on every side, FILLED with the band
+ *            gradient. No punch-out: the frame's own content is opaque and paints over
+ *            the middle (pseudo-elements that precede children render beneath them, by
+ *            DOM order — which is also the only stacking rule the export honours).
+ *   STROKE — a real `border` on that same ::before, solid translucent white. A border
+ *            cannot carry a gradient, so the hairline loses its lit-corner falloff; at
+ *            2-4px against the still-graded band, that is the whole cost of being
+ *            export-safe.
+ */
+
+/* ---- frames with no bezel of their own: the desktop windows ---------------------------- */
+/* Ring drawn OUTSIDE the box, so it costs no layout (these frames are pixel-measured and a
+ * real border on the frame would eat into the content box under `box-sizing: border-box`).
+ * The host must NOT clip: `overflow: hidden` would cut away a ring drawn outside it. Both
+ * WorkvivoDesktop and the desktop home render a non-clipping wrapper for exactly this
+ * reason.
+ *
+ * REQUIREMENT the mask version did not have: the framed content must be opaque, because
+ * the band's fill runs underneath it. Every current host is (they are app windows on
+ * white). A translucent host would show the band through itself — if one ever appears,
+ * give it an opaque backing, not a mask. */
+.wv-glass-edge {
+  position: relative;
+}
+
+.wv-glass-edge::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: calc(-1 * (var(--wv-glass-width) + var(--wv-glass-stroke-width)));
+  border: var(--wv-glass-stroke-width) solid rgba(255, 255, 255, 0.55);
+  border-radius: calc(
+    var(--wv-glass-radius) + var(--wv-glass-width) + var(--wv-glass-stroke-width)
+  );
+  background: var(--wv-glass-band) padding-box;
+}
+
+/* ---- the phones ------------------------------------------------------------------------ */
+/* A phone already has a bezel — its padding with this background showing through — so the
+ * band is simply the root's background, exactly as before. Only the stroke changed: from a
+ * masked gradient ring to a plain translucent border at the same inset, transparent in the
+ * middle, so nothing new paints over the screen in any renderer. */
+.wv-glass-phone {
+  position: relative;
+  background: var(--wv-glass-band) border-box;
+}
+
+.wv-glass-phone::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1.875px solid rgba(255, 255, 255, 0.55);
+  border-radius: inherit;
+}

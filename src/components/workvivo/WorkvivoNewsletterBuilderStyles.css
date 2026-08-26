@@ -1,0 +1,276 @@
+/* Workvivo newsletter builder — component palette, canvas and save bar, on the tenant
+   brand field. Every class is prefixed wnb- per the folder convention in README.md.
+
+   Built at a natural desktop scale (280px sidebar, 12-13px UI type) and scaled once by
+   the scene wrapper, rather than authored at final pixel sizes. That keeps every value
+   on the 4px grid and readable instead of a list of scale artifacts.
+
+   #6103ED is Workvivo's semantic primary — palette glyphs, the active tab, the Button
+   block, Save as Draft. The red field is the per-tenant brand slot and comes in through
+   --wnb-brand; it is never used for a control. */
+
+.wnb-stage {
+  position: relative;
+  overflow: hidden;
+  background: var(--wnb-brand, #e30613);
+  font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.wnb-stage img {
+  display: block;
+}
+
+/* ---------- component palette ---------- */
+
+.wnb-palette {
+  position: absolute;
+  left: 66px;
+  top: 49px;
+  width: 280px;
+  padding: 14px;
+  background: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Segmented control — a light track with the active pill lifted out of it in white. */
+.wnb-seg {
+  width: 172px;
+  height: 32px;
+  padding: 3px;
+  background: #f1f2f4;
+  border-radius: 8px;
+  display: flex;
+  gap: 2px;
+}
+
+.wnb-seg > div {
+  flex: 1 1 0;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.wnb-seg > div.is-on {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+  color: #6103ed;
+}
+
+.wnb-sec {
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wnb-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+/* Flat white on a hairline border — the Workvivo card treatment, not a shadow. */
+.wnb-item {
+  height: 30px;
+  padding: 0 8px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  line-height: 15px;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.wnb-item svg {
+  color: #6103ed;
+  flex: none;
+}
+
+/* ---------- editor ---------- */
+
+/* Bleeds past the stage on the right and bottom, as in the reference — the builder is a
+   full-height surface and the frame is a crop of it. */
+.wnb-editor {
+  position: absolute;
+  left: 360px;
+  top: 49px;
+  width: 1000px;
+  height: 720px;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.wnb-toolbar {
+  flex: none;
+  height: 44px;
+  padding: 0 30px;
+  border-bottom: 1px solid #eeeff1;
+  display: flex;
+  align-items: center;
+}
+
+/* The content column the toolbar and the canvas share. The preview sits centred in this,
+   not in the panel, which is why it reads left of the panel's own centre. */
+.wnb-col {
+  width: 630px;
+  margin: 0 auto 0 26px;
+  display: flex;
+  align-items: center;
+}
+
+.wnb-tools {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #6b7280;
+}
+
+.wnb-canvas {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 22px 0 0;
+  overflow: hidden;
+}
+
+/* ---------- email preview ---------- */
+
+.wnb-preview {
+  width: 466px;
+  margin-left: 108px;
+  border: 1px solid #e9eaec;
+  border-radius: 2px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.wnb-spacer {
+  height: 20px;
+  background: #f4f5f6;
+  border-bottom: 1px solid #e9eaec;
+}
+
+.wnb-block {
+  border-bottom: 1px solid #e9eaec;
+}
+
+/* Placeholder art. The peach fill and its icon are the builder's empty-image state, not
+   photography — an unfilled Image block looks exactly like this. */
+.wnb-ph {
+  background: #fce6cd;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #f0994a;
+}
+
+.wnb-ph-hero {
+  height: 152px;
+}
+
+.wnb-h1 {
+  padding: 22px 24px;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.wnb-row {
+  display: flex;
+  border-bottom: 1px solid #e9eaec;
+}
+
+.wnb-cell {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.wnb-cell + .wnb-cell {
+  border-left: 1px solid #e9eaec;
+}
+
+.wnb-cell .wnb-ph {
+  height: 148px;
+  border-radius: 2px;
+}
+
+.wnb-h2 {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.wnb-body {
+  font-size: 11.5px;
+  line-height: 16.5px;
+  color: #4b5563;
+}
+
+/* Pill button, radius 20 at this height — the Workvivo default button shape. */
+.wnb-btn {
+  align-self: flex-start;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #6103ed;
+  font-size: 11.5px;
+  line-height: 15px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+/* ---------- save bar ---------- */
+
+.wnb-save {
+  position: absolute;
+  right: 54px;
+  bottom: 40px;
+  padding: 10px 12px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.14);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wnb-save-primary {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #6103ed;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.wnb-save-ghost {
+  padding: 8px 14px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #374151;
+}

@@ -1,0 +1,177 @@
+/* Workvivo Integrations List — full-bleed grid on brand field */
+
+.wil-stage {
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  overflow: hidden;
+  background: var(--wil-brand, #d40000);
+  font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #1f2328;
+}
+
+.wil-row {
+  position: absolute;
+  left: 0;
+  width: max-content;
+  display: flex;
+  gap: 32px;
+}
+
+.wil-row-top {
+  top: 60px;
+  left: 0;
+}
+
+.wil-row-bottom {
+  top: 570px;
+  left: 0;
+}
+
+.wil-card {
+  width: 415px;
+  height: 460px;
+  flex: none;
+  padding: 30px 26px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- category chip ---------- */
+
+.wil-chip {
+  align-self: flex-start;
+  padding: 5px 16px;
+  border-radius: 20px;
+  font-size: 14.5px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.wil-chip-productivity {
+  background: #fef08a;
+  color: #854d0e;
+}
+
+.wil-chip-calendar {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+/* ---------- head: logo + name ---------- */
+
+.wil-card-head {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.wil-logo {
+  width: 60px;
+  height: 60px;
+  flex: none;
+  border-radius: 14px;
+  overflow: hidden;
+  display: block;
+  object-fit: contain;
+}
+
+.wil-card-name {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---------- tags row ---------- */
+
+.wil-tags {
+  margin-top: 22px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #6103ed;
+  width: 100%;
+}
+
+.wil-tags svg {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+}
+
+.wil-tags span {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #6103ed;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---------- description ---------- */
+
+.wil-desc {
+  margin-top: 14px;
+  font-size: 19.5px;
+  line-height: 28px;
+  color: #4b5563;
+  overflow: hidden;
+}
+
+/* ---------- actions ---------- */
+
+.wil-actions {
+  margin-top: auto;
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.wil-actions-end {
+  justify-content: flex-end;
+}
+
+.wil-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 20px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.wil-btn {
+  padding: 9px 24px;
+  border-radius: 20px;
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+}
+
+.wil-btn-outline {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  color: #6103ed;
+  margin-left: auto;
+}
+
+.wil-btn-solid {
+  background: #6103ed;
+  color: #ffffff;
+}

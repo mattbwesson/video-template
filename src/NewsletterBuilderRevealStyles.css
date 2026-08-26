@@ -1,0 +1,40 @@
+/* Entrance for WorkvivoNewsletterBuilder's three panels.
+   Prefixed `nbr-`; the `wnb-` selectors below are the builder's own and are only ever
+   reached through .nbr-stage, so nothing here touches the component anywhere else it is
+   used.
+
+   The rules live here rather than as an `enter` prop on the component because the builder
+   is shared and this is one scene's staging — the same reason WorkvivoSpaces has no
+   interaction state and the click ring in SpacesRevealScene is drawn over it instead.
+
+   Each panel reads its own custom property, set per frame by the scene. Transform and
+   opacity only, so nothing reflows while they travel. */
+
+.nbr-stage .wnb-palette {
+  transform: translateY(var(--nbr-palette-y, 0px));
+  opacity: var(--nbr-palette-o, 1);
+  will-change: transform;
+}
+
+.nbr-stage .wnb-editor {
+  transform: translateY(var(--nbr-editor-y, 0px));
+  opacity: var(--nbr-editor-o, 1);
+  will-change: transform;
+}
+
+.nbr-stage .wnb-save {
+  transform: translateY(var(--nbr-save-y, 0px));
+  opacity: var(--nbr-save-o, 1);
+  will-change: transform;
+}
+
+/* The builder's own .wnb-editor is 1000px at left 360 in a 1299 stage, i.e. it deliberately
+   bleeds 61px off the right — its comment calls that out as matching the reference it was
+   built from. This shot's reference has it contained instead, ending around 78% across, so
+   it is reined in here rather than in the component: 360 + 653 = 1013 = 78% of 1299.
+
+   660 rather than 653 because .wnb-col is 630 wide with a 26px left margin — 656 — and
+   anything narrower starts clipping the editor's own content column. */
+.nbr-stage .wnb-editor {
+  width: 660px;
+}

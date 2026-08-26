@@ -6,19 +6,38 @@
     "dev": "remotion studio",
     "start": "remotion studio",
     "build": "remotion bundle",
-    "render": "remotion render"
+    "render": "remotion render",
+    "render:project": "node scripts/render-local.mjs",
+    "still": "node scripts/still.mjs",
+    "wizard": "node scripts/dev.mjs",
+    "gallery": "vite --config vite.gallery.config.ts",
+    "gallery:build": "vite build --config vite.gallery.config.ts",
+    "wizard:build": "vite build",
+    "typecheck": "tsc --noEmit",
+    "trust-proxy-ca": "node scripts/trust-proxy-ca.mjs",
+    "build:server": "node scripts/build-server.mjs",
+    "build:deploy": "npm run wizard:build && npm run build:server"
   },
   "dependencies": {
-    "@remotion/bundler": "^4.0.0",
-    "@remotion/cli": "^4.0.0",
-    "@remotion/google-fonts": "^4.0.0",
+    "@remotion/bundler": "4.0.496",
+    "@remotion/cli": "4.0.496",
+    "@remotion/google-fonts": "4.0.496",
+    "@remotion/media": "4.0.496",
+    "@remotion/motion-blur": "4.0.496",
+    "@remotion/player": "4.0.496",
+    "@remotion/transitions": "4.0.496",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "remotion": "^4.0.0",
+    "remotion": "4.0.496",
+    "sirv": "^2.0.4",
     "zm-motion": "github:mattbwesson/zm-motion"
   },
   "devDependencies": {
+    "@types/node": "^26.2.0",
     "@types/react": "^18.2.0",
-    "typescript": "^5.0.0"
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^4.7.0",
+    "typescript": "^5.0.0",
+    "vite": "^5.4.21"
   }
 }

@@ -1,0 +1,40 @@
+app = "l2-concept"
+primary_region = "iad"
+
+[build]
+
+[env]
+  PORT = "8080"
+  # Enforce the API_KEY guard regardless of what the connection looks like. Behind
+  # fly-proxy the request does not arrive on loopback today, but the guard should not
+  # depend on that staying true — see server/env.ts.
+  REQUIRE_API_KEY = "1"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  # Zero, deliberately. This is a demo that is idle most of the time, and a cold start is
+  # a couple of seconds against a 30 MB image. Paying for an always-on machine to save
+  # that is the wrong trade.
+  min_machines_running = 0
+
+  [http_service.http_options.response.headers]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+
+  [[http_service.checks]]
+    grace_period = "5s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/healthz"
+
+[[vm]]
+  # The server streams files and shells out to nothing; the work is all in the OpenAI
+  # call, which is spent waiting on the network. 512 MB is comfortable for that plus the
+  # Node baseline.
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

@@ -1,0 +1,564 @@
+/* Workvivo Billboards — the full-screen digital-signage display.
+   Every class is prefixed wbb- so nothing collides with WorkvivoStyles.css (which owns
+   the bare .billboards/.bb names for the in-feed billboard row), wvd- or wsp-.
+
+   The two story cards use the supplied Figma geometry verbatim: the large story is
+   1259.82 x 421.37 with a 621.05 x 415.36 media well inset at (2.98, 1.98) and rounded
+   on its left corners only; the smaller story is 465.42 x 221 with a 459.44 x 150.49
+   well inset at (2.99, 1.99) and rounded across the top. Those ~3px insets are what give
+   both cards their white hairline frame around the photo — they are not padding.
+
+   The screen size is derived, not measured: the large story's 1259.82 is the content
+   width, which at the reference's margins puts the frame at 1320 x 742 (16:9).
+
+   #6103ED stays Workvivo's semantic primary (links, the translated-from line, chip text).
+   The red is the per-tenant brand slot and is driven by --wbb-brand. */
+
+.wbb-frame {
+  position: relative;
+  width: 1320px;
+  height: 742px;
+  overflow: hidden;
+  border-radius: 14px;
+  background: radial-gradient(
+    130% 100% at 50% 0%,
+    var(--wbb-brand-lit, #e2231a) 0%,
+    var(--wbb-brand, #bd1420) 55%,
+    var(--wbb-brand-dark, #8d0f18) 100%
+  );
+  font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+  display: flex;
+  flex-direction: column;
+}
+
+.wbb-frame img {
+  display: block;
+}
+
+/* ---------- top bar ---------- */
+
+.wbb-top {
+  height: 52px;
+  flex: none;
+  padding: 0 30px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  color: #ffffff;
+}
+
+.wbb-logo img {
+  height: 26px;
+  width: auto;
+  max-width: 150px;
+  object-fit: contain;
+}
+
+.wbb-clock {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 15px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.wbb-clock b {
+  font-weight: 600;
+}
+
+.wbb-clock span {
+  font-weight: 400;
+  opacity: 0.92;
+}
+
+.wbb-weather {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  line-height: 18px;
+  white-space: nowrap;
+}
+
+.wbb-weather img {
+  width: 18px;
+  height: 18px;
+}
+
+.wbb-weather .wbb-sep {
+  opacity: 0.55;
+}
+
+/* ---------- layout ---------- */
+
+.wbb-body {
+  flex: 1 1 auto;
+  padding: 6px 30px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wbb-row {
+  height: 221px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ---------- large story ---------- */
+
+.wbb-hero {
+  width: 1259.82px;
+  height: 421.37px;
+  flex: none;
+  background: #ffffff;
+  border-radius: 9.94px;
+  overflow: hidden;
+  display: flex;
+}
+
+.wbb-hero-media {
+  width: 621.05px;
+  height: 415.36px;
+  margin: 1.98px 0 4.03px 2.98px;
+  border-radius: 9.94px 0 0 9.94px;
+  overflow: hidden;
+  background: #d9d9d9;
+  position: relative;
+  flex: none;
+}
+
+.wbb-hero-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Nudged past the source photo's own light top edge, which cover leaves in frame
+     because the well is taller-proportioned than the file. */
+  transform: scale(1.05);
+}
+
+/* The carousel pager that sits over the bottom-right of the photo. */
+.wbb-pager {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  height: 16px;
+  padding: 0 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wbb-pager i {
+  width: 5px;
+  height: 5px;
+  border-radius: 9999px;
+  background: #d1d5db;
+}
+
+.wbb-pager i.is-on {
+  background: #6b7280;
+}
+
+.wbb-hero-body {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.wbb-author {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wbb-author img {
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wbb-author-line {
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #111827;
+}
+
+.wbb-author-line b {
+  font-weight: 600;
+}
+
+.wbb-author-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  color: #9ca3af;
+}
+
+.wbb-author-meta svg {
+  color: #9ca3af;
+  flex: none;
+}
+
+.wbb-translated {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #6103ed;
+}
+
+.wbb-translated img {
+  width: 15px;
+  height: 15px;
+}
+
+.wbb-hero-text {
+  font-size: 15px;
+  line-height: 23px;
+  color: #111827;
+}
+
+.wbb-hero-text p {
+  margin: 0;
+}
+
+.wbb-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.wbb-vlabel {
+  font-size: 13px;
+  line-height: 18px;
+  color: #9ca3af;
+}
+
+/* Tinted chip — #F0E6FE fill with #4E03BE text is the Workvivo tinted-button pair. */
+.wbb-chip {
+  height: 28px;
+  padding: 0 12px;
+  background: #f0e6fe;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #4e03be;
+}
+
+.wbb-chip img {
+  width: 14px;
+  height: 14px;
+}
+
+.wbb-comments {
+  font-size: 13px;
+  line-height: 18px;
+  color: #6b7280;
+}
+
+.wbb-reacts {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wbb-react {
+  height: 30px;
+  padding: 0 12px;
+  background: #f3f4f6;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  line-height: 18px;
+  color: #212529;
+}
+
+/* ---------- smaller story / event card ---------- */
+
+.wbb-card {
+  width: 465.42px;
+  height: 221px;
+  flex: none;
+  background: #ffffff;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.wbb-card-media {
+  width: 459.44px;
+  height: 150.49px;
+  margin: 1.99px 0 0 2.99px;
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  background: #d9d9d9;
+  position: relative;
+}
+
+.wbb-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Positioned against the well, so the export's (27, 23) loses the well's own inset. */
+.wbb-tag {
+  position: absolute;
+  left: 24.01px;
+  top: 21.01px;
+  padding: 2.03px 10.17px;
+  background: #f0e6fe;
+  border-radius: 10.17px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: 12.21px;
+  font-weight: 500;
+  line-height: 16.27px;
+  color: #00031f;
+}
+
+.wbb-card-body {
+  height: 68.52px;
+  padding: 9px 14px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.wbb-card-title {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.wbb-card-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.wbb-card-meta {
+  font-size: 12px;
+  line-height: 16px;
+  color: #9ca3af;
+}
+
+.wbb-byline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #6b7280;
+}
+
+.wbb-byline img {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  object-fit: cover;
+}
+
+/* Event card body — date block beside the title and its two meta rows. */
+.wbb-event-body {
+  height: 68.52px;
+  padding: 9px 14px 10px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wbb-date {
+  width: 36px;
+  flex: none;
+  text-align: center;
+}
+
+.wbb-date-m {
+  font-size: 10px;
+  line-height: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: #9ca3af;
+  text-transform: uppercase;
+}
+
+.wbb-date-d {
+  font-size: 21px;
+  line-height: 25px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wbb-event-copy {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wbb-event-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  color: #6b7280;
+}
+
+.wbb-event-meta span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wbb-event-meta svg {
+  color: #9ca3af;
+  flex: none;
+}
+
+/* ---------- right-hand column ---------- */
+
+.wbb-side {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Translucent panel rather than a white card — it reads as part of the brand field. */
+.wbb-anniv {
+  flex: 1 1 0;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #ffffff;
+}
+
+.wbb-anniv img {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  object-fit: cover;
+  flex: none;
+}
+
+.wbb-anniv-name {
+  font-size: 14px;
+  line-height: 19px;
+  font-weight: 600;
+}
+
+.wbb-anniv-copy {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 400;
+  opacity: 0.95;
+}
+
+.wbb-qr {
+  flex: 1 1 0;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.wbb-qr-copy {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wbb-qr-t {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wbb-qr-url {
+  font-size: 9px;
+  line-height: 12px;
+  color: #6b7280;
+  word-break: break-all;
+}
+
+/* Placeholder, not a scannable code — see the note in WorkvivoBillboardScreen.tsx. */
+.wbb-qr-code {
+  width: 62px;
+  height: 62px;
+  flex: none;
+  position: relative;
+  background-color: #ffffff;
+  background-image: repeating-linear-gradient(
+      90deg,
+      #111827 0 4px,
+      transparent 4px 8px
+    ),
+    repeating-linear-gradient(0deg, #111827 0 4px, transparent 4px 12px);
+  background-size: 8px 12px;
+  outline: 1px solid #111827;
+  outline-offset: -1px;
+}
+
+.wbb-qr-code i {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 4px solid #111827;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 3px #ffffff;
+}
+
+.wbb-qr-code i:nth-child(1) {
+  left: 2px;
+  top: 2px;
+}
+
+.wbb-qr-code i:nth-child(2) {
+  right: 2px;
+  top: 2px;
+}
+
+.wbb-qr-code i:nth-child(3) {
+  left: 2px;
+  bottom: 2px;
+}

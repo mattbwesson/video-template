@@ -1,0 +1,361 @@
+/* Seer Insights — the Comments tab. Prefixed `wsi-` per docs/PORTING-HTML-REFS.md.
+
+   Only the page below the tab strip is here. The device box, top bar, rail and page head
+   (title, Manage button, tabs) come from WorkvivoSeerChrome /
+   WorkvivoSeerChromeStyles.css, shared verbatim with the other two Seer screens — which
+   also swept away this file's own 1481-wide shell and the .tsearch/.tacts re-anchoring
+   it needed.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   Content was measured 1:1 off a 1481-wide reference, whose main column is 1424 wide.
+   Those numbers are KEPT rather than re-measured: .wsi-page lays out at 1424 and scales
+   by 1376 / 1424 = 0.9663 to fill the chrome's main box, so nothing below needed
+   converting.
+
+   Seer's accent is orange and arrives through `--wsi-accent` rather than being hardcoded,
+   because the deck drives it from the customer-brand override. It is #ee6a35 here, the
+   chrome's own value, so the pills and count badges match the Manage button exactly. */
+
+.wsi-page {
+  --wsi-accent: #ee6a35;
+  --wsi-accent-soft: #fef0ea;
+  --wsi-ink: #1a2540;
+  --wsi-body: #4b5563;
+  --wsi-muted: #9aa0a8;
+  --wsi-line: #eceef1;
+  --wsi-pill: #f2f3f5;
+  --wsi-card: 0 1px 2px rgba(20, 30, 60, 0.04), 0 4px 12px rgba(20, 30, 60, 0.05);
+
+  width: 1424px;
+  /* The chrome leaves about 694 design px below the tab strip = 718 page px. */
+  height: 720px;
+  transform: scale(0.9662921);
+  padding: 0 34px 28px 33px;
+  /* Barely-there warmth at the top, cooling to the page grey by the topic grid — the
+     reference is almost white behind the tabs and clearly grey behind the cards. */
+  background: linear-gradient(180deg, #ffffff 0%, #fdfcfc 64px, #f8f8f9 292px);
+  color: var(--wsi-body);
+  line-height: 1.4;
+}
+
+/* --- filter pills --------------------------------------------------------------- */
+
+.wsi-filters {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.wsi-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 18px;
+  border-radius: 16px;
+  background: var(--wsi-pill);
+  color: var(--wsi-body);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wsi-pill.wsi-on {
+  background: var(--wsi-accent);
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.wsi-pill .wsi-chev {
+  flex: none;
+  opacity: 0.75;
+}
+
+.wsi-pill .wsi-sparkle {
+  flex: none;
+  color: #e8459a;
+}
+
+.wsi-pill .wsi-help {
+  flex: none;
+  opacity: 0.6;
+}
+
+/* --- Seer AI strip -------------------------------------------------------------- */
+
+.wsi-ai {
+  margin-top: 22px;
+  height: 52px;
+  border-radius: 26px;
+  padding: 0 12px 0 11px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg, #fde3ed 0%, #fdece6 46%, #fdf4ef 100%);
+}
+
+.wsi-ai-mark {
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, #f47bb4 0%, #ee4d8e 100%);
+}
+
+.wsi-ai-label {
+  margin-left: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--wsi-ink);
+}
+
+.wsi-ai-summary {
+  margin-left: auto;
+  height: 30px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 15px;
+  border: 1px solid #f3ddd3;
+  background: rgba(255, 255, 255, 0.9);
+  color: #6a7280;
+  font-size: 13.5px;
+}
+
+/* --- popular topics ------------------------------------------------------------- */
+
+.wsi-section {
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.wsi-section-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--wsi-ink);
+}
+
+.wsi-section .wsi-sparkle {
+  flex: none;
+  color: #e8459a;
+}
+
+.wsi-section .wsi-help {
+  flex: none;
+  color: var(--wsi-muted);
+}
+
+.wsi-view-all {
+  margin-left: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--wsi-accent);
+}
+
+.wsi-topics {
+  margin-top: 17px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 11px;
+}
+
+.wsi-topic {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px 20px;
+  box-shadow: var(--wsi-card);
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.wsi-topic-status {
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.wsi-topic-status.wsi-s-positive {
+  color: #1e8a4c;
+}
+
+.wsi-topic-status.wsi-s-negative {
+  color: #d0342c;
+}
+
+.wsi-topic-status.wsi-s-neutral {
+  color: #8a6614;
+}
+
+.wsi-topic-title {
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--wsi-ink);
+}
+
+.wsi-topic-meta {
+  font-size: 13.5px;
+  line-height: 1;
+  color: var(--wsi-muted);
+}
+
+.wsi-topic-meta b {
+  font-weight: 400;
+  color: #6a7280;
+}
+
+/* --- all comments --------------------------------------------------------------- */
+
+.wsi-comments-head {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wsi-comments-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--wsi-ink);
+}
+
+.wsi-comments-count {
+  height: 26px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 7px;
+  background: var(--wsi-accent-soft);
+  color: var(--wsi-accent);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.wsi-sentiment {
+  margin-top: 14px;
+  height: 46px;
+  padding: 0 20px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: var(--wsi-card);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13.5px;
+}
+
+.wsi-sentiment-label {
+  color: var(--wsi-muted);
+}
+
+.wsi-sentiment-value {
+  color: #1e8a4c;
+  font-weight: 600;
+}
+
+.wsi-bar {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wsi-bar span {
+  height: 6px;
+  border-radius: 3px;
+}
+
+/* --- comment rows --------------------------------------------------------------- */
+
+.wsi-list {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wsi-comment {
+  position: relative;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: var(--wsi-card);
+  display: flex;
+  align-items: stretch;
+  gap: 18px;
+}
+
+.wsi-score {
+  width: 44px;
+  flex: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.wsi-score.wsi-sc-green {
+  background: #daf3e0;
+  color: #1a5d3a;
+}
+
+.wsi-score.wsi-sc-yellow {
+  background: #fdf3d4;
+  color: #8a6614;
+}
+
+.wsi-score.wsi-sc-red {
+  background: #fbdcdc;
+  color: #a23838;
+}
+
+.wsi-comment-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.wsi-comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: var(--wsi-muted);
+}
+
+.wsi-comment-meta i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.wsi-comment-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--wsi-ink);
+}
+
+.wsi-comment-text {
+  font-size: 13px;
+  color: #6a7280;
+}
+
+.wsi-star {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  color: #e8b93c;
+}

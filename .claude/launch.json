@@ -1,0 +1,26 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "wizard",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "wizard"],
+      "port": 5273,
+      "autoPort": true
+    },
+    {
+      "name": "gallery",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "gallery"],
+      "port": 5274,
+      "autoPort": true
+    },
+    {
+      "name": "studio",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+/* The collapsed nav rail shared by every Seer screen.
+   Prefixed `wsn-`.
+
+   WorkvivoSeerInsights, WorkvivoSeerManagerInsights and WorkvivoSeerRater each had their
+   own copy of this — `sid-sidebar`, `wsmi-rail` and `wsr-rail` — with the same 34px
+   items, 9px radius and 28px avatar but three sets of numbers to keep in step. They are
+   one component now so they cannot drift.
+
+   The rail's width is the one thing that legitimately differs: the deck-extract screen
+   lays out at 1843 and uses 50, the two 1440-body screens use 64. That comes in as a
+   prop rather than being averaged into a single wrong value. */
+
+.wsn-rail {
+  flex: none;
+  background: #ffffff;
+  border-right: 1px solid #f3f4f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 14px;
+  gap: 6px;
+  color: #6b7280;
+}
+
+.wsn-navico {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+}
+
+/* The active item is a solid accent square with a white glyph — not the tinted
+   background the earlier rails used, so the fill comes in as a prop and only the
+   foreground is set here. */
+.wsn-navico.wsn-on {
+  color: #ffffff;
+}
+
+.wsn-railav {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+  border: 2px solid #e11d48;
+  flex: none;
+}

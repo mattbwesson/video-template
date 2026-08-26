@@ -1,0 +1,1017 @@
+/* Workvivo Space page, Feed tab — "Your Voice Matters".
+   Prefixed `wsf-` per docs/PORTING-HTML-REFS.md. Note `wsp-` is already taken by
+   WorkvivoSpacePage, which is the same chassis with different content — see the note in
+   WorkvivoSpaceFeed.tsx about consolidating the two.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   The supplied Figma export nests FOUR frames at different scales, so the same width
+   (613.69) appears twice meaning two different numbers. Each frame divides out cleanly:
+
+     main / nav / space header   /1.06413   1532.35 -> 1440   63.84 -> 60   61.72 -> 58
+                                            1472.76 -> 1384   242.62 -> 228  287.32 -> 270
+     composer card               /1.10570   17.69 -> 16   19.90 -> 18   44.23 -> 40
+     post card                   /1.09197   21.84 -> 20   17.47 -> 16   52.41 -> 48
+     events card                 /1.06008   16.96 -> 16   21.20 -> 20   137.81 -> 130
+
+   Every value lands on the 4px grid at those factors, which is what makes the
+   normalisation trustworthy rather than rounding by eye. The feed column is the one
+   ambiguous number — 613.69 reads as 555 through the composer's scale and 562 through the
+   post's, but both are the same box seen from inside differently-scaled children. Taken at
+   the MAIN scale it is 576.7, and 576 is the on-grid value that also makes the columns
+   centre correctly (below).
+
+   ── Layout ───────────────────────────────────────────────────────────────────────
+   1440 frame, 58 rail. The banner runs 56 -> 1440. The space header is 1320 wide at x=88.
+   The three body columns are 270 + 32 + 576 + 32 + 256 = 1166, centred under that 1320
+   header: (1320 - 1166) / 2 = 77, so x = 88 + 77 = 165 — which is what the export measures
+   (176.65 / 1.06413 = 166). The body being narrower than its own header is odd, but it is
+   what the reference does and matching it is the job. */
+
+.wsf-shell {
+  width: 1760px;
+  overflow: hidden;
+  background: #F3F4F6;
+}
+
+/* The reference window is 1440 and the shared device is 1760, so the body is designed at
+   1440 and scaled once — same arrangement as WorkvivoNewsletters. */
+.wsf-body {
+  width: 1440px;
+  height: 1660px;
+  zoom: 1.2222222;
+  position: relative;
+  background: #F3F4F6;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.wsf-body * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Collapsed nav rail ─────────────────────────────────────────────────────── */
+
+.wsf-rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 58px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4px 10px 16px;
+  gap: 12px;
+  color: #94A3B8;
+  z-index: 3;
+}
+
+/* 36px items with a 2px gap inside a group and a 28px break between groups is the token
+   rhythm; the export's 38.31 -> 36 and 2.13 -> 2 agree exactly. */
+.wsf-navico {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wsf-navgroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.wsf-navgap {
+  height: 28px;
+  flex: none;
+}
+
+.wsf-railav {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+}
+
+.wsf-appico {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+/* ── Banner + space header ──────────────────────────────────────────────────── */
+
+.wsf-banner {
+  position: absolute;
+  left: 56px;
+  top: 0;
+  width: 1384px;
+  height: 228px;
+  overflow: hidden;
+  background: #7F39F3;
+}
+
+.wsf-banner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  mix-blend-mode: multiply;
+  filter: grayscale(1) brightness(1.9) contrast(0.72);
+}
+
+.wsf-head {
+  position: absolute;
+  left: 88px;
+  top: 181px;
+  width: 1320px;
+  height: 145px;
+}
+
+/* Overhangs the banner's bottom edge, which is the whole point of it being absolute. */
+.wsf-avatar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  /* --Primary-Brand-Color, the per-tenant slot — not #6103ED, which is the semantic
+     primary and belongs to buttons, links and the active tab. */
+  background: #7F39F3;
+  border: 3px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.wsf-titlerow {
+  position: absolute;
+  left: 104px;
+  top: 53px;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.wsf-title {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.wsf-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 6px;
+  color: #4E03BE;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.wsf-join {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #6103ED;
+  color: #fff;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.wsf-iconbtn {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 24px;
+  background: #F3F4F6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6103ED;
+}
+
+/* 32px gap, 16px bottom padding, 2px #6103ED underline on active — the token treatment. */
+.wsf-tabs {
+  position: absolute;
+  left: 0;
+  top: 109px;
+  right: 0;
+  display: flex;
+  gap: 32px;
+  border-bottom: 1px solid #E5E7EB;
+}
+
+.wsf-tab {
+  padding: 0 4px 16px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #6B7280;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+
+.wsf-tab.wsf-on {
+  color: #6103ED;
+  border-bottom-color: #6103ED;
+}
+
+/* ── Three-column body ──────────────────────────────────────────────────────── */
+
+.wsf-cols {
+  position: absolute;
+  left: 165px;
+  top: 351px;
+  width: 1166px;
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+}
+
+.wsf-left {
+  width: 270px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wsf-feed {
+  width: 576px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.wsf-right {
+  width: 256px;
+  flex: none;
+}
+
+/* ── Left column ────────────────────────────────────────────────────────────── */
+
+.wsf-search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fff;
+  color: #6B7280;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.wsf-card {
+  background: #fff;
+  border-radius: 6px;
+  padding: 16px 20px 20px;
+}
+
+.wsf-eyebrow {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #9CA3AF;
+}
+
+.wsf-chips {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wsf-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #F0E6FE;
+  color: #4E03BE;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+}
+
+.wsf-chip .li {
+  color: #6103ED;
+}
+
+.wsf-about {
+  margin-top: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #111827;
+}
+
+.wsf-members {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.wsf-avrow {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wsf-av {
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+}
+
+.wsf-avmore {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* ── Composer ───────────────────────────────────────────────────────────────── */
+
+.wsf-composer {
+  background: #fff;
+  border: 1px solid #E8E8E9;
+  border-radius: 8px;
+  padding: 16px 16px 4px;
+}
+
+.wsf-composer-top {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding-bottom: 16px;
+}
+
+.wsf-composer-top .wsf-av {
+  width: 40px;
+  height: 40px;
+}
+
+.wsf-placeholder {
+  flex: 1 1 0;
+  font-size: 18px;
+  line-height: 28px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.wsf-rule {
+  height: 1px;
+  background: #E5E7EB;
+}
+
+.wsf-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 16px;
+}
+
+.wsf-action {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #6C757D;
+}
+
+.wsf-action .li {
+  color: #6103ED;
+}
+
+/* ── Post ───────────────────────────────────────────────────────────────────── */
+
+.wsf-post {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(129, 126, 126, 0.15);
+  padding: 12px 20px 16px;
+}
+
+.wsf-post-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.wsf-post-head .wsf-av {
+  width: 48px;
+  height: 48px;
+}
+
+.wsf-post-who {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wsf-post-name {
+  font-size: 18px;
+  line-height: 26px;
+}
+
+.wsf-post-name b {
+  color: #6103ED;
+  font-weight: 600;
+}
+
+.wsf-post-meta {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #9CA3AF;
+}
+
+.wsf-dot {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #9CA3AF;
+}
+
+.wsf-post-space {
+  margin: 4px 0 0 64px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #6103ED;
+}
+
+.wsf-post-space .li {
+  color: #838384;
+}
+
+.wsf-post-body {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 20px;
+  color: #111827;
+}
+
+/* The document hero: a flat brand-purple plate with the title knocked out, which is what
+   the export describes (white 36px type over the image). */
+.wsf-doc {
+  position: relative;
+  margin-top: 16px;
+  height: 294px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #21054A;
+}
+
+.wsf-doc img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.45;
+}
+
+.wsf-doc-title {
+  position: absolute;
+  left: 40px;
+  bottom: 44px;
+  color: #fff;
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: 300;
+}
+
+.wsf-doc-title b {
+  font-weight: 600;
+}
+
+.wsf-doc-cap {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 600;
+  color: #6103ED;
+}
+
+.wsf-hr {
+  height: 1px;
+  background: #E2E4E8;
+  margin: 16px 0;
+}
+
+.wsf-attach-label {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #5A5A5A;
+}
+
+.wsf-attach {
+  margin-top: 12px;
+  height: 72px;
+  padding: 10px 12px;
+  border: 1px solid #C4C4C4;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #6B7280;
+}
+
+.wsf-attach-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wsf-counts {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wsf-counts-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #6103ED;
+}
+
+.wsf-counts .wsf-dot {
+  width: 5px;
+  height: 5px;
+  background: #999;
+}
+
+.wsf-share {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #6103ED;
+}
+
+.wsf-reacts {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.wsf-react {
+  height: 28px;
+  padding: 0 10px;
+  border-radius: 9999px;
+  background: #F4ECFF;
+  border: 1px solid #6103ED;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  color: #111827;
+}
+
+/* The first pill and the add-emoji button are the plain grey variant — no purple ring. */
+.wsf-react-plain {
+  background: #F2F0F0;
+  border-color: transparent;
+}
+
+.wsf-comment {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wsf-comment .wsf-av {
+  width: 40px;
+  height: 40px;
+}
+
+.wsf-bubble {
+  padding: 10px 12px;
+  background: #EDF0F3;
+  border-radius: 8px;
+}
+
+.wsf-bubble-name {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #6103ED;
+}
+
+.wsf-bubble-text {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.wsf-comment-meta {
+  margin: 6px 0 0 56px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: #838384;
+}
+
+.wsf-comment-likes {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 12px;
+}
+
+.wsf-comment-reply {
+  color: #6B7280;
+  font-weight: 400;
+  margin-left: 12px;
+}
+
+/* ── Events / Right Column Cards ────────────────────────────────────────────── */
+
+.wsf-right {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wsf-featured-news-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  overflow: hidden;
+}
+
+.wsf-featured-news-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+}
+
+.wsf-featured-news-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.wsf-view-all {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6103ED;
+  text-decoration: none;
+}
+
+.wsf-featured-news-img-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.wsf-featured-news-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.wsf-featured-news-body {
+  padding: 10px 14px 12px;
+}
+
+.wsf-featured-headline {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.wsf-featured-meta {
+  font-size: 11px;
+  color: #6B7280;
+  margin-bottom: 8px;
+}
+
+.wsf-carousel-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 4px;
+}
+
+.wsf-carousel-dots span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #D1D5DB;
+}
+
+.wsf-carousel-dots span.wsf-dot-active {
+  background: #9CA3AF;
+  width: 6px;
+  height: 6px;
+}
+
+.wsf-events-card {
+  background: #fff;
+  border-radius: 8px;
+  border: 1px solid #E5E7EB;
+  overflow: hidden;
+}
+
+.wsf-events-img-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+
+.wsf-events-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.wsf-events-body {
+  padding: 12px 14px 14px;
+}
+
+.wsf-events-eyebrow {
+  font-size: 13px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #9CA3AF;
+  text-transform: uppercase;
+}
+
+.wsf-event {
+  margin-top: 14px;
+  padding-left: 2px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.wsf-event-date {
+  width: 36px;
+  flex: none;
+  text-align: center;
+}
+
+.wsf-event-mon {
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wsf-event-day {
+  margin-top: 2px;
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.wsf-event-title {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.wsf-event-facts {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wsf-event-fact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 15px;
+  color: #9CA3AF;
+}
+
+.wsf-viewall {
+  margin-top: 16px;
+  font-size: 16px;
+  line-height: 22px;
+  color: #5A5A5A;
+}
+
+.wsf-newcomment {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wsf-newcomment .wsf-av {
+  width: 32px;
+  height: 32px;
+}
+
+.wsf-newcomment-field {
+  flex: 1 1 0;
+  height: 32px;
+  padding: 0 12px;
+  background: #F2F0F0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 14px;
+  font-weight: 500;
+  color: #5A5A5A;
+}
+
+.wsf-newcomment-acts {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #6103ED;
+}
+
+.wsf-gif {
+  padding: 1px 3px;
+  border: 2px solid #6103ED;
+  border-radius: 2px;
+  font-size: 8px;
+  line-height: 10px;
+  font-weight: 500;
+}
+
+/* ── Right column: Upcoming Events ──────────────────────────────────────────── */
+
+.wsf-events {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(129, 126, 126, 0.15);
+  background: #fff;
+}
+
+.wsf-events img {
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  display: block;
+}
+
+.wsf-events-body {
+  padding: 20px 16px;
+}
+
+.wsf-events-eyebrow {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #9CA3AF;
+  text-transform: uppercase;
+}
+
+.wsf-event {
+  margin-top: 24px;
+  padding-left: 8px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.wsf-event-date {
+  width: 36px;
+  flex: none;
+  text-align: center;
+}
+
+.wsf-event-mon {
+  font-size: 16px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #000;
+}
+
+.wsf-event-day {
+  margin-top: 4px;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #21054A;
+}
+
+.wsf-event-title {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.wsf-event-facts {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wsf-event-fact {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  line-height: 15px;
+  color: #9CA3AF;
+}
+
+.wsf-events-btn {
+  margin-top: 28px;
+  height: 32px;
+  border-radius: 9999px;
+  background: #DEE2E6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #000;
+}
+
+.wsf-events-btn .li {
+  color: #6B7280;
+}
+
+/* The library has no chevron; this is the border-box caret WorkvivoPostComposer and
+   WorkvivoLivestream already use. */
+.wsf-caret {
+  width: 6px;
+  height: 6px;
+  flex: none;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg) translate(-2px, -2px);
+}
+
+.wsf-caret-left {
+  transform: rotate(135deg) translate(-2px, -2px);
+}

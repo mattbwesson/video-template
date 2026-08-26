@@ -1,0 +1,98 @@
+/* Workvivo widget catalogue — the two-column list of installable widgets.
+   Prefixed `wwl-` per docs/PORTING-HTML-REFS.md. Distinct from `wws-`
+   (WorkvivoWidgetStore), which is the store's Discover landing page; this is the
+   catalogue you scroll after picking a category.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   Authored 1:1 with the reference: 2 columns of 556 with a 98 gutter = 1210, and the
+   scene owns the zoom. Cards are a fixed 185 tall whatever the description runs to —
+   the reference's one-line and three-line cards measure the same, which is what lets
+   the two columns keep a constant pitch. */
+
+.wwl-list {
+  width: 1210px;
+  display: flex;
+  gap: 98px;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wwl-col {
+  width: 556px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 23px;
+}
+
+/* --- a widget card -------------------------------------------------------------- */
+
+.wwl-card {
+  height: 185px;
+  padding: 26px 28px 24px 25px;
+  background: #ffffff;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.wwl-head {
+  display: flex;
+  gap: 17px;
+}
+
+.wwl-tile {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Every glyph on these tiles is drawn white — the ones that are `stroke="currentColor"`
+     inherit it, and the Hub-tile captures are already `fill="white"`. */
+  color: #ffffff;
+}
+
+.wwl-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.wwl-title {
+  font-size: 24px;
+  line-height: 30px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Indented to sit under the title rather than under the tile — the chip below is the
+   one thing that returns to the card's own left padding. */
+.wwl-desc {
+  margin-top: 6px;
+  font-size: 16px;
+  line-height: 21px;
+  color: #4b5563;
+}
+
+.wwl-chip {
+  margin-top: auto;
+  align-self: flex-start;
+  height: 21px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 11px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Placeholder for a glyph the Workvivo icon library does not carry. Flat and unbranded
+   on purpose — an invented mark is the failure that ships unnoticed. */
+.wwl-glyph-missing {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1.5px dashed rgba(255, 255, 255, 0.85);
+}

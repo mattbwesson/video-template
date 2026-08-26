@@ -1,0 +1,692 @@
+/* Workvivo mobile — Spotlight tab.
+   Prefixed `wms-` per docs/PORTING-HTML-REFS.md. `wm-` is WorkvivoMobileHome, which covers
+   the middle of this same screen and is live in the L2 cut — see the note in
+   WorkvivoMobileSpotlight.tsx.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   One scale for the whole export: 1.8295, which is the mobile factor in the skill's own
+   token set. It checks out exactly at the frame width — 719 / 1.8295 = 393, the iPhone
+   point width — and every other value lands on the 4px grid from there:
+
+     14.56 -> 8    21.84 -> 12   25.48 -> 14   29.12 -> 16   32.76 -> 18
+     43.69 -> 24   58.25 -> 32   72.81 -> 40   658.93 -> 360  719 -> 393
+
+   360pt of content inside a 393pt frame is 16pt of screen padding a side, which is the
+   documented mobile spec rather than something inferred here.
+
+   ── Type ─────────────────────────────────────────────────────────────────────────
+   SF Pro, not Inter — mobile and desktop genuinely differ, and the export confirms it:
+   every heading, label and body run declares SF Pro, while Inter is kept for the buttons
+   and links only (View All, Start, Join, View Event). Mobile line-heights also run ~1.5x
+   the size against desktop's ~1.43x; that looseness is deliberate, so it is preserved
+   rather than flattened onto the desktop ramp.
+
+   ── Height ───────────────────────────────────────────────────────────────────────
+   The content column is 3955.41 / 1.8295 = 2162pt tall inside an 850pt screen, so this is
+   a scrolling page. `scrollTop` drives it; 0 shows what the reference screenshot shows. */
+
+.wms-phone {
+  position: relative;
+  width: 393px;
+  height: 850px;
+  overflow: hidden;
+  border-radius: 32px;
+  background: #F7F7F7;
+  font-family: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+}
+
+.wms-phone * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────────── */
+
+.wms-header {
+  position: relative;
+  height: 155px;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.wms-header-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* --Primary-Brand-Color at 70% down to black at 70% — the per-tenant slot, which is what
+   makes the header take the customer's colour rather than Workvivo's #6103ED. It reads it
+   from --wv-brand-70, which WorkvivoCut sets on the whole tree from the theme.
+
+   Every brand slot in this file is written that way, and each keeps the export's own
+   literal as its fallback rather than the baseline green. That is what the value is when
+   nothing has themed the tree — the standalone composition — so this file still renders
+   as the export did on its own, and only the cut takes the tenant's colour. */
+.wms-header-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    var(--wv-brand-70, rgba(127, 57, 243, 0.7)) 0%,
+    rgba(0, 0, 0, 0.7) 100%
+  );
+}
+
+.wms-status {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 0;
+  color: #fff;
+}
+
+.wms-time {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+}
+
+.wms-status-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.wms-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px 0;
+}
+
+.wms-me {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: 50% 15%;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+}
+
+.wms-wordmark {
+  flex: 1 1 0;
+  text-align: center;
+  color: #fff;
+  font-size: 22px;
+  line-height: 28px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.wms-topacts {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wms-round {
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.wms-tabs {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 56px;
+  padding-top: 12px;
+}
+
+.wms-tab {
+  width: 80px;
+  text-align: center;
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 600;
+  color: #D1D5DB;
+}
+
+.wms-tab.wms-on {
+  color: #fff;
+}
+
+.wms-tab-underline {
+  margin-top: 8px;
+  height: 2px;
+  background: #fff;
+}
+
+/* ── Scrolling content ──────────────────────────────────────────────────────── */
+
+.wms-scroll {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 169.6px;
+  bottom: 0;
+  overflow: hidden;
+}
+
+.wms-track {
+  padding: 24px 16px 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  will-change: transform;
+}
+
+.wms-sec {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.wms-sec-title {
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+/* Inter for links and buttons, SF Pro for everything else — the export's own split. */
+.wms-sec-link {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6103ED;
+}
+
+/* ── Journeys hero ──────────────────────────────────────────────────────────── */
+
+.wms-hero {
+  position: relative;
+  height: 179px;
+}
+
+.wms-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 178px;
+  object-fit: cover;
+  border-radius: 16px;
+}
+
+.wms-hero-scrim {
+  position: absolute;
+  inset: 0 0 1px 0;
+  border-radius: 16px;
+  background: linear-gradient(
+    180deg,
+    var(--wv-brand-35, rgba(127, 57, 243, 0.35)) 0%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+  background-blend-mode: color-burn;
+}
+
+.wms-journey {
+  position: absolute;
+  left: 11px;
+  right: 11px;
+  top: 112px;
+  height: 52px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wms-journey-ico {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 19px;
+  background: #00031F;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wms-journey-text {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wms-journey-title {
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.wms-journey-bar {
+  margin-top: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #DDDDDD;
+}
+
+.wms-start {
+  flex: none;
+  font-family: Inter, system-ui, sans-serif;
+  padding: 6px 10px;
+  border-radius: 17px;
+  background: #6103ED;
+  color: #F3F4F6;
+  font-size: 13px;
+  line-height: 17px;
+  font-weight: 500;
+}
+
+/* ── Quick links ────────────────────────────────────────────────────────────── */
+
+.wms-tiles {
+  display: flex;
+  gap: 8px;
+}
+
+.wms-tile {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.wms-tile-ico {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.wms-tile-ico img,
+.wms-tile-ico svg {
+  width: 100%;
+  height: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  display: block;
+}
+
+.wms-tile-label {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: #111827;
+  text-align: center;
+}
+
+.wms-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wms-row2 {
+  display: flex;
+  gap: 8px;
+}
+
+.wms-link {
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --Primary-Brand-Color again: the quick-link plates take the tenant colour. */
+.wms-link-ico {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 12px;
+  background: var(--wv-brand, #7F39F3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wms-link-ico img,
+.wms-link-ico svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  /* The values/* marks are dark line art; on a filled plate they need to be knocked out. */
+  filter: brightness(0) invert(1);
+}
+
+.wms-link-label {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ── Documents ──────────────────────────────────────────────────────────────── */
+
+.wms-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.wms-doc {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wms-doc-label {
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ── Featured news ──────────────────────────────────────────────────────────── */
+
+.wms-news-hero {
+  position: relative;
+  height: 166px;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.wms-news-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wms-news-hero-scrim {
+  position: absolute;
+  inset: 0;
+  /* Was a hardcoded rgba(204, 0, 0) — the export's Virgin red baked into the port. It is
+     the same tenant slot as the other two scrims, so it takes the brand like they do. */
+  background: linear-gradient(
+    180deg,
+    var(--wv-brand-45, rgba(204, 0, 0, 0.45)) 11%,
+    rgba(0, 0, 0, 0) 50%
+  );
+  backdrop-filter: blur(3px);
+}
+
+.wms-news-hero-text {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  top: 56px;
+  color: #fff;
+  text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.wms-news-hero-title {
+  font-size: 18px;
+  line-height: 22px;
+  font-weight: 600;
+}
+
+.wms-news {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wms-news img {
+  width: 159px;
+  height: 80px;
+  flex: none;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.wms-news-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wms-meta {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  color: #111827;
+}
+
+.wms-meta .li {
+  color: #6103ED;
+}
+
+.wms-meta-white,
+.wms-meta-white .li {
+  color: #fff;
+}
+
+/* ── Spaces ─────────────────────────────────────────────────────────────────── */
+
+.wms-spaces {
+  display: flex;
+  gap: 12px;
+}
+
+.wms-space {
+  position: relative;
+  width: 167px;
+  height: 149px;
+  flex: none;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+
+.wms-space-cover {
+  width: 100%;
+  height: 56px;
+  object-fit: cover;
+  display: block;
+}
+
+.wms-space-join {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-family: Inter, system-ui, sans-serif;
+  padding: 5px 12px;
+  border-radius: 18px;
+  background: #F0E6FE;
+  color: #6103ED;
+  font-size: 14px;
+  line-height: 16px;
+  font-weight: 500;
+}
+
+.wms-space-av {
+  position: absolute;
+  left: 10px;
+  top: 30px;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--wv-brand, #7F39F3);
+  border: 1.5px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.wms-space-text {
+  padding: 26px 10px 0;
+}
+
+.wms-space-title {
+  font-size: 15px;
+  line-height: 20px;
+  font-weight: 500;
+  color: #111827;
+}
+
+.wms-space-members {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+  color: #6B7280;
+}
+
+/* ── Upcoming events ────────────────────────────────────────────────────────── */
+
+.wms-event-card {
+  padding: 16px;
+  border-radius: 12px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wms-event-card img {
+  width: 100%;
+  height: 167px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.wms-event {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.wms-event-date {
+  width: 45px;
+  flex: none;
+  text-align: center;
+}
+
+.wms-event-mon {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wms-event-day {
+  font-size: 22px;
+  line-height: 30px;
+  font-weight: 400;
+  color: #6103ED;
+}
+
+.wms-event-title {
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 600;
+  color: #1F2937;
+}
+
+.wms-event-when {
+  margin-top: 5px;
+  font-size: 14px;
+  line-height: 21px;
+  color: #6B7280;
+}
+
+.wms-event-btn {
+  font-family: Inter, system-ui, sans-serif;
+  padding: 10px 16px;
+  border-radius: 20px;
+  background: #F0E6FE;
+  color: #6103ED;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* ── Bottom nav ─────────────────────────────────────────────────────────────── */
+
+.wms-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 12px 16px;
+  background: rgba(247, 247, 247, 0.75);
+  border-top: 1px solid #E5E7EB;
+  backdrop-filter: blur(15px);
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  z-index: 3;
+}
+
+.wms-bnav {
+  flex: 1 1 0;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: #777777;
+}
+
+.wms-bnav.wms-on {
+  color: #0B0B0B;
+}
+
+.wms-bnav-label {
+  font-size: 10px;
+  line-height: 15px;
+  font-weight: 400;
+  color: #8E8E8F;
+}
+
+.wms-bnav.wms-on .wms-bnav-label {
+  color: #0B0B0B;
+}

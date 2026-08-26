@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Workvivo mobile — live replay</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:#E30613;font-family:-apple-system,"SF Pro Text","SF Pro Display",
+       "Helvetica Neue",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;
+       display:flex;justify-content:center;padding:40px 20px}
+  .sprite{position:absolute;width:0;height:0;overflow:hidden}
+
+  .phone{width:393px;height:852px;border-radius:52px;background:#F04A55;padding:7px}
+  .screen{width:100%;height:100%;border-radius:45px;overflow:hidden;background:#000;
+          position:relative;display:flex;flex-direction:column}
+
+  /* status bar (host OS chrome — approximated) */
+  .status{height:54px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;
+          padding:0 28px 6px;color:#fff}
+  .time{font-size:16px;font-weight:590;letter-spacing:.2px}
+  .sysico{display:flex;align-items:center;gap:7px}
+  .sysico svg{display:block}
+
+  /* header */
+  .head{flex:none;padding:6px 16px 16px;display:flex;align-items:center;gap:10px;color:#fff}
+  .back{width:12px;height:12px;border-left:2.4px solid #fff;border-bottom:2.4px solid #fff;
+        transform:rotate(45deg);flex:none;margin-right:4px;cursor:pointer}
+  .htx{flex:1}
+  .pill{display:inline-flex;align-items:center;height:28px;padding:0 14px;border-radius:15px;
+        background:#EDE3FD;color:#6103ED;font-size:14px;font-weight:700;letter-spacing:.4px}
+  .htx h1{font-size:19px;font-weight:590;margin-top:8px;white-space:nowrap}
+  .hacts{display:flex;align-items:center;gap:16px;flex:none;align-self:flex-end;
+         padding-bottom:2px}
+  .ic{cursor:pointer;color:#fff}
+
+  /* geometric stand-ins — not Workvivo library art */
+  .g-mute{width:26px;height:24px;position:relative;display:block}
+  .g-mute .cone{position:absolute;left:1px;top:8px;width:7px;height:8px;background:#fff;
+                border-radius:1px}
+  .g-mute .cone:after{content:"";position:absolute;left:6px;top:-5px;
+                      border-left:9px solid #fff;border-top:9px solid transparent;
+                      border-bottom:9px solid transparent}
+  .g-mute .slash{position:absolute;left:-1px;top:11px;width:28px;height:2px;background:#fff;
+                 transform:rotate(-40deg);border-radius:2px}
+  .g-rot{width:26px;height:26px;position:relative;display:block}
+  .g-rot .sq{position:absolute;left:4px;top:4px;width:18px;height:18px;border:2.2px solid #fff;
+             border-radius:5px;transform:rotate(40deg)}
+  .g-rot .arc{position:absolute;left:2px;top:2px;width:22px;height:22px;border:2.2px solid #fff;
+              border-radius:50%;border-top-color:transparent;border-right-color:transparent}
+
+  /* video */
+  .video{flex:1;min-height:0;
+         background:linear-gradient(155deg,#9C7B54 0%,#6B4E32 30%,#3A2C1E 62%,#1E1710 100%)}
+  .video:before{content:"";display:block;height:100%;
+        background:linear-gradient(90deg,rgba(255,255,255,.06) 0 3px,transparent 3px 74px)}
+
+  /* chapters sheet */
+  .sheet{flex:none;background:#1B1B1D;padding:22px 16px 26px;max-height:440px;overflow-y:auto}
+  .sheet::-webkit-scrollbar{width:0}
+  .shead{display:flex;align-items:center;margin-bottom:22px}
+  .shead h2{font-size:23px;font-weight:590;color:#fff}
+  .xbtn{margin-left:auto;width:46px;height:46px;border-radius:50%;background:#333336;
+        display:flex;align-items:center;justify-content:center;cursor:pointer}
+  .g-x{width:19px;height:19px;position:relative}
+  .g-x i{position:absolute;left:0;top:8.4px;width:19px;height:2.2px;background:#E8E9EB;
+         border-radius:2px;display:block}
+  .g-x i:nth-child(1){transform:rotate(45deg)}
+  .g-x i:nth-child(2){transform:rotate(-45deg)}
+
+  .chap{display:flex;align-items:center;gap:14px;padding:12px;border-radius:10px;cursor:pointer}
+  .chap.on{background:#303032}
+  .thumb{width:116px;height:78px;border-radius:6px;flex:none;display:block}
+  .ctx{flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+  .cttl{font-size:17px;line-height:23px;white-space:nowrap;font-weight:400;color:#fff}
+  .tstamp{background:#3A3A3D;color:#fff;font-size:16px;font-weight:500;border-radius:8px;
+          padding:5px 12px}
+  .pick{width:40px;height:40px;border-radius:50%;background:#8E8E93;
+        border:2.5px solid #D6D6DA;flex:none}
+</style>
+<script>
+  /* ?transparent=1 drops the #E30613 page fill so the frame can be composited over
+     whatever is behind the iframe — used by LivestreamScene.tsx, which rises this over
+     the brand green instead of the red baked in here. */
+  if (new URLSearchParams(location.search).get('transparent') === '1') {
+    var s = document.createElement('style');
+    s.textContent = 'html,body{background:transparent}';
+    document.head.appendChild(s);
+  }
+</script></head>
+<body>
+<svg class="sprite" xmlns="http://www.w3.org/2000/svg"><symbol id="i-signal" viewBox="0 0 17 11" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M16 0H15C14.4477 0 14 0.447715 14 1V9.66667C14 10.219 14.4477 10.6667 15 10.6667H16C16.5523 10.6667 17 10.219 17 9.66667V1C17 0.447715 16.5523 0 16 0ZM10.3333 2.33333H11.3333C11.8856 2.33333 12.3333 2.78105 12.3333 3.33333V9.66667C12.3333 10.219 11.8856 10.6667 11.3333 10.6667H10.3333C9.78106 10.6667 9.33334 10.219 9.33334 9.66667V3.33333C9.33334 2.78105 9.78106 2.33333 10.3333 2.33333ZM6.66666 4.66667H5.66666C5.11437 4.66667 4.66666 5.11438 4.66666 5.66667V9.66667C4.66666 10.219 5.11437 10.6667 5.66666 10.6667H6.66666C7.21894 10.6667 7.66666 10.219 7.66666 9.66667V5.66667C7.66666 5.11438 7.21894 4.66667 6.66666 4.66667ZM2 6.66667H1C0.447715 6.66667 0 7.11438 0 7.66667V9.66667C0 10.219 0.447715 10.6667 1 10.6667H2C2.55228 10.6667 3 10.219 3 9.66667V7.66667C3 7.11438 2.55228 6.66667 2 6.66667Z" fill="white"/></symbol><symbol id="i-wifi" viewBox="0 0 16 11" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M7.63661 2.27733C9.8525 2.27742 11.9837 3.12886 13.5896 4.65566C13.7105 4.77354 13.9038 4.77205 14.0229 4.65233L15.1789 3.48566C15.2392 3.42494 15.2729 3.34269 15.2724 3.25711C15.2719 3.17153 15.2373 3.08967 15.1763 3.02966C10.9612 -1.00989 4.31137 -1.00989 0.0962725 3.02966C0.0352139 3.08963 0.00057 3.17146 6.97078e-06 3.25704C-0.000556058 3.34262 0.0330082 3.42489 0.0932725 3.48566L1.24961 4.65233C1.36863 4.77223 1.56208 4.77372 1.68294 4.65566C3.28909 3.12876 5.4205 2.27732 7.63661 2.27733ZM7.63659 6.07299C8.85408 6.07292 10.0281 6.52545 10.9306 7.34266C11.0527 7.45864 11.2449 7.45613 11.3639 7.33699L12.5186 6.17033C12.5794 6.10913 12.6131 6.02612 12.6123 5.93985C12.6114 5.85359 12.576 5.77127 12.5139 5.71133C9.76573 3.15494 5.50979 3.15494 2.76159 5.71133C2.69952 5.77127 2.6641 5.85363 2.66328 5.93992C2.66247 6.02621 2.69633 6.10922 2.75726 6.17033L3.91159 7.33699C4.03058 7.45613 4.22286 7.45864 4.34493 7.34266C5.2468 6.52599 6.41991 6.0735 7.63659 6.07299ZM9.94959 8.62681C9.95136 8.71332 9.91735 8.79672 9.8556 8.85733L7.85826 10.873C7.79971 10.9322 7.71989 10.9656 7.6366 10.9656C7.55331 10.9656 7.47348 10.9322 7.41493 10.873L5.41726 8.85733C5.35555 8.79668 5.3216 8.71325 5.32343 8.62674C5.32526 8.54023 5.36271 8.45831 5.42693 8.40033C6.7025 7.32144 8.57069 7.32144 9.84626 8.40033C9.91044 8.45836 9.94783 8.5403 9.94959 8.62681Z" fill="white"/></symbol><symbol id="i-battery" viewBox="0 0 25 12" fill="none"><path opacity="0.35" d="M2.66699 0.5H19.333C20.5296 0.5 21.5 1.47038 21.5 2.66699V8.66699C21.4998 9.86346 20.5295 10.833 19.333 10.833H2.66699C1.47048 10.833 0.500176 9.86346 0.5 8.66699V2.66699L0.510742 2.44531C0.621596 1.35265 1.54509 0.5 2.66699 0.5Z" stroke="white"/>
+  <path opacity="0.4" d="M23 3.66669V7.66669C23.8047 7.32791 24.328 6.53982 24.328 5.66669C24.328 4.79355 23.8047 4.00546 23 3.66669Z" fill="white"/>
+  <path d="M2 3.33333C2 2.59695 2.59695 2 3.33333 2H18.6667C19.403 2 20 2.59695 20 3.33333V8C20 8.73638 19.403 9.33333 18.6667 9.33333H3.33333C2.59695 9.33333 2 8.73638 2 8V3.33333Z" fill="white"/></symbol></svg>
+
+<div class="phone"><div class="screen">
+
+  <div class="status">
+    <div class="time">9:41</div>
+    <div class="sysico">
+      <svg width="17" height="11"><use href="#i-signal"/></svg>
+      <svg width="16" height="11"><use href="#i-wifi"/></svg>
+      <svg width="25" height="12"><use href="#i-battery"/></svg>
+    </div>
+  </div>
+
+  <div class="head">
+    <span class="back"></span>
+    <div class="htx">
+      <span class="pill">LIVE REPLAY</span>
+      <h1>Company All Hands</h1>
+    </div>
+    <div class="hacts">
+      <span class="ic"><span class="g-mute"><span class="cone"></span><span class="slash"></span></span></span>
+      <span class="ic"><span class="g-rot"><span class="arc"></span><span class="sq"></span></span></span>
+    </div>
+  </div>
+
+  <div class="video"></div>
+
+  <div class="sheet">
+    <div class="shead">
+      <h2>Chapters</h2>
+      <span class="xbtn"><span class="g-x"><i></i><i></i></span></span>
+    </div>
+      <div class="chap"><span class="thumb" style="background:linear-gradient(150deg,#8FA6B8 0%,#5A6E7E 45%,#3C4A55 100%)"></span><span class="ctx"><span class="cttl">CEO Welcome</span><span class="tstamp">00:10</span></span></div>
+      <div class="chap"><span class="thumb" style="background:linear-gradient(150deg,#C9B39A 0%,#8E7458 45%,#5E4B38 100%)"></span><span class="ctx"><span class="cttl">Quarter in Review</span><span class="tstamp">12:23</span></span></div>
+      <div class="chap on"><span class="thumb" style="background:linear-gradient(150deg,#7A5B3C 0%,#4E3826 45%,#2B1F15 100%)"></span><span class="ctx"><span class="cttl">Key Business Results</span><span class="tstamp">21:19</span></span><span class="pick"></span></div>
+      <div class="chap"><span class="thumb" style="background:linear-gradient(150deg,#6E8CA8 0%,#3F566C 45%,#26323E 100%)"></span><span class="ctx"><span class="cttl">Looking Ahead</span><span class="tstamp">34:02</span></span></div>
+  </div>
+
+</div></div>
+</body></html>

@@ -3,3 +3,30 @@ out
 build
 .DS_Store
 .claude/settings.local.json
+.certs
+
+# Secrets. These are live credentials — the OpenAI and ElevenLabs keys, the API key the
+# wizard's routes check, and the shared passcode. In deployment they come from
+# `fly secrets`; locally they come from a .env that must never leave the machine. A key
+# committed once is a key that has to be rotated, whatever happens to the commit after.
+.env
+.env.*
+
+# --- large media -----------------------------------------------------------------------
+# The 310 MB master edit. Over GitHub's 100 MB per-file limit, so a push carrying it is
+# rejected outright — and it is not needed: the wizard and every render lay down
+# `l2-reference-212s.mp4`, the same 212 seconds at CRF 24, which IS committed. See
+# REFERENCE_VIDEO in src/WorkvivoCut.tsx.
+public/img/L2 Video(Virgin Airline).mp4
+
+# The old 54-second trim, from when the customised cut stopped at frame 1350. Nothing
+# references it now that the wizard runs the whole film.
+public/img/l2-reference-54s.mp4
+
+# Duplicate of webinar.mp4 with a typo'd name, referenced by nothing.
+public/img/webianr.mp4
+
+# Scratch frames from checking a change. `npm run still` writes to out/, which is already
+# ignored above; these are strays from before it existed.
+test_*.png
+cut_check_*

@@ -1,0 +1,146 @@
+/* Seer Insights — the Rater tab: a segment x driver score heatmap.
+   Prefixed `wsr-` per docs/PORTING-HTML-REFS.md.
+
+   Only the filter row and the heatmap are here. The device box, top bar, rail and page
+   head moved to WorkvivoSeerChrome / WorkvivoSeerChromeStyles.css so the two sibling Seer
+   screens could wear the same chrome instead of each drawing it at its own page scale —
+   which is also where `--wsc-accent`, used below, is defined.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   The chrome lays the body out at 1440 on the 1760 device and scales it by 1.2222, so
+   every number below is in that 1440 design space.
+
+   The table is deliberately wider than the pane: 200 + 146 + 9 x 116 = 1390 against 1348
+   of room, so nine drivers show in full and the tenth is left as a 74px sliver at the
+   right edge — the same cut the reference has. The 116 is also what makes the long
+   headers wrap onto two lines ("Culture and / Values", "Senior / Leadership") the way
+   they do there; a wider column fits them on one line and the table reads too loose.
+   Column geometry lives in the component (see ROWHEAD_W / FIRST_COL_W / COL_W) and
+   reaches the table through a <colgroup>, because the width depends on how many drivers
+   are passed in. */
+
+/* --- filter row --------------------------------------------------------------- */
+
+.wsr-filters {
+  margin-top: 27px;
+  margin-right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.wsr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  height: 32px;
+  padding: 0 19px;
+  border-radius: 16px;
+  background: var(--wsc-accent);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.wsr-export {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  height: 32px;
+  padding: 0 18px;
+  border: 1px solid var(--wsc-accent);
+  border-radius: 16px;
+  background: #ffffff;
+  color: var(--wsc-accent);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* --- heatmap ------------------------------------------------------------------ */
+
+.wsr-tablewrap {
+  margin-top: 25px;
+  border: 1px solid #e5e7eb;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-right: none;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* No `width` here — it depends on how many drivers are passed in, so the component
+   sets it inline alongside the <colgroup> that carries the per-column widths. */
+.wsr-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+}
+
+.wsr-table th,
+.wsr-table td {
+  vertical-align: middle;
+}
+
+/* 13px, not 13.5: at 13.5 "Compensation" no longer fits the 116px column and
+   `overflow-wrap` splits it as "Compensatio / n and Benefits". The reference keeps the
+   word whole and wraps at the space, so the type has to stay small enough to allow it. */
+.wsr-colhead {
+  height: 65px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-weight: 400;
+  color: #374151;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: break-word;
+  overflow: hidden;
+  border-bottom: 1px solid #eceef1;
+}
+
+.wsr-corner {
+  border-bottom: 1px solid #eceef1;
+}
+
+.wsr-rowhead {
+  text-align: left;
+  height: 60px;
+  padding: 0 12px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.wsr-rowname {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--wsc-accent);
+  white-space: nowrap;
+}
+
+.wsr-rowtype {
+  margin-top: 1px;
+  font-size: 11.5px;
+  color: #6b7280;
+}
+
+/* The reference's chips are packed tighter side to side than they are top to bottom —
+   an ~8px gutter between columns against ~12px between rows — so the padding is not
+   uniform. Evening it out reads noticeably looser than the screenshot. */
+.wsr-cell {
+  height: 60px;
+  padding: 6px 4px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* The tinted chip is a child of the cell rather than the cell's own background, so the
+   4px gutter between chips survives — a background on the <td> would tile edge to edge. */
+.wsr-chip {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 500;
+  /* colour is set per cell — see seerScoreTextColor */
+}

@@ -1,0 +1,233 @@
+/* Workvivo article / page detail — banner, AI summary, body, image row.
+   Prefixed `wa-` per docs/PORTING-HTML-REFS.md; this stylesheet loads globally through
+   the barrel, so an unprefixed name would leak into other scenes.
+
+   ── Frame ────────────────────────────────────────────────────────────────────────
+   Authored at the reference's own 920px page width, so every number here is the number
+   in the design and the scene owns the zoom. The content column is 694 with a matching
+   113 inset either side, and the image row is 2 x 341.5 + 11 = 694, so the images line
+   up with the text and with the AI summary bar above them. */
+
+.wa-page {
+  position: relative;
+  width: 920px;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  color: #1f2937;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- banner ------------------------------------------------------------------- */
+
+.wa-banner {
+  position: relative;
+  height: 222px;
+  overflow: hidden;
+  background: #111827;
+}
+
+.wa-banner img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 34%;
+}
+
+/* Just enough of a foot to hold the title off a bright photo. The reference's banner is
+   busy at the bottom-left and the title still reads, which this is what does it. */
+.wa-banner-scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, rgba(0, 0, 0, 0) 45%, rgba(0, 0, 0, 0.28) 100%);
+}
+
+.wa-title {
+  position: absolute;
+  left: 113px;
+  bottom: 40px;
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 700;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.wa-lang {
+  position: absolute;
+  right: 19px;
+  top: 22px;
+  height: 31px;
+  width: 136px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #111827;
+}
+
+.wa-lang svg {
+  color: #6b7280;
+}
+
+/* --- body --------------------------------------------------------------------- */
+
+.wa-body {
+  padding: 22px 113px 0;
+}
+
+/* --- AI summary --------------------------------------------------------------- */
+
+.wa-ai {
+  height: 43px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-radius: 10px;
+  /* Lilac running into warm pink — the same wash that marks an agent-generated block in
+     the HQ overlay, so the two read as the same feature. */
+  background: linear-gradient(96deg, #f1e9fe 0%, #f6edfd 46%, #fdeef4 100%);
+}
+
+.wa-ai-mark {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #8b5cf6 0%, #d946a6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+}
+
+.wa-ai-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wa-ai-open {
+  margin-left: auto;
+  height: 25px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #ece5f6;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+  color: #6103ed;
+}
+
+/* --- prose -------------------------------------------------------------------- */
+
+.wa-prose {
+  margin-top: 22px;
+}
+
+.wa-prose p {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 22px;
+  color: #1f2937;
+}
+
+.wa-heading {
+  margin: 20px 0 12px;
+  font-size: 17px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.01em;
+}
+
+.wa-list {
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.wa-list-item {
+  position: relative;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 21px;
+  color: #374151;
+}
+
+.wa-list-item::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #8b5cf6;
+}
+
+.wa-list-item strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+.wa-quote {
+  margin: 18px 0;
+  padding: 14px 18px;
+  background: #f9fafb;
+  border-left: 3.5px solid #8b5cf6;
+  border-radius: 0 10px 10px 0;
+}
+
+.wa-quote-text {
+  font-size: 14px;
+  line-height: 22px;
+  font-style: italic;
+  color: #374151;
+}
+
+.wa-quote-author {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 600;
+  color: #6b7280;
+  font-style: normal;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wa-quote-author::before {
+  content: "—";
+  color: #9ca3af;
+}
+
+/* --- image row ---------------------------------------------------------------- */
+
+.wa-figs {
+  margin-top: 24px;
+  display: flex;
+  gap: 11px;
+}
+
+.wa-figs img {
+  width: 341.5px;
+  height: 230px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+}

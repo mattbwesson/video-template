@@ -1,0 +1,543 @@
+.wcmu-deck {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.wcmu-arrow {
+  width: 56px;
+  height: 56px;
+  flex: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.wcmu-arrow.wcmu-live {
+  opacity: 0.55;
+  pointer-events: auto;
+}
+
+.wcmu-arrow.wcmu-live:hover {
+  opacity: 0.95;
+}
+
+.wcmu-arrow i {
+  position: absolute;
+  left: 14px;
+  top: 6px;
+  width: 30px;
+  height: 30px;
+  display: block;
+  border-top: 4px solid #fff;
+  border-right: 4px solid #fff;
+}
+
+.wcmu-arrow.wcmu-left i {
+  transform: rotate(-135deg);
+}
+
+.wcmu-arrow.wcmu-right i {
+  transform: rotate(45deg);
+}
+
+.wcmu-phone {
+  width: 393px;
+  height: 852px;
+  border-radius: 52px;
+  /* The bezel: .wv-glass-phone's band showing through this padding. See WorkvivoGlassEdge.css. */
+  padding: 16.5px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+  position: relative;
+}
+
+.wcmu-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 35.5px;
+  overflow: hidden;
+  background: #F7F7F7;
+  position: relative;
+  box-sizing: border-box;
+  font-family: -apple-system, 'SF Pro Text', 'SF Pro Display', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Status Bar */
+.wcmu-status {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 54px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px 0;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+.wcmu-time {
+  font-size: 16px;
+  font-weight: 590;
+  letter-spacing: 0.2px;
+}
+
+.wcmu-sysico {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 12px;
+}
+
+/* Header */
+.wcmu-head {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 5;
+  background: #050A20;
+  padding: 54px 0 0;
+  box-sizing: border-box;
+}
+
+.wcmu-hrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 16px 0;
+  position: relative;
+  height: 56px;
+  box-sizing: border-box;
+}
+
+.wcmu-me {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(150deg, #C98C6B, #8A4A38);
+  flex: none;
+}
+
+.wcmu-mark {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.wcmu-hacts {
+  display: flex;
+  gap: 12px;
+}
+
+.wcmu-gbtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  position: relative;
+  border: none;
+  cursor: pointer;
+}
+
+.wcmu-plus i {
+  position: absolute;
+  background: #fff;
+  border-radius: 2px;
+}
+
+.wcmu-plus i:nth-child(1) {
+  width: 17px;
+  height: 2.2px;
+  left: 11.5px;
+  top: 18.9px;
+}
+
+.wcmu-plus i:nth-child(2) {
+  width: 2.2px;
+  height: 17px;
+  left: 18.9px;
+  top: 11.5px;
+}
+
+.wcmu-htabs {
+  display: flex;
+  justify-content: center;
+  gap: 56px;
+  padding: 10px 0 14px;
+  box-sizing: border-box;
+}
+
+.wcmu-htabs a {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 400;
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+.wcmu-htabs a.wcmu-on {
+  font-weight: 590;
+  opacity: 1;
+}
+
+/* Scrolling Body */
+.wcmu-scroll {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding-top: 160px;
+  box-sizing: border-box;
+}
+
+.wcmu-sec {
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.wcmu-cmu {
+  width: 100%;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 12px;
+  border: 2px solid #6103ED;
+  cursor: pointer;
+  background: linear-gradient(105deg, #F1E8FE 0%, #FBF8FF 60%, #FFFFFF 100%);
+  box-sizing: border-box;
+}
+
+.wcmu-hq {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #6103ED;
+  color: #fff;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.wcmu-cmu .wcmu-t {
+  flex: 1;
+}
+
+.wcmu-cmu .wcmu-t b {
+  display: block;
+  font-size: 20px;
+  line-height: 26px;
+  font-weight: 590;
+  color: #6103ED;
+}
+
+.wcmu-cmu .wcmu-t span {
+  display: block;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 510;
+  color: #111827;
+}
+
+.wcmu-chev {
+  width: 11px;
+  height: 11px;
+  border-right: 2.4px solid #6103ED;
+  border-top: 2.4px solid #6103ED;
+  transform: rotate(45deg);
+  flex: none;
+  margin-right: 4px;
+}
+
+.wcmu-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 0 16px 8px;
+  box-sizing: border-box;
+}
+
+.wcmu-fcard {
+  flex: none;
+  width: 298px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.wcmu-fcard .wcmu-img {
+  /* <img> now — needs an explicit width where the old div filled the card as a block. */
+  display: block;
+  width: 100%;
+  height: 186px;
+}
+
+.wcmu-fcard .wcmu-b {
+  padding: 14px;
+  box-sizing: border-box;
+}
+
+.wcmu-fcard h3 {
+  font-size: 16px;
+  line-height: 22px;
+  font-weight: 590;
+  color: #111827;
+}
+
+.wcmu-fcard .wcmu-m {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #111827;
+  margin-top: 8px;
+}
+
+.wcmu-fcard .wcmu-m svg {
+  color: #6103ED;
+}
+
+.wcmu-fcard .wcmu-p {
+  font-size: 14px;
+  color: #6B7280;
+  margin-top: 2px;
+}
+
+.wcmu-pad {
+  height: 40px;
+}
+
+/* Story Overlay */
+.wcmu-story {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: none;
+  flex-direction: column;
+  background: linear-gradient(180deg, #B7A0EF 0%, #D3C4F6 45%, #EDE6FC 100%);
+  box-sizing: border-box;
+}
+
+.wcmu-story.wcmu-open {
+  display: flex;
+}
+
+.wcmu-sbar {
+  padding: 54px 16px 0;
+  flex: none;
+  position: relative;
+  background: linear-gradient(180deg, #05050F 0%, #0B0A22 46%, #2B1D58 100%);
+  box-sizing: border-box;
+}
+
+.wcmu-sbar:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 26px;
+  background: linear-gradient(180deg, #2B1D58 0%, rgba(183, 160, 239, 0) 100%);
+}
+
+.wcmu-stop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0 12px;
+  box-sizing: border-box;
+}
+
+.wcmu-shq {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #1B1040;
+  color: #fff;
+  flex: none;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.wcmu-stop .wcmu-lbl {
+  flex: 1;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 590;
+}
+
+.wcmu-ctl {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.wcmu-play {
+  width: 0;
+  height: 0;
+  border-left: 13px solid currentColor;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+.wcmu-pause {
+  display: flex;
+  gap: 4px;
+}
+
+.wcmu-pause i {
+  width: 4px;
+  height: 15px;
+  background: currentColor;
+  border-radius: 1px;
+  display: block;
+}
+
+.wcmu-dots3 {
+  display: flex;
+  gap: 4px;
+}
+
+.wcmu-dots3 i {
+  width: 4.5px;
+  height: 4.5px;
+  border-radius: 50%;
+  background: currentColor;
+  display: block;
+}
+
+.wcmu-x {
+  position: relative;
+  width: 18px;
+  height: 18px;
+}
+
+.wcmu-x i {
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 18px;
+  height: 2.2px;
+  background: currentColor;
+  border-radius: 2px;
+  display: block;
+}
+
+.wcmu-x i:nth-child(1) {
+  transform: rotate(45deg);
+}
+
+.wcmu-x i:nth-child(2) {
+  transform: rotate(-45deg);
+}
+
+.wcmu-prog {
+  display: flex;
+  gap: 5px;
+  padding-bottom: 14px;
+  box-sizing: border-box;
+}
+
+.wcmu-prog i {
+  flex: 1;
+  height: 3.5px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.30);
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.wcmu-prog i.wcmu-done {
+  background: #FFFFFF;
+}
+
+.wcmu-stage {
+  flex: 1;
+  overflow: hidden;
+  padding: 20px 20px 30px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.wcmu-slide-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.wcmu-shot {
+  width: 100%;
+  height: 180px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  display: block;
+}
+
+.wcmu-title {
+  font-size: 23px;
+  line-height: 29px;
+  font-weight: 700;
+  color: #4304AC;
+  letter-spacing: -0.3px;
+  margin: 0 0 10px 0;
+}
+
+.wcmu-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.wcmu-tag {
+  background: #F0E6FE;
+  color: #6103ED;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.wcmu-para {
+  font-size: 14.5px;
+  line-height: 22px;
+  font-weight: 500;
+  color: #1A1838;
+  margin: 0 0 10px 0;
+}

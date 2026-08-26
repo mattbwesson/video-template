@@ -1,0 +1,221 @@
+/* Workvivo Journeys — the mobile journey detail screen.
+   Prefixed `wjp-`. Authored at 393pt in SF Pro; see WorkvivoJourneyBuilderStyles.css
+   for how the supplied Figma CSS normalises onto that frame.
+
+   Mobile is SF Pro and desktop is Inter — that is a real platform split in Workvivo's
+   type system, not an inconsistency, so this file does not inherit the Inter stack the
+   rest of the folder uses. Weight 510 is SF Pro's Medium; the fallbacks round it to
+   500, which is why it is written as 510 rather than 500. */
+
+.wjp-screen {
+  position: relative;
+  width: 393px;
+  min-height: 986px;
+  background: #f7f7f7;
+  font-family: "SF Pro Text", "SF Pro", -apple-system, BlinkMacSystemFont,
+    InterX, Inter, system-ui, sans-serif;
+  color: #111827;
+  overflow: hidden;
+}
+
+/* --- hero -------------------------------------------------------------------- */
+
+/* The tenant's brand colour burnt over the cover photo — `--wjp-brand` is set from the
+   customisation, so this is red for Virgin and the #7F39F3 default otherwise. The brand
+   slot, not Primary-500: this is a banner fill, not an action. */
+.wjp-hero {
+  position: relative;
+  width: 393px;
+  height: 294px;
+  overflow: hidden;
+  background: #000;
+}
+
+.wjp-hero img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* The same treatment every other header photo gets — .wm-herowash on the phone and
+   .wvd-herowash on the desktop — so one operator upload reads the same wherever it lands.
+
+   This used to be a colour-burn blend of the brand over black, which made the result
+   depend on the cover photo's own luminance: a dark upload crushed to near-black and a
+   bright one went muddy, so the same brand colour read as a different colour on every
+   tenant. A flat tinted wash at a fixed opacity is predictable whatever photo lands in
+   it. (Blend modes are also a known risk in the canvas export — see
+   docs/browser-render-best-practices.md — though this particular one was never measured.) */
+.wjp-hero-burn {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 130% at 50% 15%,
+    var(--wv-hdr, var(--wjp-brand, var(--wv-brand, #44d760))) 0%,
+    var(--wv-hdr-d1, var(--wv-brand-d1, #2ecc71)) 45%,
+    var(--wv-hdr-d3, var(--wv-brand-d3, #1e824c)) 100%
+  );
+  opacity: var(--wv-hdr-op, 0.78);
+}
+
+/* --- the journey summary card ------------------------------------------------- */
+
+.wjp-summary {
+  position: absolute;
+  left: 0;
+  top: 199px;
+  width: 393px;
+  padding: 16px;
+  background: #f7f7f7;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.wjp-title {
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 510;
+  margin-bottom: 8px;
+  padding-right: 96px;
+}
+
+.wjp-blurb {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  margin-bottom: 8px;
+}
+
+.wjp-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wjp-track {
+  width: 230px;
+  height: 10px;
+  border-radius: 41px;
+  background: #dddddd;
+  overflow: hidden;
+}
+
+.wjp-track span {
+  display: block;
+  height: 100%;
+  border-radius: 41px;
+  background: #6103ed;
+}
+
+.wjp-steps {
+  font-family: InterX, Inter, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.wjp-status {
+  position: absolute;
+  left: 286px;
+  top: 16px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.wjp-status-started {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.wjp-status-notstarted {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+/* --- day sections ------------------------------------------------------------- */
+
+.wjp-days {
+  position: absolute;
+  left: 16px;
+  top: 352px;
+  width: 361px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.wjp-dayhead {
+  height: 27px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 510;
+  color: #111827;
+}
+
+.wjp-dayhead svg {
+  color: #6103ed;
+}
+
+.wjp-daycard {
+  margin-top: 8px;
+  padding: 16px;
+  background: #ffffff;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.wjp-step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Not-started steps are dimmed as a whole rather than restyled piece by piece — that is
+   how the source draws them, and it keeps one state in one place. */
+.wjp-step.wjp-todo {
+  opacity: 0.5;
+}
+
+.wjp-step-mark {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+}
+
+.wjp-step-mark.wjp-done {
+  background: #6103ed;
+  color: #ffffff;
+}
+
+.wjp-step-title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 510;
+  color: #111827;
+}
+
+.wjp-step-sub {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  color: #374151;
+}

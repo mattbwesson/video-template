@@ -1,0 +1,237 @@
+/* HQ Agent overlay — the chat state.
+ *
+ * The modal shell and the chat-history rail are in WorkvivoHqSidebarStyles.css, shared
+ * with WorkvivoHqSearch. Only the conversation pane lives here.
+ *
+ * Prefixed `whqc-` so it cannot collide with the results state's `whq-` classes even
+ * though both stylesheets load globally through the barrel.
+ *
+ * ── Frame ──────────────────────────────────────────────────────────────────────
+ * The modal is 988x653 design units. In the reference it sits centred with equal
+ * margins, 68.5% of the frame wide, and the rail is 21.1% of the modal — the same
+ * ratio as the results state, so the two are one design at two crops.
+ *
+ * The conversation is a 485-wide column centred in the 780 the pane leaves, not the
+ * full pane: the bubble, the reasoning trace, the composer and the disclaimer all share
+ * that one measure, which is what keeps them aligned with each other rather than with
+ * the close button.
+ */
+
+.whqc-main {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 0;
+  overflow: hidden;
+}
+
+.whqc-col {
+  width: 485px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- the conversation ----------------------------------------------------------- */
+
+.whqc-msg-user {
+  align-self: flex-end;
+  max-width: 320px;
+  padding: 7px 14px;
+  border-radius: 16px;
+  background: #eef0f5;
+  font-size: 11.5px;
+  line-height: 17px;
+  color: #111827;
+  margin-bottom: 12px;
+}
+
+.whqc-thinking {
+  margin-top: 14px;
+  font-size: 11.5px;
+  line-height: 18px;
+  color: #4b5563;
+}
+
+.whqc-trace {
+  margin-top: 6px;
+  padding-left: 8px;
+  border-left: 1px solid #e5e7eb;
+  font-size: 11px;
+  line-height: 16px;
+  color: #6b7280;
+}
+
+.whqc-msg-agent {
+  align-self: flex-start;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.whqc-agent-spark {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f1eaff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.whqc-agent-text {
+  font-size: 11.5px;
+  line-height: 17px;
+  color: #111827;
+}
+
+/* --- Workday Answer Attached --- */
+.whqc-answer-block {
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.whqc-answer-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.whqc-answer-desc {
+  font-size: 11px;
+  line-height: 16px;
+  color: #374151;
+}
+
+.whqc-card {
+  background: #f0f7ff;
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #e0ecfb;
+}
+
+.whqc-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.whqc-card-row {
+  font-size: 10.5px;
+  color: #4b5563;
+  line-height: 16px;
+}
+
+.whqc-card-row strong {
+  color: #111827;
+  font-weight: 600;
+}
+
+.whqc-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #9ca3af;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.whqc-tool-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+/* --- the composer ---------------------------------------------------------------- */
+
+.whqc-composer {
+  margin-top: auto;
+  height: 84px;
+  padding: 10px 10px 9px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  box-sizing: border-box;
+}
+
+.whqc-placeholder {
+  padding: 0 3px;
+  font-size: 12px;
+  line-height: 18px;
+  color: #9ca3af;
+}
+
+.whqc-tools {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.whqc-plus {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  box-sizing: border-box;
+}
+
+.whqc-sources {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  color: #374151;
+}
+
+.whqc-sources svg {
+  color: #6b7280;
+}
+
+.whqc-send {
+  margin-left: auto;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+}
+
+.whqc-note {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 10px;
+  line-height: 15px;
+  color: #6b7280;
+}
+
+.whqc-tail {
+  height: 16px;
+  flex: none;
+}
