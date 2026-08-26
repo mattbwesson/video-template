@@ -111,10 +111,14 @@ const args = [
   COMPOSITION,
   outPath,
   `--props=${propsPath}`,
-  // PNG screenshots, or the flat-colour UI scenes pick up a faint frame-to-frame shimmer
-  // from JPEG quantization — see remotion.config.ts. Spelled out here as well because a
-  // caller's extra flags come after and can still override it.
+  // PNG screenshots and a tighter encode, or the UI scenes shimmer: JPEG screenshots add
+  // quantization noise that moves every frame, and the default crf 18 / medium mangles
+  // the film's slow pans over crisp detail into a wavy crawl — see remotion.config.ts for
+  // the measurements. Spelled out here as well because a caller's extra flags come after
+  // and can still override any of them.
   "--image-format=png",
+  "--crf=15",
+  "--x264-preset=slow",
   ...rest,
 ];
 

@@ -47,12 +47,14 @@ export const ExportProjectButton: React.FC<{
    * than being written here, so the command is right on localhost, on staging, and on
    * whatever the app is called next.
    */
-  // --image-format=png: with the default JPEG screenshots, the rebuilt UI scenes carry a
-  // faint wavy shimmer from quantization noise moving frame to frame. The repo's
-  // remotion.config.ts sets the same thing, but a config file cannot follow the bundle to
-  // someone else's machine, so the command has to say it.
+  // The three quality flags are the difference between a clean file and a shimmering one:
+  // PNG screenshots (JPEG's quantization noise moves frame to frame and reads as wavy
+  // shimmer on flat UI), and crf 15 / preset slow (the defaults mangle the film's slow
+  // pans over crisp detail). remotion.config.ts sets the same things for repo renders,
+  // but a config file cannot follow the bundle to someone else's machine, so the command
+  // has to say them.
   const command = saved
-    ? `npx -p @remotion/cli remotion render ${window.location.origin}/bundle CustomizedWorkvivo workvivo-${companySlug(company)}.mp4 --props=$HOME/Downloads/${saved} --image-format=png`
+    ? `npx -p @remotion/cli remotion render ${window.location.origin}/bundle CustomizedWorkvivo workvivo-${companySlug(company)}.mp4 --props=$HOME/Downloads/${saved} --image-format=png --crf=15 --x264-preset=slow`
     : "";
 
   const copy = useCallback(() => {

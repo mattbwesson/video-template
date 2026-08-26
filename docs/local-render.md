@@ -42,7 +42,7 @@ shows the exact render command with that filename already filled in, next to a
 It looks like this (yours will have the real company name):
 
 ```bash
-npx -p @remotion/cli remotion render https://l2-concept.fly.dev/bundle CustomizedWorkvivo workvivo-acme.mp4 --props=$HOME/Downloads/workvivo-acme.json --image-format=png
+npx -p @remotion/cli remotion render https://l2-concept.fly.dev/bundle CustomizedWorkvivo workvivo-acme.mp4 --props=$HOME/Downloads/workvivo-acme.json --image-format=png --crf=15 --x264-preset=slow
 ```
 
 Press Enter and let it run. The film is 5,300 frames and streams its footage from the
@@ -51,7 +51,7 @@ folder your Terminal is in (your home folder, unless you changed it).
 
 ### 3. Send it
 
-1920×1080, H.264, with audio, around 110 MB — too big for most email, so share it via
+1920×1080, H.264, with audio, around 160 MB — too big for email, so share it via
 Drive, Box or Zoom.
 
 ---
@@ -90,7 +90,7 @@ To render a slice instead of the whole film — useful for checking one scene qu
 add `--frames` to the same command:
 
 ```bash
-npx -p @remotion/cli remotion render https://l2-concept.fly.dev/bundle CustomizedWorkvivo out.mp4 --props=$HOME/Downloads/acme.json --frames=740-900 --image-format=png
+npx -p @remotion/cli remotion render https://l2-concept.fly.dev/bundle CustomizedWorkvivo out.mp4 --props=$HOME/Downloads/acme.json --frames=740-900 --image-format=png --crf=15 --x264-preset=slow
 ```
 
 What the URL serves is a Remotion "serve URL": the composition bundled by

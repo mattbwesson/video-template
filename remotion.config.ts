@@ -12,4 +12,15 @@ import { Config } from "@remotion/cli/config";
 // hands out carries --image-format=png explicitly, because a config file cannot follow
 // the bundle to another machine.
 Config.setVideoImageFormat("png");
+
+// The film's back half is slow pans and scrolls over crisp UI — the Spaces grid drifts,
+// the phones scroll — and that is the worst case for x264 at its defaults: every frame
+// re-quantizes all that moving detail, which on screen reads as a wavy crawl. (The
+// reference footage never shows it because its own encode already softened it.) Measured
+// against a lossless frame dump of the worst window, 1500-1540: SSIM 0.9885 at the
+// default crf 18 / medium, 0.9917 at crf 15 / slow — 28% of the encode error gone for
+// ~40% more file. crf 13 was +29% size again for a third of that gain; not worth it.
+// These reach repo renders only; the wizard's copy-paste command carries the same flags.
+Config.setCrf(15);
+Config.setX264Preset("slow");
 Config.setOverwriteOutput(true);
