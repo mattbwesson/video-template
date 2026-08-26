@@ -11,8 +11,7 @@ node_modules
 build
 out
 
-# The Remotion side. The deployed app is the wizard; renders happen elsewhere.
-remotion.config.ts
+# Not needed to build the wizard, the server, or the render bundle.
 skills
 docs
 test_792.png

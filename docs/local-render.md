@@ -1,152 +1,101 @@
 # Rendering a customer video on your own machine
 
-The wizard has two export buttons and they are not equivalent.
+Build the video in the wizard, click **Download project file**, and paste one command into
+Terminal. The only thing your machine needs is [Node.js](https://nodejs.org) — no git, no
+project download, no `npm install`.
 
-| | **Download project file** | **Render MP4** |
-|---|---|---|
-| Renders with | Real headless Chromium, on your machine | A canvas renderer, in the browser tab |
-| Quality | Exactly what the preview shows | Preview only — icons, some photos and glass render wrong |
-| Speed | Minutes, uses your CPU | Minutes, uses your tab |
-| Send to a customer? | **Yes** | No |
-
-Use **Download project file** for anything a customer will see. The rest of this page is
-the one-time setup for that, and the two commands you run afterwards.
-
-The short version of why: `@remotion/web-renderer`, behind the in-tab button, draws to a
-canvas with its own approximation of CSS. It cannot draw SVG sprite icons, CSS background
-photographs, or blend modes, so parts of the film come out blank or wrong. Rendering
-locally runs the same headless Chrome that produced every frame in this repo that anyone
-has approved, so there is no fidelity gap to explain.
+Why the extra step exists at all: the file the wizard downloads is the *decisions* — the
+copy, the brand, the logo, every photo — and the render runs in real headless Chrome on
+your machine, which is the same renderer the preview uses. What you approved is what gets
+encoded, at full quality.
 
 ---
 
 ## One-time setup
 
-You need this once per machine. Budget fifteen minutes.
-
-### 1. Install Node.js 20 or newer
-
-Download the **LTS** installer from [nodejs.org](https://nodejs.org) and run it. Then check
-it worked:
+Install **Node.js** — the LTS installer from [nodejs.org](https://nodejs.org). Then check
+it worked, in Terminal:
 
 ```bash
 node --version
 ```
 
-You want `v20.x` or higher. If the command is not found, close the terminal, open a new
-one, and try again — installers do not update an already-open terminal.
+You want `v20` or higher. If the command is not found, open a NEW Terminal window and try
+again — installers do not update a window that was already open.
 
-### 2. Get the project
-
-If you were given a zip, unzip it somewhere you can find again, like `~/workvivo-video`.
-If you were given a git URL:
-
-```bash
-git clone <the-url> ~/workvivo-video
-```
-
-### 3. Install its dependencies
-
-```bash
-cd ~/workvivo-video
-npm install
-```
-
-This downloads a few hundred megabytes and takes a couple of minutes. Warnings scroll past;
-that is normal. What matters is that it ends without the word `ERR!`.
-
-### 4. Install the browser Remotion renders with
-
-```bash
-npx remotion browser ensure
-```
-
-This is a Chrome build Remotion drives itself — it is separate from the Chrome you browse
-with, and it does not touch it. About 150 MB, once.
-
-You are done. You will not repeat any of this.
+That is the whole setup. The first render also downloads the render tooling and a private
+Chrome build (~150 MB, automatic, once); later renders skip straight to work.
 
 ---
 
 ## Every time you make a video
 
-### 1. Build the video in the wizard
+### 1. Build it in the wizard
 
-Work through it as normal. On the last screen, click **Download project file**. You get
-something like `workvivo-northwind-logistics.json` in your Downloads folder.
+Work through the wizard as normal. On the last screen, click **Download project file**.
+Two things happen: a `workvivo-<company>.json` lands in your Downloads, and the wizard
+shows the exact render command with that filename already filled in, next to a
+**Copy command** button.
 
-That file contains everything — the researched copy, your edits, the brand colour, the
-logo, and every photo you uploaded, embedded inside it. It is self-contained, so you can
-email it to someone else and they will render exactly the same video you were previewing.
+### 2. Paste the command into Terminal
 
-### 2. Render it
+It looks like this (yours will have the real company name):
 
 ```bash
-cd ~/workvivo-video
-npm run render:project -- ~/Downloads/workvivo-northwind-logistics.json
+npx -p @remotion/cli remotion render https://l2-concept.fly.dev/bundle CustomizedWorkvivo workvivo-acme.mp4 --props=$HOME/Downloads/workvivo-acme.json
 ```
 
-Tip: instead of typing the path, type `npm run render:project -- ` (with the space) and
-then **drag the file from Finder into the terminal window**. It fills in the path for you.
+Press Enter and let it run. The film is 5,300 frames and streams its footage from the
+server, so expect a few minutes — there is a progress bar. The MP4 lands in whatever
+folder your Terminal is in (your home folder, unless you changed it).
 
-You will see the company name, then a progress bar. The film is 5,300 frames and one scene
-composites 24 samples per frame for motion blur, so a few minutes is expected. A recent
-laptop takes roughly three to six.
+### 3. Send it
 
-### 3. Collect the file
-
-It lands in the `out/` folder inside the project:
-
-```
-out/workvivo-northwind-logistics.mp4
-```
-
-1920×1080, H.264, with audio. Around 110 MB for the full film — too big for most email, so
-send it via Drive, Box or Zoom.
+1920×1080, H.264, with audio, around 110 MB — too big for most email, so share it via
+Drive, Box or Zoom.
 
 ---
 
 ## When something goes wrong
 
-**"No project file at …"**
-The path is wrong. Use the drag-from-Finder trick above. Make sure there is a space after
-`--` and no quotes left over.
+**`node: command not found` / `npx: command not found`**
+Node is not installed, or the Terminal window predates the install. Open a new window; if
+it still fails, redo the install from [nodejs.org](https://nodejs.org).
 
-**"… is not valid JSON."**
-The download was cut short. Download it from the wizard again.
+**"Could not read --props" or "no such file"**
+The path to the JSON is wrong. Re-copy the command from the wizard — it fills in the
+filename it just saved — or drag the JSON from Finder into the Terminal window to get the
+path typed for you.
 
-**"… does not look like a wizard project file."**
-Wrong file — check you clicked *Download project file* and not something else.
+**A long pause near the start**
+First run downloads the tooling and browser; every run decodes the reference footage
+before the first frames appear. Give it two minutes before assuming it is stuck.
 
 **The error mentions a missing browser**
-You skipped step 4, or it did not finish. Run it again:
+Run this once, then retry:
 
 ```bash
-npx remotion browser ensure
+npx -p @remotion/cli remotion browser ensure
 ```
 
-**`npm: command not found`**
-Node did not install, or the terminal predates it. Open a new terminal; if it still fails,
-redo step 1.
-
-**It looks like it is stuck**
-Frame counts under about 1,000 can sit for a while at the start — the film has a full-length
-reference video underneath it that has to be decoded before anything else draws. Give it two
-minutes before assuming it has hung.
+**It rendered but there is no sound**
+Tell whoever maintains the wizard — the soundtrack comes from the reference video on the
+server, so silence is a server-side problem, not yours.
 
 ---
 
 ## For the curious
 
 To render a slice instead of the whole film — useful for checking one scene quickly —
-anything after the project file is passed straight to the Remotion CLI:
+add `--frames` to the same command:
 
 ```bash
-npm run render:project -- ~/Downloads/acme.json --frames=740-900
+npx -p @remotion/cli remotion render https://l2-concept.fly.dev/bundle CustomizedWorkvivo out.mp4 --props=$HOME/Downloads/acme.json --frames=740-900
 ```
 
-The wrapper itself is [`scripts/render-local.mjs`](../scripts/render-local.mjs); it only
-validates the file and names the output, then hands off to `remotion render`.
+What the URL serves is a Remotion "serve URL": the composition bundled by
+`npm run bundle:build`, published at `/bundle` by `server/prod.ts`, rebuilt on every
+deploy. The renderer fetches the bundle once and streams the footage by Range request.
 
 ---
 
@@ -233,16 +182,20 @@ ffmpeg -v error -ss 30.52 -i out/workvivo-acme.mp4 -frames:v 1 -y /tmp/frame.png
 
 `-ss` is seconds, so it is the frame number over 25 — frame 763 is `763 / 25 = 30.52`.
 
-## Rendering without the repo
+## How the no-repo render works
 
-The Remotion CLI takes a **serve URL** in place of a project directory, so a machine with
-nothing but Node can render against a hosted bundle:
+This is what the SE half of this page runs on. `npm run bundle:build` bundles the
+composition with `--public-path=/bundle/` — the prefix has to be baked in at build time,
+because webpack writes it into index.html and every chunk URL, and a bundle built for `/`
+serves the wizard's shell where the renderer expects JavaScript. `server/prod.ts` mounts
+the result at `/bundle`, checked before the SPA-shell rewrite so `/bundle/index.html` is
+not captured by it.
 
-```bash
-npx -p @remotion/cli remotion bundle --out-dir=build/bundle   # build it
-npx -p @remotion/cli remotion render <url> CustomizedWorkvivo out.mp4 --props=acme.json
-```
+The bundle is built INSIDE the Docker build, on purpose: .dockerignore excludes the 310 MB
+master edit, so the copy of `public/` the bundle swallows there is the trimmed one
+(~100 MB). Building it locally and copying it in would silently ship the master.
 
-Verified working. The full bundle is ~463 MB, but 310 MB of that is the master video the
-deploy already excludes — trimmed it is ~101 MB, which the Fly app could serve alongside
-the wizard. That would reduce SE setup to installing Node. Not built yet.
+Two operational notes: the bundle is part of every deploy, so composition changes reach
+SEs the moment the deploy lands, with nothing to hand out; and each render streams the
+45 MB reference video from Fly by Range request, so a slow connection pays that once per
+render, at the start.

@@ -2,6 +2,10 @@
   "name": "video-template",
   "version": "1.0.0",
   "private": true,
+  "bin": {
+    "workvivo-render": "scripts/render-local.mjs",
+    "workvivo-still": "scripts/still.mjs"
+  },
   "scripts": {
     "dev": "remotion studio",
     "start": "remotion studio",
@@ -13,10 +17,11 @@
     "gallery": "vite --config vite.gallery.config.ts",
     "gallery:build": "vite build --config vite.gallery.config.ts",
     "wizard:build": "vite build",
+    "bundle:build": "remotion bundle src/index.tsx --out-dir=build/bundle --public-path=/bundle/",
     "typecheck": "tsc --noEmit",
     "trust-proxy-ca": "node scripts/trust-proxy-ca.mjs",
     "build:server": "node scripts/build-server.mjs",
-    "build:deploy": "npm run wizard:build && npm run build:server"
+    "build:deploy": "npm run wizard:build && npm run bundle:build && npm run build:server"
   },
   "dependencies": {
     "@remotion/bundler": "4.0.496",

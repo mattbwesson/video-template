@@ -9,6 +9,7 @@
  * TypeScript and no node_modules at runtime.
  */
 
+import fs from "node:fs";
 import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -26,6 +27,7 @@ const here = path.dirname(fileURLToPath(import.meta.url));
  */
 const WEB_DIR = path.resolve(here, "web");
 const PUBLIC_DIR = path.resolve(here, "public");
+const BUNDLE_DIR = path.resolve(here, "bundle");
 
 /**
  * `sirv` rather than a hand-rolled file server, for one reason above all: byte ranges.
@@ -81,6 +83,31 @@ const wantsShell = (url: string): boolean => {
  */
 const servePublic = sirv(PUBLIC_DIR, { maxAge: 3600, etag: true });
 
+/**
+ * The Remotion bundle, under /bundle — what lets a machine with nothing but Node render
+ * the film at full quality against this server:
+ *
+ *   npx -p @remotion/cli remotion render https://<host>/bundle CustomizedWorkvivo \
+ *     out.mp4 --props=workvivo-acme.json
+ *
+ * The renderer fetches bundle.js and index.html from here once, then streams the
+ * composition's assets — including the 45 MB reference video, by Range request, which is
+ * why this goes through sirv like everything else. Webpack's chunk names are not
+ * content-hashed, so the cache policy matches public/: an hour with revalidation, not a
+ * year. Built by `npm run bundle:build` and copied in by the Dockerfile.
+ *
+ * Guarded, because sirv walks the directory at startup and an absent one is a crash at
+ * boot — which would take the whole wizard down over a feature the wizard itself never
+ * calls. A local run without the build step just 404s under /bundle instead.
+ */
+const serveBundle = fs.existsSync(BUNDLE_DIR)
+  ? sirv(BUNDLE_DIR, { maxAge: 3600, etag: true })
+  : (
+      _req: http.IncomingMessage,
+      res: http.ServerResponse,
+      next: () => void,
+    ) => next();
+
 const notFound = (res: http.ServerResponse): void => {
   res.statusCode = 404;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -126,7 +153,16 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // The shell is checked FIRST, before the asset server gets a look. Left to fall through,
+  // The render bundle, on its own prefix — and checked BEFORE the shell rewrite, which
+  // would otherwise capture `/bundle/index.html` (it ends in .html) and hand the Remotion
+  // renderer the wizard's HTML instead of the composition's.
+  if (url === "/bundle" || url.startsWith("/bundle/")) {
+    req.url = url.slice("/bundle".length) || "/";
+    serveBundle(req, res, () => notFound(res));
+    return;
+  }
+
+  // The shell is checked next, before the asset server gets a look. Left to fall through,
   // sirv would resolve `/` to index.html itself and serve it with the immutable headers
   // meant for hashed files — which is the bug this split exists to prevent, and it would
   // come back silently.

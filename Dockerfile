@@ -9,17 +9,25 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Everything the two builds read: the wizard, the composition it renders, the server
-# handlers, and the configs that tie them together.
-COPY tsconfig.json vite.config.ts ./
+# Everything the three builds read: the wizard, the composition (both as the wizard's
+# preview and as the render bundle), the server handlers, and the configs that tie them
+# together.
+COPY tsconfig.json vite.config.ts remotion.config.ts ./
 COPY scripts ./scripts
 COPY server ./server
 COPY src ./src
 COPY web ./web
 COPY public ./public
 
-# `wizard:build` emits build/web (the app; public/ is NOT copied in — see vite.config.ts)
-# and `build:server` bundles the handlers to a single ESM file with sirv inlined.
+# `wizard:build` emits build/web (the app; public/ is NOT copied in — see vite.config.ts),
+# `bundle:build` emits build/bundle (the composition as a Remotion serve URL, so a machine
+# with only Node can render against this server — see /bundle in server/prod.ts), and
+# `build:server` bundles the handlers to a single ESM file with sirv inlined.
+#
+# The render bundle copies public/ into itself, and because .dockerignore excludes the
+# 310 MB master edit and the reference captures, the copy made HERE is the trimmed one —
+# ~100 MB instead of ~460. Building the bundle locally instead and COPYing it in would
+# quietly ship the master.
 RUN npm run build:deploy
 
 # --- runtime -------------------------------------------------------------------------
@@ -32,6 +40,7 @@ ENV NODE_ENV=production
 COPY --from=build /app/build/server/index.mjs ./index.mjs
 COPY --from=build /app/build/web ./web
 COPY --from=build /app/public ./public
+COPY --from=build /app/build/bundle ./bundle
 
 # Drop root. The process only ever reads these files.
 USER node

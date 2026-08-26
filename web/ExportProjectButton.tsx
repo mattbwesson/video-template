@@ -25,6 +25,7 @@ export const ExportProjectButton: React.FC<{
   company: string;
 }> = ({ inputProps, company }) => {
   const [saved, setSaved] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const save = useCallback(() => {
     const filename = `workvivo-${companySlug(company)}.json`;
@@ -35,20 +36,60 @@ export const ExportProjectButton: React.FC<{
     });
     downloadBlob(blob, filename);
     setSaved(filename);
+    setCopied(false);
   }, [inputProps, company]);
+
+  /**
+   * The full render command, exactly as it should be pasted, with THIS download's
+   * filename already in it. This server publishes the composition as a Remotion serve URL
+   * at /bundle, so the only thing the machine running this needs is Node — the CLI and
+   * its browser download themselves on first use. The origin comes from the page rather
+   * than being written here, so the command is right on localhost, on staging, and on
+   * whatever the app is called next.
+   */
+  const command = saved
+    ? `npx -p @remotion/cli remotion render ${window.location.origin}/bundle CustomizedWorkvivo workvivo-${companySlug(company)}.mp4 --props=$HOME/Downloads/${saved}`
+    : "";
+
+  const copy = useCallback(() => {
+    // Fire-and-forget: if the clipboard is unavailable the command is still on screen to
+    // select by hand, which is the fallback either way.
+    void navigator.clipboard?.writeText(command).then(() => setCopied(true));
+  }, [command]);
+
+  if (saved) {
+    return (
+      <span className="vc-render">
+        <span className="vc-quietnote">
+          Saved. Render it in Terminal — needs only{" "}
+          <a href="https://nodejs.org" target="_blank" rel="noreferrer">
+            Node
+          </a>
+          :
+        </span>
+        <code
+          className="vc-mono"
+          style={{ userSelect: "all", cursor: "pointer" }}
+          title="Click to copy"
+          onClick={copy}
+        >
+          {command}
+        </code>
+        <button className="vc-btn vc-quiet" onClick={copy}>
+          {copied ? "Copied" : "Copy command"}
+        </button>
+        <button className="vc-btn vc-quiet" onClick={save}>
+          Download again
+        </button>
+      </span>
+    );
+  }
 
   return (
     <span className="vc-render">
-      {saved ? (
-        <span className="vc-quietnote">
-          Saved {saved} — render it with{" "}
-          <code className="vc-mono">npm run render:project</code>
-        </span>
-      ) : (
-        <span className="vc-quietnote">Full quality, renders on your machine</span>
-      )}
+      <span className="vc-quietnote">Full quality, renders on your machine</span>
       <button className="vc-btn" onClick={save}>
-        {saved ? "Download again" : "Download project file"}
+        Download project file
       </button>
     </span>
   );
