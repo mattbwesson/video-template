@@ -47,8 +47,12 @@ export const ExportProjectButton: React.FC<{
    * than being written here, so the command is right on localhost, on staging, and on
    * whatever the app is called next.
    */
+  // --image-format=png: with the default JPEG screenshots, the rebuilt UI scenes carry a
+  // faint wavy shimmer from quantization noise moving frame to frame. The repo's
+  // remotion.config.ts sets the same thing, but a config file cannot follow the bundle to
+  // someone else's machine, so the command has to say it.
   const command = saved
-    ? `npx -p @remotion/cli remotion render ${window.location.origin}/bundle CustomizedWorkvivo workvivo-${companySlug(company)}.mp4 --props=$HOME/Downloads/${saved}`
+    ? `npx -p @remotion/cli remotion render ${window.location.origin}/bundle CustomizedWorkvivo workvivo-${companySlug(company)}.mp4 --props=$HOME/Downloads/${saved} --image-format=png`
     : "";
 
   const copy = useCallback(() => {

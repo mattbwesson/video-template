@@ -111,6 +111,10 @@ const args = [
   COMPOSITION,
   outPath,
   `--props=${propsPath}`,
+  // PNG screenshots, or the flat-colour UI scenes pick up a faint frame-to-frame shimmer
+  // from JPEG quantization — see remotion.config.ts. Spelled out here as well because a
+  // caller's extra flags come after and can still override it.
+  "--image-format=png",
   ...rest,
 ];
 

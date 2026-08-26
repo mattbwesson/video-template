@@ -30,3 +30,9 @@ public/img/webianr.mp4
 # ignored above; these are strays from before it existed.
 test_*.png
 cut_check_*
+
+# Renders that land in the repo root instead of out/ — e.g. the serve-URL command run
+# from here. GitHub rejects any push carrying a file over 100 MB, so one stray MP4
+# blocks the whole branch.
+workvivo-*.mp4
+workvivo-*.json
