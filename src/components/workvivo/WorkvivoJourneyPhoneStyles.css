@@ -51,8 +51,9 @@
 .wjp-hero-burn {
   position: absolute;
   inset: 0;
-  background: radial-gradient(
-    120% 130% at 50% 15%,
+  /* Linear: the export drops radial gradients entirely (web/renderProbe.tsx). */
+  background: linear-gradient(
+    120deg,
     var(--wv-hdr, var(--wjp-brand, var(--wv-brand, #44d760))) 0%,
     var(--wv-hdr-d1, var(--wv-brand-d1, #2ecc71)) 45%,
     var(--wv-hdr-d3, var(--wv-brand-d3, #1e824c)) 100%

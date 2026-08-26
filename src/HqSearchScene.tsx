@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import {
   HQ_SEARCH_H,
@@ -105,12 +106,10 @@ export const HqSearchScene: React.FC<{ scale?: number; background?: string }> = 
           zIndex: 50,
         }}
       >
-        <Img
-          src={staticFile("img/cursor.svg")}
+        <CursorArrow color="black"
           style={{
             width: 85.5,
             height: 85.5,
-            filter: "brightness(0) drop-shadow(0 10px 20px rgba(0,0,0,0.5))",
           }}
         />
       </div>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { InlineSvg } from "../InlineSvg";
 import { SymbolSvg, registerSymbolJsx } from './symbolRegistry';
 import { staticFile } from 'remotion';
 import './WorkvivoCatchMeUpStyles.css';
@@ -232,7 +233,7 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
             <div className="wcmu-sec">
               <button className="wcmu-cmu" id="open" type="button" onClick={onOpenStory}>
                 <span className="wcmu-hq">
-                  <img
+                  <InlineSvg
                     src={staticFile("img/hq-logo.svg")}
                     width="34"
                     height="20"
@@ -287,7 +288,7 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
             <div className="wcmu-sbar">
               <div className="wcmu-stop">
                 <span className="wcmu-shq">
-                  <img
+                  <InlineSvg
                     src={staticFile("img/hq-logo.svg")}
                     width="18"
                     height="11"

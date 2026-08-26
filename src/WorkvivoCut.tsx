@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import { linearTiming, TransitionSeries } from "@remotion/transitions";
 import {
   AbsoluteFill,
@@ -343,12 +344,10 @@ const SeerRaterClick2Shot: React.FC = () => {
           pointerEvents: "none",
           zIndex: 50,
         }}>
-        <Img
-          src={staticFile("img/cursor.svg")}
+        <CursorArrow color="black"
           style={{
             width: 85.5,
             height: 85.5,
-            filter: "brightness(0) drop-shadow(0 6px 16px rgba(0,0,0,0.35))",
           }}
         />
       </div>
@@ -444,12 +443,10 @@ const SeerInsightsCutShot: React.FC = () => {
             pointerEvents: "none",
             zIndex: 50,
           }}>
-          <Img
-            src={staticFile("img/cursor.svg")}
+          <CursorArrow color="black"
             style={{
               width: 85.5,
               height: 85.5,
-              filter: "brightness(0) drop-shadow(0 6px 16px rgba(0,0,0,0.35))",
             }}
           />
         </div>

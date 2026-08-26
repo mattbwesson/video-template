@@ -211,39 +211,8 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
       <WorkvivoMobileSvgDefs />
 
       {/* Status bar — identical to WorkvivoMobileHome at frame 574 */}
-      <div className="wm-status">
-        <div className="wm-time">9:41</div>
-        <div className="wm-sysico">
-          <SymbolSvg width="17" height="11" href="#i-signal" />
-          <SymbolSvg width="16" height="11" href="#i-wifi" />
-          <SymbolSvg width="25" height="12" href="#i-battery" />
-        </div>
-      </div>
-
       {/* Hero header — identical to WorkvivoMobileHome at frame 574 */}
-      <div className="wm-hero" style={hdr.style}>
-        <img
-          data-vc-slot="mobile.hero.0"
-          className="wm-heroimg"
-          src={image("mobile.hero.0", staticFile("fillers/190206084405_01_spotify_office_file_d0396b0d1b.webp"))}
-          style={{ objectFit: "cover" }}
-          alt=""
-        />
-        <div className="wm-herowash" />
-        {hdr.showLogo && (
-          <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
-        )}
-        <div className="wm-heroV">{companyInitial}</div>
-        <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
-        <div className="wm-heroacts">
-          <div className="wm-gbtn wm-plus"><i/><i/></div>
-          <div className="wm-gbtn"><SymbolSvg width="22" height="22" href="#i-ui-employee-standalone" /></div>
-        </div>
-        <div className="wm-herotabs">
-          <a href="#">Feed</a>
-          <a href="#" className="wm-on">Spotlight</a>
-        </div>
-      </div>
+      
 
       {/* --------------------------------------------------------- content */}
       <div className="wms-scroll">
@@ -434,6 +403,43 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
               <div className="wms-event-btn">View Event</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="wm-hero" style={hdr.style}>
+        <img
+          data-vc-slot="mobile.hero.0"
+          className="wm-heroimg"
+          src={image("mobile.hero.0", staticFile("fillers/190206084405_01_spotify_office_file_d0396b0d1b.webp"))}
+          style={{ objectFit: "cover" }}
+          alt=""
+        />
+        <div className="wm-herowash" />
+        {hdr.showLogo && (
+          <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
+        )}
+        <div className="wm-heroV">{companyInitial}</div>
+        <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
+        <div className="wm-heroacts">
+          <div className="wm-gbtn wm-plus"><i/><i/></div>
+          <div className="wm-gbtn"><SymbolSvg width="22" height="22" href="#i-ui-employee-standalone" /></div>
+        </div>
+        <div className="wm-herotabs">
+          <a href="#">Feed</a>
+          <a href="#" className="wm-on">Spotlight</a>
+        </div>
+      </div>
+
+      {/* AFTER the hero in the DOM, on purpose. The z ladder (status 5, hero 4)
+          is what the Player paints by; the in-browser export paints DOM order and
+          ignores sibling z-index, so the order here has to agree with the ladder or
+          the export buries the status bar under the header photo. */}
+      <div className="wm-status">
+        <div className="wm-time">9:41</div>
+        <div className="wm-sysico">
+          <SymbolSvg width="17" height="11" href="#i-signal" />
+          <SymbolSvg width="16" height="11" href="#i-wifi" />
+          <SymbolSvg width="25" height="12" href="#i-battery" />
         </div>
       </div>
 

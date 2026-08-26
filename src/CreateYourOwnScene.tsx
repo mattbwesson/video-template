@@ -55,15 +55,6 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
 
   // Shine sweep across just the sparkle
   const shineCycle = 36;
-  const shineProgress = interpolate(
-    (frame + 12) % shineCycle,
-    [0, 16],
-    [-100, 220],
-    {
-      extrapolateLeft: "clamp",
-      extrapolateRight: "clamp",
-    }
-  );
 
   return (
     <AbsoluteFill
@@ -137,7 +128,6 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
               opacity: sparkleOpacity,
               transform: `translate(-180px, calc(-50% + ${bobY - 35}px)) rotate(${bobRot}deg) scale(${sparkleScale})`,
               transformOrigin: "center center",
-              mixBlendMode: "plus-lighter",
               pointerEvents: "none",
               willChange: "transform, opacity",
             }}
@@ -163,37 +153,10 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                 }}
               />
 
-              {/* Shine Sweep Layer masked strictly to the sparkle */}
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  maskImage: `url(${staticFile(icon)})`,
-                  WebkitMaskImage: `url(${staticFile(icon)})`,
-                  maskSize: "contain",
-                  WebkitMaskSize: "contain",
-                  maskRepeat: "no-repeat",
-                  WebkitMaskRepeat: "no-repeat",
-                  maskPosition: "center",
-                  WebkitMaskPosition: "center",
-                  overflow: "hidden",
-                  pointerEvents: "none",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    width: "45%",
-                    height: "250%",
-                    top: "-75%",
-                    left: `${shineProgress}%`,
-                    background:
-                      "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.95) 50%, rgba(255,255,255,0) 100%)",
-                    transform: "rotate(25deg)",
-                    filter: "blur(4px)",
-                  }}
-                />
-              </div>
+              {/* The shine sweep that lived here — a moving gradient bar clipped by
+                  `mask-image: url(sparkle)` — is gone: the export renderer drops masks,
+                  which turned the sweep into an unmasked white bar sliding across the
+                  frame. A glint that only exists in one renderer is not worth keeping. */}
             </div>
           </div>
         )}

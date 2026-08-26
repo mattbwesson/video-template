@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "../CursorArrow";
 import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import "./WorkvivoStyles.css";
 import "./WorkvivoSeerRaterStyles.css";
@@ -286,17 +287,15 @@ export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
                 </div>
 
                 {cursor ? (
-                  <img
-                    src={staticFile("img/cursor.svg")}
-                    alt=""
+                  <CursorArrow
+                    color="black"
                     style={{
                       position: "absolute",
                       left: cursor.left,
                       top: cursor.top,
                       width: 72,
-                      height: "auto",
+                      height: 80,
                       pointerEvents: "none",
-                      filter: "drop-shadow(0 2px 5px rgba(0,0,0,0.28))",
                     }}
                   />
                 ) : null}

@@ -1,4 +1,6 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
+import { CursorArrow } from "../CursorArrow";
 import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import { WorkvivoHqSidebar } from "./WorkvivoHqSidebar";
@@ -363,7 +365,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
               }}
             >
               <div className="whq-agent-head">
-                <img
+                <InlineSvg
                   src={staticFile("img/hq-agent-logo.svg")}
                   alt="HQ agent"
                   style={{ height: 22, width: "auto", display: "block" }}
@@ -416,7 +418,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
 
                 <div className="whq-attach-label">1 Attachment</div>
                 <div className="whq-attach">
-                  <img src={staticFile("img/file-pdf.svg")} alt="" />
+                  <InlineSvg src={staticFile("img/file-pdf.svg")} alt="" />
                   <span>
                     <span className="whq-attach-name">{hq.attachment}</span>
                     <span className="whq-attach-kind" style={{ display: "block" }}>
@@ -529,11 +531,10 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
       </div>
 
       {cursor ? (
-        <img
+        <CursorArrow
+          color="black"
           className="whq-cursor"
-          src={staticFile("img/cursor.svg")}
-          alt=""
-          style={{ left: cursor.left, top: cursor.top }}
+          style={{ left: cursor.left, top: cursor.top, height: 61 }}
         />
       ) : null}
     </div>

@@ -1,11 +1,6 @@
 import React from 'react';
-import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from 'remotion';
-import {
-  CHAT_ICON_SRC,
-  MAG_ICON_SRC,
-  ROCKET_ICON_SRC,
-  SPECK_SRC,
-} from './contentListAssets';
+import { AbsoluteFill, Easing, interpolate, staticFile, useCurrentFrame } from 'remotion';
+import { SPECK_SRC } from './contentListAssets';
 
 const specksData = [
   { left: '49.7%', top: '74.5%', size: 11, delay: -4.4 },
@@ -148,8 +143,7 @@ export const ContentListBackground: React.FC = () => {
               width: s.size,
               height: s.size,
               objectFit: 'fill',
-              mixBlendMode: 'plus-lighter',
-              opacity,
+                            opacity,
               transform: `translate(${dx}px, ${dy}px)`,
               willChange: 'transform, opacity',
             }}
@@ -331,7 +325,11 @@ export const ContentListContent: React.FC = () => {
         })()}
       </div>
 
-      {/* Glass Icons with Purple Color Overlay and plus-lighter blend mode */}
+      {/* Glass icons, tint pre-baked. These carried a mask-image'd gradient wash and
+          plus-lighter blends; the in-browser export supports neither — the maskless wash
+          painted its whole box as a purple tile over every icon (web/renderProbe.tsx).
+          scripts in-repo baked the same wash into public/img/glass/*.png, so one plain
+          <img> now draws what three blended layers used to. */}
       {/* Chat Icon (top right) */}
       <div
         style={{
@@ -342,36 +340,12 @@ export const ContentListContent: React.FC = () => {
           height: 262,
           transform: chatTransform,
           willChange: 'transform',
-          mixBlendMode: 'plus-lighter',
-        }}
+                  }}
       >
         <img
-          src={CHAT_ICON_SRC}
+          src={staticFile("img/glass/chat.png")}
           alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'fill',
-            mixBlendMode: 'plus-lighter',
-          }}
-          />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(135deg, rgba(168, 85, 247, 0.9) 0%, rgba(139, 92, 246, 0.75) 50%, rgba(109, 40, 217, 0.85) 100%)',
-            mixBlendMode: 'plus-lighter',
-            opacity: 0.5,
-            WebkitMaskImage: `url(${CHAT_ICON_SRC})`,
-            WebkitMaskSize: '100% 100%',
-            WebkitMaskRepeat: 'no-repeat',
-            maskImage: `url(${CHAT_ICON_SRC})`,
-            maskSize: '100% 100%',
-            maskRepeat: 'no-repeat',
-          }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill' }}
         />
       </div>
 
@@ -385,36 +359,12 @@ export const ContentListContent: React.FC = () => {
           height: 284,
           transform: rocketTransform,
           willChange: 'transform',
-          mixBlendMode: 'plus-lighter',
-        }}
+                  }}
       >
         <img
-          src={ROCKET_ICON_SRC}
+          src={staticFile("img/glass/rocket.png")}
           alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'fill',
-            mixBlendMode: 'plus-lighter',
-          }}
-          />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(135deg, rgba(168, 85, 247, 0.9) 0%, rgba(139, 92, 246, 0.75) 50%, rgba(109, 40, 217, 0.85) 100%)',
-            mixBlendMode: 'plus-lighter',
-            opacity: 0.5,
-            WebkitMaskImage: `url(${ROCKET_ICON_SRC})`,
-            WebkitMaskSize: '100% 100%',
-            WebkitMaskRepeat: 'no-repeat',
-            maskImage: `url(${ROCKET_ICON_SRC})`,
-            maskSize: '100% 100%',
-            maskRepeat: 'no-repeat',
-          }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill' }}
         />
       </div>
 
@@ -428,36 +378,12 @@ export const ContentListContent: React.FC = () => {
           height: 228,
           transform: magTransform,
           willChange: 'transform',
-          mixBlendMode: 'plus-lighter',
-        }}
+                  }}
       >
         <img
-          src={MAG_ICON_SRC}
+          src={staticFile("img/glass/mag.png")}
           alt=""
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'fill',
-            mixBlendMode: 'plus-lighter',
-          }}
-          />
-        <div
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background:
-              'linear-gradient(135deg, rgba(168, 85, 247, 0.9) 0%, rgba(139, 92, 246, 0.75) 50%, rgba(109, 40, 217, 0.85) 100%)',
-            mixBlendMode: 'plus-lighter',
-            opacity: 0.5,
-            WebkitMaskImage: `url(${MAG_ICON_SRC})`,
-            WebkitMaskSize: '100% 100%',
-            WebkitMaskRepeat: 'no-repeat',
-            maskImage: `url(${MAG_ICON_SRC})`,
-            maskSize: '100% 100%',
-            maskRepeat: 'no-repeat',
-          }}
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'fill' }}
         />
       </div>
     </AbsoluteFill>

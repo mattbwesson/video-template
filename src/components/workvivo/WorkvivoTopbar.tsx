@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { staticFile } from "remotion";
 import { Icon } from "./WorkvivoIcons";
 import { useCustomization } from "../../customize/CustomizationProvider";
@@ -16,7 +17,7 @@ export const WorkvivoTopbar: React.FC = () => {
       </div>
       <div className="tacts">
         <Icon href="#i-ui-notifications" width="21.43" height="21.43" />
-        <img
+        <InlineSvg
           src={staticFile("img/more.svg")}
           width="18"
           height="18"

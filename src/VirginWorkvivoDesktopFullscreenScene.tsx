@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import {
   AbsoluteFill,
   Easing,
@@ -390,12 +391,10 @@ export const VirginWorkvivoPostComposerOverlay: React.FC = () => {
             zIndex: 100,
           }}
         >
-          <Img
-            src={staticFile("img/cursor.svg")}
+          <CursorArrow color="black"
             style={{
               width: 91.2,
               height: 91.2,
-              filter: "drop-shadow(0 10px 20px rgba(0,0,0,0.5))",
             }}
           />
         </div>

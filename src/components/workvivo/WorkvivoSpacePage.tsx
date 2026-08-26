@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { staticFile } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
@@ -283,7 +284,7 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-tacts">
             <div className="wsp-tacts-pill">
               <Icon href="#i-ui-notifications" width={18} height={18} />
-              <img
+              <InlineSvg
                 src={staticFile("img/more.svg")}
                 width={18}
                 height={18}

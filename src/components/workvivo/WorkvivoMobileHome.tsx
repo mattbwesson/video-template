@@ -143,47 +143,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
       <WorkvivoMobileSvgDefs />
       <div className="wm-screen">
         {/* Status bar */}
-        <div className="wm-status">
-          <div className="wm-time">9:41</div>
-          <div className="wm-sysico">
-            <SymbolSvg width="17" height="11" href="#i-signal" />
-            <SymbolSvg width="16" height="11" href="#i-wifi" />
-            <SymbolSvg width="25" height="12" href="#i-battery" />
-          </div>
-        </div>
-
-        {/* Hero header.
-            A cover photo under a brand-coloured wash, which is how a real Workvivo mobile
-            header is dressed: the picture carries the company, the wash keeps the header
-            the brand colour and keeps the white controls on it legible whatever the photo
-            turns out to be. Both sit under the existing texture and scrim — see the
-            z-index ladder in WorkvivoMobileStyles.css, which those two layers made
-            explicit. */}
-        <div className="wm-hero" style={hdr.style}>
-          {/* A real <img>, not a background — the export drops CSS background photos
-              (web/renderProbe.tsx). */}
-          <img
-            data-vc-slot="mobile.hero.0"
-            className="wm-heroimg"
-            src={image("mobile.hero.0", staticFile("fillers/190206084405_01_spotify_office_file_d0396b0d1b.webp"))}
-            style={{ objectFit: "cover" }}
-            alt=""
-          />
-          <div className="wm-herowash" />
-          {hdr.showLogo && (
-            <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
-          )}
-          <div className="wm-heroV">{companyInitial}</div>
-          <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
-          <div className="wm-heroacts">
-            <div className="wm-gbtn wm-plus"><i/><i/></div>
-            <div className="wm-gbtn"><SymbolSvg width="22" height="22" href="#i-ui-employee-standalone" /></div>
-          </div>
-          <div className="wm-herotabs">
-            <a href="#">Feed</a>
-            <a href="#" className="wm-on">Spotlight</a>
-          </div>
-        </div>
+        
 
         {/* Scrollable body */}
         <div className="wm-scroll">
@@ -272,6 +232,52 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             </div>
 
             <div className="wm-pad"></div>
+          </div>
+        </div>
+
+        {/* Hero header.
+            A cover photo under a brand-coloured wash, which is how a real Workvivo mobile
+            header is dressed: the picture carries the company, the wash keeps the header
+            the brand colour and keeps the white controls on it legible whatever the photo
+            turns out to be. Both sit under the existing texture and scrim — see the
+            z-index ladder in WorkvivoMobileStyles.css, which those two layers made
+            explicit. */}
+        <div className="wm-hero" style={hdr.style}>
+          {/* A real <img>, not a background — the export drops CSS background photos
+              (web/renderProbe.tsx). */}
+          <img
+            data-vc-slot="mobile.hero.0"
+            className="wm-heroimg"
+            src={image("mobile.hero.0", staticFile("fillers/190206084405_01_spotify_office_file_d0396b0d1b.webp"))}
+            style={{ objectFit: "cover" }}
+            alt=""
+          />
+          <div className="wm-herowash" />
+          {hdr.showLogo && (
+            <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
+          )}
+          <div className="wm-heroV">{companyInitial}</div>
+          <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
+          <div className="wm-heroacts">
+            <div className="wm-gbtn wm-plus"><i/><i/></div>
+            <div className="wm-gbtn"><SymbolSvg width="22" height="22" href="#i-ui-employee-standalone" /></div>
+          </div>
+          <div className="wm-herotabs">
+            <a href="#">Feed</a>
+            <a href="#" className="wm-on">Spotlight</a>
+          </div>
+        </div>
+
+        {/* AFTER the hero in the DOM, on purpose. The z ladder (status 5, hero 4)
+            is what the Player paints by; the in-browser export paints DOM order and
+            ignores sibling z-index, so the order here has to agree with the ladder or
+            the export buries the status bar under the header photo. */}
+        <div className="wm-status">
+          <div className="wm-time">9:41</div>
+          <div className="wm-sysico">
+            <SymbolSvg width="17" height="11" href="#i-signal" />
+            <SymbolSvg width="16" height="11" href="#i-wifi" />
+            <SymbolSvg width="25" height="12" href="#i-battery" />
           </div>
         </div>
       </div>

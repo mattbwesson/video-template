@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { SymbolSvg, registerSymbolJsx } from "./symbolRegistry";
 import {
   Easing,
@@ -314,37 +315,37 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
       </div>
       <div className="pc-agrid">
         <AddTile bg="#E6F7EE" color="#16A34A" label="Image">
-          <Img src={staticFile("img/post types/post-image.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-image.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#FFF0E0" color="#F97316" label="Video">
-          <Img src={staticFile("img/post types/post-video.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-video.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#E4F0FF" color="#2E7CF6" label="GIF">
-          <Img src={staticFile("img/post types/post-gif.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-gif.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#F3ECFF" color="#7C3AED" label="Attachment">
-          <Img src={staticFile("img/post types/post-attachment.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-attachment.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#FDE8F1" color="#EC4899" label="Hooray">
-          <Img src={staticFile("img/post types/post-hooray.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-hooray.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#E4F1FD" color="#0EA5E9" label="Value">
-          <Img src={staticFile("img/post types/post-value.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-value.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#FEF3DC" color="#F59E0B" label="Poll">
-          <Img src={staticFile("img/post types/post-poll.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-poll.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#E9E9FD" color="#6366F1" label="Campaign">
-          <Img src={staticFile("img/post types/post-campaign.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-campaign.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#F3E8FF" color="#A855F7" label="Tag">
-          <Img src={staticFile("img/post types/post-tag.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-tag.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#E6F7EE" color="#16A34A" label="Acknowled...">
-          <Img src={staticFile("img/post types/post-acknowledgement.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-acknowledgement.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
         <AddTile bg="#E0F5F5" color="#06B6D4" label="Translations">
-          <Img src={staticFile("img/post types/post-translation.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
+          <InlineSvg src={staticFile("img/post types/post-translation.svg")} style={{ width: 40, height: 40, objectFit: "contain" }} />
         </AddTile>
       </div>
     </div>

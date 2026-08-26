@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { SymbolSvg, registerSymbolJsx } from "./symbolRegistry";
 import { Sequence, staticFile } from "remotion";
 import { Video } from "@remotion/media";
@@ -87,14 +88,14 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
             draws it white, hence the knockout filter. */}
         <div className="lr-hacts">
           <span className="lr-ic">
-            <img
+            <InlineSvg
               className="lr-knockout"
               src={staticFile("img/webinar-icon-mute.svg")}
               alt=""
             />
           </span>
           <span className="lr-ic">
-            <img src={staticFile("img/webinar-icon-rotate.svg")} alt="" />
+            <InlineSvg src={staticFile("img/webinar-icon-rotate.svg")} alt="" />
           </span>
         </div>
       </div>

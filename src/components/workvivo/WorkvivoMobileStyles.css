@@ -83,7 +83,11 @@
      the contents stay in proportion; the controls keep their own sizes, since shrinking the
      header was about reclaiming vertical space, not about smaller buttons. */
   height: 169.6px;
-  background: radial-gradient(120% 130% at 50% 15%, var(--wv-brand, #44D760) 0%, var(--wv-brand-d1, #2ECC71) 45%, var(--wv-brand-d3, #1E824C) 100%);
+  /* Linear, not the radial it used to be: the in-browser export renders linear
+     gradients and silently drops radial ones entirely (web/renderProbe.tsx cells
+     12-15), which exported this header as the raw photo with no brand tint. 120deg
+     matches the desktop banner, so the two read as one treatment. */
+  background: linear-gradient(120deg, var(--wv-brand, #44D760) 0%, var(--wv-brand-d1, #2ECC71) 45%, var(--wv-brand-d3, #1E824C) 100%);
   overflow: hidden;
 }
 
@@ -116,7 +120,8 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: radial-gradient(120% 130% at 50% 15%, var(--wv-hdr, var(--wv-brand, #44D760)) 0%, var(--wv-hdr-d1, var(--wv-brand-d1, #2ECC71)) 45%, var(--wv-hdr-d3, var(--wv-brand-d3, #1E824C)) 100%);
+  /* Linear for the same reason as .wm-hero above. */
+  background: linear-gradient(120deg, var(--wv-hdr, var(--wv-brand, #44D760)) 0%, var(--wv-hdr-d1, var(--wv-brand-d1, #2ECC71)) 45%, var(--wv-hdr-d3, var(--wv-brand-d3, #1E824C)) 100%);
   opacity: var(--wv-hdr-op, 0.78);
 }
 

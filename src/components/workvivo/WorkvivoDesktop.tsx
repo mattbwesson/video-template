@@ -1,4 +1,5 @@
 import React from 'react';
+import { InlineSvg } from "../InlineSvg";
 import { SymbolSvg } from "./symbolRegistry";
 import { staticFile } from 'remotion';
 import './WorkvivoDesktopStyles.css';
@@ -122,7 +123,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
         </div>
         <div className="wvd-tacts">
           <SymbolSvg width="21" height="21" href="#i-ui-notifications" />
-          <img src={staticFile("img/more.svg")} width="18" height="18" alt="" style={{ display: "block" }} />
+          <InlineSvg src={staticFile("img/more.svg")} width="18" height="18" alt="" style={{ display: "block" }} />
           <img className="wvd-tav" src={person.avatarUrl} style={person.avatarFit} alt="" />
         </div>
       </div>
@@ -411,7 +412,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                     </div>
                     <div className="wvd-att">
                       <div className="wvd-lbl">Attachments(1)</div>
-                      <div className="wvd-attrow"><img src={staticFile("img/file-pdf.svg")} style={{ width: 28, height: 33, objectFit: "contain", flex: "none" }} alt="" />PDF document<span className="wvd-kb">756 KB</span></div>
+                      <div className="wvd-attrow"><InlineSvg src={staticFile("img/file-pdf.svg")} style={{ width: 28, height: 33, objectFit: "contain", flex: "none" }} alt="" />PDF document<span className="wvd-kb">756 KB</span></div>
                     </div>
                     <div className="wvd-pfoot">
                       <span>42 reactions</span><span className="wvd-dot">·</span><span>12 comments</span>

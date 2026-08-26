@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import { AbsoluteFill, Easing, Img, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { MobileClick, WorkvivoLiveReplay, WorkvivoLivestream } from "./components/workvivo";
 import { useCustomization } from "./customize/CustomizationProvider";
@@ -268,12 +269,10 @@ export const LivestreamScene: React.FC = () => {
             zIndex: 50,
           }}
         >
-          <Img
-            src={staticFile("img/cursor.svg")}
+          <CursorArrow color="white"
             style={{
               width: 85.5,
               height: 85.5,
-              filter: "brightness(0) invert(1) drop-shadow(0 10px 20px rgba(0,0,0,0.5))",
             }}
           />
         </div>

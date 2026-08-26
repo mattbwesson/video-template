@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { staticFile } from "remotion";
 import "./WorkvivoStyles.css";
 import "./WorkvivoSeerChromeStyles.css";
@@ -71,7 +72,7 @@ export const WorkvivoSeerChrome: React.FC<WorkvivoSeerChromeProps> = ({
               <main className="wsc-main">
                 <div className="wsc-head">
                   <div className="wsc-title">
-                    <img
+                    <InlineSvg
                       src={staticFile("img/seer-insights.svg")}
                       alt=""
                       width={28}

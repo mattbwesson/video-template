@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { staticFile } from "remotion";
 import "./WorkvivoStyles.css";
 import "./WorkvivoSpaceFeedStyles.css";
@@ -331,7 +332,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                           <Icon href="#i-ui-everyone" width={13} height={13} />
                         </div>
                       </div>
-                      <img
+                      <InlineSvg
                         src={staticFile("img/more.svg")}
                         width={22}
                         height={22}
@@ -366,7 +367,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                     <div className="wsf-attach-label">Attachments(1)</div>
                     <div className="wsf-attach">
                       <span className="wsf-attach-left">
-                        <img
+                        <InlineSvg
                           src={staticFile("img/file-pdf.svg")}
                           width={40}
                           height={40}

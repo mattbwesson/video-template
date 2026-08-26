@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import {
   AbsoluteFill,
   Easing,
@@ -389,8 +390,7 @@ export const QuoteCard: React.FC = () => {
       {/* cursor.svg carries no paint of its own, so brightness(0) invert(1) forces it white —
           the same trick WorkvivoMobileStyles uses for its own glyphs. It presses on each
           rewrite, scaling about its tip rather than its box so the point stays put. */}
-      <Img
-        src={staticFile("img/cursor.svg")}
+      <CursorArrow color="white"
         style={{
           position: "absolute",
           left: CARD_LEFT + CARD_WIDTH - CURSOR_INSET_RIGHT,
@@ -399,17 +399,17 @@ export const QuoteCard: React.FC = () => {
           height: 89,
           transform: `scale(${cursorPress})`,
           transformOrigin: "10% 4%",
-          filter: "brightness(0) invert(1) drop-shadow(0 4px 10px rgba(0,0,0,.45))",
         }}
       />
       </AbsoluteFill>
 
-      {/* NOT inside the exit group above, deliberately. `mix-blend-mode: plus-lighter` only
-          blends against the backdrop in its OWN stacking context, and that group's
-          `transform` creates one — inside it the sparkle composited against transparency
-          and lost the additive glow entirely. Out here its backdrop is the halos and the
-          opaque #00031F fill, which is what quote-card.html blends it against. It still
-          carries the same translateY, so it leaves locked to the card as before. */}
+      {/* NOT inside the exit group above: it needs the frame's own backdrop behind it, and
+          that group's transform would clip it into a fresh stacking context. It still
+          carries the same translateY, so it leaves locked to the card as before.
+
+          No plus-lighter any more: the export renderer drops blend modes, and the PNG has
+          real alpha, so normal compositing over the near-black field reads the same in
+          both renderers instead of correct in one. */}
       <Img
         src={staticFile("img/quote-card-sparkle.png")}
         style={{
@@ -420,7 +420,6 @@ export const QuoteCard: React.FC = () => {
           height: SPARKLE_SIZE,
           transform: `translateY(${exitY}px) translate(${driftX}px, ${driftY}px) rotate(${driftRot}deg) scale(${sparkleScale})`,
           transformOrigin: "center center",
-          mixBlendMode: "plus-lighter",
         }}
       />
     </AbsoluteFill>

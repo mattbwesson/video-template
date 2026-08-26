@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { CUSTOMER_GRID_ROWS } from "./WorkvivoCustomerLogos";
 import "./WorkvivoCustomerGridStyles.css";
@@ -202,7 +203,7 @@ export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
                 }}
               >
                 {isCenter ? (
-                  <img
+                  <InlineSvg
                     className="wcg-logo-tile"
                     src={staticFile("img/workvivo-tile.svg")}
                     alt="Workvivo"

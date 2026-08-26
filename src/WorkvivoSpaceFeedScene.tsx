@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { WorkvivoSpaceFeed } from "./components/workvivo/WorkvivoSpaceFeed";
@@ -124,13 +125,10 @@ export const WorkvivoSpaceFeedScene: React.FC<WorkvivoSpaceFeedSceneProps> = ({
             zIndex: 50,
           }}
         >
-          <Img
-            src={staticFile("img/cursor.svg")}
+          <CursorArrow color="black"
             style={{
               width: 85.5,
               height: 85.5,
-              filter:
-                "brightness(0) saturate(100%) invert(24%) sepia(90%) saturate(5400%) hue-rotate(265deg) drop-shadow(0 6px 16px rgba(0,0,0,0.35))",
             }}
           />
         </div>

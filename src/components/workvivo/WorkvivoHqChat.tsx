@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import { WorkvivoHqSidebar } from "./WorkvivoHqSidebar";
@@ -144,7 +145,7 @@ const WorkdayAvatar = () => (
       flexShrink: 0,
     }}
   >
-    <Img
+    <InlineSvg
       src={staticFile("img/workday-logo.svg")}
       alt="Workday"
       style={{
@@ -166,7 +167,7 @@ const WorkdayLogo = () => (
       flexShrink: 0,
     }}
   >
-    <Img
+    <InlineSvg
       src={staticFile("img/workday-logo.svg")}
       alt="Workday"
       style={{

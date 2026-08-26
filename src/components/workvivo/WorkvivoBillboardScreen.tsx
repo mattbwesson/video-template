@@ -1,4 +1,5 @@
 import React from "react";
+import { InlineSvg } from "../InlineSvg";
 import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
@@ -220,7 +221,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
         </div>
 
         <div className="wbb-weather">
-          <img src={staticFile("img/weather/weather-sun.svg")} alt="" />
+          <InlineSvg src={staticFile("img/weather/weather-sun.svg")} alt="" />
           <span>{signage.location}</span>
           <span className="wbb-sep">|</span>
           <span>6 C / 47 F</span>
@@ -299,7 +300,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                         affordance read as a byline. */}
                     {i === 0 && (
                       <div className="wbb-translated">
-                        <img
+                        <InlineSvg
                           src={staticFile("img/post types/post-translation.svg")}
                           alt=""
                         />
@@ -315,7 +316,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                     <div className="wbb-value">
                       <div className="wbb-vlabel">Value:</div>
                       <div className="wbb-chip">
-                        <img src={staticFile("img/post types/post-value.svg")} alt="" />
+                        <InlineSvg src={staticFile("img/post types/post-value.svg")} alt="" />
                         <span>{story.value}</span>
                       </div>
                     </div>

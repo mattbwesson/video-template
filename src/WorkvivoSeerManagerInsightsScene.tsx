@@ -1,4 +1,5 @@
 import React from "react";
+import { CursorArrow } from "./components/CursorArrow";
 import {
   AbsoluteFill,
   Easing,
@@ -139,12 +140,10 @@ export const WorkvivoSeerManagerInsightsScene: React.FC<
             zIndex: 50,
           }}
         >
-          <Img
-            src={staticFile("img/cursor.svg")}
+          <CursorArrow color="black"
             style={{
               width: 85.5,
               height: 85.5,
-              filter: "brightness(0) drop-shadow(0 6px 16px rgba(0,0,0,0.35))",
             }}
           />
         </div>

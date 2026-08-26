@@ -412,7 +412,8 @@
 .whq-cursor {
   position: absolute;
   width: 55px;
-  height: auto;
   pointer-events: none;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.25));
+  /* No drop-shadow: the pointer is an inline SVG now (CursorArrow) and CSS filters do
+     not survive the in-browser export — a shadow in one renderer and not the other is
+     the quiet divergence this file keeps out. */
 }
