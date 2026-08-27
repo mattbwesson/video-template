@@ -131,8 +131,13 @@
    normal case. Both mobile headers draw .wm-hero, so removing it here covers the home
    screen at 564 and the Spotlight tab at 1670 in one go. */
 
-.wm-hero:after {
-  content: '';
+/* Real elements from here down, not pseudo-elements. @remotion/web-renderer walks the DOM
+   with NodeFilter.SHOW_ELEMENT and never asks getComputedStyle for ::before/::after, so
+   every one of these was silently missing from the export: the header had no scrim, the
+   active tab no underline, the lead card no readability ramp. Each is now a real child,
+   placed in the DOM at the point its old z-index put it — DOM order is the only stacking
+   rule the export honours. */
+.wm-hero > .wm-hero-scrim {
   position: absolute;
   inset: 0;
   z-index: 4;
@@ -261,8 +266,7 @@
   font-weight: 590;
 }
 
-.wm-herotabs a.wm-on:after {
-  content: '';
+.wm-herotabs a.wm-on > .wm-tab-underline {
   position: absolute;
   left: 6px;
   right: 6px;
@@ -455,8 +459,7 @@
   background: linear-gradient(160deg, var(--wv-brand, #44D760) 0%, var(--wv-brand-d2, #27AE60) 55%, var(--wv-brand-d4, #145A32) 100%);
 }
 
-.wm-bignews:before {
-  content: '';
+.wm-bignews > .wm-bignews-dots {
   position: absolute;
   inset: 0;
   background: radial-gradient(circle at 60% 30%, rgba(255, 255, 255, 0.16) 0 1.5px, transparent 2px) 0 0/22px 22px;
@@ -468,8 +471,7 @@
    here is an operator upload, so it could be anything. This starts falling immediately
    and lands at 0.85, which keeps white type legible on a white-ish shot while leaving the
    top of the picture essentially untouched. */
-.wm-bignews:after {
-  content: '';
+.wm-bignews > .wm-bignews-scrim {
   position: absolute;
   inset: 0;
   background: linear-gradient(180deg,

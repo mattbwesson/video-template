@@ -10,14 +10,13 @@ export const WorkvivoHero: React.FC = () => {
       data-vc-slot="home.hero.0"
       className="hero"
       style={{
-        // Wash colour and opacity; `.hero::after` reads them, falling back to the brand.
+        // Wash colour and opacity; `.hero-wash` reads them, falling back to the brand.
         ...hdr.style,
       }}
     >
       {/* The photo as a real <img> under the wash — the export drops CSS background
-          photos (web/renderProbe.tsx). `.hero` is position:relative; the ::after wash
-          keeps painting over this because pseudo-elements follow children in paint
-          order. */}
+          photos (web/renderProbe.tsx). `.hero` is position:relative and the wash below is
+          a real sibling that follows this in DOM order, so it paints over it. */}
       <img
         src={image(
           "home.hero.0",
@@ -26,6 +25,7 @@ export const WorkvivoHero: React.FC = () => {
         style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover" }}
         alt=""
       />
+      <div className="hero-wash" />
       {hdr.showLogo && (
         <img className="heroM" src={logo.onDark} alt={copy.companyName} />
       )}

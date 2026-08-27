@@ -47,7 +47,12 @@
   top: 60px;
   width: 1384px;
   height: 228px;
-  background: #7f39f3;
+/* Wired to the tenant colour. The rule at the top of this file already called
+   #7F39F3 the customer brand slot and #6103ED the semantic primary, but only the
+   naming had been done — every slot below was hardcoded, so this screen ignored the
+   customer's colour entirely. --wv-brand comes from `theme.vars` on the cut's root.
+   The #6103ED values are deliberately untouched. */
+  background: var(--wv-brand, #7f39f3);
   overflow: hidden;
 }
 
@@ -146,7 +151,7 @@
   height: 32px;
   border-radius: 50%;
   overflow: hidden;
-  background: #7f39f3;
+  background: var(--wv-brand, #7f39f3);
   flex: none;
 }
 
@@ -269,7 +274,7 @@
   width: 92px;
   height: 92px;
   border-radius: 9999px;
-  background: #7f39f3;
+  background: var(--wv-brand, #7f39f3);
   border: 3.08px solid #ffffff;
   display: flex;
   justify-content: center;
@@ -604,7 +609,7 @@
   height: 40.94px;
   border-radius: 102.34px;
   overflow: hidden;
-  background: #7f39f3;
+  background: var(--wv-brand, #7f39f3);
   flex: none;
 }
 
@@ -671,7 +676,7 @@
   overflow: hidden;
   background-size: cover;
   background-position: center;
-  background-color: #7f39f3;
+  background-color: var(--wv-brand, #7f39f3);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -905,7 +910,7 @@
   width: 340.07px;
   height: 220.94px;
   padding: 5.32px;
-  background: #7f39f3;
+  background: var(--wv-brand, #7f39f3);
   border-radius: 3.99px;
   position: relative;
   overflow: hidden;
@@ -1053,7 +1058,7 @@
 }
 
 .wsp-rimg-grad {
-  background: linear-gradient(180deg, #7f39f3 0%, #000000 100%);
+  background: linear-gradient(180deg, var(--wv-brand, #7f39f3) 0%, #000000 100%);
 }
 
 .wsp-rbody {

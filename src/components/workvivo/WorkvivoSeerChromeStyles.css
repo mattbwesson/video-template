@@ -110,8 +110,10 @@
 }
 
 /* The 2px underline sits on the tab, not the strip, so it tracks the label's width. */
-.wsc-tab.wsc-on::after {
-  content: "";
+/* A real child, not a pseudo-element — the export walks the DOM with
+   NodeFilter.SHOW_ELEMENT and never paints ::before/::after, so this was missing
+   from every render. */
+.wsc-tab.wsc-on > .wsc-tab-underline {
   position: absolute;
   left: 0;
   right: 0;

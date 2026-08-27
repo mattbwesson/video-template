@@ -412,7 +412,11 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
                       ? " pc-on"
                       : ""
                   }`}
-                />
+                >
+                  {/* The tick is a real child now; `.pc-vbox.pc-on > .pc-tick` styles it,
+                      so it stays invisible until the row is checked. */}
+                  <span className="pc-tick" />
+                </span>
               </div>
             ))}
             <div className="pc-vfoot"><button className="pc-ok">OK</button></div>

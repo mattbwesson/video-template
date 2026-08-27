@@ -547,7 +547,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                         className={answer === i ? "mis-option mis-selected" : "mis-option"}
                         type="button"
                       >
-                        <div className="mis-radio"></div>
+                        <div className="mis-radio"><div className="mis-radio-dot" /></div>
                         <div style={{ color: opt.color }}>
                           <Face kind={opt.icon} />
                         </div>

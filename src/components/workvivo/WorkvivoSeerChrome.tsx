@@ -87,6 +87,9 @@ export const WorkvivoSeerChrome: React.FC<WorkvivoSeerChromeProps> = ({
                 <div className="wsc-tabs">
                   {tabs.map((t) => (
                     <span className={t === activeTab ? "wsc-tab wsc-on" : "wsc-tab"} key={t}>
+                      {/* Only on the active tab — an inert span on the other fourteen
+                          would add a zero-width inline box to each for nothing. */}
+                      {t === activeTab && <span className="wsc-tab-underline" />}
                       {t}
                     </span>
                   ))}

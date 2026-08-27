@@ -351,6 +351,8 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                   );
                 })}
               </div>
+              {/* Hangs below the bar (top: 100%), so it comes last. */}
+              <div className="wcmu-sbar-fade" />
             </div>
 
             {/* Stage / Active Slide (Hard cut between slides) */}

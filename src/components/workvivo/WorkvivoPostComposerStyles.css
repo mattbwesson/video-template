@@ -174,7 +174,8 @@
 .pc-vbox{width:20px;height:20px;border:1.6px solid #C4C7CC;border-radius:3px;flex:none;
       cursor:pointer;position:relative}
 .pc-vbox.pc-on{background:#6103ED;border-color:#6103ED}
-.pc-vbox.pc-on:after{content:"";position:absolute;left:6px;top:2px;width:6px;height:11px;
+/* Real child, not ::after — pseudo-elements are never painted by the export. */
+.pc-vbox.pc-on > .pc-tick{position:absolute;left:6px;top:2px;width:6px;height:11px;
                border-right:2.4px solid #fff;border-bottom:2.4px solid #fff;
                transform:rotate(42deg)}
 .pc-vfoot{display:flex;justify-content:flex-end;padding:22px 26px 26px;border-top:1px solid #E9EAEC}

@@ -60,7 +60,11 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 /* Colour and opacity are separate now so the review panel can drive each one. The
    composite is identical to the old single rgba(): an opaque fill at 0.65 opacity is the
    same pixel as the same fill pre-multiplied to 0.65 alpha. */
-.hero::after{content:'';position:absolute;inset:0;z-index:1;
+/* A real element, not ::after — the export never paints a pseudo-element (it walks the
+   DOM with NodeFilter.SHOW_ELEMENT), so this brand wash was missing from every render and
+   the header showed the raw photo untinted. It sits after the <img> in DOM order, which is
+   the only stacking rule the export honours. */
+.hero > .hero-wash{position:absolute;inset:0;z-index:1;
   background:var(--wv-hdr, var(--wv-brand, #44D760));
   opacity:var(--wv-hdr-op, 0.65);pointer-events:none}
 /* The company mark, centred, drawn over the wash. Only rendered when the header's

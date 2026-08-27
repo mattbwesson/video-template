@@ -223,8 +223,10 @@
   background: var(--mis-orange);
   border-color: var(--mis-orange)
 }
-.mis-survey .mis-option.mis-selected .mis-radio::after {
-  content: '';
+/* A real child, not a pseudo-element — the export walks the DOM with
+   NodeFilter.SHOW_ELEMENT and never paints ::before/::after, so this was missing
+   from every render. */
+.mis-survey .mis-option.mis-selected .mis-radio > .mis-radio-dot {
   width: 5px;
   height: 5px;
   border-radius: 50%;
@@ -352,7 +354,9 @@
   background: var(--mis-orange);
   color: #ffffff;
   border: none;
-  border-radius: 999px;
+  /* 18px = half the 36px the padding and line box actually produce, measured rather
+     than assumed. A sentinel here exported as an ellipse. */
+  border-radius: 18px;
   padding: 10px 36px;
   font-size: 13.5px;
   font-weight: 600;

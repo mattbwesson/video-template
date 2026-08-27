@@ -122,6 +122,7 @@ export const WorkvivoArticle: React.FC<WorkvivoArticleProps> = ({
             <ul className="wa-list" style={paragraphStyle ? paragraphStyle(2) : undefined}>
               {article.points.map((point) => (
                 <li className="wa-list-item" key={point.label}>
+                  <span className="wa-bullet" />
                   <strong>{point.label}:</strong> {point.body}
                 </li>
               ))}
@@ -129,7 +130,7 @@ export const WorkvivoArticle: React.FC<WorkvivoArticleProps> = ({
 
             <div className="wa-quote" style={paragraphStyle ? paragraphStyle(3) : undefined}>
               <div className="wa-quote-text">&ldquo;{article.quote}&rdquo;</div>
-              <div className="wa-quote-author">{article.quoteAuthor}</div>
+              <div className="wa-quote-author"><span className="wa-dash">&mdash;</span>{article.quoteAuthor}</div>
             </div>
 
             <p style={paragraphStyle ? paragraphStyle(4) : undefined}>{article.closing}</p>

@@ -369,8 +369,10 @@
   box-sizing: border-box;
 }
 
-.wcmu-sbar:after {
-  content: '';
+/* A real child, not a pseudo-element — the export walks the DOM with
+   NodeFilter.SHOW_ELEMENT and never paints ::before/::after, so this was missing
+   from every render. */
+.wcmu-sbar > .wcmu-sbar-fade {
   position: absolute;
   left: 0;
   right: 0;

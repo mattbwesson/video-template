@@ -419,6 +419,9 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
         )}
         <div className="wm-heroV">{companyInitial}</div>
+        {/* z4 in the old ladder: over the photo, letter and wash, under the
+            z5 controls below. DOM order is what the export paints by. */}
+        <div className="wm-hero-scrim" />
         <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
         <div className="wm-heroacts">
           <div className="wm-gbtn wm-plus"><i/><i/></div>
@@ -426,7 +429,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
         </div>
         <div className="wm-herotabs">
           <a href="#">Feed</a>
-          <a href="#" className="wm-on">Spotlight</a>
+          <a href="#" className="wm-on">Spotlight<span className="wm-tab-underline" /></a>
         </div>
       </div>
 

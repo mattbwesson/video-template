@@ -212,6 +212,7 @@ export const WorkvivoAdminHub: React.FC = () => {
                     <div className="wah-products">
                       {PRODUCTS.map((p) => (
                         <div className="wah-product" key={p.title}>
+                          <span className="wah-product-spine" />
                           {p.icon ? (
                             <Icon href={p.icon} className="" width={22} height={22} />
                           ) : (

@@ -168,8 +168,10 @@
   color: #374151;
 }
 
-.wa-list-item::before {
-  content: "";
+/* A real child, not a pseudo-element — the export walks the DOM with
+   NodeFilter.SHOW_ELEMENT and never paints ::before/::after, so this was missing
+   from every render. */
+.wa-list-item > .wa-bullet {
   position: absolute;
   left: 4px;
   top: 8px;
@@ -211,8 +213,10 @@
   gap: 6px;
 }
 
-.wa-quote-author::before {
-  content: "—";
+/* A real child, not a pseudo-element — the export walks the DOM with
+   NodeFilter.SHOW_ELEMENT and never paints ::before/::after, so this was missing
+   from every render. */
+.wa-quote-author > .wa-dash {
   color: #9ca3af;
 }
 

@@ -253,8 +253,10 @@
 }
 
 /* The violet spine down the left edge of every product tile. */
-.wah-product::before {
-  content: "";
+/* A real child, not a pseudo-element — the export walks the DOM with
+   NodeFilter.SHOW_ELEMENT and never paints ::before/::after, so this was missing
+   from every render. */
+.wah-product > .wah-product-spine {
   position: absolute;
   left: 0;
   top: 0;

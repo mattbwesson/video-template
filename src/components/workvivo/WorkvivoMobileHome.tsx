@@ -200,6 +200,11 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
                   style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
                   alt=""
                 />
+                {/* The dot texture is a radial gradient, which the export drops whatever
+                    element carries it — kept for the Player. The scrim below is linear and
+                    does render, and both must sit over the photo and under the text. */}
+                <div className="wm-bignews-dots" />
+                <div className="wm-bignews-scrim" />
                 <div className="wm-bntx">
                   <h3 style={{ whiteSpace: "pre-line" }}>{splitForTwoLines(mnews[0].title)}</h3>
                   <div className="wm-meta wm-light"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>Global</span></div>
@@ -258,6 +263,9 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
           )}
           <div className="wm-heroV">{companyInitial}</div>
+          {/* z4 in the old ladder: over the photo, letter and wash, under the
+              z5 controls below. DOM order is what the export paints by. */}
+          <div className="wm-hero-scrim" />
           <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
           <div className="wm-heroacts">
             <div className="wm-gbtn wm-plus"><i/><i/></div>
@@ -265,7 +273,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
           </div>
           <div className="wm-herotabs">
             <a href="#">Feed</a>
-            <a href="#" className="wm-on">Spotlight</a>
+            <a href="#" className="wm-on">Spotlight<span className="wm-tab-underline" /></a>
           </div>
         </div>
 

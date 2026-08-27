@@ -528,7 +528,10 @@
   min-width: 14px;
   height: 14px;
   padding: 0 3px;
-  border-radius: 9999px;
+  /* Half the height. This one is square at a single digit and a rounded rect at two,
+     which is why measuring the mounted DOM said it was fine — the count only reaches
+     two digits in some states. */
+  border-radius: 7px;
   background: #e8453c;
   display: flex;
   justify-content: center;
