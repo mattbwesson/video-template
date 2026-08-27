@@ -7,8 +7,15 @@
 <!-- Served from public/, not from web/, so this one path works in both places: Vite mounts
      publicDir at the root in dev, and in production sirv serves public/ at the root too
      (server/prod.ts). The build's copyPublicDir is false, so an icon placed in web/ would
-     work in dev and 404 in the deployed app. -->
-<link rel="icon" type="image/x-icon" sizes="32x32" href="/img/workvivo-tile.ico">
+     work in dev and 404 in the deployed app.
+
+     ?v= is the first 8 of the file's sha1, and it is not decoration. Nothing under public/
+     is content-hashed, so sirv serves it `max-age=3600` (see the comment on servePublic) —
+     and browsers cache a favicon far more stubbornly than that, often past a hard reload.
+     Replacing the artwork without changing this string ships a new icon that nobody sees.
+     BUMP IT whenever workvivo-tile.ico changes:
+         shasum public/img/workvivo-tile.ico | cut -c1-8 -->
+<link rel="icon" type="image/x-icon" sizes="32x32" href="/img/workvivo-tile.ico?v=24c526de">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
