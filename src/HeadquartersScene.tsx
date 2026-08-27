@@ -115,6 +115,54 @@ const BACKGROUND_AVATARS: AvatarItem[] = [
   },
 ];
 
+/**
+ * One face: a white disc with the photo clipped into a smaller circle on top of it.
+ *
+ * The ring used to be a `border` on the same element that clipped the photo. That reads
+ * correctly in the Player but comes out ringless in the in-browser export — see
+ * docs/browser-render-best-practices.md §5. Painting the ring as the disc *underneath*
+ * asks nothing of the canvas renderer beyond `background-color`, `border-radius` and
+ * `overflow: hidden`, all of which it draws faithfully, and it cannot be overdrawn by the
+ * photo because the photo's box is `ringWidth` smaller on every side.
+ */
+const AvatarCircle: React.FC<{
+  avatar: AvatarItem;
+  ringWidth: number;
+  src: string;
+}> = ({ avatar, ringWidth, src }) => (
+  <div
+    style={{
+      position: "absolute",
+      left: `${avatar.xPercent}%`,
+      top: `${avatar.yPercent}%`,
+      width: avatar.size,
+      height: avatar.size,
+      transform: "translate(-50%, -50%)",
+      borderRadius: "50%",
+      backgroundColor: "#ffffff",
+    }}
+  >
+    <div
+      style={{
+        position: "absolute",
+        inset: ringWidth,
+        borderRadius: "50%",
+        overflow: "hidden",
+      }}
+    >
+      <Img
+        data-vc-slot={avatar.slot}
+        src={src}
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+    </div>
+  </div>
+);
+
 export const HeadquartersScene: React.FC = () => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
@@ -296,36 +344,14 @@ export const HeadquartersScene: React.FC = () => {
           pointerEvents: "none",
         }}
       >
-        {BACKGROUND_AVATARS.map((avatar) => {
-          const borderWidth = avatar.size > 100 ? 4 : 3.5;
-          return (
-            <div
-              key={avatar.id}
-              style={{
-                position: "absolute",
-                left: `${avatar.xPercent}%`,
-                top: `${avatar.yPercent}%`,
-                width: avatar.size,
-                height: avatar.size,
-                transform: "translate(-50%, -50%)",
-                borderRadius: "50%",
-                border: `${borderWidth}px solid #ffffff`,
-                overflow: "hidden",
-                backgroundColor: "#fff",
-              }}
-            >
-              <Img
-                data-vc-slot={avatar.slot}
-                src={image(avatar.slot, avatar.fallback)}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            </div>
-          );
-        })}
+        {BACKGROUND_AVATARS.map((avatar) => (
+          <AvatarCircle
+            key={avatar.id}
+            avatar={avatar}
+            ringWidth={avatar.size > 100 ? 4 : 3.5}
+            src={image(avatar.slot, avatar.fallback)}
+          />
+        ))}
       </div>
 
       {/* Z-PLANE 1: Foreground / Closer Avatar Group */}
@@ -340,36 +366,14 @@ export const HeadquartersScene: React.FC = () => {
           pointerEvents: "none",
         }}
       >
-        {FOREGROUND_AVATARS.map((avatar) => {
-          const borderWidth = avatar.size > 140 ? 5 : 4;
-          return (
-            <div
-              key={avatar.id}
-              style={{
-                position: "absolute",
-                left: `${avatar.xPercent}%`,
-                top: `${avatar.yPercent}%`,
-                width: avatar.size,
-                height: avatar.size,
-                transform: "translate(-50%, -50%)",
-                borderRadius: "50%",
-                border: `${borderWidth}px solid #ffffff`,
-                overflow: "hidden",
-                backgroundColor: "#fff",
-              }}
-            >
-              <Img
-                data-vc-slot={avatar.slot}
-                src={image(avatar.slot, avatar.fallback)}
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            </div>
-          );
-        })}
+        {FOREGROUND_AVATARS.map((avatar) => (
+          <AvatarCircle
+            key={avatar.id}
+            avatar={avatar}
+            ringWidth={avatar.size > 140 ? 5 : 4}
+            src={image(avatar.slot, avatar.fallback)}
+          />
+        ))}
       </div>
 
       {/* Sequential Words: 'Now' -> 'they' (105) -> 'have' (109) -> 'one.' (117) */}

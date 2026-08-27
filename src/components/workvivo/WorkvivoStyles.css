@@ -14,11 +14,11 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 .topbar{height:62.857px;background:#060923;position:relative}
 .tlogo{position:absolute;left:48.000px;top:14.000px;height:35.000px;width:auto;object-fit:contain}
 .tsearch{position:absolute;left:578.571px;top:11.429px;width:611.429px;height:40.000px;background:#2E2949;
-  border-radius:141.429px;display:flex;align-items:center;gap:12.857px;padding:0 20.000px}
+  border-radius:20.000px;display:flex;align-items:center;gap:12.857px;padding:0 20.000px}
 .tsearch .li{color:#E8E6F2}
 .tsearch span{font-size:15.143px;color:#C9C6D6}
 .tacts{position:absolute;left:1615.714px;top:12.857px;width:132.857px;height:37.143px;background:#24213E;
-  border-radius:141.429px;display:flex;align-items:center;justify-content:space-between;padding:0 8.571px}
+  border-radius:18.571px;display:flex;align-items:center;justify-content:space-between;padding:0 8.571px}
 .tacts .li{color:#E8E6F2}
 .dark{color:#3D424A}
 .tav{border-radius:50%;display:block}
@@ -78,7 +78,7 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 .bgrad{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,
   rgba(0,0,0,0.08) 0%,rgba(0,0,0,0.22) 35%,rgba(0,0,0,0.68) 70%,rgba(0,0,0,0.90) 100%)}
 .bpill{position:absolute;left:17.143px;top:14.286px;z-index:2;height:27.143px;display:flex;align-items:center;
-  gap:5.714px;padding:0 12.857px 0 8.571px;border-radius:141.429px;background:rgba(74,73,68,.72);backdrop-filter:blur(7.143px)}
+  gap:5.714px;padding:0 12.857px 0 8.571px;border-radius:13.571px;background:rgba(74,73,68,.72);backdrop-filter:blur(7.143px)}
 .bpill span{font-size:13.143px;font-weight:600;color:#fff}
 .btx{position:absolute;left:17.143px;right:14.286px;bottom:17.143px;z-index:2}
 .bt{font-size:17.714px;font-weight:700;color:#fff;letter-spacing:-0.14px}
@@ -169,7 +169,7 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 .cdname{font-size:15.143px;color:#3B4043}
 .cdtime{margin-top:12.857px;font-size:28.571px;font-weight:700;color:#171B1F;letter-spacing:1.429px}
 .cdlbls{margin-top:4.286px;display:flex;gap:27.143px;font-size:12.571px;color:#7A8189}
-.cdbtn{margin-top:31.429px;width:305.714px;height:34.286px;border:1.429px solid #E6E4EA;border-radius:141.429px;
+.cdbtn{margin-top:31.429px;width:305.714px;height:34.286px;border:1.429px solid #E6E4EA;border-radius:17.143px;
   display:flex;align-items:center;justify-content:center;font-size:13.714px;font-weight:600;color:#6103ED;background:#fff}
 
 /* ---------- featured documents ---------- */
@@ -208,7 +208,7 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 #pod{margin-top:21.429px;padding:0;border-radius:14.286px;overflow:hidden;
   background:linear-gradient(160deg,var(--wv-brand,#CE0E2D) 0%,var(--wv-brand-d1,#A80B24) 46%,var(--wv-brand-d3,#5C0714) 100%)}
 .podhead{margin:17.143px 0 0 17.143px;height:27.143px;display:inline-flex;align-items:center;gap:7.143px;padding:0 14.286px;
-  border-radius:141.429px;background:rgba(28,10,14,.5);color:#fff;font-size:13.429px;font-weight:600}
+  border-radius:13.571px;background:rgba(28,10,14,.5);color:#fff;font-size:13.429px;font-weight:600}
 /* A white tile with the podcast glyph knocked through it in the brand colour.
    The glyph is a MASK rather than an <img>: the file is a bare black path with no fill
    attribute, so loaded as an image it can only ever be black. Masking paints the brand
@@ -228,10 +228,10 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 .podpause{width:31.429px;height:31.429px;border:1.429px solid #E4E2E9;border-radius:50%;display:flex;
   align-items:center;justify-content:center;color:#6103ED;font-size:12.857px}
 .podbar{margin-top:17.143px;display:flex;align-items:center;gap:11.429px;font-size:12.286px;color:#5A6068}
-.podtrack{flex:1;height:5.714px;border-radius:141.429px;background:#E9E7EE;position:relative}
-.podtrack i{position:absolute;left:0;top:0;height:5.714px;width:26%;border-radius:141.429px;background:#6103ED}
+.podtrack{flex:1;height:5.714px;border-radius:2.857px;background:#E9E7EE;position:relative}
+.podtrack i{position:absolute;left:0;top:0;height:5.714px;width:26%;border-radius:2.857px;background:#6103ED}
 .podtrack u{position:absolute;left:26%;top:-2.857px;width:11.429px;height:11.429px;border-radius:50%;background:#6103ED}
-.podbtn{margin-top:18.571px;height:34.286px;border:1.429px solid #E6E4EA;border-radius:141.429px;display:flex;
+.podbtn{margin-top:18.571px;height:34.286px;border:1.429px solid #E6E4EA;border-radius:17.143px;display:flex;
   align-items:center;justify-content:center;font-size:13.714px;font-weight:600;color:#6103ED}
 #pod .dots{padding:0 0 15.714px}
 #pod .dots i{background:rgba(255,255,255,.45)}
@@ -248,7 +248,7 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
   text-align:center;box-shadow:0 1.429px 4.286px rgba(0,0,0,.18)}
 .evdate b{display:block;font-size:20.000px;font-weight:700;color:#171B1F;line-height:1.1}
 .evdate span{display:block;font-size:11.714px;font-weight:600;color:#5A6068;letter-spacing:.04em}
-.evattend{position:absolute;right:15.714px;bottom:14.286px;height:34.286px;padding:0 17.143px;border-radius:141.429px;
+.evattend{position:absolute;right:15.714px;bottom:14.286px;height:34.286px;padding:0 17.143px;border-radius:17.143px;
   background:#0B1020;color:#fff;font-size:13.714px;font-weight:600;display:flex;align-items:center;gap:7.143px}
 .evbody{padding:17.143px 5.714px 8.571px}
 .evtitle{font-size:16.286px;font-weight:700;color:#171B1F}
@@ -257,7 +257,7 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 
 
 .reacts { display:flex;align-items:center;gap:3.87px }
-.rx { height:18.04px;padding:0 6.44px;background:#F2F0F0;border-radius:703.58px;
+.rx { height:18.04px;padding:0 6.44px;background:#F2F0F0;border-radius:9.02px;
   display:inline-flex;align-items:center;gap:2.58px;font-size:9.02px;font-weight:400;line-height:1 }
 .rx .rxe { font-family:"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",InterX,sans-serif;
   font-size:9.02px;line-height:1 }

@@ -203,6 +203,7 @@ watch the Player — it reproduces the same emulated result instantly.
 | Missing glow / wrong background | non-`linear-gradient` background (radial, etc.) — officially unsupported* | Verify empirically; fall back to linear or a solid if it drops |
 | Hard-edged shape lost its mask | `clip-path` / SVG `clipPath` — unsupported | Avoid, or use a supported mask (linear-gradient mask) |
 | Inner highlight on a card gone | `box-shadow: inset …` — unsupported | Use a border/overlay element instead |
+| Pill/chip/progress bar comes out as an **oval** (a full ellipse, no straight edges) | a sentinel `border-radius` — `999px`, `9999px`, `141.429px` — on a wide, short box. The exporter clamps an over-large radius **per axis independently** instead of by the CSS spec's single uniform factor, so a 220x40 pill ends up with corners 110 wide and 20 tall — i.e. an ellipse | Set the radius to **exactly half the border-box height** in px (`height: 40px` → `border-radius: 20px`). Identical in Chromium, and the only value the export's clamp leaves alone. Half-height *plus a bit* is not enough — it comes out egg-shaped |
 | SVG icon missing / wrong shape / renders black | SVG `<img>` with no intrinsic `width`/`height` (viewBox only), and/or class-based `<style>` fills | Add explicit `width`/`height` matching the viewBox; inline fills (`style="fill:…"`) and drop `<defs><style>`. The web-renderer's rasterizer needs both. Last resort: rasterize to PNG (ZVA's `img/*.png` icons) |
 | Inline `<svg>` icon comes out **blank** (empty circle/chip) | `<use href="#…">` referencing a `<symbol>` in another `<svg>` root — the exporter doesn't resolve cross-root sprites | Inline the `<path>` data into each consuming `<svg>`; delete the sprite `<defs>` |
 | Pill/chip stretched to full parent width (an "oval") | `display: inline-flex` doesn't shrink-to-fit in the export's layout engine | Add `width: "fit-content"` |
@@ -228,6 +229,10 @@ list — the renderer moves fast. **Verify, don't assume.**
 - [ ] Every `inline-flex` chip/pill that must hug its content also sets `width: "fit-content"`.
 - [ ] Zero `<path> attribute d` errors in the Player console (a parse error means dropped geometry).
 - [ ] Stacking reads correctly by **DOM order** (don't depend on `z-index`).
+- [ ] No sentinel pill radii (`999px` / `9999px` / any value over half the box's height) — every pill,
+      chip and progress bar sets `border-radius` to exactly half its own height.
+- [ ] Rings around avatars are a painted disc *under* an inset, clipped photo — not a `border` on the
+      element that clips (see `AvatarCircle` in `src/HeadquartersScene.tsx`).
 - [ ] Audio uses `@remotion/media`; overlapping SFX fit within `numberOfSharedAudioTags`.
 - [ ] Ran the §4 force-flag check **and** reverted the TEMP line.
 - [ ] For a genuinely new effect (gradient/filter/mask/iframe), did one real in-browser export.

@@ -98,7 +98,7 @@
 .wjp-track {
   width: 230px;
   height: 10px;
-  border-radius: 41px;
+  border-radius: 5px;
   background: #dddddd;
   overflow: hidden;
 }
@@ -106,7 +106,7 @@
 .wjp-track span {
   display: block;
   height: 100%;
-  border-radius: 41px;
+  border-radius: 5px;
   background: #6103ed;
 }
 

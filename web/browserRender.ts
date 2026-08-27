@@ -19,24 +19,26 @@
  * ---------------------------------------------------------------------------------------
  * FIDELITY, AS MEASURED — not as guessed
  *
- * `renderStill(757)` through this pipeline, compared against the same frame from the CLI:
+ * This is now the ONLY way a finished video leaves the wizard, so what it gets wrong is not
+ * an inconvenience, it is the product. It is being brought into line one frame at a time,
+ * against stills taken through this same pipeline.
  *
- *   - EVERY icon is missing. The Workvivo library is `<symbol>` + `<use href="#…">` and the
+ * Fixed, and verified through a still:
+ *
+ *   - The missing icons. The Workvivo library was `<symbol>` + `<use href="#…">` and the
  *     canvas rasterizer does not resolve a `<use>` into a `<defs>` in a different `<svg>`
- *     root. That is the whole nav rail, every card header, the composer — hundreds of
- *     glyphs across 12 files.
- *   - Photos set as CSS `background-image` do not appear (the in-app header banner, the
- *     Trending Spaces cover). Photos in real `<img>` elements do.
- *   - The device's glass edge and field render wrong.
+ *     root — so the whole nav rail, every card header and the composer came out blank.
+ *     Paths are inlined per consumer now.
+ *   - Photos set as CSS `background-image` did not appear; they are real `<img>` elements.
+ *   - Masks and radial gradients, which the renderer drops.
  *
- * Not yet measured, but on the renderer's unsupported list and used heavily here:
+ * Known outstanding, each with a row in docs/browser-render-best-practices.md §5:
  * `clip-path` (every iris transition), `mix-blend-mode`, `backdrop-filter`,
- * `filter: blur()`, and `z-index` ordering.
+ * `filter: blur()`, and `z-index` ordering — the last of which means stacking has to read
+ * correctly by DOM order.
  *
- * So this button produces a real MP4, with real audio, at the right length — and it is NOT
- * yet a deliverable. Making it one means inlining the icon sprites, moving background-image
- * photos to `<img>`, and gating the effects, per docs/browser-render-best-practices.md.
- * Until then the UI says "preview quality" and means it.
+ * The UI still says "preview quality", and will until a full export has been compared frame
+ * for frame against the Player. Take it off when that is true, not before.
  * ---------------------------------------------------------------------------------------
  */
 

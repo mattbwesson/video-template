@@ -6,7 +6,6 @@ import { toInputProps, type WizardState } from "./wizardState";
 import { SwapOverlay } from "./SwapOverlay";
 import { EditPanel } from "./EditPanel";
 import { RenderButton } from "./RenderButton";
-import { ExportProjectButton } from "./ExportProjectButton";
 import { assignImagery } from "../src/customize/imagery";
 import { resolveHeader, type HeaderTreatment } from "../src/customize/headers";
 import { clampBrandAccentHex } from "../src/customize/color";
@@ -24,34 +23,6 @@ import type { Upload } from "./uploads";
  */
 
 const FPS = 25;
-
-/**
- * The project file — build the video here, render it at full quality elsewhere.
- *
- * Shipped everywhere, because this is how a finished video actually gets made: the reveal
- * screen is where someone decides the film is right, and this is the button that carries
- * that decision to a renderer. Gating it to dev would mean the deployed wizard could
- * author a video and then offer no way to produce one, and an SE would have to rebuild
- * their work locally just to press a button.
- *
- * It is safe to expose because it exports data, not a video: whoever holds the file still
- * needs a machine set up to render it. The site is behind a shared passcode in any case.
- * See docs/local-render.md.
- */
-const SHOW_PROJECT_EXPORT = true;
-
-/**
- * The in-tab encode. Local only.
- *
- * It uses `@remotion/web-renderer`, a canvas renderer with emulated CSS that the film does
- * not survive intact — sprite icons, blend modes and CSS background photos all come out
- * wrong. Useful for a rough look while developing, and precisely the wrong thing to hand
- * someone who might send the result to a customer.
- *
- * `import.meta.env.DEV` is statically false in the production build, so Vite drops the
- * component from the shipped bundle rather than merely hiding it.
- */
-const SHOW_BROWSER_RENDER = import.meta.env.DEV;
 
 /** How long the fly-in runs before the player is revealed underneath it. */
 const ASSEMBLY_MS = 1500;
@@ -287,27 +258,18 @@ export const Reveal: React.FC<{
               <button className="vc-btn vc-quiet" onClick={onEdit}>
                 Back to editing
               </button>
-              {/* Writes the project file for a local render in real Chromium — the
-                  renderer the preview above and every approved still come from — so it is
-                  the one that produces a sendable video. */}
-              {SHOW_PROJECT_EXPORT && (
-                <ExportProjectButton
-                  inputProps={inputProps}
-                  company={state.company}
-                />
-              )}
-              {/* The in-tab encode: instant, but a different renderer, so the file does
-                  not match the preview. Dev only — see browserRender.ts. */}
-              {SHOW_BROWSER_RENDER && (
-                <RenderButton
-                  inputProps={inputProps}
-                  company={state.company}
-                  durationInFrames={CUSTOMIZED_CUT_DURATION}
-                  fps={FPS}
-                  width={1920}
-                  height={1080}
-                />
-              )}
+              {/* The one way out of the wizard: the in-tab encode. It is a different
+                  renderer from the preview above, so what it produces is still being
+                  brought into line frame by frame — see the fidelity note in
+                  browserRender.ts. */}
+              <RenderButton
+                inputProps={inputProps}
+                company={state.company}
+                durationInFrames={CUSTOMIZED_CUT_DURATION}
+                fps={FPS}
+                width={1920}
+                height={1080}
+              />
             </span>
           </div>
         </div>

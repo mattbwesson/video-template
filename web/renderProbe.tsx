@@ -1,9 +1,8 @@
 import React from "react";
-import { Img, staticFile } from "remotion";
+import { AbsoluteFill, Img, Sequence, staticFile } from "remotion";
+import { CustomizationProvider } from "../src/customize/CustomizationProvider";
+import { HeadquartersScene } from "../src/HeadquartersScene";
 import { loadRenderer } from "./browserRender";
-import { CHAT_ICON_SRC } from "../src/contentListAssets";
-import { InlineSvg } from "../src/components/InlineSvg";
-import { CursorArrow } from "../src/components/CursorArrow";
 
 /**
  * A fidelity probe for the in-browser export — dev harness, nothing ships through it.
@@ -13,10 +12,23 @@ import { CursorArrow } from "../src/components/CursorArrow";
  * of the minutes a full-composition still costs. Labels are plain text (always renders),
  * so the output reads as a checklist even when the thing beside a label is missing.
  *
- * Current investigation: SVG files loaded through <img> come out corner-cropped (the
- * cursor, the Add-modal post-type icons), and the glass 3D icons show their source tile
- * because mask-image and mix-blend-mode are dropped. Cells are current-construction /
- * candidate-fix pairs.
+ * Current investigation: the white rings around the HeadquartersScene avatar circles
+ * (global frame 75) and the pills that come out as ovals (frames 509, 1718, 1788). Cells
+ * are current-construction / candidate-fix pairs.
+ *
+ * TWO TRAPS, both cost an afternoon:
+ *
+ *  - Remotion's `<Img>` stalls `renderStillOnWeb` here FOREVER — past
+ *    `delayRenderTimeoutInMilliseconds`, which never fires. Cell `ImgProbe` is the
+ *    minimal repro. Probe with a plain `<img>`; the ring/pill questions are about the
+ *    box, not about what is inside it.
+ *  - A plain `<img>` paints as nothing on the first render of a page session. Preload
+ *    each src into a live, attached DOM node (a bare `new Image()` can be collected),
+ *    then render the composition two or three times and keep the LAST blob.
+ *
+ * The harness also degrades over a long session — a stalled render holds the queue and
+ * every later one waits behind it. Reload the page between runs; if renders start
+ * hanging that never hung before, reload rather than debugging the composition.
  */
 const Cell: React.FC<{ label: string; children: React.ReactNode }> = ({
   label,
@@ -28,25 +40,26 @@ const Cell: React.FC<{ label: string; children: React.ReactNode }> = ({
   </div>
 );
 
-const CURSOR_FILTER =
-  "brightness(0) invert(1) drop-shadow(0 10px 20px rgba(0,0,0,0.5))";
-
-/** The cursor's single path, inlined — candidate replacement for <Img src=cursor.svg>. */
-const CURSOR_PATH =
-  "M90.03.04c16.97-.65,32.79,6.47,48.24,15.24,197.2,111.95,394.45,223.83,591.68,335.73,54.31,30.81,108.87,61.21,162.85,92.59,39.07,22.71,54.48,64.61,39.8,105.86-10.96,30.81-32.71,50.36-64.93,56.56-109.14,20.99-218.32,41.77-327.6,62-30.62,5.67-53.03,21.08-69.12,47.68-56.69,93.76-113.69,187.33-171,280.71-32.85,53.53-103.89,60.37-143.72,14.52-11.52-13.26-17.79-28.88-20.46-45.92-26.74-170.98-53.28-341.99-80-512.97C37.77,336.79,19.8,221.54,1.33,106.37-7.9,48.79,31.8-.09,90.03.04Z";
-
 /** Bisect helper: `window.__cells = [1,2]` limits which cells mount. Default: all. */
 const wants = (n: number): boolean => {
   const sel = (window as unknown as { __cells?: number[] }).__cells;
   return !sel || sel.includes(n);
 };
 
+/** The same photo every ring cell wraps, so only the ring construction varies. */
+const FACE = staticFile("img/avatar-4.jpeg");
+
+const SIZE = 155;
+const RING = 4;
+
 export const RenderProbe: React.FC = () => (
   <div
     style={{
       width: 1920,
       height: 1080,
-      background: "#131038",
+      // The scene's brand field, not a dark backdrop — a white ring only reads as missing
+      // against the colour it actually sits on.
+      background: "#E5A428",
       display: "flex",
       flexWrap: "wrap",
       gap: 30,
@@ -56,132 +69,200 @@ export const RenderProbe: React.FC = () => (
     }}
   >
     {wants(1) && (
-    <Cell label="1. Img svg, viewBox only (current tiles)">
-      <Img
-        src={staticFile("img/post types/post-image.svg")}
-        style={{ width: 80, height: 80, objectFit: "contain", background: "#fff" }}
-      />
+    <Cell label="1. border + overflow hidden (current scene)">
+      <div
+        style={{
+          width: SIZE,
+          height: SIZE,
+          borderRadius: "50%",
+          border: `${RING}px solid #ffffff`,
+          overflow: "hidden",
+          backgroundColor: "#fff",
+        }}
+      >
+        <img src={FACE} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      </div>
     </Cell>
     )}
     {wants(2) && (
-    <Cell label="2. Img svg + width/height attrs">
-      <Img
-        src={staticFile("img/probe-post-image-sized.svg")}
-        style={{ width: 80, height: 80, objectFit: "contain", background: "#fff" }}
-      />
+    <Cell label="2. border longhands, no shorthand">
+      <div
+        style={{
+          width: SIZE,
+          height: SIZE,
+          borderRadius: "50%",
+          borderWidth: RING,
+          borderStyle: "solid",
+          borderColor: "#ffffff",
+          overflow: "hidden",
+          backgroundColor: "#fff",
+        }}
+      >
+        <img src={FACE} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+      </div>
     </Cell>
     )}
     {wants(3) && (
-    <Cell label="3. cursor: Img svg + filters (current)">
-      <Img
-        src={staticFile("img/cursor.svg")}
-        style={{ width: 85.5, height: 85.5, filter: CURSOR_FILTER }}
-      />
+    <Cell label="3. border, NO overflow hidden">
+      <div
+        style={{
+          width: SIZE,
+          height: SIZE,
+          borderRadius: "50%",
+          border: `${RING}px solid #ffffff`,
+          backgroundColor: "#fff",
+        }}
+      >
+        <img
+          alt=""
+          src={FACE}
+          style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+        />
+      </div>
     </Cell>
     )}
     {wants(4) && (
-    <Cell label="4. cursor: sized svg + filters">
-      <Img
-        src={staticFile("img/probe-cursor-sized.svg")}
-        style={{ width: 85.5, height: 85.5, filter: CURSOR_FILTER }}
+    <Cell label="4. border alone, no child at all">
+      <div
+        style={{
+          width: SIZE,
+          height: SIZE,
+          borderRadius: "50%",
+          border: `${RING}px solid #ffffff`,
+          overflow: "hidden",
+        }}
       />
     </Cell>
     )}
     {wants(5) && (
-    <Cell label="5. cursor: inline svg, fill white">
-      <svg width={85.5} height={85.5} viewBox="0 0 938.07 1041.37">
-        <path d={CURSOR_PATH} fill="#ffffff" />
-      </svg>
+    <Cell label="5. nested: white disc + inset clipped photo">
+      <div
+        style={{
+          width: SIZE,
+          height: SIZE,
+          borderRadius: "50%",
+          backgroundColor: "#fff",
+          position: "relative",
+        }}
+      >
+        <div
+          style={{
+            position: "absolute",
+            inset: RING,
+            borderRadius: "50%",
+            overflow: "hidden",
+          }}
+        >
+          <img src={FACE} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      </div>
     </Cell>
     )}
     {wants(6) && (
-    <Cell label="6. glass icon: img + masked wash + plus-lighter (current)">
-      <div style={{ position: "relative", width: 150, height: 150, mixBlendMode: "plus-lighter" }}>
-        <img
-          src={CHAT_ICON_SRC}
-          alt=""
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "fill", mixBlendMode: "plus-lighter" }}
-        />
+    <Cell label="6. ring as a sibling overlay div">
+      <div style={{ width: SIZE, height: SIZE, position: "relative" }}>
+        <div style={{ position: "absolute", inset: 0, borderRadius: "50%", overflow: "hidden" }}>
+          <img src={FACE} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background:
-              "linear-gradient(135deg, rgba(168,85,247,0.9) 0%, rgba(139,92,246,0.75) 50%, rgba(109,40,217,0.85) 100%)",
-            mixBlendMode: "plus-lighter",
-            opacity: 0.5,
-            WebkitMaskImage: `url(${CHAT_ICON_SRC})`,
-            WebkitMaskSize: "100% 100%",
-            maskImage: `url(${CHAT_ICON_SRC})`,
-            maskSize: "100% 100%",
+            borderRadius: "50%",
+            border: `${RING}px solid #ffffff`,
+            boxSizing: "border-box",
           }}
         />
       </div>
     </Cell>
     )}
     {wants(7) && (
-    <Cell label="7. mask-image alone: solid div masked by icon">
-      <div
-        style={{
-          width: 150,
-          height: 150,
-          background: "#a855f7",
-          WebkitMaskImage: `url(${CHAT_ICON_SRC})`,
-          WebkitMaskSize: "100% 100%",
-          maskImage: `url(${CHAT_ICON_SRC})`,
-          maskSize: "100% 100%",
-        }}
-      />
+    <Cell label="7. current, inside translate(-50%,-50%) + scale(1.04)">
+      <div style={{ position: "absolute", inset: 0, transform: "scale(1.04)" }}>
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: SIZE,
+            height: SIZE,
+            transform: "translate(-50%, -50%)",
+            borderRadius: "50%",
+            border: `${RING}px solid #ffffff`,
+            overflow: "hidden",
+            backgroundColor: "#fff",
+          }}
+        >
+          <img src={FACE} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        </div>
+      </div>
+    </Cell>
+    )}
+    {/* Pills: the reaction chips, View more, Featured podcast, and the onboarding
+        progress bar all come out as ovals. Same question, different shape — how the
+        renderer clamps an over-large radius. */}
+    {wants(30) && (
+    <Cell label="30. pill: borderRadius 999">
+      <div style={{ width: 220, height: 40, borderRadius: 999, background: "#4B2AAD" }} />
+    </Cell>
+    )}
+    {wants(31) && (
+    <Cell label="31. pill: borderRadius 50%">
+      <div style={{ width: 220, height: 40, borderRadius: "50%", background: "#4B2AAD" }} />
+    </Cell>
+    )}
+    {wants(32) && (
+    <Cell label="32. pill: borderRadius = half the height (20)">
+      <div style={{ width: 220, height: 40, borderRadius: 20, background: "#4B2AAD" }} />
+    </Cell>
+    )}
+    {wants(33) && (
+    <Cell label="33. progress bar: 8px tall, radius 999">
+      <div style={{ width: 300, height: 8, borderRadius: 999, background: "#4B2AAD" }} />
+    </Cell>
+    )}
+    {wants(34) && (
+    <Cell label="34. progress bar: 8px tall, radius 4">
+      <div style={{ width: 300, height: 8, borderRadius: 4, background: "#4B2AAD" }} />
+    </Cell>
+    )}
+    {wants(20) && (
+    <Cell label="20. plain div, no Img (baseline at 1920x1080)">
+      <div style={{ width: SIZE, height: SIZE, background: "#fff" }} />
+    </Cell>
+    )}
+    {wants(21) && (
+    <Cell label="21. bare Img, no ring">
+      <img src={FACE} alt="" style={{ width: SIZE, height: SIZE, objectFit: "cover" }} />
     </Cell>
     )}
     {wants(8) && (
-    <Cell label="8. plus-lighter img alone on dark">
-      <img
-        src={CHAT_ICON_SRC}
-        alt=""
-        style={{ width: 150, height: 150, mixBlendMode: "plus-lighter" }}
-      />
-    </Cell>
-    )}
-    {wants(9) && (
-    <Cell label="9. plain img, no blend (baseline)">
-      <img src={CHAT_ICON_SRC} alt="" style={{ width: 150, height: 150 }} />
-    </Cell>
-    )}
-    {wants(10) && (
-    <Cell label="10. InlineSvg: post-image tile">
-      <InlineSvg
-        src={staticFile("img/post types/post-image.svg")}
-        style={{ width: 80, height: 80, background: "#fff", color: "#16A34A" }}
-      />
-    </Cell>
-    )}
-    {wants(12) && (
-    <Cell label="12. radial 120% 130% at 50% 15% (mobile wash)">
-      <div style={{ width: 260, height: 150, background: "radial-gradient(120% 130% at 50% 15%, #44D760 0%, #2ECC71 45%, #1E824C 100%)" }} />
-    </Cell>
-    )}
-    {wants(13) && (
-    <Cell label="13. radial ellipse-keyword same">
-      <div style={{ width: 260, height: 150, background: "radial-gradient(ellipse 120% 130% at 50% 15%, #44D760 0%, #2ECC71 45%, #1E824C 100%)" }} />
-    </Cell>
-    )}
-    {wants(14) && (
-    <Cell label="14. radial circle at (simple)">
-      <div style={{ width: 260, height: 150, background: "radial-gradient(circle at 50% 15%, #44D760 0%, #1E824C 100%)" }} />
-    </Cell>
-    )}
-    {wants(15) && (
-    <Cell label="15. linear 120deg (desktop wash)">
-      <div style={{ width: 260, height: 150, background: "linear-gradient(120deg, #44D760 0%, #2ECC71 45%, #1E824C 100%)" }} />
-    </Cell>
-    )}
-    {wants(11) && (
-    <Cell label="11. CursorArrow white / black">
-      <CursorArrow color="white" style={{ width: 85.5, height: 85.5 }} />
-      <span style={{ display: "inline-block", background: "#ddd" }}>
-        <CursorArrow color="black" style={{ width: 85.5, height: 85.5 }} />
-      </span>
+    <Cell label="8. nested disc, inside translate + scale">
+      <div style={{ position: "absolute", inset: 0, transform: "scale(1.04)" }}>
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            width: SIZE,
+            height: SIZE,
+            transform: "translate(-50%, -50%)",
+            borderRadius: "50%",
+            backgroundColor: "#fff",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: RING,
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+          >
+            <img src={FACE} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+          </div>
+        </div>
+      </div>
     </Cell>
     )}
   </div>
@@ -217,3 +298,145 @@ export const probeStill = async (): Promise<void> => {
   }
   img.src = url;
 };
+
+/** Smoke test: does `renderStillOnWeb` complete at all in this environment? */
+export const TinyProbe: React.FC = () => (
+  <div style={{ width: 200, height: 100, background: "red" }} />
+);
+
+/**
+ * The real HeadquartersScene, on its own, at global 75 (local 42).
+ *
+ * The full composition's still takes minutes — it decodes the 212-second reference video
+ * underneath every scene. Mounting just this scene under the customisation context and a
+ * `<Sequence from={-42}>` puts it on its own local frame 42 in about a second, which is
+ * what makes "is the ring there?" a question worth asking repeatedly.
+ */
+export const HqProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <AbsoluteFill style={{ background: "#E5A428" }}>
+      <Sequence from={-42}>
+        <HeadquartersScene />
+      </Sequence>
+    </AbsoluteFill>
+  </CustomizationProvider>
+);
+
+/** Is Remotion's `<Img>` itself what stalls a still in this harness? */
+export const ImgProbe: React.FC = () => (
+  <AbsoluteFill style={{ background: "#E5A428" }}>
+    <Img src={FACE} style={{ width: 300, height: 300, objectFit: "cover" }} />
+  </AbsoluteFill>
+);
+
+/**
+ * The HeadquartersScene avatar field at global frame 75, rebuilt with plain `<img>`.
+ *
+ * Remotion's `<Img>` stalls `renderStillOnWeb` here (see ImgProbe), so the scene cannot be
+ * mounted directly — but the ring is a property of the wrapper, not of what is inside it,
+ * and every number below is the scene's own: both Z-plane scales at local frame 42, the
+ * ten sizes, and the `size > 140 ? 5 : 4` / `size > 100 ? 4 : 3.5` border widths.
+ */
+const HQ_FG = [
+  { s: 185, x: 32.5, y: 17.5, f: "vatar-2" },
+  { s: 170, x: 71.0, y: 12.0, f: "avatar-4" },
+  { s: 155, x: 23.5, y: 69.0, f: "avatar-6" },
+  { s: 150, x: 42.5, y: 76.0, f: "avatar-1" },
+  { s: 130, x: 68.0, y: 69.5, f: "avatar-4" },
+];
+const HQ_BG = [
+  { s: 86, x: 14.5, y: 31.5, f: "avatar-1" },
+  { s: 120, x: 48.5, y: 29.0, f: "avatar-3" },
+  { s: 86, x: 79.0, y: 23.0, f: "avatar-5" },
+  { s: 92, x: 55.0, y: 70.0, f: "avatar-3" },
+  { s: 96, x: 83.5, y: 81.0, f: "avatar-5" },
+];
+
+export const HqRingProbe: React.FC = () => (
+  <AbsoluteFill style={{ background: "#E5A428" }}>
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        transform: "scale(1.026)",
+        opacity: 1,
+        transformOrigin: "center center",
+        zIndex: 4,
+        pointerEvents: "none",
+      }}
+    >
+      {HQ_BG.map((a, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            left: `${a.x}%`,
+            top: `${a.y}%`,
+            width: a.s,
+            height: a.s,
+            transform: "translate(-50%, -50%)",
+            borderRadius: "50%",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: a.s > 100 ? 4 : 3.5,
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              alt=""
+              src={staticFile(`img/${a.f}.jpeg`)}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        transform: "scale(1.09)",
+        opacity: 1,
+        transformOrigin: "center center",
+        zIndex: 6,
+        pointerEvents: "none",
+      }}
+    >
+      {HQ_FG.map((a, i) => (
+        <div
+          key={i}
+          style={{
+            position: "absolute",
+            left: `${a.x}%`,
+            top: `${a.y}%`,
+            width: a.s,
+            height: a.s,
+            transform: "translate(-50%, -50%)",
+            borderRadius: "50%",
+            backgroundColor: "#ffffff",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              inset: a.s > 140 ? 5 : 4,
+              borderRadius: "50%",
+              overflow: "hidden",
+            }}
+          >
+            <img
+              alt=""
+              src={staticFile(`img/${a.f}.jpeg`)}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        </div>
+      ))}
+    </div>
+  </AbsoluteFill>
+);

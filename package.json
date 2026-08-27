@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "bin": {
-    "workvivo-render": "scripts/render-local.mjs",
     "workvivo-still": "scripts/still.mjs"
   },
   "scripts": {
@@ -11,7 +10,6 @@
     "start": "remotion studio",
     "build": "remotion bundle",
     "render": "remotion render",
-    "render:project": "node scripts/render-local.mjs",
     "still": "node scripts/still.mjs",
     "wizard": "node scripts/dev.mjs",
     "gallery": "vite --config vite.gallery.config.ts",
