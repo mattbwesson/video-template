@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Workvivo Space page, Feed tab — "Your Voice Matters".
    Prefixed `wsf-` per docs/PORTING-HTML-REFS.md. Note `wsp-` is already taken by
    WorkvivoSpacePage, which is the same chassis with different content — see the note in
@@ -29,6 +33,10 @@
 
 .wsf-shell {
   width: 1760px;
+  /* 1660 x 1.2222222. Explicit because .wsf-body is scaled by a transform now, which does
+     not grow the box the way `zoom` did — without this the shell would size to the
+     unscaled 1660 and clip the page short. */
+  height: 2028.889px;
   overflow: hidden;
   background: #F3F4F6;
 }
@@ -38,7 +46,15 @@
 .wsf-body {
   width: 1440px;
   height: 1660px;
-  zoom: 1.2222222;
+  /* `transform: scale`, NOT `zoom` — this was the one file in the repo still using zoom,
+     and it broke text in the export badly. The renderer positions each word from
+     getBoundingClientRect (which INCLUDES zoom) but sets the canvas font from
+     getComputedStyle().fontSize (which does NOT), so every glyph was drawn 1/1.2222 too
+     small at correctly-spaced positions — a visible gap after every word. 18.5px type came
+     out as the 15.14px the probe measured. Transform is what WorkvivoNewsletters already
+     uses for the identical 1440 -> 1760 fit, and the renderer reads transforms properly. */
+  transform: scale(1.2222222);
+  transform-origin: top left;
   position: relative;
   background: #F3F4F6;
   font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
@@ -127,12 +143,25 @@
   background: var(--wv-brand, #7F39F3);
 }
 
+/* The brand duotone WITHOUT mix-blend-mode.
+   The photo used to be multiplied over the brand fill behind it. The export does not
+   composite blend modes at all, so the image simply drew over the brand and the header
+   exported as a plain grey photograph with no tint. The same look is built here out of
+   two things both renderers draw: the photo desaturated, and a brand wash laid over it
+   (.wsf-banner-wash, a real element — a pseudo-element would never paint). */
 .wsf-banner img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  mix-blend-mode: multiply;
-  filter: grayscale(1) brightness(1.9) contrast(0.72);
+  filter: grayscale(1) brightness(1.35) contrast(0.8);
+}
+
+.wsf-banner-wash {
+  position: absolute;
+  inset: 0;
+  background: var(--wv-brand, #7F39F3);
+  opacity: 0.68;
+  pointer-events: none;
 }
 
 .wsf-head {
@@ -765,14 +794,14 @@
   margin-top: 4px;
 }
 
-.wsf-carousel-dots span {
+.wsf-carousel-dots > span {
   width: 5px;
   height: 5px;
   border-radius: 50%;
   background: #D1D5DB;
 }
 
-.wsf-carousel-dots span.wsf-dot-active {
+.wsf-carousel-dots > span.wsf-dot-active {
   background: #9CA3AF;
   width: 6px;
   height: 6px;

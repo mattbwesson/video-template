@@ -76,6 +76,18 @@ export interface WorkvivoBillboardScreenProps {
  * The counts are the same for every tenant and read as chrome; the words over them are
  * `copy.signage.stories`, positionally.
  */
+/**
+ * The one reaction on this board that is about the CUSTOMER rather than about reacting.
+ *
+ * Substituted at render from `signage.reactionEmoji` — a doughnut for Dunkin', a tractor
+ * for John Deere. The other eight are deliberately generic (party popper, clap, rocket,
+ * heart, sparkles, fire): they read as "people reacted" for anyone, and swapping them all
+ * would make the board look like a themed sticker sheet rather than a feed.
+ *
+ * A token rather than an index, so the position is visible where the data is written.
+ */
+const BRAND_REACT = "{{brand}}";
+
 const STORY_CHROME: {
   photo: string;
   photoSlot: ImageSlotKey;
@@ -101,7 +113,7 @@ const STORY_CHROME: {
     face: "img/avatar-3.jpeg",
     ago: "15 minutes ago",
     comments: "18 Comments",
-    reacts: ["\u2764\uFE0F 24", "\u{1F3B5} 19", "\u2728 14"],
+    reacts: ["\u2764\uFE0F 24", `${BRAND_REACT} 19`, "\u2728 14"],
   },
   {
     photo: "fillers/spotify-for-artists-in-focus-logo-billboard-pro-1260.webp",
@@ -330,6 +342,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                     {i === 0 && (
                       <div className="wbb-translated">
                         <InlineSvg
+                          className="wbb-translated-ico"
                           src={staticFile("img/post types/post-translation.svg")}
                           alt=""
                         />
@@ -345,7 +358,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                     <div className="wbb-value">
                       <div className="wbb-vlabel">Value:</div>
                       <div className="wbb-chip">
-                        <InlineSvg src={staticFile("img/post types/post-value.svg")} alt="" />
+                        <InlineSvg className="wbb-chip-ico" src={staticFile("img/post types/post-value.svg")} alt="" />
                         <span>{story.value}</span>
                       </div>
                     </div>
@@ -355,7 +368,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                     <div className="wbb-reacts">
                       {chrome.reacts.map((r) => (
                         <span className="wbb-react" key={r}>
-                          {r}
+                          {r.replace(BRAND_REACT, signage.reactionEmoji)}
                         </span>
                       ))}
                     </div>

@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 .wcmu-deck {
   display: flex;
   align-items: center;
@@ -240,7 +244,7 @@
   letter-spacing: 0.5px;
 }
 
-.wcmu-hq span, .wcmu-hq svg, .wcmu-hq img {
+.wcmu-hq > span, .wcmu-hq svg, .wcmu-hq img {
   width: 34px;
   height: 20px;
   object-fit: contain;
@@ -268,7 +272,13 @@
   color: #6103ED;
 }
 
-.wcmu-cmu .wcmu-t span {
+/* CHILD combinator, not descendant. The export measures each word by injecting a
+   temporary <span> around it (`findWords` in the renderer), and a descendant selector
+   matches those too — `display: block` then puts every measured word on its own line, so
+   the card exported with "Catch / Me / Up" stacked and the subtitle printed over it. The
+   injected spans are always deeper than one level, so `>` cannot reach them. Any rule that
+   styles a bare `span` by descendant is exposed to this. */
+.wcmu-cmu .wcmu-t > span {
   display: block;
   white-space: nowrap;
   font-size: 15px;
@@ -404,7 +414,7 @@
   font-weight: 700;
 }
 
-.wcmu-shq span, .wcmu-shq svg, .wcmu-shq img {
+.wcmu-shq > span, .wcmu-shq svg, .wcmu-shq img {
   width: 18px;
   height: 11px;
   object-fit: contain;

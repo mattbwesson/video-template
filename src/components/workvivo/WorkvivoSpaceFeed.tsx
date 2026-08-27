@@ -218,6 +218,9 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                   src={image("voice.banner.0", staticFile("img/workvivo/story_summit.png"))}
                   alt=""
                 />
+                {/* The brand tint. It replaces a mix-blend-mode: multiply the export
+                    drops — see the note in the stylesheet. */}
+                <div className="wsf-banner-wash" />
               </div>
 
               <div className="wsf-head">

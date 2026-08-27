@@ -243,7 +243,7 @@ export const Reveal: React.FC<{
             <span className="vc-mono vc-tip">
               {edits
                 ? `${edits} edit${edits === 1 ? "" : "s"}`
-                : "Click anything in the video to edit it"}
+                : "Pause the video, then click anything in the frame to edit it"}
             </span>
             <span className="vc-sp">
               <button

@@ -368,18 +368,17 @@
   display: block;
 }
 
+/* The real Zoom mark (img/zoomicon.png), the same raster the Spotlight tab and the
+   desktop Quick Links draw. It was a blue gradient square with the word "zoom" set in it
+   — a stand-in that read as the wrong logo next to the two real vendor marks beside it.
+   The PNG is a full-bleed square, so the tile's corner rounding is applied here, exactly
+   as .wms-tile-ico and .qtile img do at their own sizes. */
 .wm-zoomph {
   width: 56px;
   height: 56px;
   border-radius: 13px;
-  background: linear-gradient(160deg, #4A8CFF, #2D8CFF);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
+  object-fit: cover;
+  display: block;
 }
 
 /* shortcut grid */

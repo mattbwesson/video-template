@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Ported from public/refs/workvivo-post-composer.html — that file is the design source.
    Classes prefixed pc-; values copied verbatim. Edit the ref first, then mirror here.
 
@@ -168,9 +172,9 @@
    this inline <span> shrank to min-content and its two lines wrapped and overlapped each
    other. Same fix as .wcmu-t. */
 .pc-vtx{flex:1;display:block;min-width:0}
-.pc-vtx b,.pc-vtx span{white-space:nowrap}
+.pc-vtx b,.pc-vtx > span{white-space:nowrap}
 .pc-vtx b{display:block;font-size:19px;line-height:26px;font-weight:700;color:#111827}
-.pc-vtx span{display:block;font-size:16px;line-height:24px;color:#9CA3AF}
+.pc-vtx > span{display:block;font-size:16px;line-height:24px;color:#9CA3AF}
 .pc-vbox{width:20px;height:20px;border:1.6px solid #C4C7CC;border-radius:3px;flex:none;
       cursor:pointer;position:relative}
 .pc-vbox.pc-on{background:#6103ED;border-color:#6103ED}

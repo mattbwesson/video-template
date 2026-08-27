@@ -1087,6 +1087,28 @@ export const COPY = defineCopy({
       guide:
         "The city this screen is hanging in — a place this company really has an office, warehouse, store or site. Usually the same city as `feed.weather.city`; pick a different real site only if this company's frontline staff are obviously somewhere else.",
     }),
+
+    /**
+     * One reaction emoji on the middle story, at global ~1913.
+     *
+     * The other eight reactions on this board are deliberately generic — party popper,
+     * clap, rocket, heart, sparkles, fire — because they read as "people reacted" for any
+     * company. This one is the opposite: it is the single place the board says what the
+     * company actually MAKES, and the baseline's musical note is a Spotify joke that reads
+     * as nothing anywhere else.
+     *
+     * A slot rather than a lookup, because the mapping from "what does this company do" to
+     * "which emoji" is exactly the judgement a language model has and a table does not.
+     */
+    reactionEmoji: text({
+      // The baseline is Spotify, so the baseline emoji is a musical note.
+      default: "\u{1F3B5}",
+      // Room for one emoji including a variation selector or a two-codepoint sequence;
+      // the cap is what stops a model returning "🍩 donut" and breaking the row.
+      max: 4,
+      guide:
+        "EXACTLY ONE emoji and nothing else — no words, no count, no spaces. It should say what this company makes or does, the way a doughnut is Dunkin' or a tractor is John Deere: pick the object a customer would picture. If nothing obvious fits the industry, use a generic positive reaction rather than something wrong.",
+    }),
     /**
      * The three stories the board swipes through, at local 30 and 103.
      *

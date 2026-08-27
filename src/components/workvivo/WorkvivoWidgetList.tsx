@@ -40,6 +40,8 @@ export type WidgetItem = {
   category: WidgetCategory;
   /** Sprite id, or null where the library has no glyph for it. */
   icon: string | null;
+  /** A file, for the one mark the sprite does not carry. Wins over `icon`. */
+  iconSrc?: string;
   /** The tile's gradient, top-left to bottom-right. */
   tint: [string, string];
 };
@@ -47,9 +49,11 @@ export type WidgetItem = {
 /**
  * The catalogue, in the reference's order — left column then right.
  *
- * `Billboards` has no glyph: the library carries no billboard, signage or display mark,
- * checked across "billboards", "signage", "display screen" and "broadcast". It renders
- * as an explicit gap rather than as something invented.
+ * `Billboards` is the one card whose mark is not in the sprite — the library carries no
+ * billboard, signage or display glyph, checked across "billboards", "signage", "display
+ * screen" and "broadcast". It used to render as an explicit gap rather than as something
+ * invented; the real artwork has since been supplied, so it draws from a file instead
+ * (`iconSrc`). Everything else still comes from the sprite.
  *
  * Two details are inferred because the reference crops them: the first card's title is
  * cut off above the frame (the copy reads as Upcoming Events), and Featured News's chip
@@ -75,6 +79,7 @@ export const WIDGETS_LEFT: WidgetItem[] = [
     desc: "Billboards serve as a platform for promoting and showcasing your desired content.",
     category: "Stay Informed",
     icon: null,
+    iconSrc: "img/billboared.svg",
     tint: ["#F79A3E", "#EE7A1E"],
   },
   {
@@ -143,7 +148,12 @@ export const WidgetCard: React.FC<{ item: WidgetItem; style?: React.CSSPropertie
           className="wwl-tile"
           style={{ background: `linear-gradient(135deg, ${item.tint[0]} 0%, ${item.tint[1]} 100%)` }}
         >
-          {item.icon ? (
+          {item.iconSrc ? (
+            /* Inline, not <img src="…svg">: the file is viewBox-only with its fill in a
+               <defs><style> block, which exports corner-cropped. The path is already
+               white, so it needs no `fill` — it sits on the tile's gradient. */
+            <InlineSvg className="wwl-tile-svg" src={staticFile(item.iconSrc)} />
+          ) : item.icon ? (
             <Icon href={item.icon} className="" width={26} height={26} />
           ) : (
             <span className="wwl-glyph-missing" />
@@ -164,6 +174,8 @@ export const WidgetCard: React.FC<{ item: WidgetItem; style?: React.CSSPropertie
     </div>
   );
 };
+import { InlineSvg } from "../InlineSvg";
+import { staticFile } from "remotion";
 
 export interface WorkvivoWidgetListProps {
   left?: WidgetItem[];

@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Two Workvivo mobile phones on a purple field — Chat on the left, a video call on
    the right. Every class is prefixed wp- so nothing collides with the mobile library's
    wm- names, which this scene reuses for the phone shell and status bar.
@@ -222,7 +226,7 @@
   position: relative;
 }
 
-.wp-grid-more span {
+.wp-grid-more > span {
   position: absolute;
   inset: 0;
   background: rgba(17, 24, 39, 0.45);
@@ -382,7 +386,7 @@
   gap: 8px;
 }
 
-.wp-field span {
+.wp-field > span {
   flex: 1 1 0;
   font-size: 12.5px;
   color: #9ca3af;

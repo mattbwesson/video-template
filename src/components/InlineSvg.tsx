@@ -133,14 +133,21 @@ export const InlineSvg: React.FC<{
 }> = ({ src, className, style, width, height, fill }) => {
   const svg = load(src);
   const inner = fill ? paint(svg.inner, fill) : svg.inner;
+  // `width="18"` — a bare numeric STRING — is what the `<Img>` this replaced accepted, so
+  // call sites write it out of habit. React only appends `px` to numbers; a string goes
+  // through verbatim, and `width: 18` is invalid CSS that the browser silently drops. The
+  // wrapper then has no size at all and the artwork fills its parent: the desktop topbar's
+  // 18px dot grid rendered at 300px. Coerce here rather than at every call site.
+  const size = (v: number | string | undefined): string | number | undefined =>
+    typeof v === "string" && /^\d+(\.\d+)?$/.test(v) ? `${v}px` : v;
   return (
     <span
       className={className}
       style={{
         display: "inline-block",
         lineHeight: 0,
-        ...(width !== undefined ? { width } : null),
-        ...(height !== undefined ? { height } : null),
+        ...(width !== undefined ? { width: size(width) } : null),
+        ...(height !== undefined ? { height: size(height) } : null),
         ...style,
       }}
     >

@@ -167,7 +167,12 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
               <div className="wm-qrow">
                 <div className="wm-qtile"><SymbolSvg width="56" height="56" href="#i-vendor-workday" /><span>Workday</span></div>
                 <div className="wm-qtile"><SymbolSvg className="wm-logo" width="56" height="56" href="#i-vendor-servicenow" /><span>Service Now</span></div>
-                <div className="wm-qtile"><div className="wm-zoomph">zoom</div><span>Zoom</span></div>
+                <div className="wm-qtile">
+                  {/* The real mark, as at 1664 on the Spotlight tab — this tile used to
+                      draw the word "zoom" on a blue square as a stand-in. */}
+                  <img className="wm-zoomph" src={staticFile("img/zoomicon.png")} width={56} height={56} alt="" />
+                  <span>Zoom</span>
+                </div>
               </div>
             </div>
 

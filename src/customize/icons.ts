@@ -52,6 +52,23 @@ export type IconSlotKey = (typeof ICON_SLOTS)[number];
  */
 export const ICON_SLOT_ATTR = "data-vc-icon";
 
+/**
+ * Where to CLICK for an icon position, when the glyph is not the thing to click.
+ *
+ * `SlotIcon` marks the glyph, which is right for a space badge: the badge is a picture
+ * hanging off a card, and the card is the target. It is wrong for a value disc, whose
+ * whole row — disc, name, "Organization Value" — is one thing an operator wants to fix,
+ * and whose disc is 42 composition pixels inside a stage scaled down twice, i.e. a
+ * fifteen-pixel circle in the preview that nobody thinks to aim at.
+ *
+ * An element carrying this attribute REPLACES the marked glyph with the same key rather
+ * than adding to it, so a position still gets exactly one hit target. Separate from
+ * `ICON_SLOT_ATTR` because the glyph must stay marked either way: that mark is what says
+ * a swapped icon goes here, and losing it to a hand-placed one somewhere up the tree is
+ * the failure `SlotIcon` was written to make impossible.
+ */
+export const ICON_HIT_ATTR = "data-vc-icon-hit";
+
 export type IconAssignment = Partial<Record<IconSlotKey, string>>;
 
 /**
@@ -73,7 +90,9 @@ export type IconRole = RoleOf<IconSlotKey>;
 
 const ROLE_LABELS: Record<IconRole, string> = {
   "space.badge": "Space icon",
-  "value.disc": "Value icon",
+  // Not "Value icon": the target is the whole picker row and the panel it opens edits
+  // the value's NAME as well as the disc beside it.
+  "value.disc": "Company value",
 };
 
 const roleCounts = ICON_SLOTS.reduce<Record<string, number>>((acc, key) => {

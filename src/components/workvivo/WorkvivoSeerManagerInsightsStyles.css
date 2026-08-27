@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Seer Insights — Engagement tab, manager view.
    Prefixed `wsmi-` per docs/PORTING-HTML-REFS.md.
 
@@ -360,13 +364,13 @@
   color: var(--wsmi-muted);
 }
 
-.wsmi-chart-nav span {
+.wsmi-chart-nav > span {
   padding: 1px 4px;
   display: flex;
   align-items: center;
 }
 
-.wsmi-chart-nav span:first-child {
+.wsmi-chart-nav > span:first-child {
   border-right: 1px solid var(--wsmi-line);
 }
 

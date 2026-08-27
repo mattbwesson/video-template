@@ -9,6 +9,7 @@
 import { COPY, type VideoInputProps } from "../src/customize/videoCopy";
 import { expandCopyOverrides } from "../src/customize/copyPaths";
 import { repairSelfShoutOut } from "../src/customize/shoutOut";
+import { followValueRenames } from "../src/customize/valueEcho";
 import type { HeaderOverrides } from "../src/customize/headers";
 import {
   DEFAULT_BRAND_HEX,
@@ -199,16 +200,42 @@ export const toInputProps = (s: WizardState): VideoInputProps => {
   // src/customize/shoutOut.ts for why it falls back to the baseline name.
   const { copy: settled } = repairSelfShoutOut(written, s.person.name);
 
+  // A third layer, applied last and UNCAPPED: these are words the operator typed while
+  // watching the frame they land in, so if they overrun the card they can see it and
+  // shorten it. Truncating them silently — the right move for a model's reply, which
+  // nobody is watching — would delete text out from under someone mid-sentence. The
+  // panel's own maxLength is where the limit is enforced, visibly.
+  const edited = COPY.merge(expandCopyOverrides(s.copyOverrides), {
+    capLengths: false,
+    base: settled,
+  });
+
+  /**
+   * …and a fourth, for the one edit that is not local to the frame it was made on.
+   *
+   * The four company values are quoted again on the published post and on the billboard
+   * stories, as bare phrases with nothing tying them together. Renaming one in the picker
+   * therefore has to carry, or the operator fixes the value in one shot and leaves two
+   * later shots quoting the wording they just replaced. Sparse and usually empty; see
+   * src/customize/valueEcho.ts.
+   */
+  const echoed = followValueRenames(
+    settled,
+    edited,
+    new Set(Object.keys(s.copyOverrides)),
+  );
+
   return {
-    // A third layer, applied last and UNCAPPED: these are words the operator typed while
-    // watching the frame they land in, so if they overrun the card they can see it and
-    // shorten it. Truncating them silently — the right move for a model's reply, which
-    // nobody is watching — would delete text out from under someone mid-sentence. The
-    // panel's own maxLength is where the limit is enforced, visibly.
-    copy: COPY.merge(expandCopyOverrides(s.copyOverrides), {
-      capLengths: false,
-      base: settled,
-    }),
+    copy: Object.keys(echoed).length
+      ? COPY.merge(expandCopyOverrides(echoed), {
+          // Capped, unlike the layer above it. The rule that an operator's own text is
+          // never re-truncated behind their back is about the field they typed into and
+          // can see; these are the same words arriving somewhere else, in a slot two
+          // characters shorter, on a frame they are not looking at.
+          capLengths: true,
+          base: edited,
+        })
+      : edited,
     brand: {
       accentHex: clampBrandAccentHex(s.color),
       palette: s.palette,

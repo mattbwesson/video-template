@@ -135,11 +135,13 @@ type AppRow = {
 };
 
 /**
- * Two marks the Workvivo library does not carry.
+ * One mark the Workvivo library does not carry.
  *
- * `vendor.*` covers 20 connectors but SharePoint is not one of them, and there is no
- * Workvivo product mark in any register. Both are drawn as obvious placeholders rather
- * than approximated: a wrong-but-plausible logo is the failure mode that ships.
+ * There is no Workvivo product mark in any register, so it is drawn here rather than
+ * approximated from something else — a wrong-but-plausible logo is the failure mode that
+ * ships. SharePoint used to be in the same boat (`vendor.*` covers 20 connectors and
+ * SharePoint is not one of them); its real artwork has since been supplied and it is drawn
+ * from the file below.
  */
 const WorkvivoMark = () => (
   <svg
@@ -156,8 +158,13 @@ const WorkvivoMark = () => (
     />
   </svg>
 );
-const SharePointMarkPlaceholder = () => (
-  <span className="whq-mark-placeholder whq-unknown" title="SharePoint logo not in library" />
+/* Inline, not <img src="…svg">: the file is viewBox-only with its fills in a
+   <defs><style> block, which is the pair that exports corner-cropped. */
+const SharePointMark = () => (
+  <InlineSvg
+    className="whq-mark-sharepoint"
+    src={staticFile("img/integrations/icon-sharepoint.svg")}
+  />
 );
 
 export interface WorkvivoHqSearchProps {
@@ -281,7 +288,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
       state: "connect",
       mark: <Icon href="#i-vendor-servicenow" className="" width={18} height={18} />,
     },
-    { label: "Share Point", state: "connect", mark: <SharePointMarkPlaceholder /> },
+    { label: "Share Point", state: "connect", mark: <SharePointMark /> },
     {
       label: "Google Drive",
       state: "connect",
@@ -366,6 +373,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
             >
               <div className="whq-agent-head">
                 <InlineSvg
+                  className="whq-agent-ico"
                   src={staticFile("img/hq-agent-logo.svg")}
                   alt="HQ agent"
                   style={{ height: 22, width: "auto", display: "block" }}

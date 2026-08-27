@@ -13,7 +13,7 @@ import {
 import "./WorkvivoPostComposerStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { SlotIcon } from "../../customize/SlotIcon";
-import type { IconSlotKey } from "../../customize/icons";
+import { ICON_HIT_ATTR, type IconSlotKey } from "../../customize/icons";
 
 /**
  * Native port of public/refs/workvivo-post-composer.html — the seed card, composer modal,
@@ -394,7 +394,13 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
               <span className="pc-g-x"><i /><i /></span>
             </div>
             {VALUE_ROWS.map((row, i) => (
-              <div className="pc-vrow" key={row.slot}>
+              // The whole row is the wizard's hit target, not the disc inside it — the
+              // thing being edited is the value, and the value is mostly its name.
+              <div
+                className="pc-vrow"
+                key={row.slot}
+                {...{ [ICON_HIT_ATTR]: row.slot }}
+              >
                 <span className="pc-vdisc">
                   <SlotIcon slot={row.slot} size={row.size}>
                     {row.art}

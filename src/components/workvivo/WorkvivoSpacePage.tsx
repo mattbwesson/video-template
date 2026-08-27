@@ -426,8 +426,13 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
             <span className="wsp-comp-av">
               <img src={me} alt="" />
             </span>
+            {/* ONE text node, built with a template string rather than JSX text either
+                side of an interpolation. This box is `display: flex; flex-direction:
+                column`, and the export materialises every text node into a real <span> —
+                so the three nodes JSX would otherwise produce ("What's going on, ",
+                the name, "?") became three real flex items and stacked vertically. */}
             <div className="wsp-comp-ph">
-              What&apos;s going on, {person.firstName}?
+              {`What\u2019s going on, ${person.firstName}?`}
             </div>
           </div>
           <div className="wsp-hr" />

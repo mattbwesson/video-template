@@ -158,14 +158,19 @@ const SPARKLE_IN = 6;
 /** Frames one star takes to leave. */
 const SPARKLE_OUT = 5;
 
-/** basic-star.svg's own viewBox, so a star is never drawn out of proportion. */
-const STAR_ASPECT = 664.83 / 675.54;
+/** basic-star.svg's own viewBox, so a star is never drawn out of proportion.
+ *  Read off the file: it is 384.58 x 367.58. The previous 664.83/675.54 belonged to some
+ *  other artwork and made the box very slightly the wrong shape. */
+const STAR_ASPECT = 367.58 / 384.58;
 
 /**
  * `window` is how many frames the whole burst has, counted from the completion screen.
- * The stars are drawn as masked boxes rather than as <img>: basic-star.svg is a solid
- * black path, and a mask is what lets it be painted a chosen colour instead of arriving
- * black or going through a stack of filters guessing at a hue.
+ *
+ * Each star is the file's own path, inlined and painted. It used to be a tinted BOX cut to
+ * shape by basic-star.svg as a CSS mask — which the in-browser export drops outright, so
+ * every star came out as the box itself: a rotated violet square. `InlineSvg`'s `fill`
+ * puts the colour on the path instead, which keeps the one thing masking was chosen for
+ * (a per-star tint from the data, no filter stack guessing at a hue) and survives export.
  */
 const SparkleLayer: React.FC<{ elapsed: number; window: number }> = ({
   elapsed,
@@ -212,16 +217,16 @@ const SparkleLayer: React.FC<{ elapsed: number; window: number }> = ({
         const angle = local * sp.spin;
 
         return (
-          <i
+          <InlineSvg
             key={i}
+            className="mis-sparkle"
+            src={star}
+            fill={SPARKLE_TINT}
             style={{
               left: sp.left,
               top: sp.top,
               width: sp.size,
               height: sp.size * STAR_ASPECT,
-              background: SPARKLE_TINT,
-              WebkitMaskImage: `url(${star})`,
-              maskImage: `url(${star})`,
               opacity,
               transform: `translate(-50%, -50%) rotate(${angle}deg) scale(${scale})`,
             }}
@@ -595,3 +600,4 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
     </div>
   );
 };
+import { InlineSvg } from "../InlineSvg";

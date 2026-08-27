@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* HQ Agent enterprise-search overlay — the results state.
  *
  * The modal shell and the chat-history rail are in WorkvivoHqSidebarStyles.css, shared
@@ -152,7 +156,10 @@
   margin-bottom: 14px;
 }
 
-.whq-agent-head span, .whq-agent-head svg, .whq-agent-head img {
+/* Scoped to the ICON, not to every child. These strips hold a glyph AND a text run,
+   and a rule that sizes `span` hits both — the label got squashed into a 14px box and
+   wrapped out of its own chip. Visible in the Player too, not just the export. */
+.whq-agent-ico, .whq-agent-ico svg {
   height: 22px;
   width: auto;
   display: block;
@@ -422,11 +429,20 @@
   line-height: 1;
 }
 
-.whq-mark-placeholder.whq-unknown {
-  background: #e5e7eb;
-  border: 1px dashed #9ca3af;
-  color: #6b7280;
-  font-weight: 500;
+/* SharePoint's real mark, at the same 20px the other connector marks use. The dashed
+   `.whq-unknown` placeholder it replaces is gone — the artwork exists now. */
+.whq-mark-sharepoint {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: block;
+}
+
+.whq-mark-sharepoint svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* --- the demo cursor ---------------------------------------------------------- */

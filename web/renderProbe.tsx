@@ -4,8 +4,14 @@ import { CustomizationProvider } from "../src/customize/CustomizationProvider";
 import { HeadquartersScene } from "../src/HeadquartersScene";
 import { BackFromScene } from "../src/BackFromScene";
 import { AskBarScene } from "../src/AskBarScene";
+import { WidgetStoreRevealScene } from "../src/WidgetStoreRevealScene";
+import { WorkvivoAnalytics } from "../src/components/workvivo/WorkvivoAnalytics";
+import { WorkvivoSeerSurveyMobile } from "../src/components/workvivo/WorkvivoSeerSurveyMobile";
+import { WorkvivoSpaceFeed } from "../src/components/workvivo/WorkvivoSpaceFeed";
+import { CreateYourOwnScene } from "../src/CreateYourOwnScene";
 import { WorkvivoBillboardScreen } from "../src/components/workvivo/WorkvivoBillboardScreen";
 import { WorkvivoPostComposer } from "../src/components/workvivo/WorkvivoPostComposer";
+import "../src/components/workvivo/WorkvivoCatchMeUpStyles.css";
 import { InlineSvg } from "../src/components/InlineSvg";
 import { loadRenderer } from "./browserRender";
 
@@ -650,4 +656,115 @@ export const PseudoProbe: React.FC = () => (
       />
     </div>
   </AbsoluteFill>
+);
+
+/**
+ * The Catch Me Up card at its own size, outside the scaled phone.
+ *
+ * The card exports with "Catch Me Up" and "Here's what you missed" wrapped and printed on
+ * top of each other, and the display:block + white-space:nowrap fix did not take. This
+ * renders the exact markup and the real stylesheet at 1:1 so the wrap can be measured
+ * rather than inferred from colour bands inside a 2.25x phone.
+ */
+export const CmuCardProbe: React.FC = () => (
+  <AbsoluteFill style={{ background: "#F7F7F7", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ width: 393 }}>
+      <button className="wcmu-cmu" type="button">
+        <span className="wcmu-hq">
+          <InlineSvg src={staticFile("img/hq-logo.svg")} width="34" height="20" style={{ display: "block" }} />
+        </span>
+        <span className="wcmu-t">
+          <b>Catch Me Up</b>
+          <span>Here&apos;s what you missed</span>
+        </span>
+        <span className="wcmu-chev" />
+      </button>
+    </div>
+  </AbsoluteFill>
+);
+
+/**
+ * Three ways to size the Catch Me Up text column, side by side.
+ *
+ * The export collapsed it to ~50px — about its widest word — so the flex item is getting
+ * no width. `flex: 1` is `flex-basis: 0`, which needs free space to grow into; `min-width:
+ * 0` (added in an earlier attempt at this bug) removes the min-content floor that was
+ * otherwise holding it open. Each row below overrides only the sizing.
+ */
+const CMU_VARIANTS: { label: string; style: React.CSSProperties }[] = [
+  { label: "A current: flex 1 + min-width 0", style: { flex: 1, display: "block", minWidth: 0 } },
+  { label: "B flex 1 1 auto (content basis)", style: { flex: "1 1 auto", display: "block" } },
+  { label: "C explicit width", style: { width: 244, display: "block", flex: "none" } },
+];
+
+export const CmuVariantProbe: React.FC = () => (
+  <AbsoluteFill style={{ background: "#F7F7F7", padding: 24, gap: 24, display: "flex", flexDirection: "column" }}>
+    {CMU_VARIANTS.map((v) => (
+      <div key={v.label} style={{ width: 393 }}>
+        <div style={{ fontSize: 13, fontFamily: "sans-serif", marginBottom: 4 }}>{v.label}</div>
+        <button className="wcmu-cmu" type="button">
+          <span className="wcmu-hq">
+            <InlineSvg src={staticFile("img/hq-logo.svg")} width="34" height="20" style={{ display: "block" }} />
+          </span>
+          <span className="wcmu-t" style={v.style}>
+            <b>Catch Me Up</b>
+            <span>Here&apos;s what you missed</span>
+          </span>
+          <span className="wcmu-chev" />
+        </button>
+      </div>
+    ))}
+  </AbsoluteFill>
+);
+
+/**
+ * The Widget Store reveal at a caller-chosen local frame (`window.__wsFrame`).
+ *
+ * The moving copy of the hero row is hidden with CSS. It used `visibility`, which the
+ * export ignores, so a second full modal painted over the real one. Counting how many
+ * card tints appear tells you whether the copy is down to three cards.
+ */
+export const WidgetStoreProbe: React.FC = () => {
+  const local = (window as unknown as { __wsFrame?: number }).__wsFrame ?? 11;
+  return (
+    <CustomizationProvider input={{}}>
+      <Sequence from={-local}>
+        <WidgetStoreRevealScene brand="#FF1060" settleFrom={17} popFrom={34} popTo={47} />
+      </Sequence>
+    </CustomizationProvider>
+  );
+};
+
+/** The analytics screen: SVG-text font, and the banner's white falloff. */
+export const AnalyticsProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <AbsoluteFill style={{ background: "#0B0A1F" }}>
+      <WorkvivoAnalytics />
+    </AbsoluteFill>
+  </CustomizationProvider>
+);
+
+/** The survey completion burst at global 3692 (local 121) — stars, not squares. */
+export const SparkleProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <Sequence from={-121}>
+      <WorkvivoSeerSurveyMobile />
+    </Sequence>
+  </CustomizationProvider>
+);
+
+/** The space feed at global 4103 — word spacing and the banner wash. */
+export const SpaceFeedProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <WorkvivoSpaceFeed />
+  </CustomizationProvider>
+);
+
+/** "AI Widget Builder" at global 3103 — the sparkle on the tenant field. */
+export const SparkleIconProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <Sequence from={-45}>
+      <CreateYourOwnScene text="AI Widget Builder" fontWeight={500} icon="img/hq_sparkle_light.png" iconWidth={544} />
+    </Sequence>
+  </CustomizationProvider>
 );

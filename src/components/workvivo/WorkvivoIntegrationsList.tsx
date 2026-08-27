@@ -193,7 +193,15 @@ export const WorkvivoIntegrationsList: React.FC<WorkvivoIntegrationsListProps> =
       <span className={"wil-chip wil-chip-" + a.category.toLowerCase()}>{a.category}</span>
 
       <div className="wil-card-head">
-        <img className="wil-logo" src={staticFile(`img/integrations/${a.logo}.svg`)} alt="" />
+        {/* Inline, not <img src="…svg">. Every one of these files is viewBox-only artwork
+            with its fills in a <defs><style> block, and an SVG delivered through an
+            image element exports corner-cropped — so each logo came out as whatever
+            solid block sits in its top-left, and the ones with white corners
+            (Microsoft, Google Workspace, Box) came out as nothing at all. */}
+          <InlineSvg
+            className="wil-logo"
+            src={staticFile(`img/integrations/${a.logo}.svg`)}
+          />
         <div className="wil-card-name">{a.name}</div>
       </div>
 
@@ -266,3 +274,4 @@ export const WorkvivoIntegrationsList: React.FC<WorkvivoIntegrationsListProps> =
     </div>
   );
 };
+import { InlineSvg } from "../InlineSvg";

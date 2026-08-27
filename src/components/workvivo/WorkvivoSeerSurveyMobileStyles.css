@@ -393,19 +393,17 @@
   overflow: hidden;
   z-index: 3;
 }
-/* Each star is a box painted its own violet and cut to shape by basic-star.svg as a mask.
-   The file is a solid black path, so it was previously being pushed through
-   invert/sepia/saturate/hue-rotate and a screen blend just to come out light and violet —
-   a stack that guesses at a hue and cannot give two stars different ones. Masking paints
-   the colour directly, so the tint is a value in the data and the artwork stays one file. */
-.wsi-seersurveymobile .mis-sparkles i {
+/* Each star is basic-star.svg's own path, inlined and painted its violet (see
+   SparkleLayer). It was a tinted box cut to shape by the same file as a CSS MASK — the
+   export drops masks, so every star exported as the box: a rotated violet square. Before
+   that it was a filter stack (invert/sepia/saturate/hue-rotate + a screen blend) guessing
+   at a hue, which could not give two stars different ones. Painting the path keeps the
+   per-star tint in the data and needs nothing the export cannot draw.
+
+   Selector is a CLASS, not `i` — the element is an InlineSvg's <span> now, and an
+   element-type selector would simply have stopped matching. */
+.wsi-seersurveymobile .mis-sparkles > .mis-sparkle {
   position: absolute;
   display: block;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
   will-change: transform, opacity;
 }

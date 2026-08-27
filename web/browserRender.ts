@@ -120,6 +120,42 @@ export const renderReadiness = async (
   }
 };
 
+/**
+ * How hard the encoder is told to try.
+ *
+ * There is no CRF here and no second pass. The CLI hands frames to x264, which is
+ * quality-targeted — `crf 15` means "spend whatever bits this frame needs" — and can be
+ * told to think longer with `--preset slow`. WebCodecs has neither: it is one pass at a
+ * BITRATE, and `videoBitrate` is the only lever that changes what comes out. Encode time
+ * barely moves with it, because this render is bound by decoding the 212-second reference
+ * video and drawing the DOM, not by the encoder.
+ *
+ * `medium` is the library default and, at 1920x1080 h264, means exactly 3 Mbps
+ * (mediabunny: 3 Mbps reference at 1080p x 1.0 for AVC x 1.0 for medium). That is the
+ * number this export has been quietly running at.
+ *
+ * For comparison, a CLI render of this film at `crf 15 / slow` averages 3.51 Mbps — and
+ * that is x264 in its slowest useful mode, which gets perhaps twice the quality per bit
+ * of the platform hardware encoder WebCodecs hands us. Matching the file we ship from the
+ * repo therefore means asking for several times its average bitrate, not the same one.
+ *
+ * `very-high` is 4x medium, i.e. 12 Mbps, or ~320 MB for the 212-second cut. `high` (6
+ * Mbps, ~160 MB) is the fallback if that file size ever becomes the problem — it is still
+ * comfortably above parity.
+ */
+const VIDEO_BITRATE = "very-high" as const;
+
+/**
+ * A keyframe every two seconds rather than the default five.
+ *
+ * This cut changes shot constantly and the moves are whip-pans and irises, which is the
+ * case that costs a P-frame the most. Nothing guarantees the encoder inserts an I-frame
+ * on a hard cut, and when it does not, the frames after that cut are predicted from a
+ * picture with nothing in common with them. Two seconds also makes the file scrub
+ * properly in QuickTime, which is where these get watched.
+ */
+const KEYFRAME_INTERVAL_SECONDS = 2;
+
 export type RenderRequest = {
   inputProps: VideoInputProps;
   durationInFrames: number;
@@ -168,6 +204,11 @@ export const startRender = ({
       audioCodec: "aac",
       outputTarget: "web-fs",
       signal: controller.signal,
+      videoBitrate: VIDEO_BITRATE,
+      keyframeIntervalInSeconds: KEYFRAME_INTERVAL_SECONDS,
+      // 192 kbps AAC rather than the default 128. Two megabytes over the whole cut, on a
+      // soundtrack that carries the film's only music.
+      audioBitrate: "high",
       // The reference video underneath every scene is a 212-second 1920x1080 file. The
       // default cache is far smaller than one decode pass over it, so frames get re-decoded
       // constantly; 512 MB keeps the working set resident and is the single biggest lever

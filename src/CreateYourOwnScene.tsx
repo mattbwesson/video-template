@@ -142,7 +142,20 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                 justifyContent: "center",
               }}
             >
-              {/* Base Sparkle Image */}
+              {/* No blend mode. The artwork used to be the dark navy glass sparkle lifted
+                  onto the field with `mix-blend-mode: plus-lighter` — which the export does
+                  not composite at all, so it fell back to normal and the icon sat on the
+                  brand colour as a near-black blob (its opaque body medians 47/255).
+                  A blend was the wrong tool here anyway: this scene's field is the TENANT's
+                  colour, so whatever it produced changed with every customer.
+
+                  The light variant is baked instead (scripted from the original: gamma 0.55
+                  to lift the shadows without moving the speculars, a 0.18 screen to raise
+                  the floor, alpha 0.86 so the field reads through it as glass). The tonal
+                  SPREAD is what does the work, not the tone: at ~114 levels the icon has
+                  parts lighter and parts darker than a light brand field, and sits entirely
+                  lighter than a dark one, so it reads on either. A flatter, whiter version
+                  measured 1.08:1 against green and gold — effectively invisible. */}
               <Img
                 src={staticFile(icon)}
                 style={{
@@ -150,7 +163,6 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                   height: "100%",
                   objectFit: "contain",
                   display: "block",
-                  mixBlendMode: "plus-lighter",
                 }}
               />
 

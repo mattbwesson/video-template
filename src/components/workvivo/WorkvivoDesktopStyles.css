@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Non-clipping shell that hosts the glass edge — see the comment at .wvd-frame's use site.
    Same box as .wvd-app so it is transparent to anything positioning this component. */
 .wvd-frame {
@@ -140,7 +144,7 @@
   color: #111827;
 }
 
-.wvd-me span {
+.wvd-me > div > span {
   display: block;
   font-size: 12px;
   line-height: 16px;

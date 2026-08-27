@@ -311,18 +311,33 @@
    transform reaches identity its cards are sitting exactly on the modal's — the handover
    needs no measuring and cannot drift if the grid is ever retuned.
 
-   `visibility` rather than `display`, because the cards have to keep their grid slots: it
-   is inherited, so hiding the modal hides everything in it, and the row turns itself back
-   on. nth-child(-n + 3) is the first row of the 3-column grid. */
+   This used to hide the modal with `visibility: hidden` and put the first row back with
+   `visibility: visible`, relying on visibility being inherited AND revocable. The export
+   honours neither: it has no `visibility` check anywhere in its paint path, so the whole
+   modal painted — a second full copy of the chrome riding over the real one at the hero
+   pose, which is what made the reveal read as everything arriving at once.
+
+   `opacity: 0` is the one hiding mechanism the export does honour (it returns
+   `skip-children`), but opacity cannot be undone on a child, so it goes on each chrome
+   part rather than on their container. They stay in flow, which is the whole point: the
+   three cards sit where they sit only because the sidebar, header, search and hero are
+   still taking up their space. */
 .wws-cards-only,
 .wws-cards-only .wws-modal {
   background: transparent;
 }
 
-.wws-cards-only .wws-modal {
-  visibility: hidden;
+.wws-cards-only .wws-side,
+.wws-cards-only .wws-head,
+.wws-cards-only .wws-sub,
+.wws-cards-only .wws-search,
+.wws-cards-only .wws-hero,
+.wws-cards-only .wws-browse {
+  opacity: 0;
 }
 
-.wws-cards-only .wws-card:nth-child(-n + 3) {
-  visibility: visible;
+/* Inverted from `nth-child(-n + 3)`: there is no showing something inside an `opacity: 0`
+   parent, so the rule has to name what to hide rather than what to keep. */
+.wws-cards-only .wws-card:nth-child(n + 4) {
+  opacity: 0;
 }

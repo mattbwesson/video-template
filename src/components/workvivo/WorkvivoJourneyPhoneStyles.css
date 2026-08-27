@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Workvivo Journeys — the mobile journey detail screen.
    Prefixed `wjp-`. Authored at 393pt in SF Pro; see WorkvivoJourneyBuilderStyles.css
    for how the supplied Figma CSS normalises onto that frame.
@@ -103,7 +107,7 @@
   overflow: hidden;
 }
 
-.wjp-track span {
+.wjp-track > span {
   display: block;
   height: 100%;
   border-radius: 5px;

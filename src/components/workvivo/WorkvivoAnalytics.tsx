@@ -9,6 +9,15 @@ import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
 import { GlassRing } from "./GlassRing";
 
+/* The export rasterizes an <svg> by serializing it and loading it as a
+   data:image/svg+xml — a SEPARATE document, which sees neither the page's CSS nor
+   its webfonts. The renderer copies `fill` and `color` onto the root before
+   serializing but not `font-family`, so text inside inherited nothing and the
+   rasterizer fell back to its default SERIF. An inline style IS serialized, so the
+   stack has to live here — and it can only name fonts the image document can
+   resolve on its own, which rules out Inter. */
+const SVG_TEXT_FONT = 'Arial, Helvetica, "Helvetica Neue", sans-serif';
+
 /**
  * Workvivo Analytics & Reporting — the Snapshot tab.
  *
@@ -92,7 +101,7 @@ export const GaugeDial: React.FC<{ gauge: Gauge; progress?: number }> = ({
       width={size}
       height={size - 18}
       viewBox={`0 0 ${size} ${size - 18}`}
-      style={{ overflow: "visible" }}
+      style={{ overflow: "visible", fontFamily: SVG_TEXT_FONT }}
     >
       <g transform={`rotate(135 ${size / 2} ${size / 2})`}>
         <circle
@@ -186,7 +195,7 @@ export const BarChart: React.FC<{ chart: Chart; progress?: number }> = ({
   const ticks = Array.from({ length: Math.round(chart.max / 100) }, (_, i) => i * 100);
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" height={210}>
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" height={210} style={{ fontFamily: SVG_TEXT_FONT }}>
       {ticks.map((v) => (
         <g key={v}>
           <line x1={padL} x2={w - 4} y1={y(v)} y2={y(v)} stroke="#F3F4F6" strokeWidth="1" />
@@ -274,7 +283,7 @@ export const LineChart: React.FC<{ chart: LineChartData; progress?: number }> = 
     .join(" ");
 
   return (
-    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" height={230} style={{ width: "100%", display: "block" }}>
+    <svg viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="none" height={230} style={{ width: "100%", display: "block", fontFamily: SVG_TEXT_FONT }}>
       {/* Horizontal gridlines and Y-axis percentage labels */}
       {ticks.map((v) => (
         <g key={v}>
@@ -402,6 +411,7 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
                     alt=""
                   />
                 ))}
+                <div className="an-banner-fade" />
               </div>
 
               <div className="an-head">

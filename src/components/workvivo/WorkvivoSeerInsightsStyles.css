@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Seer Insights — the Comments tab. Prefixed `wsi-` per docs/PORTING-HTML-REFS.md.
 
    Only the page below the tab strip is here. The device box, top bar, rail and page head
@@ -268,7 +272,7 @@
   gap: 4px;
 }
 
-.wsi-bar span {
+.wsi-bar > span {
   height: 6px;
   border-radius: 3px;
 }

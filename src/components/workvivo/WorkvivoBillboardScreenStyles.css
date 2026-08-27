@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Workvivo Billboards — the full-screen digital-signage display.
    Every class is prefixed wbb- so nothing collides with WorkvivoStyles.css (which owns
    the bare .billboards/.bb names for the in-feed billboard row), wvd- or wsp-.
@@ -237,7 +241,10 @@
   color: #6103ed;
 }
 
-.wbb-translated span, .wbb-translated svg, .wbb-translated img {
+/* Scoped to the ICON, not to every child. These strips hold a glyph AND a text run,
+   and a rule that sizes `span` hits both — the label got squashed into a 14px box and
+   wrapped out of its own chip. Visible in the Player too, not just the export. */
+.wbb-translated-ico, .wbb-translated-ico svg {
   width: 15px;
   height: 15px;
   display: block;
@@ -281,7 +288,7 @@
   color: #4e03be;
 }
 
-.wbb-chip span, .wbb-chip svg, .wbb-chip img {
+.wbb-chip-ico, .wbb-chip-ico svg {
   width: 14px;
   height: 14px;
   display: block;
@@ -449,7 +456,7 @@
   color: #6b7280;
 }
 
-.wbb-event-meta span {
+.wbb-event-meta > span {
   display: flex;
   align-items: center;
   gap: 5px;

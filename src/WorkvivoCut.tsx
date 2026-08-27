@@ -1206,7 +1206,9 @@ export const WorkvivoCut: React.FC<{
         durationInFrames={3058 - 3022}>
         <CreateYourOwnScene text="Create your own" fontWeight={500} />
       </Sequence>
-      {/* At 3058, "AI Widget Builder" animates in with the sparkle icon and plus-lighter blend mode. */}
+      {/* At 3058, "AI Widget Builder" animates in with the sparkle icon. The icon is the
+          LIGHT variant: this scene sits on the tenant's brand colour, so a dark mark had to
+          be lifted by a blend mode, and blend modes are dropped by the export. */}
       <Sequence
         name="AI Widget Builder (3058 - 3109)"
         from={3058}
@@ -1214,7 +1216,7 @@ export const WorkvivoCut: React.FC<{
         <CreateYourOwnScene
           text="AI Widget Builder"
           fontWeight={500}
-          icon="img/hq_sparkle.png"
+          icon="img/hq_sparkle_light.png"
           iconWidth={544}
         />
       </Sequence>

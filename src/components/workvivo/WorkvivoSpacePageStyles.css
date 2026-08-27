@@ -1,3 +1,7 @@
+/* CHILD combinators below. The export measures text by injecting a bare <span> around
+   each word, so a descendant `span` selector matches those too — any layout property in
+   the rule then applies per word and the line stacks vertically. See the note in
+   WorkvivoCatchMeUpStyles.css. */
 /* Workvivo Space page — "Annual Employee Summit".
    A 1:1 recreation of the supplied 1440px Figma export. Every class is prefixed wsp-
    so nothing collides with WorkvivoStyles.css (which owns the bare .rail/.nav/.topbar
@@ -118,7 +122,7 @@
   color: #ffffff;
 }
 
-.wsp-tsearch span {
+.wsp-tsearch > span {
   flex: 1 1 0;
   font-size: 16px;
   font-weight: 500;
