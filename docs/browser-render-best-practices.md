@@ -294,6 +294,33 @@ CSS triangle. Here a settings panel's toggles exported as **plain filled pills**
 `:after` to the child. **Audit:** `grep -rE '::?(before|after)' src` — this film had 27 rules
 across 14 files, every one of them invisible in the export.
 
+**Three things the conversion itself gets wrong**, all found doing it at scale here:
+
+- **A pseudo-element carries an implicit paint order that a real child does not.** `::before`
+  paints under the host's children and `::after` over them, whichever `z-index` says. Once it is
+  a real element, only DOM order decides — so it has to be inserted at the position its old
+  `z-index` put it, not simply appended. A mobile header's readability scrim (`z-index: 4`, under
+  the `z-index: 5` controls) was appended as the last child and painted **over the tab labels**;
+  it belongs immediately before the first control instead.
+- **Only emit it in the state that styled it.** `.tab.on::after` existed on the active tab alone.
+  Rendering `<span class="underline">` on all fifteen tabs and leaving the rule scoped to
+  `.tab.on > .underline` is correct but leaves fourteen inert inline boxes in the layout —
+  render it conditionally instead.
+- **Check what the rule actually paints before rewriting the markup around it.** If the
+  pseudo-element's fill is a `radial-gradient`, the export drops it whatever kind of element
+  carries it, so the conversion buys nothing — leave it for the Player and say why in a comment.
+  Four of this film's remaining rules are that, and five more are dead CSS no markup references.
+  (A fifth shapes itself with `clip-path: polygon()`, which was **assumed** dropped and left
+  unconverted — `circle()` is measured working per §5, so that one is unverified either way and
+  is worth a probe before it is either fixed or written off.)
+
+**`outline` is a tempting shortcut, and only sometimes.** A ring drawn outside the box costs no
+layout, and the renderer does draw outlines (`drawOutline` runs right after `drawBorder`), so
+`outline` + `outline-offset` can replace a ring pseudo-element with a one-line CSS change and no
+markup churn. But an outline is a **solid colour** — it cannot carry the gradient that makes a
+glass bezel read as glass rather than as painted plastic. Where the band is a gradient, a real
+element is the only option; where it is a flat colour, the outline is the cheaper fix.
+
 ### The layout engine is not Chromium's
 
 *(measured 4.0.496.)* The export does its own layout, and it diverges in ways that only show up
@@ -458,6 +485,21 @@ Two things that made it much more useful:
   — a cell with the same CSS declaration and no photographs — and accept that as the evidence.
   Several findings above were established that way rather than on the real frame.
 
+**For "does any rule still do X?", audit the source — not the mounted DOM.** Measuring live
+layout is the right tool for *this element is wrong*, and the wrong one for *nothing is wrong any
+more*. Walking `document.querySelectorAll('*')` and comparing each box against its computed
+radius only ever sees the components the page mounts, in the states it mounts them in — so a
+sweep that reported itself complete here still shipped three ovals: two in components the gallery
+never mounts, and one that is square at a single-digit badge count (exactly how it was measured)
+and a rounded rectangle at two digits. Re-running the same question against the **stylesheets**
+found all three immediately, because a CSS file has no states.
+
+Two corollaries worth keeping: prefer the source scan whenever the property you care about is
+declared rather than computed, and when a rule's geometry depends on content — `min-width`,
+padding, a variable-length label — measure it by **rebuilding the box** from its own declarations
+in a throwaway element rather than reasoning about the padding. A padded button whose real height
+was 36px is where the "half of *what*" question actually gets answered.
+
 **Measure the pixels, don't just look.** Once a still is in a canvas, `getImageData` answers
 questions eyeballing can't, and it works even when the pane can't render a screenshot:
 
@@ -502,7 +544,7 @@ questions eyeballing can't, and it works even when the pane can't render a scree
 | **Text wraps in the export but fits in the Player, same string** | Text metrics differ, so a fixed-width box that "just fits" isn't safe — especially one holding a name or other researched copy | `white-space: nowrap`, and let the box size to its content instead of tuning a pixel width |
 | **A CSS-border triangle (play button, caret, tooltip arrow) comes out as a solid square** | The zero-size-box-plus-borders trick relies on the browser **mitring** the corners; the export strokes each side independently and fills the whole border box *(measured 4.0.496)* | Draw it as an inline `<svg>` `<polygon>` |
 | Inner highlight on a card gone | `box-shadow: inset …` — unsupported | Use a border/overlay element instead |
-| Pill/chip/progress bar comes out as an **oval** (a full ellipse, no straight edges) | a sentinel `border-radius` — `999px`, `9999px`, `141.429px` — on a wide, short box. The exporter clamps an over-large radius **per axis independently** instead of by the CSS spec's single uniform factor, so a 220x40 pill ends up with corners 110 wide and 20 tall — i.e. an ellipse | Set the radius to **exactly half the border-box height** in px (`height: 40px` → `border-radius: 20px`). Identical in Chromium, and the only value the export's clamp leaves alone. Half-height *plus a bit* is not enough — it comes out egg-shaped |
+| Pill/chip/progress bar comes out as an **oval** (a full ellipse, no straight edges) | a sentinel `border-radius` — `999px`, `9999px`, `141.429px` — on a wide, short box. The exporter clamps an over-large radius **per axis independently** instead of by the CSS spec's single uniform factor, so a 220x40 pill ends up with corners 110 wide and 20 tall — i.e. an ellipse | Set the radius to **exactly half the border-box height** in px (`height: 40px` → `border-radius: 20px`). Identical in Chromium, and the only value the export's clamp leaves alone. Half-height *plus a bit* is not enough — it comes out egg-shaped. **A square box is the exception**: the same per-axis clamp lands on half the width *and* half the height, which is a correct circle — so `border-radius: 9999px` on a 36x36 avatar is fine and must not be "fixed" |
 | SVG icon missing / wrong shape / renders black | SVG delivered through `<img>`, and/or class-based `<style>` fills. ⚠️ **The old advice on this row — "add `width`/`height` matching the viewBox" — was measured insufficient on 4.0.496**; it is kept only as the historical diagnosis | Render it as inline `<svg>` markup loaded synchronously (§3), and inline the `<style>` fills onto the elements as presentation attributes. Last resort: rasterize to PNG (ZVA's `img/*.png` icons) |
 | Inline `<svg>` icon comes out **blank** (empty circle/chip) | `<use href="#…">` referencing a `<symbol>` in another `<svg>` root — the exporter doesn't resolve cross-root sprites | Inline the `<path>` data into each consuming `<svg>`; delete the sprite `<defs>` |
 | Pill/chip stretched to full parent width (an "oval") | `display: inline-flex` doesn't shrink-to-fit in the export's layout engine | Add `width: "fit-content"` |
@@ -539,7 +581,9 @@ questions eyeballing can't, and it works even when the pane can't render a scree
 - [ ] **Nothing is hidden by `visibility: hidden` or by a zero-size `overflow: hidden` box** — both
       paint in the export. Hide with `opacity: 0`, or don't render it (`{progress > 0 && …}`).
 - [ ] **No `::before` / `::after`** anywhere the export has to draw (`grep -rE '::?(before|after)' src`)
-      — pseudo-elements are not DOM nodes and are never rendered.
+      — pseudo-elements are not DOM nodes and are never rendered. When converting one, insert the
+      real element at the position its old `z-index` implied, and render it only in the state that
+      styled it.
 - [ ] **Every inline element used as a flex item spells out `display: block` + `min-width: 0`** —
       the export doesn't blockify flex items, so its children overlap.
 - [ ] **No fixed-width box holding variable-length text** (a person's name, researched copy) — set
@@ -549,8 +593,11 @@ questions eyeballing can't, and it works even when the pane can't render a scree
 - [ ] Every `inline-flex` chip/pill that must hug its content also sets `width: "fit-content"`.
 - [ ] Zero `<path> attribute d` errors in the Player console (a parse error means dropped geometry).
 - [ ] Stacking reads correctly by **DOM order** (don't depend on `z-index`).
-- [ ] No sentinel pill radii (`999px` / `9999px` / any value over half the box's height) — every pill,
-      chip and progress bar sets `border-radius` to exactly half its own height.
+- [ ] No sentinel pill radii (`999px` / `9999px` / any value over half the box's height) on a
+      **non-square** box — every pill, chip and progress bar sets `border-radius` to exactly half its
+      own height. Square boxes may keep a sentinel; it clamps to a correct circle. Audit the
+      stylesheets, not the mounted DOM — a live scan misses unmounted components and content-dependent
+      shapes.
 - [ ] Rings around avatars are a painted disc *under* an inset, clipped photo — not a `border` on the
       element that clips (see `AvatarCircle` in `src/HeadquartersScene.tsx`).
 - [ ] Audio uses `@remotion/media`; overlapping SFX fit within `numberOfSharedAudioTags`.
