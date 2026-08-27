@@ -177,6 +177,21 @@ Four things all had to be true. Each was found by a probe cell going from blank 
    `viewBox`. SVG's default `preserveAspectRatio` then behaves like `object-fit: contain`, which
    is what the `<Img>` it replaced was doing.
 
+**Two migration hazards**, the mirror image of the `<div>` → `<img>` ones above:
+
+- **`InlineSvg` wraps its `<svg>` in a `<span>`, so `.parent span { … }` now matches the icon.**
+  A rule written to size a weather glyph — `.wbb-weather span, .wbb-weather svg { width: 18px;
+  height: 18px }` — also hit the two `<span>`s holding the location and the temperature, and
+  squashed both to 18px so they printed on top of each other. Give the icon its own class and
+  scope to that.
+- **Bare silhouettes need paint, and a `filter` is the wrong way to give it to them.** Many icon
+  files (weather, podcast marks) ship as black paths with no `fill` at all, and the usual trick
+  is a CSS `filter` to recolour them. Filters bleed onto later draws (§5) — put the colour in the
+  markup instead. `InlineSvg`'s `fill` prop stamps it onto every shape that has none;
+  `SymbolSvg`'s `paint` / `paintFrom` substitute a colour the symbol bakes in. Both put the paint
+  on the **shape**, never on the root, because a `fill` that reaches paths by inheritance is
+  exactly what the rasterizer can't be trusted to resolve.
+
 ### Asset fix — CSS `background-image` never paints
 
 *(measured 4.0.496.)* A photo set as `background-image` — with **any** `background-size`,
@@ -211,6 +226,103 @@ three masked/blended layers and now renders identically in both renderers.
 And when an effect only exists because of a mask, **delete it** rather than let it export
 unmasked — a shine-sweep clipped by `mask-image` exported as a white bar sliding across the
 whole frame.
+
+### Hiding something: `opacity: 0` works, the other two ways don't
+
+*(measured 4.0.496, and confirmed in the renderer's own source.)* Three constructions that
+hide an element in Chromium. **Only one of them hides it in the export**, and the two that
+fail are the two most people reach for first.
+
+The dispatch that decides this is worth reading, because it explains all three at once:
+
+```js
+if (opacity === 0) {
+  return { type: "skip-children" };                    // ← subtree never walked
+}
+if (computedStyle.backfaceVisibility === "hidden" && totalMatrix.m33 < 0) {
+  return { type: "skip-children" };
+}
+if (dimensions.width <= 0 || dimensions.height <= 0) {
+  return { type: "continue", cleanupAfterChildren: null };   // ← children STILL drawn
+}
+```
+
+| How you hid it | What the export does |
+|---|---|
+| `opacity: 0` | **Correct.** Returns `skip-children` — nothing in the subtree is drawn |
+| `visibility: hidden` | **Painted in full.** There is no `visibility` check anywhere in the paint path — the string does not appear in the renderer's bundle except on its own internal scaffolding |
+| A box collapsed to `width: 0` / `height: 0` with `overflow: hidden` | **Children painted, unclipped.** The element bails out *before* its overflow clip is installed, then the walker descends into it anyway |
+
+Each one cost a real bug here:
+
+- **`visibility: hidden`** — two scenes centre a line by laying a visible copy over a hidden
+  "sizer" that carries the whole string in flow. The sizer painted, so the line exported
+  **twice, at two different trackings**. Measured either way on the same frame: 66,613 white
+  pixels with `visibility: hidden`, 43,776 with `opacity: 0` — a third of the ink was the
+  duplicate.
+- **The collapsed box** — a comments sidebar animates `width: PANEL * progress` with
+  `overflow: hidden`, wrapping an absolutely-positioned full-width panel. At `progress === 0`
+  the panel drew at full width, so the sidebar was on screen from the scene's first frame,
+  long before the cursor opens it. The same shape sat in a circular iris transition whose
+  `radius` interpolates **from 0** — on the frame the iris should be fully shut, the entire
+  scene behind it paints.
+
+**Fix pattern.** Don't render it. `{progress > 0 && <Panel/>}` is deterministic and needs
+nothing from the renderer. Once the reveal starts the box has real width and the clip behaves,
+so the gate only has to cover exactly zero. `opacity: 0` is the other safe option, and it is
+worth knowing that a *combination* is safe by accident: one collapsing block here survives only
+because its height and its opacity both reach 0 on the same frame.
+
+> **The general rule:** in this renderer, *hidden* means `opacity: 0` or not in the DOM.
+> Anything that hides by geometry — zero size, clipped away, moved out of an overflow —
+> deserves a probe before you trust it.
+
+### Pseudo-elements are never rendered
+
+*(measured 4.0.496 — confirmed by absence in the renderer's source.)* The exporter walks the
+**real DOM** with a `TreeWalker` and calls `getComputedStyle(el)` with **no second argument**,
+anywhere. `::before` and `::after` are not DOM nodes, so they do not exist in the export at all.
+Searching the renderer's whole bundle for `::before` / `::after` / `pseudo` returns **zero
+matches**.
+
+This is quiet and widespread, because pseudo-elements are the idiomatic way to draw exactly the
+small parts nobody re-checks: a toggle knob, a radio dot, a tab underline, a bullet, a scrim, a
+CSS triangle. Here a settings panel's toggles exported as **plain filled pills** — the knob was
+`.acs-tog:after`, so it simply never existed.
+
+**Fix:** make it a real element (`<span class="tog"><i /></span>`) and move the rule from
+`:after` to the child. **Audit:** `grep -rE '::?(before|after)' src` — this film had 27 rules
+across 14 files, every one of them invisible in the export.
+
+### The layout engine is not Chromium's
+
+*(measured 4.0.496.)* The export does its own layout, and it diverges in ways that only show up
+as wrapped, overlapping or stretched text. All three below rendered perfectly in the Player.
+
+1. **Inline elements are not blockified when they become flex items.** CSS blockifies a flex
+   item; the export doesn't. An inline `<span>` with `flex: 1` therefore shrinks to
+   min-content — its text wraps, and `display: block` children inside it stack at the same
+   `y` and **overlap each other**. A "Catch Me Up" card exported with its two lines wrapped
+   and printed on top of one another. **Fix:** spell out `display: block` (and usually
+   `min-width: 0`) on any inline element used as a flex item. It costs nothing in Chromium,
+   where it is already implied.
+   *(This is the same family as the existing `inline-flex` shrink-to-fit row in §5, but a
+   distinct trigger — that one is about the element's own `display`, this one about what
+   being a flex item is supposed to do to it.)*
+
+2. **Text measures differently, so a box that "just fits" is not safe.** A composer
+   placeholder in a fixed `width: 225px` box fitted on one line in the Player and **wrapped**
+   in the export with the same string. Any fixed-width box holding text whose length varies
+   with data — a person's name, a researched company — is one measurement difference from
+   wrapping. **Fix:** `white-space: nowrap` and let the box size to its content; don't tune
+   the pixel width until it fits.
+
+3. **CSS-border triangles export as solid squares.** The zero-size box with one thick border
+   and two transparent ones is a triangle only because the browser *mitres* the corners. The
+   export strokes each border side independently and never mitres them, so the whole border
+   box fills in. A play button exported as a white square. **Fix:** draw it as an inline
+   `<svg>` `<polygon>`. (Transparent borders themselves are harmless — the renderer strokes
+   them with `rgba(0,0,0,0)` and nothing lands.)
 
 ### Stacking: DOM order wins, and that includes siblings
 
@@ -327,6 +439,38 @@ Two things that made it much more useful:
   false negative for something that actually works. Use Remotion's `<Img>` as the control — that
   mistake cost a wrong conclusion here before it was caught.
 
+**Two ways `renderStillOnWeb` hangs that are not your scene's fault**, both of which read as
+"the probe is broken" and cost hours here:
+
+- **A tab that isn't compositing never finishes.** The renderer drives frames off
+  `requestAnimationFrame`, which a hidden tab throttles to nothing — the promise simply never
+  settles, with no error and no console output. `document.visibilityState === "hidden"` is the
+  tell; check it before blaming the composition. Two things that did **not** recover it here:
+  shimming `requestAnimationFrame` to `setTimeout`, and asking the host to front the tab
+  (`visibilityState` stayed `hidden`). What did was tearing the preview down and starting a
+  fresh one. The harness also degraded over a long session — renders that worked early stopped
+  settling later, and `ERR_CONNECTION_RESET` in the console was the sign to restart rather than
+  to keep debugging.
+- **Scenes full of Remotion `<Img>` stall on a cold cache.** `<Img>` holds `delayRender` until
+  the file decodes, and a scene with a dozen photographs frequently never gets there in the
+  still harness even though the same scene renders in a full export. **Practical consequence:**
+  photo-heavy scenes are often *not* probeable. Probe the **construction** in isolation instead
+  — a cell with the same CSS declaration and no photographs — and accept that as the evidence.
+  Several findings above were established that way rather than on the real frame.
+
+**Measure the pixels, don't just look.** Once a still is in a canvas, `getImageData` answers
+questions eyeballing can't, and it works even when the pane can't render a screenshot:
+
+- *Is this pill or an ellipse?* Sample the shape's horizontal extent at several heights. A true
+  pill is constant through the middle and matches `r − √(r² − dy²)` at the caps; an ellipse
+  narrows continuously. This is how the ask bar was confirmed fixed (1178 / 1261 / 1300 / 1312
+  measured against 1178 / 1261 / 1300 / 1312 predicted).
+- *Did that duplicate go away?* Count pixels of the text colour — the doubled-line bug was a
+  clean 66,613 → 43,776.
+- *Did the fill actually land?* Tally the most common colours and look for the exact hex you
+  expect. A masked block versus a real glyph is obvious by area alone (9,002 px for a mic
+  silhouette where a filled square would have been ~29,000).
+
 5. A **full in-browser render** (generate, click *Render MP4 in browser*, eyeball the file)
    remains the only end-to-end check — it also covers audio mixing and encode timing.
 
@@ -351,9 +495,15 @@ Two things that made it much more useful:
 | **SVG icon corner-cropped, or the still render hangs until timeout** | SVG delivered through `<img>`/`<Img>` — **adding `width`/`height` does not fix this** *(measured 4.0.496)* | Render the file as inline `<svg>` markup, loaded **synchronously** — see §3 |
 | **Element blank in export, correct in Player, and correct on a second export in the same page** | Content arrived via `useEffect` + `setState`; the export captures the **first committed render** only | Make it synchronous. A warm cache masking the bug is the tell |
 | Status bar / header buried under content that should be behind it | Sibling `z-index` ignored — DOM order wins | Reorder the DOM to match the ladder (Player is unaffected, so it's a safe change) |
+| **A line of text renders twice, offset, at two different trackings** | A `visibility: hidden` sizer element — **`visibility` is not honoured**, so the "hidden" copy paints in full *(measured 4.0.496; no `visibility` check exists in the paint path)* | Use `opacity: 0` — it returns `skip-children` and is the only reliable way to hide a subtree short of not rendering it |
+| **Something appears long before its reveal animation** (a panel, an iris, a wipe) | A box collapsed to `width: 0`/`height: 0` with `overflow: hidden` — the renderer bails out of a zero-size element **before** installing its clip, then walks into the children anyway *(source: `{type:"continue"}`, vs `"skip-children"` for `opacity === 0`)* | Don't render the subtree at all while the size is zero (`{progress > 0 && …}`). The clip works fine as soon as the box has real width |
+| **A toggle knob / radio dot / tab underline / bullet / scrim is simply absent** | It was a `::before` / `::after`. **Pseudo-elements are never rendered** — the exporter walks real DOM nodes only *(measured 4.0.496; zero pseudo-element handling in the renderer)* | Make it a real child element and move the rule onto it. Audit with `grep -rE '::?(before|after)' src` |
+| **Two lines of text inside one box overlap, or text wraps that shouldn't** | An inline `<span>` used as a flex item — CSS blockifies flex items, the export doesn't, so it shrinks to min-content and its block children stack at the same `y` *(measured 4.0.496)* | Spell out `display: block` + `min-width: 0` on the flex item. Free in Chromium, where it is already implied |
+| **Text wraps in the export but fits in the Player, same string** | Text metrics differ, so a fixed-width box that "just fits" isn't safe — especially one holding a name or other researched copy | `white-space: nowrap`, and let the box size to its content instead of tuning a pixel width |
+| **A CSS-border triangle (play button, caret, tooltip arrow) comes out as a solid square** | The zero-size-box-plus-borders trick relies on the browser **mitring** the corners; the export strokes each side independently and fills the whole border box *(measured 4.0.496)* | Draw it as an inline `<svg>` `<polygon>` |
 | Inner highlight on a card gone | `box-shadow: inset …` — unsupported | Use a border/overlay element instead |
 | Pill/chip/progress bar comes out as an **oval** (a full ellipse, no straight edges) | a sentinel `border-radius` — `999px`, `9999px`, `141.429px` — on a wide, short box. The exporter clamps an over-large radius **per axis independently** instead of by the CSS spec's single uniform factor, so a 220x40 pill ends up with corners 110 wide and 20 tall — i.e. an ellipse | Set the radius to **exactly half the border-box height** in px (`height: 40px` → `border-radius: 20px`). Identical in Chromium, and the only value the export's clamp leaves alone. Half-height *plus a bit* is not enough — it comes out egg-shaped |
-| SVG icon missing / wrong shape / renders black | SVG `<img>` with no intrinsic `width`/`height` (viewBox only), and/or class-based `<style>` fills | Add explicit `width`/`height` matching the viewBox; inline fills (`style="fill:…"`) and drop `<defs><style>`. The web-renderer's rasterizer needs both. Last resort: rasterize to PNG (ZVA's `img/*.png` icons) |
+| SVG icon missing / wrong shape / renders black | SVG delivered through `<img>`, and/or class-based `<style>` fills. ⚠️ **The old advice on this row — "add `width`/`height` matching the viewBox" — was measured insufficient on 4.0.496**; it is kept only as the historical diagnosis | Render it as inline `<svg>` markup loaded synchronously (§3), and inline the `<style>` fills onto the elements as presentation attributes. Last resort: rasterize to PNG (ZVA's `img/*.png` icons) |
 | Inline `<svg>` icon comes out **blank** (empty circle/chip) | `<use href="#…">` referencing a `<symbol>` in another `<svg>` root — the exporter doesn't resolve cross-root sprites | Inline the `<path>` data into each consuming `<svg>`; delete the sprite `<defs>` |
 | Pill/chip stretched to full parent width (an "oval") | `display: inline-flex` doesn't shrink-to-fit in the export's layout engine | Add `width: "fit-content"` |
 | Icon's cut-outs filled in / solid blob; Player console shows `<path> attribute d: Expected number` | Malformed path data — the parser aborts mid-`d` and drops the rest; `evenodd` fills collapse | Fix the path (every command needs its exact argument count). The console error **is** the bug |
@@ -386,6 +536,15 @@ Two things that made it much more useful:
 - [ ] No `radial-gradient` — every gradient that must appear is `linear-gradient`.
 - [ ] No CSS `background-image` photographs — real `<img>` with explicit `width`/`height`/`object-fit`.
 - [ ] After any `<span>`/`<div>` → `<img>` conversion, grep the stylesheet for element-type selectors (`.foo span`) that just stopped matching.
+- [ ] **Nothing is hidden by `visibility: hidden` or by a zero-size `overflow: hidden` box** — both
+      paint in the export. Hide with `opacity: 0`, or don't render it (`{progress > 0 && …}`).
+- [ ] **No `::before` / `::after`** anywhere the export has to draw (`grep -rE '::?(before|after)' src`)
+      — pseudo-elements are not DOM nodes and are never rendered.
+- [ ] **Every inline element used as a flex item spells out `display: block` + `min-width: 0`** —
+      the export doesn't blockify flex items, so its children overlap.
+- [ ] **No fixed-width box holding variable-length text** (a person's name, researched copy) — set
+      `white-space: nowrap` and let it size to its content; export text metrics differ from Chromium's.
+- [ ] **No CSS-border triangles** (zero-size box + one thick border) — inline `<svg>` `<polygon>` instead.
 - [ ] No `<symbol>`/`<use href="#…">` sprites in inline SVG — paths are inlined per consumer.
 - [ ] Every `inline-flex` chip/pill that must hug its content also sets `width: "fit-content"`.
 - [ ] Zero `<path> attribute d` errors in the Player console (a parse error means dropped geometry).
@@ -465,7 +624,8 @@ for UI-heavy film. Both are set in [`remotion.config.ts`](../remotion.config.ts)
 **Workvivo repo, 4.0.496 measurements (§3, §4, §7):**
 
 - [`web/renderProbe.tsx`](../web/renderProbe.tsx) — the bisectable probe every measurement came from.
-- [`src/components/InlineSvg.tsx`](../src/components/InlineSvg.tsx) · [`CursorArrow.tsx`](../src/components/CursorArrow.tsx) — export-safe SVG.
+- [`src/components/InlineSvg.tsx`](../src/components/InlineSvg.tsx) · [`CursorArrow.tsx`](../src/components/CursorArrow.tsx) — export-safe SVG, and the `fill` prop for unpainted silhouettes.
+- [`src/components/workvivo/WorkvivoLivestream.tsx`](../src/components/workvivo/WorkvivoLivestream.tsx) · [`WorkvivoCut.tsx`](../src/WorkvivoCut.tsx) (`MobileIrisOpen`) — the two `{progress > 0 && …}` gates, and why a collapsed box is not a clip.
 - [`src/components/workvivo/symbolRegistry.tsx`](../src/components/workvivo/symbolRegistry.tsx) — sprite `<use>` → inlined paths, at ~110 symbols / ~104 call sites.
 - [`scripts/still.mjs`](../scripts/still.mjs) — `npm run still <frames…>`, the Chromium baseline to diff exports against.
 - [`remotion.config.ts`](../remotion.config.ts) — the PNG / `crf 15` / `slow` settings from §7.

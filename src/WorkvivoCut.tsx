@@ -66,6 +66,7 @@ import { WorkvivoCustomerGridScene } from "./WorkvivoCustomerGridScene";
  * The prop names differ: `startFrom` is `trimBefore` here. Everything else carries over.
  */
 import { useCustomization } from "./customize/CustomizationProvider";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 /**
  * The Space page shot, closing on a circular mask at local 87-90 — global 1635-1638.
@@ -329,6 +330,7 @@ const SeerRaterClick2Shot: React.FC = () => {
             transformOrigin: "center top",
           } as React.CSSProperties
         }>
+          <GlassRing />
         <div style={{ borderRadius: 16, overflow: "hidden" }}>
           <WorkvivoSeerRater cursor={null} />
         </div>
@@ -420,6 +422,7 @@ const SeerInsightsCutShot: React.FC = () => {
             transformOrigin: "center top",
           } as React.CSSProperties
         }>
+          <GlassRing />
         <div style={{ borderRadius: 16, overflow: "hidden" }}>
           <WorkvivoSeerInsights
             width={1760}
@@ -706,6 +709,13 @@ const MobileIrisOpen: React.FC = () => {
 
   return (
     <AbsoluteFill>
+      {/* `radius > 0` is load-bearing, not defensive. The iris opens FROM zero, and a
+          zero-size box does not clip in the export — the renderer bails out of an element
+          whose width or height is 0 before installing its overflow clip, then walks into
+          the children anyway. Without this the whole mobile scene paints at full size on
+          the frame where the iris is supposed to be shut. Same trap as the livestream
+          comments panel; see the note in WorkvivoLivestream.tsx. */}
+      {radius > 0 && (
       <div
         style={{
           position: "absolute",
@@ -760,6 +770,7 @@ const MobileIrisOpen: React.FC = () => {
           </div>
         </div>
       </div>
+      )}
     </AbsoluteFill>
   );
 };
@@ -1075,7 +1086,9 @@ export const WorkvivoCut: React.FC<{
         <AbsoluteFill
           style={{
             background:
-              "radial-gradient(120% 95% at 50% 55%, #3B1B8F 0%, #23106B 45%, #12053C 100%)",
+              // Linear, not radial: the export drops a radial background entirely, and
+              // this one is the whole frame behind the phones.
+              "linear-gradient(180deg, #3B1B8F 0%, #23106B 45%, #12053C 100%)",
             overflow: "hidden",
           }}>
           <WorkvivoPhonesScene

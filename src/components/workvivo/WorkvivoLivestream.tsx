@@ -5,6 +5,7 @@ import { Video } from "@remotion/media";
 import "./WorkvivoLivestreamStyles.css";
 import "./WorkvivoGlassEdge.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { GlassRing } from "./GlassRing";
 
 /**
  * Native port of public/refs/workvivo-livestream.html (the desktop livestream player with
@@ -184,6 +185,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
 
   return (
   <div className="lv-frame wv-glass-edge">
+    <GlassRing />
     <SpriteDefs />
     <div className="lv-stage" style={{ gap: LV_STAGE_GAP * panelOpen }}>
       <div className="lv-left">
@@ -269,7 +271,17 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
       {/* Collapsing is a real layout change — the panel's width drives it, so the video
           column (flex:1) widens to fill as it closes. The inner wrapper is pinned to the
           right at full width so the comments stay put and are wiped in, rather than being
-          squashed while the box grows. */}
+          squashed while the box grows.
+
+          The `panelOpen > 0` gate is NOT belt-and-braces around `overflow: hidden`; it is
+          the only thing hiding the panel while it is shut. A zero-width box does not clip
+          in the export: the renderer bails out of an element whose width or height is 0
+          BEFORE it installs the overflow clip, and then still walks into its children
+          (`{type: "continue"}` rather than `"skip-children"` — contrast the `opacity === 0`
+          branch immediately above it, which does skip). So the comments drew at full width
+          through a collapsed panel and the sidebar was on screen from the first frame,
+          long before the cursor clicks it open. Once the wipe starts the box has real
+          width and the clip behaves, so this only has to cover exactly zero. */}
       <aside
         className="lv-panel"
         style={{
@@ -278,6 +290,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
           position: "relative",
         }}
       >
+       {panelOpen > 0 && (
        <div
          style={{
            position: "absolute",
@@ -353,6 +366,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
           </div>
         </div>
        </div>
+       )}
       </aside>
     </div>
   </div>

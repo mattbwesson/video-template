@@ -2,6 +2,7 @@ import React from "react";
 import { AbsoluteFill } from "remotion";
 import { WorkvivoSeerRater } from "./components/workvivo/WorkvivoSeerRater";
 import "./components/workvivo/WorkvivoGlassEdge.css";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 /** Same device box WorkvivoAdminHub and WorkvivoNewsletters use. */
 const DEVICE_WIDTH = 1760;
@@ -59,6 +60,7 @@ export const WorkvivoSeerRaterScene: React.FC<WorkvivoSeerRaterSceneProps> = ({
           } as React.CSSProperties
         }
       >
+          <GlassRing />
         <div style={{ width: DEVICE_WIDTH, height: DEVICE_HEIGHT, borderRadius: 16, overflow: "hidden" }}>
             <WorkvivoSeerRater />
         </div>

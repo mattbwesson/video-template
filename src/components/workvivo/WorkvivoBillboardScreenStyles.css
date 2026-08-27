@@ -20,8 +20,14 @@
   height: 742px;
   overflow: hidden;
   border-radius: 14px;
-  background: radial-gradient(
-    130% 100% at 50% 0%,
+/* Linear, not radial. The export renderer drops a radial-gradient background
+   ENTIRELY — measured, not assumed: a probe of this exact declaration came back as
+   the backdrop colour at every sample point, while the linear version rendered its
+   stops exactly (and resolved the custom properties fine, so the var()s are not the
+   problem). A radial that is a surface's whole field leaves a hole, so it has to be
+   linear; see the same conversion on .wm-hero. */
+  background: linear-gradient(
+    180deg,
     var(--wbb-brand-lit, #e2231a) 0%,
     var(--wbb-brand, #bd1420) 55%,
     var(--wbb-brand-dark, #8d0f18) 100%
@@ -84,9 +90,16 @@
   white-space: nowrap;
 }
 
-.wbb-weather img {
+/* Scoped to the icon, NOT to every span in the strip. `.wbb-weather span` also matches
+   the location and the temperature — and InlineSvg wraps its <svg> in a span, so the
+   selector that was meant to size the glyph was squashing both text runs to 18px and
+   stacking them on top of each other. */
+.wbb-weather-ico,
+.wbb-weather-ico svg {
   width: 18px;
   height: 18px;
+  display: block;
+  flex: none;
 }
 
 .wbb-weather .wbb-sep {
@@ -148,7 +161,7 @@
   bottom: 12px;
   height: 16px;
   padding: 0 8px;
-  border-radius: 9999px;
+  border-radius: 8px;
   background: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
@@ -158,7 +171,7 @@
 .wbb-pager i {
   width: 5px;
   height: 5px;
-  border-radius: 9999px;
+  border-radius: 8px;
   background: #d1d5db;
 }
 
@@ -224,9 +237,10 @@
   color: #6103ed;
 }
 
-.wbb-translated img {
+.wbb-translated span, .wbb-translated svg, .wbb-translated img {
   width: 15px;
   height: 15px;
+  display: block;
 }
 
 .wbb-hero-text {
@@ -257,7 +271,7 @@
   height: 28px;
   padding: 0 12px;
   background: #f0e6fe;
-  border-radius: 20px;
+  border-radius: 14px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -267,9 +281,10 @@
   color: #4e03be;
 }
 
-.wbb-chip img {
+.wbb-chip span, .wbb-chip svg, .wbb-chip img {
   width: 14px;
   height: 14px;
+  display: block;
 }
 
 .wbb-comments {
@@ -288,7 +303,7 @@
   height: 30px;
   padding: 0 12px;
   background: #f3f4f6;
-  border-radius: 9999px;
+  border-radius: 15px;
   display: inline-flex;
   align-items: center;
   gap: 5px;

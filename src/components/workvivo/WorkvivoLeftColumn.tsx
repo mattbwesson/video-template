@@ -5,6 +5,7 @@ import type { SwapProgress } from "./WorkvivoHomeContainer";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { SlotIcon } from "../../customize/SlotIcon";
 import { DocumentFolderIcon } from "./WorkvivoFolderIcon";
+import { InlineSvg } from "../InlineSvg";
 
 /**
  * What kind of thing each Featured Documents row is, and therefore which glyph it draws.
@@ -240,9 +241,16 @@ export const WorkvivoLeftColumn: React.FC<WorkvivoLeftColumnProps> = ({ swap }) 
                     flexShrink: 0,
                   }}
                 >
-                  <Img
+                  {/* Inline, not <Img src="…svg">. Both glyphs carry their paint in a
+                      <defs><style> block and neither declares width/height, which is the
+                      pair the export's rasterizer cannot handle — they came out as solid
+                      untrimmed blobs of the body colour with the fold and the lettering
+                      missing. InlineSvg rewrites the class fills to presentation
+                      attributes and hands the exporter real <svg> children. */}
+                  <InlineSvg
                     src={staticFile(FILE_GLYPH[kind])}
-                    style={{ width: 28, height: 33, objectFit: "contain" }}
+                    width={28}
+                    height={33}
                   />
                 </div>
               )}

@@ -176,7 +176,12 @@ export const GoBeyondScene: React.FC<GoBeyondSceneProps> = ({
           style={{
             display: "inline-block",
             whiteSpace: "nowrap",
-            visibility: "hidden",
+            // `opacity: 0`, not `visibility: hidden`. The export renderer has no
+            // visibility check anywhere in its paint path, so a hidden sizer is drawn in
+            // full and the line appears twice, at two different trackings. Opacity is
+            // multiplied into the canvas alpha, so 0 paints nothing and the box still
+            // takes up its space.
+            opacity: 0,
           }}>
           {lead}
           {tail.map((w) => (

@@ -225,6 +225,8 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
           } as React.CSSProperties
         }
       >
+          {/* Only when the frame is actually wearing the edge — see `glassEdge` above. */}
+      {glassEdge && <GlassRing />}
         <div style={{ width: 1760, height: 1080, borderRadius: 16, overflow: "hidden" }}>
           <WorkvivoSeerChrome activeTab="Comments">
             <div className="wsc-page wsi-page">
@@ -344,3 +346,4 @@ export const WorkvivoSeerInsights: React.FC<WorkvivoSeerInsightsProps> = ({
   );
   return hasProvider ? body : <CustomizationProvider>{body}</CustomizationProvider>;
 };
+import { GlassRing } from "./GlassRing";

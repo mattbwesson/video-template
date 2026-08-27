@@ -166,8 +166,10 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
     text: [{ path: "feed.event.countdownName", label: "Event name" }],
   },
   // The weather card carries no photograph, so its copy hangs off the survey tile beside
-  // it — the nearest thing in that column a click can land on. `feed.weather.condition` is
-  // absent because it is an enum that also picks artwork, and the panel edits text.
+  // it — the nearest thing in that column a click can land on. `feed.weather.condition`
+  // and `feed.weather.unit` are absent because both are enums — one picks artwork, the
+  // other the temperature scale — and the panel edits text. Editing the scale here would
+  // relabel the numbers without converting them, which is worse than not offering it.
   "home.survey.0": {
     text: [
       { path: "feed.weather.city", label: "Weather city" },

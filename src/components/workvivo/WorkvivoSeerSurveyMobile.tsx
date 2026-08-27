@@ -5,6 +5,7 @@ import "./WorkvivoGlassEdge.css";
 import "./WorkvivoSeerSurveyMobileStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { SURVEY_ILLUSTRATION_SVGS } from "./surveyIllustrations";
+import { GlassRing } from "./GlassRing";
 
 /**
  * The illustration files, kept as the reference the inlined markup is generated from.
@@ -417,6 +418,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                 : undefined
             }
           >
+                <GlassRing />
           <div className="mis-phone">
             <div className="mis-header">
               <div className="mis-statusbar">

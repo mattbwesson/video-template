@@ -15,6 +15,7 @@ import {
   WorkvivoNewsletters,
 } from "./components/workvivo/WorkvivoNewsletters";
 import "./components/workvivo/WorkvivoGlassEdge.css";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 /** Same curve the rest of the cut's transitions use. */
 const SCENE_EASE = Easing.bezier(0.16, 1, 0.3, 1);
@@ -226,6 +227,7 @@ export const NewslettersRevealScene: React.FC<NewslettersRevealSceneProps> = ({
             ["--wv-glass-radius" as string]: "16px",
           }}
         >
+            <GlassRing />
           <div
             style={{
               width: "100%",

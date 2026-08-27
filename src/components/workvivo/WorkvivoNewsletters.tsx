@@ -299,7 +299,7 @@ export const WorkvivoNewsletters: React.FC<WorkvivoNewslettersProps> = ({
                       // elements claiming one would leave the swap overlay measuring the
                       // invisible copy.
                       slot={cards ? NEWSLETTER_CHROME[i].slot : undefined}
-                      style={cards ? undefined : { visibility: "hidden" }}
+                      style={cards ? undefined : { opacity: 0 }}
                     />
                   ))}
                   <span className="nl-next">

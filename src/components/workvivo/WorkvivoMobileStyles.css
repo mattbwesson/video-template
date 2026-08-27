@@ -50,7 +50,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 28px 0;
+  padding: 14px 32px 0 30px;
   color: #fff;
   box-sizing: border-box;
 }
@@ -283,7 +283,7 @@
 
 .wm-seg a {
   padding: 9px 18px;
-  border-radius: 20px;
+  border-radius: 18px;
   font-size: 15px;
   font-weight: 510;
   color: #6B7280;
@@ -450,7 +450,9 @@
   height: 180px;
   border-radius: 12px;
   overflow: hidden;
-  background: radial-gradient(120% 140% at 70% 20%, var(--wv-brand, #44D760) 0%, var(--wv-brand-d2, #27AE60) 55%, var(--wv-brand-d4, #145A32) 100%);
+  /* Linear for the same reason as .wm-hero above — a dropped radial leaves this card
+     with no fill at all. 160deg reads closest to the original's 70%/20% hot spot. */
+  background: linear-gradient(160deg, var(--wv-brand, #44D760) 0%, var(--wv-brand-d2, #27AE60) 55%, var(--wv-brand-d4, #145A32) 100%);
 }
 
 .wm-bignews:before {
@@ -536,7 +538,8 @@
 }
 
 .wm-nthumb.wm-ai {
-  background: radial-gradient(90% 90% at 60% 45%, var(--wv-brand, #44D760), var(--wv-brand-d2, #27AE60));
+  /* Linear for the same reason as .wm-hero above. */
+  background: linear-gradient(150deg, var(--wv-brand, #44D760), var(--wv-brand-d2, #27AE60));
 }
 
 .wm-ncard h4 {

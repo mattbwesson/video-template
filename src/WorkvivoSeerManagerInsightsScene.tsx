@@ -15,6 +15,7 @@ import {
   WorkvivoSeerManagerInsightsProps,
 } from "./components/workvivo/WorkvivoSeerManagerInsights";
 import "./components/workvivo/WorkvivoGlassEdge.css";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 /** Same device box WorkvivoAdminHub and WorkvivoSeerRater use. */
 const DEVICE_WIDTH = 1760;
@@ -121,6 +122,7 @@ export const WorkvivoSeerManagerInsightsScene: React.FC<
           } as React.CSSProperties
         }
       >
+          <GlassRing />
         <div style={{ borderRadius: 16, overflow: "hidden" }}>
           <WorkvivoSeerManagerInsights {...props} />
         </div>

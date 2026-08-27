@@ -151,6 +151,7 @@ export const WorkvivoJourneyBuilder: React.FC<WorkvivoJourneyBuilderProps> = ({
       </div>
 
       <div className="wjb-phone wv-glass-phone">
+        <GlassRing />
         <div className="wjb-screen">
           <div className="wjb-scaler">
             <WorkvivoJourneyPhone brand={brand} {...phone} />
@@ -171,3 +172,4 @@ export const WorkvivoJourneyBuilder: React.FC<WorkvivoJourneyBuilderProps> = ({
     </div>
   );
 };
+import { GlassRing } from "./GlassRing";

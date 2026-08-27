@@ -51,7 +51,7 @@
    stays in its own document — an inlined <svg><style> would apply document-wide and the
    two would fight. The mute file ships #606060; the reference draws it white, so it is
    knocked out here rather than edited. */
-.lr-ic img{display:block;width:20px;height:20px}
+.lr-ic span, .lr-ic svg, .lr-ic img{display:block;width:20px;height:20px}
 .lr-ic .lr-knockout{filter:brightness(0) invert(1)}
 
 /* video */

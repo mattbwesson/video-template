@@ -28,7 +28,7 @@
 .pc-top{display:flex;align-items:center;gap:16px}
 .pc-av{width:46px;height:46px;border-radius:50%;flex:none;border:none;
     background:linear-gradient(150deg,#C9A288,#7C5340)}
-.pc-aud{height:38px;border-radius:20px;background:#F0E6FE;color:#6103ED;display:flex;
+.pc-aud{height:38px;border-radius: 19px;background:#F0E6FE;color:#6103ED;display:flex;
      align-items:center;gap:9px;padding:0 14px;font-size:16px;font-weight:600;cursor:pointer}
 .pc-aud svg{color:#6103ED}
 .pc-caret{width:8px;height:8px;border-right:2px solid #6103ED;border-bottom:2px solid #6103ED;
@@ -131,6 +131,10 @@
 .pc-tray{display:flex;gap:18px;padding:12px 4px 16px}
 .pc-thumb{width:322px;height:216px;border-radius:8px;position:relative;overflow:hidden;
        background:linear-gradient(160deg,#7E9A62 0%,#4E6B3C 40%,#C9A98F 100%)}
+/* The photo, filling the tile. `inset:0` alone does not stretch a replaced element in the
+   export's layout, so the size is spelled out — same as .wm-heroimg. */
+.pc-thumb-img{position:absolute;left:0;top:0;width:100%;height:100%;
+       object-fit:cover;object-position:center;display:block}
 .pc-badge{position:absolute;top:10px;width:34px;height:34px;border-radius:50%;
        background:rgba(0,0,0,.42);display:flex;align-items:center;justify-content:center;
        color:#fff;cursor:pointer}
@@ -160,7 +164,11 @@
 .pc-vrow + .pc-vrow{border-top:1px solid #E9EAEC}
 .pc-vdisc{width:82px;height:82px;border-radius:50%;background:var(--wv-brand, #44D760);flex:none;
        display:flex;align-items:center;justify-content:center;color:#fff}
-.pc-vtx{flex:1}
+/* `display:block` is not redundant — CSS blockifies a flex item, the export does not, so
+   this inline <span> shrank to min-content and its two lines wrapped and overlapped each
+   other. Same fix as .wcmu-t. */
+.pc-vtx{flex:1;display:block;min-width:0}
+.pc-vtx b,.pc-vtx span{white-space:nowrap}
 .pc-vtx b{display:block;font-size:19px;line-height:26px;font-weight:700;color:#111827}
 .pc-vtx span{display:block;font-size:16px;line-height:24px;color:#9CA3AF}
 .pc-vbox{width:20px;height:20px;border:1.6px solid #C4C7CC;border-radius:3px;flex:none;
@@ -197,7 +205,8 @@
 .pc-seedtop{display:flex;align-items:center;gap:14px;padding:15px 16px}
 .pc-seedav{width:42px;height:42px;border-radius:50%;flex:none;border:none;
         background:linear-gradient(150deg,#C9A288,#7C5340)}
-.pc-seedph{flex:1;font-size:18px;color:#6B7280;cursor:text}
+.pc-seedph{flex:1;display:block;min-width:0;white-space:nowrap;
+       font-size:18px;color:#6B7280;cursor:text}
 .pc-golive{height:32px;border-radius:16px;background:#2F2F33;color:#fff;font-size:14px;
         font-weight:600;display:flex;align-items:center;gap:9px;padding:0 14px;border:none;
         cursor:pointer;font-family:inherit}

@@ -79,7 +79,7 @@
   bottom: 8px;
   width: 134px;
   height: 5px;
-  border-radius: 9999px;
+  border-radius: 2.5px;
   transform: translateX(-50%);
 }
 
@@ -269,7 +269,7 @@
 .wp-react {
   height: 22px;
   padding: 0 8px;
-  border-radius: 9999px;
+  border-radius: 11px;
   background: #ffffff;
   border: 1px solid #ececf1;
   display: inline-flex;
@@ -316,7 +316,7 @@
 .wp-summarize {
   height: 24px;
   padding: 0 10px;
-  border-radius: 9999px;
+  border-radius: 12px;
   background: #ffffff;
   display: inline-flex;
   align-items: center;
@@ -375,7 +375,7 @@
   min-width: 0;
   height: 34px;
   padding: 0 10px;
-  border-radius: 9999px;
+  border-radius: 17px;
   border: 1px solid #ececf1;
   display: flex;
   align-items: center;
@@ -424,7 +424,7 @@
 /* The recording chip the OS draws behind the clock during a call. */
 .wp-status-call .wm-time {
   padding: 2px 8px;
-  border-radius: 9999px;
+  border-radius: 11.5px;
   background: #30d158;
   color: #ffffff;
 }

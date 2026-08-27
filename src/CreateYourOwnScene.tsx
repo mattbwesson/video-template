@@ -150,6 +150,7 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                   height: "100%",
                   objectFit: "contain",
                   display: "block",
+                  mixBlendMode: "plus-lighter",
                 }}
               />
 

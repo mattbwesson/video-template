@@ -180,7 +180,9 @@ export const AskBarScene: React.FC<AskBarSceneProps> = ({
           boxSizing: "border-box",
           transform: `translate(-50%, -50%) scale(${scale})`,
           transformOrigin: "center center",
-          borderRadius: 9999,
+          // Half the height, not a sentinel: the export clamps an over-large radius on
+          // each axis separately and the bar came out as a full ellipse.
+          borderRadius: h / 2,
           background: "#ffffff",
           display: "flex",
           alignItems: "center",

@@ -3,6 +3,7 @@ import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { WorkvivoAnalytics } from "./components/workvivo/WorkvivoAnalytics";
 import { DataMatrixField } from "./components/workvivo/DataMatrixField";
 import "./components/workvivo/WorkvivoGlassEdge.css";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 /** Same device box WorkvivoHomeContainer uses. */
 const DEVICE_WIDTH = 1760;
@@ -207,6 +208,7 @@ export const WorkvivoAnalyticsScene: React.FC<WorkvivoAnalyticsSceneProps> = ({
           willChange: "transform",
         } as React.CSSProperties}
       >
+          <GlassRing />
         <div style={{ borderRadius: 16, overflow: "hidden" }}>
             <WorkvivoAnalytics
               gaugeProgress={gaugeProgress}

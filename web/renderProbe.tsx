@@ -2,6 +2,11 @@ import React from "react";
 import { AbsoluteFill, Img, Sequence, staticFile } from "remotion";
 import { CustomizationProvider } from "../src/customize/CustomizationProvider";
 import { HeadquartersScene } from "../src/HeadquartersScene";
+import { BackFromScene } from "../src/BackFromScene";
+import { AskBarScene } from "../src/AskBarScene";
+import { WorkvivoBillboardScreen } from "../src/components/workvivo/WorkvivoBillboardScreen";
+import { WorkvivoPostComposer } from "../src/components/workvivo/WorkvivoPostComposer";
+import { InlineSvg } from "../src/components/InlineSvg";
 import { loadRenderer } from "./browserRender";
 
 /**
@@ -437,6 +442,212 @@ export const HqRingProbe: React.FC = () => (
           </div>
         </div>
       ))}
+    </div>
+  </AbsoluteFill>
+);
+
+/**
+ * The two doubled-text scenes at their reported frames, through the real export.
+ *
+ * Both centre a line by laying a visible copy over a hidden "sizer" carrying the whole
+ * line in flow. The sizer used `visibility: hidden`, which the export's rasterizer has no
+ * check for — so it painted, and the line came out twice at two trackings (global 622 and
+ * 3741). `window.__probeFrame` picks which one; neither scene uses Remotion `<Img>`, so
+ * both mount here without the stall ImgProbe documents.
+ */
+export const BackFromProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <Sequence from={-22}>
+      <BackFromScene />
+    </Sequence>
+  </CustomizationProvider>
+);
+
+/**
+ * The three glyphs that came out wrong at global 524, through the real export.
+ *
+ * Left to right: the PDF and SVG file glyphs (both ship viewBox-only with their paint in
+ * a <defs><style> block, which is the pair the rasterizer cannot handle) and the podcast
+ * tile (painted by masking a brand block through a silhouette, and mask-image is dropped
+ * outright). All three go through InlineSvg now. Drawn on the card white they sit on.
+ */
+export const GlyphProbe: React.FC = () => (
+  <AbsoluteFill
+    style={{
+      background: "#ffffff",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      gap: 120,
+    }}
+  >
+    <InlineSvg src={staticFile("img/file-pdf.svg")} width={28 * 6} height={33 * 6} />
+    <InlineSvg src={staticFile("img/file-svg.svg")} width={28 * 6} height={33 * 6} />
+    <div
+      style={{
+        width: 125.71 * 2,
+        height: 125.71 * 2,
+        borderRadius: 12.857 * 2,
+        background: "#fff",
+        border: "1px solid #eee",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
+      <InlineSvg
+        src={staticFile("img/podcast icon.svg")}
+        fill="#44D760"
+        style={{ width: "68%", height: "68%" }}
+      />
+    </div>
+  </AbsoluteFill>
+);
+
+/** BackFromScene at global 659 (local 59) — the Catch Me Up card at full size. */
+export const CatchMeUpProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <Sequence from={-59}>
+      <BackFromScene />
+    </Sequence>
+  </CustomizationProvider>
+);
+
+/** The ask bar at global 2302 (local 34) — the pill input that came out as an ellipse. */
+export const AskBarProbe: React.FC = () => (
+  <CustomizationProvider input={{}}>
+    <Sequence from={-34}>
+      <AskBarScene background="#E5A428" maskFrom={0} maskTo={2} />
+    </Sequence>
+  </CustomizationProvider>
+);
+
+/**
+ * HeadquartersScene at a caller-chosen local frame, for measuring the end match cut.
+ *
+ * `window.__hqFrame` rather than a prop, so a bisect can walk global 133-138 without a
+ * rebuild. Remotion `<Img>` stalls a still here (see ImgProbe), and this scene is full of
+ * them — but the match cut only moves the WORD, which is text, and the avatars stalling
+ * would fail the whole render rather than silently mismeasure. It renders because by the
+ * time this runs the photos are warm in the page.
+ */
+export const HqCutProbe: React.FC = () => {
+  const local = (window as unknown as { __hqFrame?: number }).__hqFrame ?? 100;
+  return (
+    <CustomizationProvider input={{}}>
+      <Sequence from={-local}>
+        <HeadquartersScene />
+      </Sequence>
+    </CustomizationProvider>
+  );
+};
+
+/**
+ * The billboard's field, and the candidate replacement for it.
+ *
+ * `.wbb-frame` paints a radial-gradient driven by --wbb-brand custom properties. Radials
+ * are on the renderer's unsupported list but the doc says they have sometimes survived, so
+ * this asks directly: same three stops, same custom properties, radial vs linear.
+ */
+export const FieldProbe: React.FC = () => (
+  <AbsoluteFill
+    style={{ background: "#202020", display: "flex", flexDirection: "column", gap: 20, padding: 20 }}
+  >
+    <div
+      style={{
+        ["--wbb-brand-lit" as string]: "#E5A428",
+        ["--wbb-brand" as string]: "#C98A16",
+        ["--wbb-brand-dark" as string]: "#8A5E0C",
+        flex: 1,
+        background:
+          "radial-gradient(130% 100% at 50% 0%, var(--wbb-brand-lit, #e2231a) 0%, var(--wbb-brand, #bd1420) 55%, var(--wbb-brand-dark, #8d0f18) 100%)",
+      }}
+    />
+    <div
+      style={{
+        ["--wbb-brand-lit" as string]: "#E5A428",
+        ["--wbb-brand" as string]: "#C98A16",
+        ["--wbb-brand-dark" as string]: "#8A5E0C",
+        flex: 1,
+        background:
+          "linear-gradient(180deg, var(--wbb-brand-lit, #e2231a) 0%, var(--wbb-brand, #bd1420) 55%, var(--wbb-brand-dark, #8d0f18) 100%)",
+      }}
+    />
+  </AbsoluteFill>
+);
+
+/** The real billboard screen, brand-coloured — the field that came out empty at 1888. */
+export const BillboardProbe: React.FC = () => (
+  <CustomizationProvider input={{ brand: { accentHex: "#E5A428" } as never }}>
+    <AbsoluteFill style={{ background: "#202020", alignItems: "center", justifyContent: "center" }}>
+      <WorkvivoBillboardScreen />
+    </AbsoluteFill>
+  </CustomizationProvider>
+);
+
+/** All five weather glyphs at card size, through the export — sizing and paint. */
+export const WeatherProbe: React.FC = () => (
+  <AbsoluteFill
+    style={{ background: "#E5A428", display: "flex", alignItems: "center", justifyContent: "center", gap: 80 }}
+  >
+    {["weather-sun", "weather-partly-cloud", "weather-cloudy", "weather-rain", "weather-snow"].map((n) => (
+      <div key={n} style={{ width: 200, height: 200, background: "#00000022", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <InlineSvg src={staticFile(`img/weather/${n}.svg`)} width={128} height={128} fill="#ffffff" />
+      </div>
+    ))}
+  </AbsoluteFill>
+);
+
+/**
+ * The composer's attachment tray (global ~996) and value picker (global ~1004).
+ *
+ * `window.__pcStage` picks which. Neither stage uses Remotion `<Img>`, so both mount here
+ * without the stall ImgProbe documents — the tray's photos are plain `<img>` now, which is
+ * the whole point of the fix.
+ */
+export const ComposerProbe: React.FC = () => {
+  const stage = (window as unknown as { __pcStage?: string }).__pcStage ?? "tray";
+  return (
+    <CustomizationProvider input={{}}>
+      <AbsoluteFill
+        style={{ background: "#E5A428", alignItems: "center", justifyContent: "center" }}
+      >
+        <WorkvivoPostComposer stage={stage as never} composerShownAt={0} />
+      </AbsoluteFill>
+    </CustomizationProvider>
+  );
+};
+
+/**
+ * Does the export draw ::before / ::after at all?
+ *
+ * The renderer walks the DOM with `NodeFilter.SHOW_ELEMENT` and never calls
+ * getComputedStyle with a pseudo-element argument, so the answer should be no — which
+ * would explain why the desktop glass edge (entirely a ::before) is invisible while the
+ * phones' (whose band is the root's own background) looks right. Left tile draws its ring
+ * from a ::before, right tile from a real child. Same geometry, same colour.
+ */
+export const PseudoProbe: React.FC = () => (
+  <AbsoluteFill style={{ background: "#202020", alignItems: "center", justifyContent: "center", gap: 160 }}>
+    <style>{`
+      .probe-pseudo { position: relative; }
+      .probe-pseudo::before {
+        content: ""; position: absolute; pointer-events: none;
+        inset: -40px; border: 8px solid rgba(255,255,255,0.9);
+        border-radius: 24px; background: rgba(255,255,255,0.35);
+      }
+    `}</style>
+    <div className="probe-pseudo" style={{ width: 300, height: 200, background: "#3B1B8F" }} />
+    <div style={{ position: "relative", width: 300, height: 200, background: "#3B1B8F" }}>
+      <div
+        style={{
+          position: "absolute",
+          inset: -40,
+          border: "8px solid rgba(255,255,255,0.9)",
+          borderRadius: 24,
+          background: "rgba(255,255,255,0.35)",
+        }}
+      />
     </div>
   </AbsoluteFill>
 );

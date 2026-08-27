@@ -7,6 +7,7 @@ import './WorkvivoGlassEdge.css';
 import { useCustomization } from '../../customize/CustomizationProvider';
 import type { Customization } from '../../customize/CustomizationProvider';
 import type { ImageSlotKey } from '../../customize/imagery';
+import { GlassRing } from "./GlassRing";
 
 export interface StorySlideData {
   title: string;
@@ -197,6 +198,7 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
 
   return (
     <div className="wcmu-phone wv-glass-phone">
+      <GlassRing />
       <WorkvivoCatchMeUpSvgDefs />
       <div className="wcmu-screen">
         {/* Status bar */}
@@ -299,7 +301,20 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                 <span className="wcmu-lbl">Catch Me Up</span>
                 <button className="wcmu-ctl" id="playbtn" type="button" onClick={onTogglePlay}>
                   {isPlaying ? (
-                    <span className="wcmu-play" />
+                    /* An inline <svg> triangle, not the CSS border trick. A zero-size
+                       box drawn entirely from a 13px left border and two transparent
+                       vertical ones is a triangle only because the browser mitres the
+                       corners; the export renderer strokes each side independently and
+                       the glyph came out as a solid white square. */
+                    <svg
+                      className="wcmu-play"
+                      width="13"
+                      height="16"
+                      viewBox="0 0 13 16"
+                      aria-hidden="true"
+                    >
+                      <polygon points="0,0 13,8 0,16" fill="#ffffff" />
+                    </svg>
                   ) : (
                     <span className="wcmu-pause"><i /><i /></span>
                   )}

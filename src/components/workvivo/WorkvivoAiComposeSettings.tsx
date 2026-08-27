@@ -44,7 +44,7 @@ export const WorkvivoAiComposeSettings: React.FC<WorkvivoAiComposeSettingsProps>
     <SpriteDefs />
 
     <div className="acs-phead">
-      <SymbolSvg className="acs-toPurple" width="34" height="34" href="#acs-i-ui-favorite-star" />
+      <SymbolSvg paint="#6103ED" paintFrom="#FACC15" width="34" height="34" href="#acs-i-ui-favorite-star" />
       <h1>AI Compose Settings</h1>
     </div>
 
@@ -61,16 +61,16 @@ export const WorkvivoAiComposeSettings: React.FC<WorkvivoAiComposeSettingsProps>
           <a>Learn more</a>
         </p>
       </div>
-      <span className="acs-tog acs-on" />
+      <span className="acs-tog acs-on"><i /></span>
     </div>
 
     <div className="acs-row acs-sub">
-      <SymbolSvg className="acs-spark acs-toPurple" width="30" height="30" href="#acs-i-ui-summarise-content" />
+      <SymbolSvg className="acs-spark" paint="#6103ED" width="30" height="30" href="#acs-i-ui-summarise-content" />
       <div className="acs-tx">
         <h3>Writing Profiles</h3>
         <p>Allow users to choose a writing profile to tailor AI output to a specific role or audience.</p>
       </div>
-      <span className="acs-tog acs-on" />
+      <span className="acs-tog acs-on"><i /></span>
     </div>
 
     <div className="acs-addwrap"><button className="acs-add">Add new profile</button></div>
@@ -81,7 +81,7 @@ export const WorkvivoAiComposeSettings: React.FC<WorkvivoAiComposeSettingsProps>
         <div className="acs-trow" key={name}>
           <a className="acs-pname">{name}</a>
           <span className="acs-cell">
-            <span className={`acs-tog ${name === "CEO Voice" && ceoVoiceOn ? "acs-on" : ""}`} />
+            <span className={`acs-tog ${name === "CEO Voice" && ceoVoiceOn ? "acs-on" : ""}`}><i /></span>
           </span>
           <span className="acs-kebab"><i /><i /><i /></span>
         </div>

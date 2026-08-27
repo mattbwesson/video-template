@@ -177,8 +177,8 @@ export const HeadquartersScene: React.FC = () => {
   // Global frame 105 = Local frame 72 ('they')
   // Global frame 109 = Local frame 76 ('have')
   // Global frame 117 = Local frame 84 ('one.')
-  // Global frame 132 = Local frame 99 (start quick scale down match cut)
-  // Global frame 135 = Local frame 102 (scene ends)
+  // Global frame 133 = Local frame 100 (start quick scale down match cut)
+  // Global frame 138 = Local frame 105 (scene ends — `from={33} durationInFrames={106}`)
 
   // ----------------------------------------------------
   // ENTRANCE ANIMATIONS (Local frames 0 to 26 / Global 33 to 59)
@@ -284,13 +284,29 @@ export const HeadquartersScene: React.FC = () => {
   }
 
   // ----------------------------------------------------
-  // QUICK SCALE DOWN MATCH CUT AT GLOBAL 133 to 136 (Local 100 to 103)
+  // QUICK SCALE DOWN MATCH CUT AT GLOBAL 133 to 138 (Local 100 to 105)
   // ----------------------------------------------------
-  const endMatchCutScale = interpolate(frame, [100, 103], [1, 0.05], {
-    easing: Easing.in(Easing.cubic),
+  // The whole run of the sequence's last six frames, and the scale moves EXPONENTIALLY
+  // across them rather than linearly.
+  //
+  // What the eye reads as the speed of a scale is the frame-to-frame RATIO, not the
+  // difference — so any polynomial ease down to 0.05 collapses at the end however wide
+  // its range. The previous curve (cubic-in over 100-103) shrank the word 14x between
+  // global 135 and 136 and then sat still for two frames, which is the jump. Simply
+  // widening that same curve to 105 still leaves a 10x final frame.
+  //
+  // Raising the target to an eased power keeps the ratio near-constant instead: the
+  // steps come out 0.89, 0.70, 0.55, 0.43, 0.34, so the worst single frame is under 3x
+  // and every frame moves. `Easing.in(Easing.quad)` on the exponent is what keeps it
+  // starting from rest — the word is static until 133, so a constant-ratio decay from
+  // the first frame would read as motion switching on rather than beginning.
+  const END_MATCH_CUT_MIN = 0.05;
+  const endMatchCutProgress = interpolate(frame, [100, 105], [0, 1], {
+    easing: Easing.in(Easing.quad),
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const endMatchCutScale = Math.pow(END_MATCH_CUT_MIN, endMatchCutProgress);
 
   return (
     <AbsoluteFill

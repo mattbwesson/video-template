@@ -12,6 +12,7 @@ import {
 } from './WorkvivoFloatingReactions';
 import { useCustomization } from '../../customize/CustomizationProvider';
 import { SlotIcon } from '../../customize/SlotIcon';
+import { GlassRing } from "./GlassRing";
 
 /**
  * Framing for the stock people portraits. They are 476x644 with the face in the upper third,
@@ -111,6 +112,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
     // glass edge goes on this non-clipping wrapper instead. It matches the app's box exactly,
     // so it is invisible to anything positioning this component.
     <div className="wvd-frame wv-glass-edge">
+      <GlassRing />
     <div className="wvd-app">
       <WorkvivoSvgDefs />
 

@@ -80,8 +80,29 @@ export const registerSymbolJsx = (element: React.ReactElement): void => {
  * which is the failure mode that gets noticed and fixed rather than shipped.
  */
 export const SymbolSvg: React.FC<
-  { href: string } & React.SVGProps<SVGSVGElement>
-> = ({ href, children, ...svgProps }) => {
+  { href: string } & React.SVGProps<SVGSVGElement> & {
+      /**
+       * Substitute this colour for `currentColor` in the symbol's markup.
+       *
+       * For recolouring a glyph WITHOUT a CSS `filter`. A hue-rotate filter is the usual
+       * trick for this, and it is the wrong tool twice over in the export: the renderer
+       * does not scope the canvas filter to the element that set it, so it bleeds onto
+       * everything drawn after — a filtered icon turned the heading and body text beside
+       * it purple too (global 1217).
+       *
+       * Substituted into the markup rather than set as a `color` on the root, because
+       * `currentColor` reaching a path is inheritance, and inheritance is the thing the
+       * rasterizer cannot be relied on to resolve. `fill="none"` is left alone so stroked
+       * shapes keep their holes.
+       */
+      paint?: string;
+      /**
+       * What `paint` replaces. Defaults to `currentColor`; name a literal colour for a
+       * glyph that bakes its own (the header star ships stroke="#FACC15").
+       */
+      paintFrom?: string;
+    }
+> = ({ href, children, paint, paintFrom = "currentColor", ...svgProps }) => {
   const def = registry.get(href.replace(/^#/, ""));
   if (!def) {
     return (
@@ -92,13 +113,14 @@ export const SymbolSvg: React.FC<
     );
   }
   const { fill, ...rest } = def.attrs;
+  const inner = paint ? def.inner.split(paintFrom).join(paint) : def.inner;
   return (
     <svg
       viewBox={def.viewBox}
       {...(fill ? { fill } : {})}
       {...rest}
       {...svgProps}
-      dangerouslySetInnerHTML={{ __html: def.inner }}
+      dangerouslySetInnerHTML={{ __html: inner }}
     />
   );
 };

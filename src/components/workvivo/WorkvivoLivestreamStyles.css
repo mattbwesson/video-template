@@ -14,9 +14,9 @@
 .lv-left{flex:1;min-width:0;display:flex;flex-direction:column}
 .lv-vbar{height:52px;background:#2A2A2E;border-radius:10px 10px 0 0;display:flex;
       align-items:center;gap:12px;padding:0 16px}
-.lv-live{height:26px;border-radius:14px;background:#E8121F;color:#fff;font-size:13px;
+.lv-live{height:26px;border-radius: 13px;background:#E8121F;color:#fff;font-size:13px;
       font-weight:700;letter-spacing:.6px;display:flex;align-items:center;padding:0 12px}
-.lv-aud{height:28px;border-radius:15px;background:#EDE3FD;color:#3B1C6E;font-size:14px;
+.lv-aud{height:28px;border-radius: 14px;background:#EDE3FD;color:#3B1C6E;font-size:14px;
      font-weight:600;display:flex;align-items:center;gap:7px;padding:0 13px}
 .lv-aud svg{color:#6103ED}
 .lv-count{margin-left:auto;height:24px;border-radius:12px;background:#E8121F;color:#fff;

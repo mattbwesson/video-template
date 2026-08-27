@@ -8,10 +8,6 @@
 .acs-panel *{box-sizing:border-box;margin:0;padding:0}
 .acs-panel a{text-decoration:none}
 
-/* purple-ises a glyph whose stroke colour is baked into the source */
-.acs-toPurple{filter:brightness(0) saturate(100%) invert(13%) sepia(97%) saturate(7237%)
-                 hue-rotate(272deg) brightness(97%) contrast(125%)}
-
 .acs-phead{display:flex;align-items:center;gap:20px;margin-bottom:38px}
 .acs-phead h1{font-size:27px;font-weight:700;color:#111827;letter-spacing:-.3px}
 
@@ -29,11 +25,14 @@
 /* toggle */
 .acs-tog{width:62px;height:34px;border-radius:17px;background:#C4C7CC;display:block;
      position:relative;flex:none;cursor:pointer}
-.acs-tog:after{content:"";position:absolute;top:3px;left:3px;width:28px;height:28px;
-           border-radius:50%;background:#fff;
+/* The knob is a real <i>, not a ::after. The export renderer walks the DOM and has no
+   pseudo-element handling at all, so the knob simply did not exist there and every
+   toggle came out as a plain filled pill (global 1217). */
+.acs-tog i{position:absolute;top:3px;left:3px;width:28px;height:28px;
+           border-radius:50%;background:#fff;display:block;
            box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .acs-tog.acs-on{background:#6103ED}
-.acs-tog.acs-on:after{left:31px}
+.acs-tog.acs-on i{left:31px}
 .acs-row .acs-tog{margin-top:20px}
 
 /* profiles table */

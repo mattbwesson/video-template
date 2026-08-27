@@ -48,8 +48,13 @@
   height: 250px;
   border-radius: 12px;
   overflow: hidden;
-  /* Customer brand slot, not Workvivo's semantic primary — banner fills are per-tenant. */
-  background: #7F39F3;
+  /* Customer brand slot, not Workvivo's semantic primary — banner fills are per-tenant.
+     The distinction was documented here but never wired: this and the two avatar discs
+     below were hardcoded to Workvivo's purple, so the Spaces screen was the one surface
+     in the film that ignored the tenant colour entirely. --wv-brand comes from
+     `theme.vars` on the cut's root, so it reaches here by inheritance. The #6103ED and
+     #4E03BE below are the semantic primary and deliberately stay. */
+  background: var(--wv-brand, #7F39F3);
 }
 
 /* multiply over the brand fill is what the reference's `background-blend-mode: multiply`
@@ -106,7 +111,7 @@
   margin-top: auto;
   align-self: flex-start;
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 18px;
   background: #00031F;
   color: #fff;
   font-size: 14px;
@@ -250,7 +255,7 @@
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: #7F39F3;
+  background: var(--wv-brand, #7F39F3);
   border: 3px solid #fff;
   display: flex;
   align-items: center;
@@ -285,7 +290,7 @@
   align-items: center;
   gap: 5.71px;
   padding: 7.62px 15.24px;
-  border-radius: 19.05px;
+  border-radius: 17px;
   background: #F0E6FE;
   color: #6103ED;
   font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
@@ -376,7 +381,7 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  background: #7F39F3;
+  background: var(--wv-brand, #7F39F3);
   border: 2px solid #fff;
   display: flex;
   align-items: center;
@@ -406,7 +411,7 @@
 }
 
 .sp-pill-emoji {
-  border-radius: 16px;
+  border-radius: 12px;
   font-size: 14px;
   line-height: 20px;
   font-weight: 400;
@@ -424,7 +429,7 @@
   margin-top: auto;
   align-self: flex-start;
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 19px;
   background: #fff;
   border: 1px solid #E5E7EB;
   color: #6103ED;

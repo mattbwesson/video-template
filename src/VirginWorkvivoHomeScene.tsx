@@ -12,6 +12,7 @@ import "./components/workvivo/WorkvivoGlassEdge.css";
 import { invertEase } from "./match-cut";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { FIXED_COPY } from "./customize/videoCopy";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 // --- card swap timing --------------------------------------------------------
 // Every card swap in this scene is two objects trading places, and they all share one
@@ -247,6 +248,7 @@ export const VirginWorkvivoHomeScene: React.FC<VirginWorkvivoHomeSceneProps> = (
             ["--wv-glass-radius" as string]: "16px",
           } as React.CSSProperties}
         >
+            <GlassRing />
           {/* The clip lives on this inner box, not the one above: `overflow: hidden` on the
               glass-edge host would cut away the rings it draws outside itself. */}
           <div

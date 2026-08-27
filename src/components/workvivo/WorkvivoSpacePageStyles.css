@@ -106,7 +106,7 @@
   width: 600px;
   padding: 8px 16px;
   background: linear-gradient(90deg, rgba(122, 105, 147, 0.4) 0%, rgba(78, 55, 111, 0.4) 100%);
-  border-radius: 32px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -134,7 +134,7 @@
   align-self: stretch;
   padding: 6px 8px 6px 16px;
   background: linear-gradient(90deg, rgba(122, 105, 147, 0.3) 0%, rgba(78, 55, 111, 0.3) 100%);
-  border-radius: 32px;
+  border-radius: 22px;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -320,7 +320,7 @@
 
 .wsp-adminlink {
   padding: 8px 6px;
-  border-radius: 20px;
+  border-radius: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -339,7 +339,7 @@
 .wsp-btn-primary {
   padding: 8px 16px;
   background: #6103ed;
-  border-radius: 20px;
+  border-radius: 18px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -492,7 +492,7 @@
   height: 28px;
   padding: 2px 10px;
   background: #f0e6fe;
-  border-radius: 20px;
+  border-radius: 14px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -614,8 +614,15 @@
   object-fit: cover;
 }
 
+/* `nowrap`, and no fixed width. This is a placeholder whose length changes with the
+   signed-in person's first name, so a hard box was always one long name away from
+   wrapping — and the export's text metrics differ just enough from the Player's to wrap
+   it on a name that fits in Chromium ("What's going on, Dave" broke over two lines at
+   global 1555). A placeholder should never wrap; letting it size to its own text is what
+   guarantees that. */
 .wsp-comp-ph {
-  width: 225px;
+  white-space: nowrap;
+  min-width: 225px;
   height: 41px;
   display: flex;
   flex-direction: column;
@@ -704,7 +711,7 @@
 .wsp-btn-start {
   padding: 8.19px 16.37px;
   background: #6103ed;
-  border-radius: 20.47px;
+  border-radius: 18.5px;
   overflow: hidden;
   display: flex;
   justify-content: center;
@@ -869,7 +876,7 @@
   height: 28.66px;
   padding: 0 12.28px;
   background: #f3f4f6;
-  border-radius: 102.34px;
+  border-radius: 14.5px;
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -996,7 +1003,7 @@
   height: 23.96px;
   padding: 3.99px 7.99px;
   background: #ffffff;
-  border-radius: 21.96px;
+  border-radius: 12px;
   outline: 0.67px #e5e7eb solid;
   outline-offset: -0.67px;
   box-shadow: 0 0.665px 1.331px rgba(0, 0, 0, 0.05);
@@ -1109,7 +1116,7 @@
   width: 100%;
   padding: 8.21px 16.43px;
   background: #dee2e6;
-  border-radius: 20.53px;
+  border-radius: 18.5px;
   box-shadow: 0 1.027px 2.053px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   display: flex;

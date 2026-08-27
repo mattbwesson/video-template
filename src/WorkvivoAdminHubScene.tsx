@@ -3,6 +3,7 @@ import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { WorkvivoAdminHub } from "./components/workvivo/WorkvivoAdminHub";
 import "./components/workvivo/WorkvivoGlassEdge.css";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 const DEVICE_WIDTH = 1760;
 const DEVICE_HEIGHT = 1080;
@@ -65,6 +66,7 @@ export const WorkvivoAdminHubScene: React.FC<WorkvivoAdminHubSceneProps> = ({
           } as React.CSSProperties
         }
       >
+          <GlassRing />
         <div style={{ borderRadius: 16, overflow: "hidden" }}>
           <WorkvivoAdminHub />
         </div>

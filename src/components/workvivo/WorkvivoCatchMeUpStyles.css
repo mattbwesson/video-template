@@ -77,7 +77,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 28px 0;
+  padding: 14px 32px 0 30px;
   color: #fff;
   box-sizing: border-box;
 }
@@ -240,12 +240,28 @@
   letter-spacing: 0.5px;
 }
 
+.wcmu-hq span, .wcmu-hq svg, .wcmu-hq img {
+  width: 34px;
+  height: 20px;
+  object-fit: contain;
+  display: block;
+}
+
+/* `display: block` is not redundant. Both of these are inline <span>s used as flex
+   items, and CSS blockifies a flex item — but the export renderer does not, so the span
+   stayed inline, shrank to min-content and the two lines inside wrapped and then
+   overlapped each other. Saying it outright costs nothing in Chromium and removes the
+   dependency on blockification. `min-width: 0` lets the item shrink below its content
+   width instead of forcing the row wider than the card. */
 .wcmu-cmu .wcmu-t {
   flex: 1;
+  display: block;
+  min-width: 0;
 }
 
 .wcmu-cmu .wcmu-t b {
   display: block;
+  white-space: nowrap;
   font-size: 20px;
   line-height: 26px;
   font-weight: 590;
@@ -254,6 +270,7 @@
 
 .wcmu-cmu .wcmu-t span {
   display: block;
+  white-space: nowrap;
   font-size: 15px;
   line-height: 22px;
   font-weight: 510;
@@ -385,8 +402,17 @@
   font-weight: 700;
 }
 
+.wcmu-shq span, .wcmu-shq svg, .wcmu-shq img {
+  width: 18px;
+  height: 11px;
+  object-fit: contain;
+  display: block;
+}
+
 .wcmu-stop .wcmu-lbl {
   flex: 1;
+  display: block;
+  min-width: 0;
   color: #fff;
   font-size: 17px;
   font-weight: 590;
@@ -403,12 +429,11 @@
   color: #fff;
 }
 
+/* The triangle is drawn by an inline <svg> polygon now (see WorkvivoCatchMeUp.tsx), so
+   this only has to place it. The old zero-size/border-mitre version exported as a solid
+   square — the renderer strokes each border side on its own and never mitres them. */
 .wcmu-play {
-  width: 0;
-  height: 0;
-  border-left: 13px solid currentColor;
-  border-top: 8px solid transparent;
-  border-bottom: 8px solid transparent;
+  display: block;
 }
 
 .wcmu-pause {

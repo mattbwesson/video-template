@@ -123,6 +123,9 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 .wright{position:absolute;right:31.429px;top:31.429px;text-align:right}
 .wcond{display:flex;align-items:center;justify-content:flex-end;gap:8.571px;
   font-size:20.000px;font-weight:700;color:#fff}
+.wcond img, .wcond svg, .wcond .gi {
+  filter: brightness(0) invert(1);
+}
 .whl{margin-top:11.429px;font-size:14.286px;font-weight:600;color:#fff;display:flex;gap:20.000px;
   justify-content:flex-end}
 .wdots{position:absolute;left:0;right:0;bottom:17.143px;display:flex;justify-content:center;gap:8.571px}
@@ -152,7 +155,7 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
   background:var(--wv-brand, #44D760);display:flex;align-items:center;justify-content:center;z-index:3;
   box-shadow:0 1.429px 5.714px rgba(0,0,0,.18)}
 .joined{position:absolute;right:15.714px;top:-27.143px;display:inline-flex;align-items:center;gap:5.71px;
-  padding:7.62px 15.24px;border-radius:19.05px;background:#F0E6FE;color:#6103ED;font-size:13.33px;font-weight:500;line-height:19.05px;
+  padding:7.62px 15.24px;border-radius: 17px;background:#F0E6FE;color:#6103ED;font-size:13.33px;font-weight:500;line-height:19.05px;
   box-shadow:0 0.95px 1.90px rgba(0,0,0,.06),0 0.95px 2.86px rgba(0,0,0,.10);z-index:3}
 .joined .jck{font-size:15.24px;line-height:1;display:inline-flex;align-items:center}
 .ttitle{margin-top:0;font-size:18.000px;font-weight:700;color:#6103ED}
@@ -209,16 +212,14 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
   background:linear-gradient(160deg,var(--wv-brand,#CE0E2D) 0%,var(--wv-brand-d1,#A80B24) 46%,var(--wv-brand-d3,#5C0714) 100%)}
 .podhead{margin:17.143px 0 0 17.143px;height:27.143px;display:inline-flex;align-items:center;gap:7.143px;padding:0 14.286px;
   border-radius:13.571px;background:rgba(28,10,14,.5);color:#fff;font-size:13.429px;font-weight:600}
-/* A white tile with the podcast glyph knocked through it in the brand colour.
-   The glyph is a MASK rather than an <img>: the file is a bare black path with no fill
-   attribute, so loaded as an image it can only ever be black. Masking paints the brand
-   through its silhouette instead, which is the same trick the tile needs at any hue. */
-.podmic{display:block;margin:12.857px auto 0;border-radius:12.857px;background:#fff;
+/* A white tile with the podcast glyph on it in the brand colour.
+   The glyph WAS a mask — the file is a bare black path with no fill attribute, so loaded
+   as an image it could only ever be black, and masking painted the brand through its
+   silhouette. The export renderer drops mask-image outright, which left a solid brand
+   square filling the tile, so the artwork is inlined and painted per path instead
+   (<InlineSvg fill>). The tile only has to centre it now. */
+.podmic{margin:12.857px auto 0;border-radius:12.857px;background:#fff;
   display:flex;align-items:center;justify-content:center}
-.podmic i{display:block;width:68%;height:68%;background:var(--wv-brand,#CE0E2D);
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  -webkit-mask-position:center;mask-position:center;
-  -webkit-mask-size:contain;mask-size:contain}
 .podcard{margin:15.714px;background:#fff;border-radius:12.857px;padding:17.143px}
 .podshow{font-size:13.429px;color:#5A6068}
 .podep{margin-top:10.000px;font-size:18.000px;font-weight:600;color:#171B1F}

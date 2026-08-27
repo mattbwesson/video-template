@@ -418,13 +418,11 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
 
                 <div className="whq-attach-label">1 Attachment</div>
                 <div className="whq-attach">
-                  <InlineSvg src={staticFile("img/file-pdf.svg")} alt="" />
-                  <span>
+                  <InlineSvg className="whq-attach-ico" src={staticFile("img/file-pdf.svg")} alt="" />
+                  <div className="whq-attach-info">
                     <span className="whq-attach-name">{hq.attachment}</span>
-                    <span className="whq-attach-kind" style={{ display: "block" }}>
-                      PDF document
-                    </span>
-                  </span>
+                    <span className="whq-attach-kind">PDF document</span>
+                  </div>
                   <span className="whq-attach-size">6.3 MB</span>
                 </div>
 

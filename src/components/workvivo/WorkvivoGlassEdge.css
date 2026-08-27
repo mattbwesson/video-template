@@ -69,8 +69,21 @@
   position: relative;
 }
 
-.wv-glass-edge::before {
-  content: "";
+/* A REAL element, not a ::before — the second thing in this file the export cannot draw.
+ * @remotion/web-renderer walks the DOM with `NodeFilter.SHOW_ELEMENT` and never asks
+ * getComputedStyle for a pseudo-element, so ::before and ::after are never painted at all.
+ * The desktop frames put their whole glass edge in one, and it vanished from every export;
+ * the phones only put their hairline stroke there (their band is the root's own
+ * background), which is why they still looked right and this did not.
+ *
+ * It has to be an element rather than an outline+box-shadow ring, because the band is a
+ * GRADIENT and neither of those can carry one — and the falloff is the thing that makes it
+ * read as glass rather than as painted plastic.
+ *
+ * Render it as the host's FIRST child: out of flow, so it costs no layout, and ahead of
+ * the content in DOM order, so the band paints beneath it. DOM order is the only stacking
+ * rule the export honours. */
+.wv-glass-edge > .wv-glass-ring {
   position: absolute;
   pointer-events: none;
   inset: calc(-1 * (var(--wv-glass-width) + var(--wv-glass-stroke-width)));
@@ -91,8 +104,10 @@
   background: var(--wv-glass-band) border-box;
 }
 
-.wv-glass-phone::before {
-  content: "";
+/* Also a real element now, for the same reason — this hairline was silently missing from
+ * every exported phone. It reads as "fine" without it only because the phone's band is the
+ * root's own background and survives on its own. */
+.wv-glass-phone > .wv-glass-ring {
   position: absolute;
   inset: 0;
   pointer-events: none;

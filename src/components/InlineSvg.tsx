@@ -98,6 +98,24 @@ const load = (src: string): Prepared => {
   return prepared;
 };
 
+/** Shapes that take paint. `<g>` is deliberately absent — fill on a group is inherited,
+ *  and inheritance is the thing the export's rasterizer cannot be relied on to resolve. */
+const PAINTED = /<(path|polygon|polyline|circle|ellipse|rect)\b(?![^>]*\bfill=)/g;
+
+/**
+ * Paint every shape that carries no fill of its own.
+ *
+ * For artwork drawn as a bare silhouette — no `fill` anywhere, black by default — which is
+ * otherwise recoloured with a CSS mask. Masks do not survive the export at all, so the
+ * colour has to be in the markup, and it has to be ON each shape: a `fill` on the root
+ * `<svg>` would reach the paths by inheritance, which is exactly what the rasterizer drops.
+ *
+ * Applied per render rather than inside `prepare`, because the cache is keyed on the file
+ * and the colour is the tenant's — one file, many brands.
+ */
+const paint = (inner: string, fill: string): string =>
+  inner.replace(PAINTED, (m) => `${m} fill="${fill}"`);
+
 export const InlineSvg: React.FC<{
   src: string;
   className?: string;
@@ -107,8 +125,14 @@ export const InlineSvg: React.FC<{
   height?: number | string;
   /** Accepted for drop-in compatibility with <Img>; SVGs need no alt in a film. */
   alt?: string;
-}> = ({ src, className, style, width, height }) => {
+  /**
+   * Paint the artwork this colour, for silhouettes that ship with no fill at all.
+   * Shapes that already declare a fill keep it, so a multi-colour icon is left alone.
+   */
+  fill?: string;
+}> = ({ src, className, style, width, height, fill }) => {
   const svg = load(src);
+  const inner = fill ? paint(svg.inner, fill) : svg.inner;
   return (
     <span
       className={className}
@@ -124,7 +148,7 @@ export const InlineSvg: React.FC<{
         viewBox={svg.viewBox}
         width="100%"
         height="100%"
-        dangerouslySetInnerHTML={{ __html: svg.inner }}
+        dangerouslySetInnerHTML={{ __html: inner }}
       />
     </span>
   );

@@ -83,7 +83,7 @@
   height: 26px;
   padding: 0 11px;
   border: 1px solid #e5e7eb;
-  border-radius: 20px;
+  border-radius: 13px;
   background: #ffffff;
   font-size: 11px;
   font-weight: 500;
@@ -152,6 +152,12 @@
   margin-bottom: 14px;
 }
 
+.whq-agent-head span, .whq-agent-head svg, .whq-agent-head img {
+  height: 22px;
+  width: auto;
+  display: block;
+}
+
 .whq-viewmore {
   margin-left: auto;
   height: 22px;
@@ -159,7 +165,7 @@
   display: inline-flex;
   align-items: center;
   border: 1px solid #e5e7eb;
-  border-radius: 20px;
+  border-radius: 11px;
   background: #ffffff;
   font-size: 10.5px;
   font-weight: 600;
@@ -221,7 +227,7 @@
 .whq-title {
   font-size: 12.5px;
   font-weight: 600;
-  color: #111827;
+  color: #6103ed;
   margin-bottom: 5px;
 }
 
@@ -288,28 +294,44 @@
   background: #f9fafb;
 }
 
-.whq-attach img {
+.whq-attach-ico,
+.whq-attach-ico svg,
+.whq-attach-ico img {
   width: 18px;
-  height: auto;
+  height: 22px;
+  object-fit: contain;
   display: block;
+  flex: none;
+}
+
+.whq-attach-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 .whq-attach-name {
   font-size: 11px;
   font-weight: 500;
   color: #6103ed;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .whq-attach-kind {
   font-size: 9.5px;
   color: #6b7280;
   margin-top: 1px;
+  white-space: nowrap;
 }
 
 .whq-attach-size {
   margin-left: auto;
   font-size: 9.5px;
   color: #6b7280;
+  white-space: nowrap;
+  flex: none;
 }
 
 .whq-tag {

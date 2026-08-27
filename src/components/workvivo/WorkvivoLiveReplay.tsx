@@ -67,6 +67,7 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
 
   return (
   <div className="lr-phone wv-glass-phone">
+    <GlassRing />
     <SpriteDefs />
     <div className="lr-screen">
       <div className="lr-status">
@@ -171,6 +172,7 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
   </div>
 );
 };
+import { GlassRing } from "./GlassRing";
 
 // Feed this file's symbols into the inline registry (symbolRegistry.tsx): the hidden
 // sprite above cannot be referenced across <svg> roots in the in-browser export, so

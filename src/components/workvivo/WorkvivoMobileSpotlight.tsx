@@ -434,7 +434,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           is what the Player paints by; the in-browser export paints DOM order and
           ignores sibling z-index, so the order here has to agree with the ladder or
           the export buries the status bar under the header photo. */}
-      <div className="wm-status">
+      <div className="wm-status" style={{ paddingLeft: 30, paddingRight: 32 }}>
         <div className="wm-time">9:41</div>
         <div className="wm-sysico">
           <SymbolSvg width="17" height="11" href="#i-signal" />

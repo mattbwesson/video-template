@@ -255,19 +255,27 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
         {after}
       </div>
 
+      {/* Real <img> elements, not `background: url(...)`. A photo set as a CSS background
+          never paints in the in-browser export — the tray came out as two empty tiles with
+          the edit and remove badges floating on nothing. The slot stays on the wrapper so
+          the swap overlay still measures the tile, not the photo. */}
       {showTray && (
         <div className="pc-tray">
-          <div data-vc-slot="app.post.0"
-            className="pc-thumb"
-            style={{ background: `url('${image("app.post.0", staticFile("img/workvivo/hero_banner.png"))}') center/cover no-repeat` }}
-          >
+          <div data-vc-slot="app.post.0" className="pc-thumb">
+            <img
+              className="pc-thumb-img"
+              src={image("app.post.0", staticFile("img/workvivo/hero_banner.png"))}
+              alt=""
+            />
             <span className="pc-badge pc-edit"><span className="pc-g-pen"><i /><i /></span></span>
             <span className="pc-badge pc-kill"><span className="pc-g-x"><i /><i /></span></span>
           </div>
-          <div data-vc-slot="composer.tray.0"
-            className="pc-thumb"
-            style={{ background: `url('${image("composer.tray.0", staticFile("img/workvivo/post_virgin.png"))}') center/cover no-repeat` }}
-          >
+          <div data-vc-slot="composer.tray.0" className="pc-thumb">
+            <img
+              className="pc-thumb-img"
+              src={image("composer.tray.0", staticFile("img/workvivo/post_virgin.png"))}
+              alt=""
+            />
             <span className="pc-badge pc-edit"><span className="pc-g-pen"><i /><i /></span></span>
             <span className="pc-badge pc-kill"><span className="pc-g-x"><i /><i /></span></span>
           </div>

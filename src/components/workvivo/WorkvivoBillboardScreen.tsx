@@ -5,6 +5,7 @@ import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
 import "./WorkvivoBillboardScreenStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import type { WorkvivoCopy } from "../../customize/videoCopy";
 import type { ImageSlotKey } from "../../customize/imagery";
 
 /**
@@ -117,6 +118,22 @@ const STORY_WIDTH = 1259.82;
 
 const SWIPE_EASE = Easing.bezier(0.81, 0.01, 0.18, 1.00);
 
+/**
+ * Artwork per condition, exhaustive over the enum — the same five files the feed card
+ * draws. Declared here rather than imported so neither component owns the other's
+ * layout, and so adding a sixth condition breaks both call sites at once.
+ */
+const BILLBOARD_WEATHER_ICON: Record<
+  WorkvivoCopy["feed"]["weather"]["condition"],
+  string
+> = {
+  Sunny: "img/weather/weather-sun.svg",
+  "Partly Cloudy": "img/weather/weather-partly-cloud.svg",
+  Cloudy: "img/weather/weather-cloudy.svg",
+  Rainy: "img/weather/weather-rain.svg",
+  Snow: "img/weather/weather-snow.svg",
+};
+
 export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = ({
   logoSrc,
   brand,
@@ -136,6 +153,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
   const frame = useCurrentFrame();
   const { copy, image, logo: brandLogo, theme, person } = useCustomization();
   const signage = copy.signage;
+  const weather = copy.feed.weather;
 
   // The screen's field is three stops of one hue. `theme.d1`/`d3` are the same ramp every
   // other Workvivo surface in the cut paints with, so the board matches the frame it sits
@@ -220,11 +238,22 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
           <span>Monday, March 27</span>
         </div>
 
+        {/* The screen shows the SAME forecast the feed card does — one company, one day
+            — so the condition, the temperature and the scale all come from
+            `feed.weather` rather than being written twice. It used to print "6 C / 47 F",
+            both scales at once; `unit` is the model's answer to which one this city
+            actually uses (F in the United States, C everywhere else). */}
         <div className="wbb-weather">
-          <InlineSvg src={staticFile("img/weather/weather-sun.svg")} alt="" />
+          <InlineSvg
+            className="wbb-weather-ico"
+            src={staticFile(BILLBOARD_WEATHER_ICON[weather.condition])}
+            fill="#ffffff"
+          />
           <span>{signage.location}</span>
           <span className="wbb-sep">|</span>
-          <span>6 C / 47 F</span>
+          <span>
+            {weather.temperature}&deg; {weather.unit}
+          </span>
         </div>
       </div>
 

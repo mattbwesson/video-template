@@ -4,6 +4,7 @@ import { Icon } from "./WorkvivoIcons";
 import type { SwapProgress } from "./WorkvivoHomeContainer";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { SlotIcon } from "../../customize/SlotIcon";
+import { InlineSvg } from "../InlineSvg";
 import type { WorkvivoCopy } from "../../customize/videoCopy";
 
 /**
@@ -30,7 +31,7 @@ interface WorkvivoRightColumnProps {
 }
 
 export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }) => {
-  const { image, copy } = useCustomization();
+  const { image, copy, theme } = useCustomization();
   const { sidePost, event, podcast, pages, weather } = copy.feed;
   // Weather leads — it ends up on top, matching the left column's handoff direction so the
   // two columns read as the same move rather than mirrored ones.
@@ -66,12 +67,17 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         </div>
         <div className="wright">
           <div className="wcond">
-            <img
+            {/* Inline, not <img src="…svg">. All five weather files are viewBox-only
+                with no width/height, which is the pair the export's rasterizer cannot
+                size — the glyph came out at the wrong scale. They are also bare black
+                silhouettes with no fill, so the colour is painted on rather than
+                knocked in with a filter. */}
+            <InlineSvg
               className="gi"
               src={staticFile(WEATHER_ICON[weather.condition])}
-              width="25.71"
-              height="25.71"
-              alt=""
+              width={25.71}
+              height={25.71}
+              fill="#ffffff"
             />
             <span>{weather.condition}</span>
           </div>
@@ -226,12 +232,15 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
             colour — so there is nothing left to swap and no image position for it. The
             show and episode lines are still editable; see the `feed.podcast` entry in
             editables.ts, anchored on the section above. */}
+        {/* The glyph was painted by masking a brand-coloured block through the file's
+            silhouette. `mask-image` is dropped wholesale by the export renderer, so the
+            block came out as a solid brand square filling the tile. Inlining the artwork
+            and painting each path directly puts the colour in the markup instead. */}
         <div className="podmic" style={{ width: 125.71, height: 125.71 }}>
-          <i
-            style={{
-              WebkitMaskImage: `url("${staticFile("img/podcast icon.svg")}")`,
-              maskImage: `url("${staticFile("img/podcast icon.svg")}")`,
-            }}
+          <InlineSvg
+            src={staticFile("img/podcast icon.svg")}
+            fill={theme.brand}
+            style={{ width: "68%", height: "68%" }}
           />
         </div>
         <div className="podcard">

@@ -411,7 +411,7 @@ export const QuoteCard: React.FC = () => {
           real alpha, so normal compositing over the near-black field reads the same in
           both renderers instead of correct in one. */}
       <Img
-        src={staticFile("img/quote-card-sparkle.png")}
+        src={staticFile("img/glass/rocket.png")}
         style={{
           position: "absolute",
           left: SPARKLE_LEFT,

@@ -140,6 +140,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
   const mnews = copy.feed.mobileNews;
   return (
     <div className="wm-phone wv-glass-phone">
+      <GlassRing />
       <WorkvivoMobileSvgDefs />
       <div className="wm-screen">
         {/* Status bar */}
@@ -272,7 +273,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             is what the Player paints by; the in-browser export paints DOM order and
             ignores sibling z-index, so the order here has to agree with the ladder or
             the export buries the status bar under the header photo. */}
-        <div className="wm-status">
+        <div className="wm-status" style={{ paddingLeft: 30, paddingRight: 32 }}>
           <div className="wm-time">9:41</div>
           <div className="wm-sysico">
             <SymbolSvg width="17" height="11" href="#i-signal" />
@@ -284,6 +285,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
     </div>
   );
 };
+import { GlassRing } from "./GlassRing";
 
 // Feed this file's symbols into the inline registry (symbolRegistry.tsx): the hidden
 // sprite above cannot be referenced across <svg> roots in the in-browser export, so

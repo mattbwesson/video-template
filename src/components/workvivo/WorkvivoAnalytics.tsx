@@ -7,6 +7,7 @@ import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import { WorkvivoTopbar } from "./WorkvivoTopbar";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
+import { GlassRing } from "./GlassRing";
 
 /**
  * Workvivo Analytics & Reporting — the Snapshot tab.
@@ -358,6 +359,7 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
 
   return (
     <div className="device wv-glass-edge" style={{ width: 1760, minHeight: 1080, height: "auto" }}>
+      <GlassRing />
       <WorkvivoSvgDefs />
       <div className="app">
         <div className="scaler">

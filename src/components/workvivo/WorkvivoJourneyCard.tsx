@@ -158,7 +158,9 @@ export const WorkvivoJourneyCard: React.FC<JourneyCardProps> = ({
                 width: 235.1,
                 height: 11.3,
                 background: PRIMARY_50,
-                borderRadius: 58.85,
+                // Half of 11.3 — see the ask bar. A sentinel radius here drew the
+                // track as a long tapered lens instead of a bar.
+                borderRadius: 5.65,
                 overflow: "hidden",
                 flexShrink: 0,
               }}
@@ -169,7 +171,7 @@ export const WorkvivoJourneyCard: React.FC<JourneyCardProps> = ({
                     width: `${Math.min(1, progress) * 100}%`,
                     height: "100%",
                     background: PRIMARY_500,
-                    borderRadius: 58.85,
+                    borderRadius: 5.65,
                   }}
                 />
               ) : null}
@@ -181,7 +183,9 @@ export const WorkvivoJourneyCard: React.FC<JourneyCardProps> = ({
           style={{
             padding: "8.83px 14.71px",
             background: PRIMARY_500,
-            borderRadius: 23.54,
+            // Half the button's 41px height. 23.54 overshot it and the export's
+            // per-axis clamp turned the pill egg-shaped.
+            borderRadius: 20.5,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

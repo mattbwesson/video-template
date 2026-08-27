@@ -11,6 +11,7 @@ import "./WorkvivoGlassEdge.css";
 import "./WorkvivoPhonesSceneStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
+import { GlassRing } from "./GlassRing";
 
 /**
  * Two Workvivo phones on a purple field: Chat on the left, a video call on the right.
@@ -218,10 +219,13 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
       >
         {/* ================= left phone — Workvivo Chat ================= */}
         <div className="wm-phone wv-glass-phone wp-glow">
+          <GlassRing />
           <div className="wm-screen wp-screen-light">
-            <div className="wm-status wp-status-dark">
+            <div className="wm-status wp-status-dark" style={{ paddingLeft: 30, paddingRight: 32 }}>
               <div className="wm-time">9:41</div>
-              <StatusIcons />
+              <div className="wm-sysico">
+                <StatusIcons />
+              </div>
             </div>
 
             <div className="wp-chat">
@@ -360,6 +364,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
 
         {/* ================= right phone — video call ================= */}
         <div className="wm-phone wv-glass-phone wp-glow">
+          <GlassRing />
           <div className="wm-screen">
             <div className="wp-call">
               <div className="wp-call-video">
@@ -380,9 +385,11 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                 )}
               </div>
 
-              <div className="wm-status wp-status-call">
+              <div className="wm-status wp-status-call" style={{ paddingLeft: 30, paddingRight: 32 }}>
                 <div className="wm-time">9:41</div>
-                <StatusIcons />
+                <div className="wm-sysico">
+                  <StatusIcons />
+                </div>
               </div>
 
               <div className="wp-call-top">

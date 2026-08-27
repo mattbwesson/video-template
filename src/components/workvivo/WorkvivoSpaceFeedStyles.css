@@ -188,7 +188,7 @@
 
 .wsf-join {
   padding: 8px 16px;
-  border-radius: 20px;
+  border-radius: 18px;
   background: #6103ED;
   color: #fff;
   font-size: 14px;
@@ -308,7 +308,7 @@
   gap: 4px;
   height: 28px;
   padding: 2px 10px;
-  border-radius: 20px;
+  border-radius: 14px;
   background: #F0E6FE;
   color: #4E03BE;
   font-size: 14px;
@@ -381,6 +381,11 @@
 
 .wsf-placeholder {
   flex: 1 1 0;
+  /* An inline <span> used as a flex item: CSS blockifies it, the export does not, so it
+     shrinks to min-content and wraps. Spelled out for the same reason as .wcmu-t. */
+  display: block;
+  min-width: 0;
+  white-space: nowrap;
   font-size: 18px;
   line-height: 28px;
   color: rgba(0, 0, 0, 0.5);
@@ -604,7 +609,7 @@
 .wsf-react {
   height: 28px;
   padding: 0 10px;
-  border-radius: 9999px;
+  border-radius: 14px;
   background: #F4ECFF;
   border: 1px solid #6103ED;
   display: inline-flex;

@@ -4,6 +4,7 @@ import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame, us
 import { useCustomization } from "./customize/CustomizationProvider";
 import { WorkvivoSpaceFeed } from "./components/workvivo/WorkvivoSpaceFeed";
 import "./components/workvivo/WorkvivoGlassEdge.css";
+import { GlassRing } from "./components/workvivo/GlassRing";
 
 /** Same device box WorkvivoHomeContainer uses. */
 const DEVICE_WIDTH = 1760;
@@ -106,6 +107,7 @@ export const WorkvivoSpaceFeedScene: React.FC<WorkvivoSpaceFeedSceneProps> = ({
           } as React.CSSProperties
         }
       >
+          <GlassRing />
         <div style={{ borderRadius: 36, overflow: "hidden", height: DEVICE_HEIGHT }}>
           <WorkvivoSpaceFeed />
         </div>
