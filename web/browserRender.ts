@@ -123,27 +123,40 @@ export const renderReadiness = async (
 /**
  * How hard the encoder is told to try.
  *
- * There is no CRF here and no second pass. The CLI hands frames to x264, which is
- * quality-targeted — `crf 15` means "spend whatever bits this frame needs" — and can be
- * told to think longer with `--preset slow`. WebCodecs has neither: it is one pass at a
- * BITRATE, and `videoBitrate` is the only lever that changes what comes out. Encode time
+ * There is no CRF here. The CLI hands frames to x264, which is quality-targeted — `crf 15`
+ * means "spend whatever bits this frame needs" — and can be told to think longer with
+ * `--preset slow`. WebCodecs has neither: it is one pass at a BITRATE, and `videoBitrate`
+ * is the only lever that changes what comes out of a given rasterization. Encode time
  * barely moves with it, because this render is bound by decoding the 212-second reference
  * video and drawing the DOM, not by the encoder.
  *
  * `medium` is the library default and, at 1920x1080 h264, means exactly 3 Mbps
- * (mediabunny: 3 Mbps reference at 1080p x 1.0 for AVC x 1.0 for medium). That is the
- * number this export has been quietly running at.
+ * (mediabunny: 3 Mbps reference at 1080p x 1.0 for AVC x 1.0 for medium).
  *
  * For comparison, a CLI render of this film at `crf 15 / slow` averages 3.51 Mbps — and
  * that is x264 in its slowest useful mode, which gets perhaps twice the quality per bit
  * of the platform hardware encoder WebCodecs hands us. Matching the file we ship from the
  * repo therefore means asking for several times its average bitrate, not the same one.
  *
- * `very-high` is 4x medium, i.e. 12 Mbps, or ~320 MB for the 212-second cut. `high` (6
- * Mbps, ~160 MB) is the fallback if that file size ever becomes the problem — it is still
- * comfortably above parity.
+ * 12 Mbps — written as a number rather than the `"very-high"` it used to be, because that
+ * string IS 12 Mbps here and the number says so without a lookup: mediabunny scales a
+ * 3 Mbps 1080p AVC reference by 4 for `very-high`, which is the top of its named scale.
+ * 6 Mbps is the fallback if ~320 MB for the 212-second cut ever becomes the problem, and
+ * is still comfortably above parity.
+ *
+ * THINGS TRIED AND REJECTED, so they are not re-tried from first principles:
+ *
+ *   - `hardwareAcceleration: "prefer-software"`, on the theory that a software encoder
+ *     would close the quality-per-bit gap. Measured identical — 165 vs 166 fps at 1080p,
+ *     86 vs 81 at 2880x1620 — i.e. the browser ignores the hint. Left unset.
+ *   - Supersampling: rasterize at 1.5x, then downscale to 1080p in a second pass. The one
+ *     lever bitrate cannot pull, since at scale 1 the DOM is drawn straight onto a 1080p
+ *     grid and no number of bits recovers an edge that was never sampled. Built, shipped
+ *     behind a toggle, and removed: ~6x the render time (25-30 min against 4-5) for no
+ *     difference anyone could see. docs/browser-render-best-practices.md §8 keeps the
+ *     measurements and the two library bugs it turned up.
  */
-const VIDEO_BITRATE = "very-high" as const;
+const VIDEO_BITRATE = 12_000_000;
 
 /**
  * A keyframe every two seconds rather than the default five.

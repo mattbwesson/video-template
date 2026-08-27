@@ -2,11 +2,12 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import { Player, type PlayerRef } from "@remotion/player";
 import { CustomizedWorkvivo } from "../src/CustomizedWorkvivo";
 import { CUSTOMIZED_CUT_DURATION } from "../src/WorkvivoCut";
-import { toInputProps, type WizardState } from "./wizardState";
+import { resolveSlotSource, toInputProps, type WizardState } from "./wizardState";
 import { SwapOverlay } from "./SwapOverlay";
 import { EditPanel } from "./EditPanel";
 import { RenderButton } from "./RenderButton";
-import { assignImagery } from "../src/customize/imagery";
+import { assignImagery, SLOT_ATTR } from "../src/customize/imagery";
+import { bakeFraming, FRAME0, isDefaultFraming, type Framing } from "./framing";
 import { resolveHeader, type HeaderTreatment } from "../src/customize/headers";
 import { clampBrandAccentHex } from "../src/customize/color";
 import type { Editable } from "../src/customize/editables";
@@ -55,6 +56,15 @@ export const Reveal: React.FC<{
    * render and a key would mean a lookup in three places that could each disagree.
    */
   const [editing, setEditing] = useState<Editable | null>(null);
+  /**
+   * The shape of the position the panel is open on, measured when it opened.
+   *
+   * Captured at open time rather than read on demand because it can only be measured while
+   * the element is on screen, and the Player mounts one frame at a time — scrub away and
+   * the element the panel is editing no longer exists in the DOM. The video is paused on
+   * open (see `openDrawer`), so the measurement is of a still frame and stable.
+   */
+  const [frameAspect, setFrameAspect] = useState(0);
 
   const inputProps = useMemo(() => toInputProps(state), [state]);
   const flying = state.shots.slice(0, 14);
@@ -116,6 +126,18 @@ export const Reveal: React.FC<{
   const openDrawer = useCallback((editable: Editable) => {
     player.current?.pause();
     setEditing(editable);
+
+    // Measure the real frame before the panel draws, so the Framing stage opens at the
+    // shape the cut actually uses rather than flashing a square and correcting itself.
+    // The rect is the element's own box, which for a `cover`-fitted photo IS the frame.
+    const slot = editable.image;
+    const el = slot
+      ? screen.current?.querySelector(`[${SLOT_ATTR}="${slot}"]`)
+      : null;
+    const rect = el?.getBoundingClientRect();
+    setFrameAspect(
+      rect && rect.width > 1 && rect.height > 1 ? rect.width / rect.height : 0,
+    );
   }, []);
 
   const assignImage = useCallback(
@@ -127,6 +149,118 @@ export const Reveal: React.FC<{
     },
     [editing, patch, state.imageOverrides],
   );
+
+  /**
+   * The freshest state, for callbacks that fire after an await.
+   *
+   * `patch` merges into whatever `setState` holds, but the object being merged has to be
+   * built from something — and building it from the `state` captured when a bake STARTED
+   * would undo anything the operator did while the canvas was working. A ref is the
+   * smallest way to read the current value at write time without threading a functional
+   * setter down from App.
+   */
+  const latest = useRef(state);
+  latest.current = state;
+
+  /**
+   * Attach finished bakes to their positions.
+   *
+   * Skips any entry that has since been deleted or re-dragged (`baked` non-empty means a
+   * newer bake already landed), so a slow encode can never overwrite a newer crop.
+   */
+  const setBakes = useCallback(
+    (pairs: ReadonlyArray<readonly [string, string]>) => {
+      const framing = { ...latest.current.framing };
+      let changed = false;
+      for (const [slot, url] of pairs) {
+        const cur = framing[slot];
+        if (!cur || cur.baked) continue;
+        framing[slot] = { ...cur, baked: url };
+        changed = true;
+      }
+      if (changed) patch({ framing });
+    },
+    [patch],
+  );
+
+  /** This position's crop, or the untouched default. */
+  const currentFraming: Framing = editing?.image
+    ? (state.framing[editing.image] ?? FRAME0)
+    : FRAME0;
+
+  /**
+   * Record a drag or a zoom.
+   *
+   * Only the NUMBERS are written here — `baked` is cleared, and the effect below picks the
+   * entry up once the operator stops moving. Baking on every pointermove would re-encode a
+   * JPEG sixty times a second and stall the drag; leaving the previous bake in place
+   * instead would show a crop one drag behind the stage.
+   *
+   * Returning to the default deletes the entry rather than storing 50/50/1, so "I have not
+   * cropped this" and "I cropped it back to centre" are the same state — and the video
+   * goes back to the operator's own upload rather than a JPEG re-encode of it.
+   */
+  const editFraming = useCallback(
+    (next: Framing) => {
+      const slot = editing?.image;
+      if (!slot) return;
+      const framing = { ...state.framing };
+      if (isDefaultFraming(next)) delete framing[slot];
+      else
+        framing[slot] = {
+          ...next,
+          src: currentImage,
+          aspect: frameAspect,
+          baked: "",
+        };
+      patch({ framing });
+    },
+    [editing, patch, state.framing, currentImage, frameAspect],
+  );
+
+  /**
+   * Bake whatever framing is still unbaked, shortly after it stops changing.
+   *
+   * Every entry is checked, not just the one being edited: swapping a photo in the Image
+   * section invalidates that position's bake (`src` no longer matches), and this is what
+   * notices and re-crops it.
+   *
+   * The 220ms delay is the debounce — the effect re-runs on every drag frame and clears
+   * its own timer, so the canvas work happens once the operator lets go.
+   */
+  useEffect(() => {
+    const stale = Object.entries(state.framing).filter(
+      ([slot, f]) =>
+        !f.baked && f.aspect > 0 && f.src === resolveSlotSource(state, dealt, slot),
+    );
+    if (!stale.length) return;
+
+    let live = true;
+    const timer = window.setTimeout(async () => {
+      const baked = await Promise.all(
+        stale.map(async ([slot, f]) => {
+          try {
+            return [slot, await bakeFraming(f.src, f.aspect, f)] as const;
+          } catch {
+            // A photo the canvas cannot read is left unbaked; the position keeps showing
+            // the uncropped original, which is wrong but visible, rather than blank.
+            return [slot, ""] as const;
+          }
+        }),
+      );
+      if (!live) return;
+      // Read through the CURRENT state rather than the closed-over copy: the operator can
+      // have moved on during the encode, and writing the whole map back would resurrect
+      // entries they deleted.
+      setBakes(baked.filter(([, url]) => url));
+    }, 220);
+
+    return () => {
+      live = false;
+      window.clearTimeout(timer);
+    };
+    // `state` in full, because `resolveSlotSource` reads the overrides and the shots too.
+  }, [state, dealt, setBakes]);
 
   const assignIcon = useCallback(
     (path: string) => {
@@ -179,6 +313,7 @@ export const Reveal: React.FC<{
 
   const edits =
     Object.keys(state.imageOverrides).length +
+    Object.keys(state.framing).length +
     Object.keys(state.iconOverrides).length +
     Object.keys(state.copyOverrides).length;
 
@@ -279,6 +414,9 @@ export const Reveal: React.FC<{
             editable={editing}
             shots={state.shots}
             currentImage={currentImage}
+            framing={currentFraming}
+            frameAspect={frameAspect}
+            onEditFraming={editFraming}
             currentIcon={currentIcon}
             header={currentHeader}
             brandHex={clampBrandAccentHex(state.color)}

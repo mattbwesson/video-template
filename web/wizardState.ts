@@ -7,6 +7,7 @@
  */
 
 import { COPY, type VideoInputProps } from "../src/customize/videoCopy";
+import { assignImagery, type ImageSlotKey } from "../src/customize/imagery";
 import { expandCopyOverrides } from "../src/customize/copyPaths";
 import { repairSelfShoutOut } from "../src/customize/shoutOut";
 import { followValueRenames } from "../src/customize/valueEcho";
@@ -17,6 +18,7 @@ import {
   type Hex,
 } from "../src/customize/color";
 import type { Upload } from "./uploads";
+import type { SlotFraming } from "./framing";
 import type { ResearchState } from "./research";
 
 export type WizardState = {
@@ -66,6 +68,20 @@ export type WizardState = {
    */
   imageOverrides: Record<string, string>;
   /**
+   * How the photo at a position is cropped inside it, keyed by `ImageSlotKey`.
+   *
+   * Separate from `imageOverrides` even though both end up on the same slot, because they
+   * answer different questions and the panel edits them in different sections: the
+   * override says WHICH photo, this says which part of it. Keeping them apart is also what
+   * lets the Image picker still show the operator's chosen thumbnail as selected — if the
+   * baked crop were written straight into `imageOverrides`, the value there would be a URL
+   * matching none of the uploads and the grid would show nothing pinned.
+   *
+   * Sparse: a position nobody dragged has no entry and is dealt and drawn exactly as
+   * before. See framing.ts for why the crop is baked into pixels rather than set in CSS.
+   */
+  framing: Record<string, SlotFraming>;
+  /**
    * Space badges and value discs the reviewer has repointed at a different shipped icon,
    * keyed by `IconSlotKey`. Values are paths under `public/`, not uploads — the icons
    * come from the set that ships with the app.
@@ -109,6 +125,7 @@ export const INITIAL_STATE: WizardState = {
   palette: [],
   shots: [],
   imageOverrides: {},
+  framing: {},
   iconOverrides: {},
   headerOverrides: {},
   copyOverrides: {},
@@ -158,6 +175,40 @@ export const imageryReady = (s: WizardState): boolean => s.shots.length > 0;
  */
 export const buildReady = (s: WizardState): boolean =>
   imageryReady(s) && s.research.status !== "running";
+
+/**
+ * What each position is actually showing: the operator's pin if there is one, else the deal.
+ *
+ * Exported because three places need the same answer and they must not disagree — this
+ * function, the panel's "which thumbnail is selected", and the bake effect that decides
+ * which photo to crop.
+ */
+export const resolveSlotSource = (
+  s: WizardState,
+  dealt: Partial<Record<ImageSlotKey, string>>,
+  slot: string,
+): string => s.imageOverrides[slot] ?? dealt[slot as ImageSlotKey] ?? "";
+
+/**
+ * Fold the baked crops into the overrides the video receives.
+ *
+ * A bake only wins if it was made from the photo currently at that position. Swapping the
+ * photo in the Image section leaves a stale `framing` entry pointing at the previous one,
+ * and the guard is what stops the old crop being pinned onto the new photo — the entry is
+ * simply ignored until the bake effect catches up and replaces it.
+ */
+const withFramingBakes = (s: WizardState): Record<string, string> => {
+  const entries = Object.entries(s.framing);
+  if (!entries.length) return s.imageOverrides;
+
+  const dealt = assignImagery(s.shots.map((u) => u.url));
+  const out = { ...s.imageOverrides };
+  for (const [slot, fr] of entries) {
+    if (!fr.baked) continue;
+    if (fr.src && fr.src === resolveSlotSource(s, dealt, slot)) out[slot] = fr.baked;
+  }
+  return out;
+};
 
 /**
  * Wizard state -> what the composition renders.
@@ -247,9 +298,11 @@ export const toInputProps = (s: WizardState): VideoInputProps => {
       logoLightUrl: s.logoWhiteUpload?.url ?? s.logoWhite,
       personPhotoUrl: s.person.photo?.url ?? "",
       imagery: s.shots.map((u) => u.url),
-      // Set by the reviewer swapping shots on the finished cut. Sparse: every position
-      // it does not name is still dealt by `assignImagery`.
-      imageOverrides: s.imageOverrides,
+      // Set by the reviewer swapping shots on the finished cut, plus any position they
+      // reframed — a crop arrives here as an ordinary photo, so the composition needs no
+      // concept of framing at all. Sparse: every position it does not name is still dealt
+      // by `assignImagery`.
+      imageOverrides: withFramingBakes(s),
       // Sparser still: an unnamed icon position keeps its own artwork, so this stays
       // empty for a run where nobody touched a space badge or a value disc.
       iconOverrides: s.iconOverrides,

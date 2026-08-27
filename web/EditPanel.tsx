@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FileDrop } from "./Dropzone";
+import { FramingStage } from "./FramingStage";
 import { loadAssets, type AssetEntry } from "./assets";
+import { isDefaultFraming, type Framing } from "./framing";
 import { readImages, type Upload } from "./uploads";
 import { ICON_LIBRARY } from "../src/customize/icons";
 import { textSlotAt, readCopyText } from "../src/customize/copyPaths";
@@ -27,7 +29,7 @@ import type { WorkvivoCopy } from "../src/customize/videoCopy";
  * "other place" to trade with. Picking PINS this position instead.
  */
 
-type SectionId = "image" | "header" | "icon" | "text";
+type SectionId = "image" | "frame" | "header" | "icon" | "text";
 
 const UiIcon: React.FC<{ d: string; size?: number }> = ({ d, size = 14 }) => (
   <svg
@@ -47,11 +49,32 @@ const UiIcon: React.FC<{ d: string; size?: number }> = ({ d, size = 14 }) => (
 
 const GLYPH = {
   image: "M3 3h18v18H3zM8.7 9.1a1.7 1.7 0 1 0 0 .1M21 15.6l-4.5-4.2a1.7 1.7 0 0 0-2.3 0L4.3 21",
+  // The reference's crop mark.
+  frame: "M6.5 2v15.5H22M2 6.5h15.5V22",
   icon: "M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z",
   text: "M4 7V5h16v2M9 19h6M12 5v14",
   header: "M3 5h18v14H3zM3 10h18",
   chev: "M6 9l6 6 6-6",
 } as const;
+
+/** "Centered" / "180% zoom" / "38% 62%" — the reference's `frameVal()`. */
+const framingSummary = (f: Framing): string => {
+  if (isDefaultFraming(f)) return "Centered";
+  if (f.z !== 1) return `${Math.round(f.z * 100)}% zoom`;
+  return `${Math.round(f.x)}% ${Math.round(f.y)}%`;
+};
+
+/**
+ * A frame's shape in words, for the hint under the drag stage.
+ *
+ * Bands rather than exact ratios: the operator is being told why the photo is cut off, and
+ * "1.78:1" answers a question nobody asked.
+ */
+const shapeLabelOf = (aspect: number): string => {
+  if (aspect > 1.25) return "widescreen";
+  if (aspect < 0.8) return "tall";
+  return "square";
+};
 
 const Section: React.FC<{
   id: SectionId;
@@ -91,6 +114,18 @@ export const EditPanel: React.FC<{
   shots: Upload[];
   /** URL currently painted at this component's image position, pinned or dealt. */
   currentImage: string;
+  /** How that photo is cropped in this position, and the shape it is cropped to. */
+  framing: Framing;
+  /**
+   * Aspect ratio (w/h) of this position as measured from the live Player.
+   *
+   * Measured rather than declared: the cut's positions are laid out by the Workvivo
+   * stylesheets inside device frames inside scaled stages, so their real shapes exist only
+   * once rendered. 0 when it could not be measured, which hides the section rather than
+   * offering a crop against a guessed frame.
+   */
+  frameAspect: number;
+  onEditFraming: (next: Framing) => void;
   /** `public/`-relative path pinned to its icon position, or "" for the original. */
   currentIcon: string;
   /** The banner's live treatment, defaults included. Null when this is not a banner. */
@@ -112,6 +147,9 @@ export const EditPanel: React.FC<{
   editable,
   shots,
   currentImage,
+  framing,
+  frameAspect,
+  onEditFraming,
   currentIcon,
   header,
   brandHex,
@@ -131,29 +169,31 @@ export const EditPanel: React.FC<{
 
   const has = {
     image: Boolean(editable.image),
+    // Framing needs three things to be worth offering: a photo position, a photo actually
+    // in it, and a measured shape to crop against. All three, or the section is a stage
+    // with nothing on it.
+    frame: Boolean(editable.image) && Boolean(currentImage) && frameAspect > 0,
     header: Boolean(editable.header) && header !== null,
     icon: Boolean(editable.icon),
     text: editable.text.length > 0,
   };
 
   /**
-   * Which section starts open.
+   * Every section starts CLOSED.
    *
-   * The first one this component actually has, rather than always "image": on a value
-   * disc that section does not exist, and a panel that opens with everything collapsed
-   * makes the operator click twice to do the one thing the panel is for.
+   * This used to auto-open the first section the component had, on the reasoning that a
+   * fully collapsed panel makes the operator click twice to do the one thing the panel is
+   * for. That trade stopped paying once the panel grew past two sections: auto-opening
+   * Image means the picker's scrolling thumbnail grid is expanded every time, which pushes
+   * Framing, Icon and Text below the fold and hides the fact that they exist at all.
+   *
+   * Collapsed, the whole panel is a four-line contents page — and each row already shows
+   * its current value in the summary, so the state is readable without opening anything.
    */
-  const firstSection: SectionId = has.image
-    ? "image"
-    : has.header
-      ? "header"
-      : has.icon
-        ? "icon"
-        : "text";
-  const [open, setOpen] = useState<SectionId | null>(firstSection);
+  const [open, setOpen] = useState<SectionId | null>(null);
 
   // A new component means a new panel, even though React reuses this instance.
-  useEffect(() => setOpen(firstSection), [editable.key, firstSection]);
+  useEffect(() => setOpen(null), [editable.key]);
 
   useEffect(() => {
     if (!has.icon) return;
@@ -248,6 +288,35 @@ export const EditPanel: React.FC<{
             </Section>
           )}
 
+          {has.frame && (
+            <Section
+              id="frame"
+              label="Framing"
+              summary={framingSummary(framing)}
+              open={open === "frame"}
+              onToggle={toggle}
+            >
+              <FramingStage
+                // Remount on a photo swap. The stage caches the photo's natural aspect,
+                // and reusing the instance would drag the new photo against the old one's
+                // slack for a frame.
+                key={currentImage}
+                src={currentImage}
+                aspect={frameAspect}
+                value={framing}
+                onChange={onEditFraming}
+                shapeLabel={shapeLabelOf(frameAspect)}
+              />
+              <p className="vc-dr-note vc-dr-foot">
+                {/* Says "this position" deliberately. The reference framed per photo and
+                    told the operator so; here the same photo is dealt to five or six
+                    places at different shapes, and a drag that silently re-cropped all of
+                    them would be a worse surprise than an honest limit. */}
+                Crops this position only. The same photo elsewhere in the cut keeps its own
+                framing.
+              </p>
+            </Section>
+          )}
 
           {has.header && header && (
             <Section

@@ -312,6 +312,33 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
 .vc-dr-note.vc-dr-foot{margin:12px 0 0}
 .vc-dr-err{color:#ff9b9b;font-size:.8rem;margin:0 0 12px;line-height:1.4}
 
+/* Framing editor, ported from public/refs/framing feature.html.
+
+   `touch-action:none` is load-bearing, not decoration: without it a pointer drag on a
+   trackpad or touchscreen is claimed by the browser's own scroll gesture and the stage
+   receives a single pointerdown and nothing after it.
+
+   The rule-of-thirds grid is a `::after` — fine here, because this is wizard chrome that
+   never goes through the exporter. Inside a composition it would be invisible in the MP4
+   (§5: pseudo-elements are never rendered). */
+.vc-fr-stage{position:relative;width:100%;border-radius:11px;background:#000;background-repeat:no-repeat;
+  cursor:grab;touch-action:none;overflow:hidden;box-shadow:0 0 0 1px var(--hair)}
+.vc-fr-stage.vc-fr-drag{cursor:grabbing}
+.vc-fr-stage::after{content:"";position:absolute;inset:0;opacity:0;transition:opacity .18s;pointer-events:none;
+  background:
+    linear-gradient(to right,transparent 33.2%,rgba(255,255,255,.42) 33.2%,rgba(255,255,255,.42) 33.5%,transparent 33.5%,
+      transparent 66.4%,rgba(255,255,255,.42) 66.4%,rgba(255,255,255,.42) 66.7%,transparent 66.7%),
+    linear-gradient(to bottom,transparent 33.2%,rgba(255,255,255,.42) 33.2%,rgba(255,255,255,.42) 33.5%,transparent 33.5%,
+      transparent 66.4%,rgba(255,255,255,.42) 66.4%,rgba(255,255,255,.42) 66.7%,transparent 66.7%)}
+.vc-fr-stage:hover::after,.vc-fr-stage.vc-fr-drag::after,.vc-fr-stage:focus-visible::after{opacity:1}
+.vc-fr-row{display:flex;align-items:center;gap:10px;margin-top:12px}
+.vc-fr-row span{color:var(--mute);font-size:.76rem;flex:none}
+.vc-fr-row input[type=range]{flex:1;min-width:0;height:3px;accent-color:var(--accent);background:transparent;cursor:pointer}
+.vc-fr-reset{color:var(--mute);font-size:.76rem;flex:none;transition:.15s;background:none;border:0;cursor:pointer}
+.vc-fr-reset:hover:not([disabled]){color:var(--txt)}
+.vc-fr-reset[disabled]{opacity:.35;cursor:default}
+.vc-fr-cap{color:var(--mute);font-size:.72rem;margin:10px 0 0;line-height:1.45}
+
 /* Collapsible sections. `grid-template-rows:0fr -> 1fr` animates to the content's own
    height with nothing measured in JS, which is what the reference does. */
 .vc-sec{border-top:1px solid var(--hair)}

@@ -534,6 +534,7 @@ questions eyeballing can't, and it works even when the pane can't render a scree
 | Hard-edged shape lost its mask | `clip-path` / SVG `clipPath` — on the official unsupported list, **but `clip-path: circle()` painted correctly** *(measured 4.0.496)* | Verify before redesigning — circular reveals/irises may be fine. `mask-image`, by contrast, is genuinely dropped (see below) |
 | **Icon/artwork covered by a solid rectangle of its own tint** | `mask-image` — ignored, so the masked layer paints its **whole box** *(measured 4.0.496)* | Bake the masked result into the asset offline, or delete the effect. Gating only makes it *acceptable*, not *matching* |
 | **Photo missing entirely (layout otherwise correct)** | CSS `background-image` — never painted *(measured 4.0.496, both `cover` and `auto …%`)* | Use a real `<img>`; add explicit `width/height/object-fit` (replaced elements don't stretch from `inset: 0`) |
+| **Photo is framed correctly in the Player and centred in the export** — a headshot biased high, a banner panned to one side | **`object-position` is not implemented.** `object-fit` is (`calculateCover`/`Contain`/`None`/`ScaleDown`), but those functions take only a fit mode, a container size and an intrinsic size — there is no position input anywhere in the paint path, so every fitted image is centred *(read from the 4.0.496 source; `background-position` is moot since `background-image` never paints at all)* | **Bake the crop into the pixels.** Draw the window you want to a canvas and hand the composition an ordinary photo — see [`web/framing.ts`](../web/framing.ts), and `BASELINE_ASSETS.personAvatar`, which is a pre-cropped headshot for exactly this reason. ⚠️ **Known live instance:** `avatarFitFor()` in `CustomizationProvider.tsx` sets `objectPosition: "50% 30%"` on every *uploaded* headshot to bias the face high. That bias is present in the Player and **absent from every exported MP4** — uploaded avatars export centred. Not yet fixed |
 | **SVG icon corner-cropped, or the still render hangs until timeout** | SVG delivered through `<img>`/`<Img>` — **adding `width`/`height` does not fix this** *(measured 4.0.496)* | Render the file as inline `<svg>` markup, loaded **synchronously** — see §3 |
 | **Element blank in export, correct in Player, and correct on a second export in the same page** | Content arrived via `useEffect` + `setState`; the export captures the **first committed render** only | Make it synchronous. A warm cache masking the bug is the tell |
 | Status bar / header buried under content that should be behind it | Sibling `z-index` ignored — DOM order wins | Reorder the DOM to match the ladder (Player is unaffected, so it's a safe change) |
@@ -662,6 +663,72 @@ for UI-heavy film. Both are set in [`remotion.config.ts`](../remotion.config.ts)
 
 ---
 
+## 8. The quality knobs on the web renderer, and what they actually do
+
+Measured against 4.0.496 while building a supersampled export mode — which was then
+**built, tried and deleted**. Short version: **there is one real lever, it is expensive, and
+it was not worth it.** Kept in full so the next person does not rediscover it from scratch.
+
+**`videoBitrate` tops out as a string.** `"very-high"` is `Quality(4)` against mediabunny's
+3 Mbps 1080p AVC reference — exactly 12 Mbps, and the highest name on the scale. Numbers are
+accepted and are not capped, so past 12 Mbps you pass bits per second directly. Note the
+string forms scale with resolution: `"very-high"` at 2880×1620 resolves to ~26 Mbps, so
+pairing a string with `scale` changes two things at once.
+
+**`hardwareAcceleration` did nothing here.** 60 frames through a bare `VideoEncoder`:
+
+| | `prefer-hardware` | `prefer-software` |
+|---|---|---|
+| 1920×1080 | 165 fps | 166 fps |
+| 2880×1620 | 86 fps | 81 fps |
+
+Identical within noise — the browser is free to ignore the hint, and evidently does. The
+hoped-for x264-like quality-per-bit win is not available this way.
+
+**`scale` is the only lever that adds real detail**, because it changes rasterization rather
+than compression: the DOM lays out at 1920×1080 CSS pixels but rasterizes at `width * scale`
+device pixels, so edges and text are sampled properly instead of being snapped to a 1080p
+grid the encoder can never un-snap. It costs accordingly — **~6× the render time at 1.5×**
+(25–30 min against 4–5 on the 5300-frame cut), and the encoder is not why. At 86 fps the
+whole cut encodes in about a minute; the time is DOM rasterization, which scales with pixel
+count. *§7 calls this render decode-bound — that holds at scale 1, not above it.*
+
+**`scale` cannot be undone in one pass.** `renderMediaOnWeb` has no downscale, and `onFrame`
+— which hands you every `VideoFrame` before the encoder — validates what you return against
+`Math.round(resolved.width * scale)` and throws if it differs. Supersampling to a 1080p
+deliverable is therefore render-then-transcode, two encodes.
+
+**Three things that bit in the second pass**, all found on a 25-frame fixture rather than at
+the end of a real render — and worth keeping, because they apply to any transcode done in the
+browser with mediabunny, not just this one:
+
+- **mediabunny's `Conversion` cannot use `fastStart: 'reserve'`** — it throws "All tracks
+  must specify maximumPacketCount", because reserving the moov box needs a packet count and
+  `Conversion` adds the output tracks itself with no hook to supply one. The web renderer
+  gets away with `'reserve'` only because it knows its own frame count. Use the default
+  (moov at the end) unless you can afford `'in-memory'`.
+- **An OPFS `FileSystemWritableFileStream` must be closed or the file is empty.**
+  `execute()` resolving means the muxer handed over every byte, not that the target wrote
+  them. Without the `close()` the pass completes, reports 100%, and returns a **0-byte MP4** —
+  no error anywhere.
+- **Audio survives for free.** Leave `audio` unset and `Conversion` copies the encoded AAC
+  samples rather than re-encoding, so only the picture is ever second-generation.
+
+**The verdict: no visible difference.** The mode shipped behind a toggle, was compared against
+a direct render of the same cut, and nobody could see the improvement the theory predicted. It
+was removed — a 30-minute option that looks the same as the 5-minute one is worse than not
+having it, whatever the pixel maths says. `web/downscale.ts` and the mediabunny dependency went
+with it.
+
+The lesson generalises past this one experiment: rasterizing at 1.5x demonstrably samples more
+detail, and the encoder demonstrably preserved it, and it still did not matter — because H.264
+at 12 Mbps over this footage is not where the visible quality is being lost. Measure the
+artifact you are actually chasing before building the fix for it. The artifact §7 names — slow
+sub-pixel pans over sharp UI — is an *animation* problem, and supersampling was never going to
+touch it.
+
+---
+
 ## References
 
 - [`web-renderer-limitations-vs-zva.md`](./web-renderer-limitations-vs-zva.md) — full unsupported-feature audit.
@@ -676,4 +743,6 @@ for UI-heavy film. Both are set in [`remotion.config.ts`](../remotion.config.ts)
 - [`src/components/workvivo/symbolRegistry.tsx`](../src/components/workvivo/symbolRegistry.tsx) — sprite `<use>` → inlined paths, at ~110 symbols / ~104 call sites.
 - [`scripts/still.mjs`](../scripts/still.mjs) — `npm run still <frames…>`, the Chromium baseline to diff exports against.
 - [`remotion.config.ts`](../remotion.config.ts) — the PNG / `crf 15` / `slow` settings from §7.
+- [`web/browserRender.ts`](../web/browserRender.ts) — the export path, and the §8 findings recorded where the next person will change the bitrate.
+- [`web/framing.ts`](../web/framing.ts) — the crop-baking the missing `object-position` forced, and the maths behind it.
 - Remotion: [client-side rendering limitations](https://www.remotion.dev/docs/client-side-rendering/limitations) · [`@remotion/media` support](https://www.remotion.dev/docs/media/support)
