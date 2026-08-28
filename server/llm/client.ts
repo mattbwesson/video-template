@@ -13,6 +13,7 @@
  */
 
 import { llmConfig, type LlmConfig } from "../env";
+import { logCall } from "./timing";
 
 export class LlmError extends Error {
   constructor(
@@ -38,6 +39,10 @@ export type StructuredRequest = {
   search?: boolean;
   /** Override the configured model — repair passes can run somewhere cheaper. */
   model?: string;
+  /** Override the configured reasoning effort for this call alone. */
+  effort?: string;
+  /** What to call this call in the timing log. */
+  label?: string;
 };
 
 export type StructuredResult<T> = {
@@ -48,6 +53,22 @@ export type StructuredResult<T> = {
 };
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
+
+/**
+ * The lowest effort a call may use once the hosted search tool is attached.
+ *
+ * `minimal` and `web_search` are mutually exclusive — the API rejects the pair with
+ * "The following tools cannot be used with reasoning.effort 'minimal': web_search", a 400
+ * on the whole request. That matters because the research step catches its own failures and
+ * carries on writing from general knowledge, so setting `OPENAI_REASONING_EFFORT=minimal`
+ * globally would not look like a crash: it would look like a fast run that quietly stopped
+ * doing any research, and the copy would go out unsourced.
+ *
+ * Measured 2026-08: brief failed in 1.4s with 0 citations, and the pass still returned
+ * "successfully" with an issue buried in the list.
+ */
+const searchSafeEffort = (effort: string): string =>
+  effort === "minimal" ? "low" : effort;
 
 /**
  * Turn a bare `TypeError: fetch failed` into something actionable.
@@ -92,6 +113,19 @@ const extractText = (body: any): string => {
   return parts.join("");
 };
 
+/**
+ * Token counts, including the reasoning tokens that are billed and generated but never
+ * appear in the reply — the number that tells you whether a slow call was thinking or
+ * writing, and the one `OPENAI_REASONING_EFFORT` moves.
+ */
+const tokensOf = (
+  body: any,
+): { inputTokens: number; outputTokens: number; reasoningTokens: number } => ({
+  inputTokens: body?.usage?.input_tokens ?? 0,
+  outputTokens: body?.usage?.output_tokens ?? 0,
+  reasoningTokens: body?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
+});
+
 /** Every URL the hosted search tool surfaced, deduped, in the order first cited. */
 const extractCitations = (body: any): string[] => {
   const seen = new Set<string>();
@@ -115,17 +149,25 @@ const extractCitations = (body: any): string[] => {
  * calls: this one gathers, the structured one writes.
  */
 export const callText = async (
-  req: { instructions: string; input: string },
+  req: { instructions: string; input: string; label?: string; effort?: string },
   cfg: LlmConfig = llmConfig(),
 ): Promise<{ text: string; citations: string[]; usage?: { input?: number; output?: number } }> => {
   if (!cfg.apiKey) throw new LlmError("OPENAI_API_KEY is not set.");
 
+  const requested = req.effort ?? cfg.reasoningEffort;
+  const effort = cfg.webSearch ? searchSafeEffort(requested) : requested;
+  if (effort !== requested) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[llm] raising reasoning effort '${requested}' -> '${effort}' for the search call; web_search cannot run at 'minimal'`,
+    );
+  }
   const body: Record<string, unknown> = {
     model: cfg.model,
     instructions: req.instructions,
     input: req.input,
     max_output_tokens: cfg.maxOutputTokens,
-    reasoning: { effort: cfg.reasoningEffort },
+    reasoning: { effort },
   };
   if (cfg.webSearch) {
     body.tools = [
@@ -133,6 +175,7 @@ export const callText = async (
     ];
   }
 
+  const t0 = Date.now();
   let res: Response;
   try {
     res = await fetch(RESPONSES_URL, {
@@ -152,6 +195,19 @@ export const callText = async (
     const msg = (json as any)?.error?.message ?? res.statusText;
     throw new LlmError(`OpenAI ${res.status}: ${msg}`, res.status, json);
   }
+
+  logCall({
+    label: req.label ?? "text",
+    durationMs: Date.now() - t0,
+    model: cfg.model,
+    effort,
+    search: cfg.webSearch,
+    ...tokensOf(json),
+    incomplete:
+      (json as any)?.status === "incomplete"
+        ? ((json as any)?.incomplete_details?.reason ?? "unknown")
+        : undefined,
+  });
 
   return {
     text: extractText(json),
@@ -173,12 +229,19 @@ export const callStructured = async <T>(
     );
   }
 
+  const model = req.model ?? cfg.model;
+  const search = req.search ?? cfg.webSearch;
+  // Same guard as `callText`: attaching the search tool forbids `minimal`.
+  const effort = search
+    ? searchSafeEffort(req.effort ?? cfg.reasoningEffort)
+    : (req.effort ?? cfg.reasoningEffort);
+
   const body: Record<string, unknown> = {
-    model: req.model ?? cfg.model,
+    model,
     instructions: req.instructions,
     input: req.input,
     max_output_tokens: cfg.maxOutputTokens,
-    reasoning: { effort: cfg.reasoningEffort },
+    reasoning: { effort },
     text: {
       format: {
         type: "json_schema",
@@ -189,7 +252,7 @@ export const callStructured = async <T>(
     },
   };
 
-  if (req.search ?? cfg.webSearch) {
+  if (search) {
     body.tools = [
       {
         type: cfg.webSearchToolType,
@@ -198,6 +261,7 @@ export const callStructured = async <T>(
     ];
   }
 
+  const t0 = Date.now();
   let res: Response;
   try {
     res = await fetch(RESPONSES_URL, {
@@ -218,6 +282,21 @@ export const callStructured = async <T>(
     const msg = (json as any)?.error?.message ?? res.statusText;
     throw new LlmError(`OpenAI ${res.status}: ${msg}`, res.status, json);
   }
+
+  // Logged before the incomplete check, so a call that stopped early still reports what it
+  // cost and how long it took — that is exactly the run worth looking at.
+  logCall({
+    label: req.label ?? req.schemaName,
+    durationMs: Date.now() - t0,
+    model,
+    effort,
+    search,
+    ...tokensOf(json),
+    incomplete:
+      (json as any)?.status === "incomplete"
+        ? ((json as any)?.incomplete_details?.reason ?? "unknown")
+        : undefined,
+  });
 
   // A truncated reply is still `200 OK`, and its JSON is half-written. Saying so beats
   // a downstream "Unexpected end of JSON input".

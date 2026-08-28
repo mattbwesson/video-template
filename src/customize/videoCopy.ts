@@ -43,8 +43,14 @@ export const COPY = defineCopy({
       // The open card is 939x470 at 27px/38px leading: about 420 characters before the
       // body overruns the card's bottom edge.
       max: 420,
+      // "Written at length and slightly rambling" is what this used to say, and the model
+      // did exactly as it was told: 538-715 characters against a 420 cap, in every measured
+      // run, so the repair pass had to amputate the leader's post on the one card the whole
+      // scene is built around. A guide that asks for length beats a number that forbids it.
+      // The BEFORE state has to be conveyed as a QUALITY — unedited, hedged, repetitive —
+      // rather than as a size.
       guide:
-        "A leader's end-of-quarter post to the whole company, written at length and slightly rambling — this is the BEFORE state that the AI rewrite improves on. First person plural.",
+        "A leader's end-of-quarter post to the whole company. This is the BEFORE state that the AI rewrite improves on, so it should read as unedited: warm but hedged, a little repetitive, saying in three phrases what one would carry. First person plural. Make it read unpolished, NOT long — fill most of `aim_for` and never exceed `max_characters`.",
     }),
     /** The AI rewrite that replaces it in place. */
     rewritten: text({
@@ -52,8 +58,12 @@ export const COPY = defineCopy({
         "What a quarter!\n\nA huge thank you to the team for your hard work, collaboration, and commitment. Together we've delivered great results, supported one another, and made a real impact. Proud of everything we've achieved and excited for what's next. \u{1F680}",
       max: 260,
       multiline: true,
+      // The visible beat is that the rewrite is SHORTER — so the instruction has to be about
+      // the gap between the two, not a fraction of whatever `original` happened to produce.
+      // "About half the length" inherited `original`'s overrun: half of a 700-character post
+      // is still over this field's own 260.
       guide:
-        "The same message as `original`, tightened to about half the length: an opening exclamation, one paragraph, one emoji at the end. Same facts, no new ones.",
+        "The same message as `original`, visibly tighter — the shortening is the point of the shot. An opening exclamation, one short paragraph, one emoji at the end. Same facts, no new ones. Must fit `max_characters` however long `original` came out.",
     }),
     /** The same rewrite, translated — the beat that shows the translation feature. */
     translated: text({
@@ -63,8 +73,11 @@ export const COPY = defineCopy({
       // size either way.
       max: 320,
       multiline: true,
+      // The cap already carries the ~20% Romance expansion (see above), so this only needs
+      // to say that the expansion cannot be spent twice: a translation of an over-long
+      // `rewritten` would blow through even that allowance.
       guide:
-        "A faithful translation of `rewritten` into a language this company actually operates in. Keep the emoji.",
+        "A faithful translation of `rewritten` into a language this company actually operates in. Keep the emoji. `max_characters` already allows for the language running longer than English — stay inside it.",
     }),
   },
 
@@ -277,7 +290,10 @@ export const COPY = defineCopy({
           default: "Helping new starters settle in and find the resources they need.",
           // Three lines in a 250px card.
           max: 68,
-          guide: "One sentence on what the group is for. Ends in a full stop.",
+          // 68 characters is a short sentence, not an average one, and the demo's example
+          // uses 64 of them.
+          guide:
+            "One short sentence on what the group is for — ten words or so. Ends in a full stop.",
         }),
       },
       guide:
@@ -565,7 +581,14 @@ export const COPY = defineCopy({
           "With just 19 days to go until our annual Employee Experience Summit, excitement is building across the organization.",
         max: 280,
         guide:
-          "One paragraph. Plain, warm, internal-comms voice - never a sales pitch.",
+          // "One paragraph" reads as 250-550 characters to a model; the cap is 280 and the
+          // demo's own example fills 277 of it, so the worked example teaches filling the
+          // box exactly and any variance overruns.
+          //
+          // The budget is given in WORDS. A model hits a word count far more reliably than a
+          // character count — it cannot see characters — and forty words is about 240
+          // characters, which leaves real headroom under 280.
+          "One short paragraph, about forty words. Plain, warm, internal-comms voice - never a sales pitch.",
       }),
     },
     guide:
@@ -695,7 +718,10 @@ export const COPY = defineCopy({
         // Three lines in the same panel at 15px.
         max: 140,
         guide:
-          "Two sentences welcoming staff to that space and saying what is in it. Names the space in its first sentence.",
+          // Two sentences inside 140 characters is tighter than "two sentences" suggests on
+          // its own. Budgeted in words rather than characters — a model cannot count
+          // characters, and twenty words is about 120, which leaves headroom under 140.
+          "Two short sentences, twenty words in total, welcoming staff to that space and saying what is in it. Names the space in its first sentence.",
       }),
     },
 
@@ -987,7 +1013,10 @@ export const COPY = defineCopy({
         // Three lines under the title at 13px.
         max: 140,
         guide:
-          "One sentence on what the journey does for a new starter. Reads like product copy written by HR, and may end mid-thought as the baseline does.",
+          // Measured top offender after the `quote` cascade was fixed: 170-182 against a 140
+        // cap in consecutive runs. "One sentence" is not a length to a model — its sentences
+        // run 90-180 characters — so the sentence gets a word budget.
+        "One sentence of under twenty words on what the journey does for a new starter. Reads like product copy written by HR, and may end mid-thought as the baseline does.",
       }),
       /**
        * The six steps down the phone, in order: three on Day 1 (which tick during the
@@ -1176,7 +1205,10 @@ export const COPY = defineCopy({
           // Six lines at 19px before it overruns the card.
           max: 260,
           guide:
-            "The body of the story, two or three sentences. Internal-comms voice. No invented figures.",
+            // Two is the target, three the ceiling — phrased that way round because "two or
+            // three" is read as three, and three sentences do not fit 260 characters
+            // comfortably.
+            "The body of the story: two short sentences, three only if they are short. Internal-comms voice. No invented figures.",
         }),
         value: text({
           default: "Passionate & Innovative",
@@ -1671,7 +1703,9 @@ export const COPY = defineCopy({
           // Two lines in the 420px comment card at 14px.
           max: 100,
           guide:
-            "What an employee actually typed. Unpolished — a real comment, not a testimonial. The scores beside them are fixed at 7, 9 and 2, so the first should be lukewarm, the second positive and the third a complaint.",
+            // Consistently 109 against a 100 cap. Real survey comments are short, so the word
+        // budget matches the content note rather than fighting it.
+        "What an employee actually typed, in fifteen words or fewer. Unpolished — a real comment, not a testimonial. The scores beside them are fixed at 7, 9 and 2, so the first should be lukewarm, the second positive and the third a complaint.",
         }),
       },
       guide:
@@ -1722,7 +1756,10 @@ export const COPY = defineCopy({
         max: 400,
         multiline: true,
         guide:
-          "A post sharing what the company is doing about survey feedback. Two paragraphs separated by a newline: what the document covers, then a thank-you ending in a clapping emoji.",
+          // "Two paragraphs" reads as 400-900 characters; the cap is 400 and the demo's own
+          // example lands on exactly 399, leaving nothing. Both halves have to be told they
+          // are short, or the second one runs off the end.
+          "A post sharing what the company is doing about survey feedback. Two SHORT paragraphs separated by a newline — under two hundred characters each: what the document covers, then a thank-you ending in a clapping emoji.",
       }),
       document: text({
         default: "The Complete Guide to our HR System",

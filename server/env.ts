@@ -51,6 +51,20 @@ export type LlmConfig = {
   model: string;
   /** Cheap and fast by default — the guide's §5.9 "start here, not at full effort". */
   reasoningEffort: string;
+  /**
+   * Effort for the calls that WRITE copy, as opposed to the one that researches.
+   *
+   * Split because the two jobs are not alike and the API will not let them be. Writing is a
+   * transformation: the brief is already in the prompt, the schema fixes the shape, and the
+   * model is rewriting known text to a known length. Measured on the real pipeline, moving
+   * just these calls from `low` to `minimal` took round one 20.8s -> 15.3s, round two
+   * 29.6s -> 13.0s and the repair pass 19.0s -> 5.0s.
+   *
+   * The research call cannot follow it there: `web_search` is rejected outright at
+   * `minimal` ("The following tools cannot be used with reasoning.effort 'minimal'"), which
+   * is why `searchSafeEffort` exists rather than one shared setting.
+   */
+  writeReasoningEffort: string;
   maxOutputTokens: number;
   webSearch: boolean;
   webSearchToolType: string;
@@ -61,6 +75,7 @@ export const llmConfig = (): LlmConfig => ({
   apiKey: str("OPENAI_API_KEY", ""),
   model: str("OPENAI_MODEL", "gpt-5-mini"),
   reasoningEffort: str("OPENAI_REASONING_EFFORT", "low"),
+  writeReasoningEffort: str("OPENAI_WRITE_REASONING_EFFORT", "minimal"),
   maxOutputTokens: num("OPENAI_MAX_OUTPUT_TOKENS", 6000),
   webSearch: bool("OPENAI_WEB_SEARCH", true),
   // The hosted search tool has been renamed across API versions
