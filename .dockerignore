@@ -15,7 +15,13 @@ out
 skills
 docs
 test_792.png
+test_1420_new.png
 video-customizer-reveal-dark.html
+
+# A finished render left in the repo root — 102 MB, and over half of what every deploy
+# uploaded to the builder. Nothing serves it: the server mounts build/ and public/, and
+# this is in neither. It was the largest single item in a 181 MB build context.
+workvivo-dewalt.mp4
 
 # 310 MB of source video. public/img/l2-reference-212s.mp4 is the same 212 seconds at
 # CRF 24 — 45 MB, audio included — and is what the wizard lays down; see REFERENCE_VIDEO
