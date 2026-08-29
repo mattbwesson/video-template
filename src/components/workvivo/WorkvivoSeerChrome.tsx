@@ -21,7 +21,7 @@ import { useCustomization } from "../../customize/CustomizationProvider";
  */
 
 /** Left to right, with the tab the screen is on carrying the underline. */
-export const SEER_TABS = ["Engagement", "Drivers", "Values", "Rater", "Comments"];
+export const SEER_TABS = ["Engagement", "Drivers", "Values", "Radar", "Comments"];
 
 export interface WorkvivoSeerChromeProps {
   /** Which tab carries the underline. */

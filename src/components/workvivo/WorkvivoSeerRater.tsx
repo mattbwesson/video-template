@@ -7,9 +7,12 @@ import { SEER_TABS, WorkvivoSeerChrome } from "./WorkvivoSeerChrome";
 import { useCustomization } from "../../customize/CustomizationProvider";
 
 /**
- * Seer Insights — the Rater tab: a segment x driver score heatmap.
+ * Seer Insights — the Radar tab: a segment x driver score heatmap.
  *
- * The Rater tab is not in the Seer pitch deck at all — "Rater", "Export CSV", "All
+ * (The component and its files keep the older "Rater" spelling; only the visible tab
+ * label is "Radar". Renaming ~50 identifiers across nine files was not worth it.)
+ *
+ * The tab is not in the Seer pitch deck at all — the label, "Export CSV", "All
  * Segments" and "Round 6" appear nowhere in Seer Pitch - V2.html — and the reference
  * shows it inside *Workvivo's* chrome rather than the deck's. So the top bar, rail and
  * page head come from WorkvivoSeerChrome, which is this screen's own chrome lifted out
@@ -177,7 +180,9 @@ export interface WorkvivoSeerRaterProps {
 }
 
 export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
-  activeTab = "Rater",
+  // Must stay spelled exactly as in SEER_TABS — the chrome highlights the active tab by
+  // string equality, so a mismatch silently drops the underline rather than erroring.
+  activeTab = "Radar",
   round = "Round 6 (2026/06/15)",
   score = "Score: Engagement",
   drivers = SEER_DRIVERS,
