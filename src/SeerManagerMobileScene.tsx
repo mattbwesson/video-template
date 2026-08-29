@@ -29,9 +29,9 @@ import "./components/workvivo/WorkvivoSeerManagerInsightsStyles.css";
  * The cards are authored at the desktop screen's body scale and scaled up here rather
  * than restated at hero size, so a measurement only ever exists in one place.
  *
- * The trending arrow is drawn flat rather than as a glass PNG: there is no arrow in
- * public/img/glass, and a filter or blend to fake the depth would either bleed onto later
- * draws or be dropped outright by the browser export.
+ * Both props are pre-baked glass PNGs. Nothing here recolours at render time: a CSS filter
+ * is not scoped to the element that sets it in the browser export and bleeds onto later
+ * draws, and a blend mode is not composited at all.
  */
 
 /** Frame the composition is at rest by; everything before this is the entrance. */
@@ -235,8 +235,11 @@ export const SeerManagerMobileScene: React.FC = () => {
           willChange: "transform, opacity",
         }}
       >
+        {/* glass/scale.png, not the neutral hq-scale.png it was made from: the supplied
+            render is dark grey glass, which beside the purple bubble read as a different
+            material. scripts/prep-glass-tint.py matches it to this family. */}
         <Img
-          src={staticFile("img/hq-scale.png")}
+          src={staticFile("img/glass/scale.png")}
           alt=""
           style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }}
         />
