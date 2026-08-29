@@ -149,17 +149,20 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                   wrong tool regardless — this scene's field is the TENANT's colour, so
                   whatever it produced changed with every customer.
 
-                  hq_sparkle_glow.png is hq-sparkle-NEW.png re-laid onto the frame the
-                  previous asset used (art 444px centred in 736px) so the swap changes the
-                  picture and not the layout, plus a two-pass white glow — Gaussian sigma 46
-                  at 0.30 and sigma 24 at 0.55 — which is the headline's own
-                  `0 0 25px / 0 0 50px` white text-shadow converted into this asset's pixel
-                  space. Measured on the brand green it lifts the field +19.7 luma at its
-                  brightest and +12.5 at p95: a halo you can see without one you can name.
+                  hq_sparkle_glow.png is built from hq-sparkle-NEW.png by
+                  scripts/prep-sparkle-glow.py — rerun it whenever the source art changes.
+                  It re-lays the art onto the frame the previous asset used (444px centred
+                  in 736px) so a swap changes the picture and not the layout, then bakes a
+                  two-pass white glow, sigma 46 at 0.30 and sigma 24 at 0.55, which is this
+                  headline's own `0 0 25px / 0 0 50px` white text-shadow converted into the
+                  asset's pixel space. On the brand green it lifts the field +19.5 luma at
+                  its brightest and +13.5 at p95.
 
-                  The art is clear glass rather than the old dark navy body, so the brand
-                  colour reads THROUGH it. That is what makes it work on any tenant — it
-                  takes the field's own hue instead of fighting it. */}
+                  The art is frosted glass, so the brand colour reads THROUGH it — that is
+                  what makes it work on any tenant, since it takes the field's own hue
+                  instead of fighting it. Worth knowing the trade: its body sits at 1.28:1
+                  against this green, so the glow is not decoration, it is most of what
+                  separates the mark from the field. Keep it if the art is ever relit. */}
               <Img
                 src={staticFile(icon)}
                 style={{
