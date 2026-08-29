@@ -62,13 +62,11 @@
   color: #6B7280;
 }
 
+/* No border — see .wsn-railav in WorkvivoSeerRailStyles.css. */
 .nl-railav {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-size: cover;
-  background-position: 50% 15%;
-  border: 2px solid #E11D48;
   margin: 10px 0 12px;
 }
 

@@ -90,14 +90,12 @@
   flex: none;
 }
 
+/* No border — see .wsn-railav in WorkvivoSeerRailStyles.css. */
 .an-me-av {
   width: 28px;
   height: 28px;
   flex: none;
   border-radius: 50%;
-  background-size: cover;
-  background-position: 50% 15%;
-  border: 2px solid #E11D48;
 }
 
 .an-me-badge {

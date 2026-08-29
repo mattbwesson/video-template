@@ -39,12 +39,12 @@
   color: #ffffff;
 }
 
+/* No border. The profile photo never wears a stroke — the 2px #E11D48 that used to be
+   here (and on three sibling rails) was residue from the reference capture. The two
+   background-* lines went with it: this is an <img>, so they never did anything. */
 .wsn-railav {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-size: cover;
-  background-position: 50% 15%;
-  border: 2px solid #e11d48;
   flex: none;
 }

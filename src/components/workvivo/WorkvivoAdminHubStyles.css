@@ -56,13 +56,11 @@
   flex: none;
 }
 
+/* No border — see .wsn-railav in WorkvivoSeerRailStyles.css. */
 .wah-railav {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background-size: cover;
-  background-position: 50% 15%;
-  border: 2px solid #e11d48;
   margin: 10px 0 12px;
   flex: none;
 }
