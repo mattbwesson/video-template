@@ -34,8 +34,18 @@ import "./components/workvivo/WorkvivoSeerManagerInsightsStyles.css";
  * draws, and a blend mode is not composited at all.
  */
 
-/** Frame the composition is at rest by; everything before this is the entrance. */
-const SETTLED = 34;
+/**
+ * The shot, in local frames.
+ *
+ *   0  - 13   the phone rises into the close framing
+ *   13 - 85   it holds there and the page scrolls the whole way down
+ *   85 - 135  it pulls back to its resting size while the page scrolls home, and the two
+ *             cards and two props arrive in the room the pull-back opens up
+ *   135+      held, which is what the iris at local 163 shuts on
+ */
+const T_SETTLE = 13;
+const T_SCROLL_END = 85;
+const T_ZOOMOUT_END = 135;
 
 /**
  * Placement, as supplied: centre and size in percent of the 1920x1080 frame.
@@ -68,6 +78,30 @@ const RATE_NATURAL_W = 290;
 const SCORE_SCALE = pxW(PLACE.score.w) / SCORE_NATURAL_W;
 const RATE_SCALE = pxW(PLACE.rate.w) / RATE_NATURAL_W;
 
+/**
+ * The close framing the shot opens on: 32.5% of the frame wide, 16% down from the top.
+ *
+ * Derived rather than written out, because the phone keeps its aspect. 32.5 against its
+ * resting 21.0 is a uniform 1.548, which takes its 77.0% height to 119.2% — taller than the
+ * frame. Starting 16% down therefore leaves exactly 84% of the frame filled, which is the
+ * height that was measured: it is a consequence of the other two numbers, not a third
+ * input, and the three agreeing is what says the framing is right.
+ *
+ * X stays at the resting centre, so the pull-back is scale and rise only — no sideways
+ * drift to distract from the page still scrolling underneath it.
+ */
+const ZOOM_W = 32.5;
+const ZOOM_TOP = 16.0;
+const ZOOM_SCALE = ZOOM_W / PLACE.phone.w;
+const ZOOM = {
+  cx: PLACE.phone.cx,
+  cy: ZOOM_TOP + (PLACE.phone.h * ZOOM_SCALE) / 2,
+  scale: ZOOM_SCALE,
+};
+
+/** How far the phone travels up into that framing over the first 13 frames. */
+const RISE = 190;
+
 /** The glass props, positioned off the reference's own proportions. */
 const BUBBLE = { cx: 25.0, cy: 31.4, size: 196 };
 const ARROW = { cx: 65.9, cy: 73.4, size: 190 };
@@ -96,38 +130,58 @@ export const SeerManagerMobileScene: React.FC = () => {
   const frame = useCurrentFrame();
 
   /**
-   * The phone is NOT faded in. 3903 is a hard cut, and a scene whose anchor starts at
-   * opacity 0 puts an empty navy frame on the cut itself. It arrives the way SpacePageShot
-   * arrives on its own hard cut at 1549: already there, settling from 0.94 over 18 frames.
-   * The four supporting elements fade in behind it, which is what reads as movement.
+   * The pull-back, 0 at the close framing and 1 at rest. Everything about the phone's
+   * placement is this one number, so the move cannot come apart into a scale that finishes
+   * before the position does.
    */
-  const phoneSettle = interpolate(frame, [0, 18], [0.94, 1], {
+  const out = interpolate(frame, [T_SCROLL_END, T_ZOOMOUT_END], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: ease,
   });
-  const bubble = useEntrance(8, 26);
-  const rate = useEntrance(12, 30);
-  const score = useEntrance(16, 30);
-  const arrow = useEntrance(22, 26);
+  const lerp = (from: number, to: number) => from + (to - from) * out;
 
-  // The ring sweeps to 75% as the card arrives, then holds.
-  const donutProgress = interpolate(frame, [14, SETTLED + 8], [0, 1], {
+  // The rise into the close framing. No fade: 3903 is a hard cut, and an anchor starting
+  // at opacity 0 would put an empty navy frame on the cut itself.
+  const rise = interpolate(frame, [0, T_SETTLE], [RISE, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: ease,
   });
 
   /**
-   * The phone's own scroll: it holds on the top of the page while the props arrive, then
-   * travels once, easing out so it comes to rest rather than stopping dead. SCROLL_END is
-   * the page's overflow past the viewport, measured off a render rather than computed —
-   * the content is a column of cards whose height depends on how the copy wraps.
+   * Down the whole page while the shot is close, then home again as it pulls back. One
+   * interpolate across three stops rather than two, so the turn at 85 is a single eased
+   * reversal instead of two moves meeting.
    */
-  const scrollY = interpolate(frame, [SETTLED + 10, 150], [0, SCROLL_END], {
+  const scrollY = interpolate(
+    frame,
+    [T_SETTLE, T_SCROLL_END, T_ZOOMOUT_END],
+    [0, SCROLL_END, 0],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: Easing.inOut(Easing.quad),
+    },
+  );
+
+  // The props arrive into the space the pull-back opens, staggered across it.
+  const bubble = useEntrance(T_SCROLL_END + 3, 26);
+  const rate = useEntrance(T_SCROLL_END + 11, 30);
+  const score = useEntrance(T_SCROLL_END + 19, 30);
+  const arrow = useEntrance(T_SCROLL_END + 27, 26);
+
+  // Two rings, two jobs. The one inside the phone fills as the scroll brings it into view;
+  // the one on the card beside it fills as that card arrives.
+  const phoneDonut = interpolate(frame, [28, 52], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: Easing.inOut(Easing.quad),
+    easing: ease,
+  });
+  const cardDonut = interpolate(frame, [T_SCROLL_END + 13, T_ZOOMOUT_END - 5], [0, 1], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: ease,
   });
 
   return (
@@ -168,18 +222,20 @@ export const SeerManagerMobileScene: React.FC = () => {
           willChange: "transform, opacity",
         }}
       >
-        <WorkvivoSeerRateCard progress={donutProgress} />
+        <WorkvivoSeerRateCard progress={cardDonut} />
       </div>
 
       {/* ---- centre: the phone ---- */}
       <div
         style={{
           position: "absolute",
-          left: `${PLACE.phone.cx}%`,
-          top: `${PLACE.phone.cy}%`,
+          left: `${lerp(ZOOM.cx, PLACE.phone.cx)}%`,
+          top: `${lerp(ZOOM.cy, PLACE.phone.cy)}%`,
           width: pxW(PLACE.phone.w),
           height: pxH(PLACE.phone.h),
-          transform: `translate(-50%, -50%) scale(${phoneSettle})`,
+          // translate(-50%,-50%) is in the parent's px and unaffected by the scale that
+          // follows it, so the SCALED phone's centre lands exactly on left/top.
+          transform: `translate(-50%, -50%) translateY(${rise}px) scale(${lerp(ZOOM.scale, 1)})`,
           willChange: "transform",
         }}
       >
@@ -193,7 +249,7 @@ export const SeerManagerMobileScene: React.FC = () => {
         >
           <GlassRing />
           <div className="wm-screen">
-            <WorkvivoSeerManagerMobile scrollY={scrollY} donutProgress={donutProgress} />
+            <WorkvivoSeerManagerMobile scrollY={scrollY} donutProgress={phoneDonut} />
           </div>
         </div>
       </div>
