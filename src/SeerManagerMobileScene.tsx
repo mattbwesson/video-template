@@ -72,6 +72,13 @@ const RATE_SCALE = pxW(PLACE.rate.w) / RATE_NATURAL_W;
 const BUBBLE = { cx: 25.0, cy: 31.4, size: 196 };
 const ARROW = { cx: 65.9, cy: 73.4, size: 190 };
 
+/**
+ * How far the phone's page travels, in screen px — the column's height less the window
+ * between the fixed head and the fixed nav. Verified against a render at the end of the
+ * travel: the last row should sit just clear of the nav, with no empty white below it.
+ */
+const SCROLL_END = 671;
+
 const ease = Easing.bezier(0.16, 1, 0.3, 1);
 
 /** A staggered fade-and-rise. `delay` is in frames from the scene's own start. */
@@ -111,6 +118,18 @@ export const SeerManagerMobileScene: React.FC = () => {
     easing: ease,
   });
 
+  /**
+   * The phone's own scroll: it holds on the top of the page while the props arrive, then
+   * travels once, easing out so it comes to rest rather than stopping dead. SCROLL_END is
+   * the page's overflow past the viewport, measured off a render rather than computed —
+   * the content is a column of cards whose height depends on how the copy wraps.
+   */
+  const scrollY = interpolate(frame, [SETTLED + 10, 150], [0, SCROLL_END], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+    easing: Easing.inOut(Easing.quad),
+  });
+
   return (
     <AbsoluteFill style={{ background: "#010420", overflow: "hidden" }}>
       {/* ---- left: the glass speech bubble ---- */}
@@ -140,6 +159,9 @@ export const SeerManagerMobileScene: React.FC = () => {
           left: `${PLACE.rate.cx}%`,
           top: `${PLACE.rate.cy}%`,
           transform: `translate(-50%, -50%) translateY(${rate.y}px) scale(${RATE_SCALE})`,
+          // The card is width:100% so the phone's copy can go full-bleed; the floating one
+          // needs its natural width stated, which is what RATE_SCALE is derived from.
+          width: RATE_NATURAL_W,
           opacity: rate.opacity,
           borderRadius: 12,
           boxShadow: "0 30px 70px rgba(2, 1, 20, 0.55)",
@@ -171,7 +193,7 @@ export const SeerManagerMobileScene: React.FC = () => {
         >
           <GlassRing />
           <div className="wm-screen">
-            <WorkvivoSeerManagerMobile />
+            <WorkvivoSeerManagerMobile scrollY={scrollY} donutProgress={donutProgress} />
           </div>
         </div>
       </div>

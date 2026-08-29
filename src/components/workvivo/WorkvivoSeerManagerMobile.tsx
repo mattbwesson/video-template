@@ -1,8 +1,14 @@
 import React from "react";
-import { Img } from "remotion";
+import { Img, staticFile } from "remotion";
 import { SymbolSvg, registerSymbolJsx } from "./symbolRegistry";
 import { Icon } from "./WorkvivoIcons";
-import { ChevLeft } from "./WorkvivoSeerManagerIcons";
+import {
+  ChevLeft,
+  FaceDetractor,
+  FacePassive,
+  FacePromoter,
+} from "./WorkvivoSeerManagerIcons";
+import { WorkvivoSeerRateCard } from "./WorkvivoSeerRateCard";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import "./WorkvivoSeerManagerMobileStyles.css";
 
@@ -52,7 +58,7 @@ registerSymbolJsx(<SpriteDefs />);
 
 /** The filter control's three-line glyph, with the dots the sliders sit on. */
 const FilterLines: React.FC = () => (
-  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden>
+  <svg width="17" height="17" viewBox="0 0 15 15" fill="none" aria-hidden>
     <path d="M1.5 3.75h12M1.5 7.5h12M1.5 11.25h12" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
     <circle cx="5" cy="3.75" r="1.6" fill="#ffffff" stroke="currentColor" strokeWidth="1.3" />
     <circle cx="10" cy="11.25" r="1.6" fill="#ffffff" stroke="currentColor" strokeWidth="1.3" />
@@ -61,7 +67,7 @@ const FilterLines: React.FC = () => (
 
 /** The note's leading roundel. Drawn, not sprited — it exists nowhere in the library. */
 const InfoMark: React.FC = () => (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+  <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden>
     <circle cx="8" cy="8" r="7.1" stroke="currentColor" strokeWidth="1.3" />
     <circle cx="8" cy="4.9" r="0.95" fill="currentColor" />
     <path d="M8 7.2v4.2" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
@@ -70,20 +76,55 @@ const InfoMark: React.FC = () => (
 
 /** "More" — three rules, shortest last, as the capture draws it. */
 const MoreLines: React.FC = () => (
-  <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden>
+  <svg width="25" height="25" viewBox="0 0 22 22" fill="none" aria-hidden>
     <path d="M4 6.5h14M4 11h14M4 15.5h9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
   </svg>
 );
 
 const TABS = ["Engagement", "Drivers", "Values", "Comments"];
 
+const SENTIMENTS = [
+  { pct: "80%", tone: "green", Face: FacePromoter },
+  { pct: "15%", tone: "amber", Face: FacePassive },
+  { pct: "5%", tone: "red", Face: FaceDetractor },
+] as const;
+
+/**
+ * The direct reports themselves.
+ *
+ * NOT in the reference captures, which stop at the Managers / Individual Contributor
+ * filter — a section header and a filter with nothing under them reads as a half-built
+ * screen, and the page needs the height to scroll through. Held here as chrome rather than
+ * as copy slots: these are a manager's team, so an LLM inventing names for them would be
+ * writing personnel the rest of the film knows nothing about.
+ */
+const REPORTS = [
+  { name: "Aoife Byrne", role: "Product Design", score: "9.4", tone: "green", avatar: "avatar-3.jpeg" },
+  { name: "Marcus Hale", role: "Engineering", score: "9.1", tone: "green", avatar: "avatar-1.jpeg" },
+  { name: "Priya Raman", role: "Customer Success", score: "7.6", tone: "amber", avatar: "avatar-4.jpeg" },
+  { name: "Tom Okafor", role: "Data & Insights", score: "8.9", tone: "green", avatar: "avatar-5.jpeg" },
+  { name: "Lena Fischer", role: "People Ops", score: "7.2", tone: "amber", avatar: "avatar-6.jpeg" },
+] as const;
+
 export interface WorkvivoSeerManagerMobileProps {
   /** Which of TABS reads as selected. Matched by string, as the desktop chrome does. */
   activeTab?: string;
+  /**
+   * How far the page has travelled up behind the fixed head, in screen px.
+   *
+   * A transform, not a scrollTop: the export renders each frame from a fresh tree and
+   * never runs a scroll handler, so anything driven by real scrolling would sit at the top
+   * in every exported frame.
+   */
+  scrollY?: number;
+  /** 0..1 for the donut's sweep, so the ring can fill as the card comes into view. */
+  donutProgress?: number;
 }
 
 export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps> = ({
   activeTab = "Engagement",
+  scrollY = 0,
+  donutProgress = 1,
 }) => {
   const { person } = useCustomization();
 
@@ -95,21 +136,25 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
         <div className="wsmm-status">
           <div className="wsmm-time">9:41</div>
           <div className="wsmm-sysico">
-            <SymbolSvg width="17" height="11" href="#sm-i-signal" />
-            <SymbolSvg width="16" height="11" href="#sm-i-wifi" />
-            <SymbolSvg width="25" height="12" href="#sm-i-battery" />
+            <SymbolSvg width="19" height="12" href="#sm-i-signal" />
+            <SymbolSvg width="18" height="12" href="#sm-i-wifi" />
+            <SymbolSvg width="28" height="13" href="#sm-i-battery" />
           </div>
         </div>
         <div className="wsmm-head">
           <span className="wsmm-back">
-            <ChevLeft size={18} />
+            <ChevLeft size={20} />
           </span>
           <div className="wsmm-title">Manager Insights</div>
           <span className="wsmm-headpad" />
         </div>
       </div>
 
-      <div className="wsmm-body">
+      <div className="wsmm-viewport">
+        <div
+          className="wsmm-page"
+          style={{ transform: `translateY(${-scrollY}px)`, willChange: "transform" }}
+        >
         <div className="wsmm-tabs">
           {TABS.map((t) => (
             <span className={t === activeTab ? "wsmm-tab wsmm-on" : "wsmm-tab"} key={t}>
@@ -155,31 +200,69 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
           </div>
         </div>
 
-        <div className="wsmm-card wsmm-score">
-          <div className="wsmm-tile">
-            <span className="wsmm-tile-num">9.2</span>
-          </div>
-          <div className="wsmm-score-body">
-            <div className="wsmm-score-title">Team&rsquo;s Engagement Score</div>
-            <div className="wsmm-score-foot">
-              <span className="wsmm-pill">9.1</span>
-              <span className="wsmm-score-note">Company Score</span>
+        <div className="wsmm-card">
+          <div className="wsmm-score">
+            <div className="wsmm-tile">
+              <span className="wsmm-tile-num">9.2</span>
+            </div>
+            <div className="wsmm-score-body">
+              <div className="wsmm-score-title">Team&rsquo;s Engagement Score</div>
+              <div className="wsmm-score-foot">
+                <span className="wsmm-pill">9.1</span>
+                <span className="wsmm-score-note">Company Score</span>
+              </div>
             </div>
           </div>
+          <div className="wsmm-sentrow">
+            {SENTIMENTS.map(({ pct, tone, Face }) => (
+              <span className={`wsmm-sent wsmm-sent-${tone}`} key={pct}>
+                <Face size={20} />
+                {pct}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="wsmm-rate">
+          <WorkvivoSeerRateCard large responses="12/16" progress={donutProgress} />
+        </div>
+
+        <div className="wsmm-sec">Direct Reports</div>
+
+        <div className="wsmm-reports">
+          <div className="wsmm-seg">
+            <span className="wsmm-segbtn">Managers</span>
+            <span className="wsmm-segbtn wsmm-on">Individual Contributor</span>
+          </div>
+          {REPORTS.map(({ name, role, score, tone, avatar }) => (
+            <div className="wsmm-rrow" key={name}>
+              <Img className="wsmm-rav" src={staticFile(`img/${avatar}`)} alt="" />
+              <div className="wsmm-rwho">
+                <div className="wsmm-rname">{name}</div>
+                <div className="wsmm-rrole">{role}</div>
+              </div>
+              <span
+                className={tone === "amber" ? "wsmm-rscore wsmm-rscore-amber" : "wsmm-rscore"}
+              >
+                {score}
+              </span>
+            </div>
+          ))}
+        </div>
         </div>
       </div>
 
       <div className="wsmm-nav">
         <div className="wsmm-navitem">
-          <Icon href="#i-ui-home-nav-rail" width={22} height={22} />
+          <Icon href="#i-ui-home-nav-rail" width={25} height={25} />
           <span className="wsmm-navlabel">Home</span>
         </div>
         <div className="wsmm-navitem">
-          <Icon href="#i-ui-chat" width={22} height={22} />
+          <Icon href="#i-ui-chat" width={25} height={25} />
           <span className="wsmm-navlabel">Chat</span>
         </div>
         <div className="wsmm-navitem">
-          <Icon href="#i-ui-notifications" width={22} height={22} />
+          <Icon href="#i-ui-notifications" width={25} height={25} />
           <span className="wsmm-navlabel">Inbox</span>
         </div>
         <div className="wsmm-navitem wsmm-on">

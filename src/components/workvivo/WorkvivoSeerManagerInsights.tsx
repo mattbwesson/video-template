@@ -210,9 +210,13 @@ const RING = "#f78d45";
  * diameter, appreciably thinner than a solid gauge, with round caps at both ends.
  * The percentage is set in two sizes, the number large and the % sign a third smaller.
  */
-export const Donut: React.FC<{ pct: number; progress?: number }> = ({ pct, progress = 1 }) => {
-  const size = 96;
-  const stroke = 11;
+export const Donut: React.FC<{ pct: number; progress?: number; size?: number }> = ({
+  pct,
+  progress = 1,
+  size = 96,
+}) => {
+  // The ring keeps its 11:96 proportion at any size, which is what the capture shows.
+  const stroke = (11 / 96) * size;
   const r = (size - stroke) / 2;
   const circumference = 2 * Math.PI * r;
   const currentPct = pct * progress;
@@ -246,19 +250,19 @@ export const Donut: React.FC<{ pct: number; progress?: number }> = ({ pct, progr
         transform={`rotate(-90 ${size / 2} ${size / 2})`}
       />
       <text
-        x={size / 2 - 4}
-        y={size / 2 + 8}
+        x={size / 2 - size * 0.042}
+        y={size / 2 + size * 0.083}
         textAnchor="middle"
-        fontSize="24"
+        fontSize={size * 0.25}
         fontWeight="700"
         fill="#111827"
       >
         {displayPct}
       </text>
       <text
-        x={size / 2 + 14}
-        y={size / 2 + 8}
-        fontSize="14"
+        x={size / 2 + size * 0.146}
+        y={size / 2 + size * 0.083}
+        fontSize={size * 0.1458}
         fontWeight="700"
         fill="#111827"
       >

@@ -20,11 +20,10 @@
   box-sizing: border-box;
 }
 
-.wsmm-screen * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* No `.wsmm-screen *` reset here. WorkvivoStyles.css already sets the same three
+   properties on `*`, and a descendant-universal rule outranks a plain class — so this
+   screen's copy was winning against the NESTED rate card's own `.wsrc-*` padding and
+   flattening it. A reset that reaches into another component is not a reset. */
 
 /* ---------- dark head: status bar + title row ---------- */
 
@@ -35,7 +34,7 @@
 }
 
 .wsmm-status {
-  height: 50px;
+  height: 54px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -43,7 +42,7 @@
 }
 
 .wsmm-time {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
@@ -55,10 +54,10 @@
 }
 
 .wsmm-head {
-  height: 54px;
+  height: 58px;
   display: flex;
   align-items: center;
-  padding: 0 16px;
+  padding: 0 18px;
 }
 
 .wsmm-back {
@@ -75,7 +74,7 @@
   flex: 1 1 0;
   min-width: 0;
   text-align: center;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -85,29 +84,41 @@
   flex: none;
 }
 
-/* ---------- body ---------- */
+/* ---------- body ----------
+   The head above and the nav below are fixed; this is the window the page moves behind.
+   The scroll is a transform on .wsmm-page rather than a real scrollTop, because the export
+   renders one frame at a time and never runs a scroll handler. */
 
-.wsmm-body {
+.wsmm-viewport {
   flex: 1 1 0;
   min-height: 0;
   overflow: hidden;
-  padding: 0 16px;
+  position: relative;
+}
+
+.wsmm-page {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: 0 18px 26px;
 }
 
 .wsmm-tabs {
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 14px 0 12px;
+  gap: 2px;
+  margin: 0 -4px;
+  padding: 16px 0 14px;
 }
 
 .wsmm-tab {
-  height: 30px;
-  padding: 0 12px;
-  border-radius: 15px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 17px;
   display: flex;
   align-items: center;
-  font-size: 13px;
+  font-size: 14.2px;
   color: #6b7280;
   white-space: nowrap;
 }
@@ -128,9 +139,9 @@
 .wsmm-seg {
   flex: 1 1 0;
   min-width: 0;
-  height: 38px;
+  height: 42px;
   padding: 4px;
-  border-radius: 19px;
+  border-radius: 21px;
   background: #f2f2f4;
   display: flex;
   align-items: center;
@@ -140,12 +151,12 @@
 .wsmm-segbtn {
   flex: 1 1 0;
   min-width: 0;
-  height: 30px;
-  border-radius: 15px;
+  height: 34px;
+  border-radius: 17px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12.5px;
+  font-size: 13.8px;
   color: #6b7280;
   white-space: nowrap;
 }
@@ -159,15 +170,15 @@
 
 .wsmm-filter {
   flex: none;
-  height: 38px;
-  padding: 0 12px;
-  border-radius: 19px;
+  height: 42px;
+  padding: 0 13px;
+  border-radius: 21px;
   border: 1px solid #ececee;
   background: #ffffff;
   display: flex;
   align-items: center;
   gap: 7px;
-  font-size: 12.5px;
+  font-size: 13.8px;
   font-weight: 600;
   color: #374151;
 }
@@ -181,9 +192,9 @@
 /* ---------- the welcome note ---------- */
 
 .wsmm-note {
-  margin-top: 14px;
-  padding: 13px 14px 15px;
-  border-radius: 10px;
+  margin-top: 4px;
+  padding: 16px 17px 18px;
+  border-radius: 12px;
   background: #fdf1ec;
 }
 
@@ -202,75 +213,75 @@
 }
 
 .wsmm-note-title {
-  font-size: 13.5px;
+  font-size: 14.7px;
   font-weight: 600;
   color: #111827;
 }
 
 .wsmm-note-body {
-  font-size: 12.5px;
-  line-height: 19px;
+  font-size: 14.2px;
+  line-height: 21.8px;
   color: #4b5563;
 }
 
 /* ---------- overview ---------- */
 
 .wsmm-sec {
-  margin: 16px 0 10px;
-  font-size: 13.5px;
+  margin: 20px 0 12px;
+  font-size: 14.7px;
   font-weight: 600;
   color: #4b5563;
 }
 
 .wsmm-card {
   border: 1px solid #ececee;
-  border-radius: 10px;
+  border-radius: 12px;
   background: #ffffff;
-  padding: 12px 14px;
+  padding: 16px;
 }
 
 .wsmm-card + .wsmm-card {
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .wsmm-person {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 13px;
 }
 
 .wsmm-av {
-  width: 34px;
-  height: 34px;
+  width: 38px;
+  height: 38px;
   flex: none;
-  border-radius: 17px;
+  border-radius: 19px;
   display: block;
 }
 
 .wsmm-person-name {
-  font-size: 14px;
+  font-size: 16.1px;
   font-weight: 600;
   color: #111827;
 }
 
 .wsmm-person-role {
-  margin-top: 2px;
-  font-size: 13px;
+  margin-top: 3px;
+  font-size: 14.2px;
   color: #9ca3af;
 }
 
 .wsmm-score {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 15px;
 }
 
 /* Green into lime across the diagonal — the same ramp the desktop card's tile uses. */
 .wsmm-tile {
-  width: 74px;
-  height: 74px;
+  width: 123px;
+  height: 116px;
   flex: none;
-  border-radius: 10px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -278,7 +289,7 @@
 }
 
 .wsmm-tile-num {
-  font-size: 27px;
+  font-size: 41.8px;
   font-weight: 800;
   letter-spacing: -1px;
   color: #14532d;
@@ -290,46 +301,157 @@
 }
 
 .wsmm-score-title {
-  font-size: 14.5px;
+  font-size: 16.1px;
   font-weight: 600;
-  line-height: 19px;
+  line-height: 22px;
   color: #111827;
 }
 
 .wsmm-score-foot {
-  margin-top: 9px;
+  margin-top: 12px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 9px;
 }
 
 .wsmm-pill {
-  height: 22px;
-  padding: 0 9px;
-  border-radius: 11px;
+  height: 27px;
+  padding: 0 11px;
+  border-radius: 13.5px;
   background: #dcf5e3;
   color: #1a7f47;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 700;
   display: flex;
   align-items: center;
 }
 
 .wsmm-score-note {
-  font-size: 13px;
+  font-size: 14.7px;
   color: #4b5563;
+}
+
+/* The sentiment split, across the bottom of the score card. Three equal cells rather than
+   the desktop card's stacked rows — the phone has the width for it and not the height. */
+.wsmm-sentrow {
+  margin-top: 16px;
+  display: flex;
+  gap: 9px;
+}
+
+.wsmm-sent {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 44px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 15.7px;
+  font-weight: 700;
+}
+
+.wsmm-sent-green {
+  background: #dcf5e3;
+  color: #1a7f47;
+}
+
+.wsmm-sent-amber {
+  background: #fdf3d3;
+  color: #97710f;
+}
+
+.wsmm-sent-red {
+  background: #fbdfdf;
+  color: #b03a3a;
+}
+
+/* ---------- direct reports ---------- */
+
+/* The rate card inside the phone is the same component that floats beside it, so it only
+   needs the card chrome the phone's own cards wear. */
+.wsmm-rate {
+  margin-top: 12px;
+  border: 1px solid #ececee;
+  border-radius: 10px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.wsmm-reports {
+  margin-top: 12px;
+  padding: 16px;
+  border: 1px solid #ececee;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+/* The list the Direct Reports filter is filtering. Not in the reference captures, which
+   stop at the toggle — built in the Manager Overview card's own row language so the two
+   read as the same product. */
+.wsmm-rrow {
+  margin-top: 15px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.wsmm-rav {
+  width: 38px;
+  height: 38px;
+  flex: none;
+  border-radius: 19px;
+  display: block;
+}
+
+.wsmm-rwho {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wsmm-rname {
+  font-size: 16.1px;
+  font-weight: 600;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.wsmm-rrole {
+  margin-top: 3px;
+  font-size: 14.2px;
+  color: #9ca3af;
+  white-space: nowrap;
+}
+
+.wsmm-rscore {
+  flex: none;
+  height: 30px;
+  padding: 0 13px;
+  border-radius: 15px;
+  background: #dcf5e3;
+  color: #1a7f47;
+  font-size: 14.7px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.wsmm-rscore-amber {
+  background: #fdf3d3;
+  color: #97710f;
 }
 
 /* ---------- bottom nav ---------- */
 
 .wsmm-nav {
   flex: none;
-  height: 70px;
+  height: 81px;
   border-top: 1px solid #ececee;
   background: #ffffff;
   display: flex;
   align-items: flex-start;
-  padding-top: 9px;
+  padding-top: 11px;
 }
 
 .wsmm-navitem {
@@ -338,7 +460,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   color: #8e8e8f;
 }
 
@@ -347,11 +469,19 @@
 }
 
 .wsmm-navlabel {
-  font-size: 10px;
-  line-height: 14px;
+  font-size: 11.4px;
+  line-height: 15px;
   color: #8e8e8f;
 }
 
 .wsmm-navitem.wsmm-on .wsmm-navlabel {
   color: #ee6a35;
+}
+
+/* The Direct Reports filter sizes its two halves to their labels rather than splitting the
+   row evenly — "Individual Contributor" is three times the length of "Managers", and an
+   even split crams it against its own pill edge. */
+.wsmm-reports .wsmm-segbtn {
+  flex: 0 1 auto;
+  padding: 0 16px;
 }

@@ -7,8 +7,10 @@
    Same export rules as its siblings: no ::before/::after, no bare `span` selector
    carrying layout, and pill radii are exactly half their own height. */
 
+/* Width comes from the caller: 290 for the card floating beside the phone at hero scale,
+   full-bleed for the copy inside the phone's own scroll. */
 .wsrc-card {
-  width: 290px;
+  width: 100%;
   padding: 12px;
   border-radius: 12px;
   background: #ffffff;
@@ -18,11 +20,8 @@
   box-sizing: border-box;
 }
 
-.wsrc-card * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* No `.wsrc-card *` reset — WorkvivoStyles.css covers it globally, and a
+   descendant-universal rule here would outrank the classes of anything nested inside. */
 
 .wsrc-tabs {
   display: flex;
@@ -102,4 +101,47 @@
   display: flex;
   align-items: center;
   color: #f78d45;
+}
+
+/* ---------- phone scale ----------
+   The same card at the type size the phone's own screen uses. Only the values that read
+   as small print change; the structure is shared. */
+
+.wsrc-lg {
+  padding: 15px;
+}
+
+.wsrc-lg .wsrc-tabs {
+  padding: 4px;
+  border-radius: 21px;
+}
+
+.wsrc-lg .wsrc-tab {
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 17px;
+  font-size: 14.2px;
+}
+
+.wsrc-lg .wsrc-body {
+  margin-top: 15px;
+  gap: 15px;
+}
+
+.wsrc-lg .wsrc-stats {
+  gap: 10px;
+}
+
+.wsrc-lg .wsrc-box {
+  border-radius: 11px;
+  padding: 11px 14px;
+}
+
+.wsrc-lg .wsrc-num {
+  font-size: 17.5px;
+}
+
+.wsrc-lg .wsrc-label {
+  margin-top: 3px;
+  font-size: 14.2px;
 }

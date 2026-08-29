@@ -33,14 +33,27 @@ const RefreshMark: React.FC = () => (
 export interface WorkvivoSeerRateCardProps {
   /** 0..1, threaded into the donut so the ring can sweep on entrance. */
   progress?: number;
+  /**
+   * The responses figure. The card floating beside the phone shows the whole company's
+   * count; the copy inside the phone is one manager's team, so it reads 12/16.
+   */
+  responses?: string;
+  /**
+   * Phone scale rather than the desktop screen's body scale. The card inside the phone at
+   * 3903 sits among 14-16px type, so the 12px it uses beside the phone reads as small
+   * print there; this bumps the type and the ring together.
+   */
+  large?: boolean;
   style?: React.CSSProperties;
 }
 
 export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
   progress = 1,
+  responses = "10,395/13,860",
+  large = false,
   style,
 }) => (
-  <div className="wsrc-card" style={style}>
+  <div className={large ? "wsrc-card wsrc-lg" : "wsrc-card"} style={style}>
     <div className="wsrc-tabs">
       <span className="wsrc-tab wsrc-on">Response Rate</span>
       <span className="wsrc-tab">Completion Rate</span>
@@ -48,12 +61,12 @@ export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
 
     <div className="wsrc-body">
       <span className="wsrc-donut">
-        <Donut pct={75} progress={progress} />
+        <Donut pct={75} progress={progress} size={large ? 122 : 96} />
       </span>
 
       <div className="wsrc-stats">
         <div className="wsrc-box">
-          <div className="wsrc-num">10,395/13,860</div>
+          <div className="wsrc-num">{responses}</div>
           <div className="wsrc-label">Responses</div>
         </div>
         <div className="wsrc-box">
