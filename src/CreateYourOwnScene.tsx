@@ -142,20 +142,24 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                 justifyContent: "center",
               }}
             >
-              {/* No blend mode. The artwork used to be the dark navy glass sparkle lifted
-                  onto the field with `mix-blend-mode: plus-lighter` — which the export does
-                  not composite at all, so it fell back to normal and the icon sat on the
-                  brand colour as a near-black blob (its opaque body medians 47/255).
-                  A blend was the wrong tool here anyway: this scene's field is the TENANT's
-                  colour, so whatever it produced changed with every customer.
+              {/* Everything here is baked into the PNG, because every CSS way of doing it
+                  is dropped or damaged by the export: `mix-blend-mode` is not composited,
+                  `filter: drop-shadow` is not scoped to its own element and bleeds onto
+                  later draws, and `radial-gradient` does not paint at all. A blend was the
+                  wrong tool regardless — this scene's field is the TENANT's colour, so
+                  whatever it produced changed with every customer.
 
-                  The light variant is baked instead (scripted from the original: gamma 0.55
-                  to lift the shadows without moving the speculars, a 0.18 screen to raise
-                  the floor, alpha 0.86 so the field reads through it as glass). The tonal
-                  SPREAD is what does the work, not the tone: at ~114 levels the icon has
-                  parts lighter and parts darker than a light brand field, and sits entirely
-                  lighter than a dark one, so it reads on either. A flatter, whiter version
-                  measured 1.08:1 against green and gold — effectively invisible. */}
+                  hq_sparkle_glow.png is hq-sparkle-NEW.png re-laid onto the frame the
+                  previous asset used (art 444px centred in 736px) so the swap changes the
+                  picture and not the layout, plus a two-pass white glow — Gaussian sigma 46
+                  at 0.30 and sigma 24 at 0.55 — which is the headline's own
+                  `0 0 25px / 0 0 50px` white text-shadow converted into this asset's pixel
+                  space. Measured on the brand green it lifts the field +19.7 luma at its
+                  brightest and +12.5 at p95: a halo you can see without one you can name.
+
+                  The art is clear glass rather than the old dark navy body, so the brand
+                  colour reads THROUGH it. That is what makes it work on any tenant — it
+                  takes the field's own hue instead of fighting it. */}
               <Img
                 src={staticFile(icon)}
                 style={{

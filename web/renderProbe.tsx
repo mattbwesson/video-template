@@ -766,7 +766,7 @@ export const SpaceFeedProbe: React.FC = () => (
 export const SparkleIconProbe: React.FC = () => (
   <CustomizationProvider input={{}}>
     <Sequence from={-45}>
-      <CreateYourOwnScene text="AI Widget Builder" fontWeight={500} icon="img/hq_sparkle_light.png" iconWidth={544} />
+      <CreateYourOwnScene text="AI Widget Builder" fontWeight={500} icon="img/hq_sparkle_glow.png" iconWidth={544} />
     </Sequence>
   </CustomizationProvider>
 );
