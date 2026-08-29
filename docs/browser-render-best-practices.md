@@ -183,7 +183,17 @@ Four things all had to be true. Each was found by a probe cell going from blank 
   A rule written to size a weather glyph — `.wbb-weather span, .wbb-weather svg { width: 18px;
   height: 18px }` — also hit the two `<span>`s holding the location and the temperature, and
   squashed both to 18px so they printed on top of each other. Give the icon its own class and
-  scope to that.
+  scope to that. *(Worse than it looks: the renderer injects its own `<span>`s around every
+  word, so a bare `span` selector also corrupts text measurement — see
+  [the injected-span section](#the-renderer-injects-spans-into-your-dom-and-your-own-css-styles-them).)*
+- **A size forwarded out of the SVG file is a string, and React drops it silently.** The file's
+  own attributes are `width="18"` — and React appends `px` only to **numbers**, passing strings
+  through verbatim, so `style={{ width: "18" }}` sets an invalid CSS value that the browser
+  discards without a warning. The declaration vanishes, the element falls back to its intrinsic
+  or inherited size, and the failure is spectacular rather than subtle: an 18px dot grid
+  rendered at **300px**. Coerce anything sourced from markup before it reaches a style object —
+  `InlineSvg` now maps a bare-number string to `${v}px`. This is a React trap, not a renderer
+  one, so it bites the Player too.
 - **Bare silhouettes need paint, and a `filter` is the wrong way to give it to them.** Many icon
   files (weather, podcast marks) ship as black paths with no `fill` at all, and the usual trick
   is a CSS `filter` to recolour them. Filters bleed onto later draws (§5) — put the colour in the
@@ -351,6 +361,73 @@ as wrapped, overlapping or stretched text. All three below rendered perfectly in
    `<svg>` `<polygon>`. (Transparent borders themselves are harmless — the renderer strokes
    them with `rgba(0,0,0,0)` and nothing lands.)
 
+4. **`zoom` corrupts every glyph under it.** The renderer contains **zero** handling for
+   `zoom` — the string does not appear in its bundle once — so it reads the two numbers it
+   needs from two sources that disagree about it. Measured in Chromium on the same element:
+
+   | | `getBoundingClientRect().width` | `getComputedStyle().fontSize` |
+   |---|---|---|
+   | plain | 42.16 | 18.5px |
+   | `zoom: 1.2222` | **51.53** (scaled) | **18.5px** (not scaled) |
+   | `transform: scale(1.2222)` | 51.53 | 18.5px |
+
+   Word *positions* come from the rect and therefore include the zoom; the canvas font size
+   comes from the computed style and therefore doesn't. Every glyph draws `1/zoom` too small
+   at correctly-spaced positions — a visible gap after every word. 18.5px type exported at
+   15.14px, exactly the predicted 18.5 / 1.2222.
+
+   **Fix:** `transform: scale()` + `transform-origin`, which the renderer reads properly
+   through its own matrix (bottom row above: same rect, no font mismatch). One caveat when
+   converting — `zoom` grows the element's layout box and `transform` does not, so the
+   ancestor that used to be sized by the zoomed content needs its scaled dimensions written
+   out explicitly or it will clip. See `.wsf-shell` / `.wsf-body` in
+   [`WorkvivoSpaceFeedStyles.css`](../src/components/workvivo/WorkvivoSpaceFeedStyles.css).
+
+### The renderer injects `<span>`s into your DOM, and your own CSS styles them
+
+*(read from the 4.0.496 source, then confirmed on a frame — this one is essentially unfindable
+by looking at your own code.)* To draw text the exporter **mutates the live DOM**, at two
+granularities:
+
+```js
+// handle-text-node.ts — every text node is wrapped in a real element
+const span = document.createElement("span");
+parent.insertBefore(span, node);
+span.appendChild(node);
+
+// find-line-breaks.text.ts — then each word inside it is wrapped and measured
+const interstitialNode = document.createElement("span");
+interstitialNode.textContent = segment;
+span.appendChild(interstitialNode);
+const rect = interstitialNode.getBoundingClientRect();   // ← the geometry it draws from
+```
+
+Both are ordinary unstyled `<span>`s, inline and harmless — **until one of your own rules
+matches them**, at which point that rule is changing the exact rectangle the renderer is about
+to draw from. Note the wrapper is inserted *as a child of the text's parent*, so `.foo > span`
+is no safer than `.foo span`: both match it.
+
+The declarations that hurt are the ones that change a box — `display`, `width`, `height`,
+`flex`, `position`, `padding`, `margin`. A rule meant for a real `<span>` sibling
+(`.wbb-weather span { width: 18px; height: 18px }`) squeezes every wrapped **word** to 18px,
+and `display: block` on one puts every word on its own line.
+
+**The tell is unmistakable once you capture the draw calls** (§4): every word at an identical
+`x`, with `y` marching down a line at a time. That is a paragraph of text being laid out one
+word per line, and it is what this bug looks like every time.
+
+**Audit:** `grep -rnE '\bspan\b' src --include='*.css'`, then narrow to the rules that set a
+layout property — those are the only dangerous ones, and whether they actually fire depends on
+whether the matched parent can hold a **text node**. A `.wsf-carousel-dots > span { width: 6px }`
+is safe forever because that element only ever holds dots; the same rule over a label is a bug
+waiting for someone to add a word. This repo has 38 bare-`span` rules, 24 of them setting layout,
+of which 19 were scoping bugs that had to be fixed. Note that a *descendant* selector is much
+broader than a child one: `.foo span` matches an injected wrapper at any depth, including one
+nested inside a real `<span>` of yours.
+
+**The same trap catches your own wrappers:** `InlineSvg` renders its `<svg>` inside a `<span>`,
+so `.parent span {…}` hits icons *and* every word the renderer is measuring nearby.
+
 ### Stacking: DOM order wins, and that includes siblings
 
 *(measured 4.0.496 — this confirms the existing §5 row, with a worked example.)* The mobile
@@ -500,6 +577,30 @@ padding, a variable-length label — measure it by **rebuilding the box** from i
 in a throwaway element rather than reasoning about the padding. A padded button whose real height
 was 36px is where the "half of *what*" question actually gets answered.
 
+**For anything about text, capture the draw calls instead of the pixels.** Patch `fillText`
+before rendering and you get the renderer's own intentions — every word, where it put it, and
+what font it used — which beats inferring any of that from a bitmap. Both text findings above
+were cracked this way within minutes of giving up on screenshots:
+
+```js
+const calls = [];
+for (const P of [CanvasRenderingContext2D, OffscreenCanvasRenderingContext2D]) {
+  const orig = P.prototype.fillText;
+  P.prototype.fillText = function (t, x, y, ...r) {
+    calls.push({ t, x: Math.round(x), y: Math.round(y), font: this.font });
+    return orig.call(this, t, x, y, ...r);
+  };
+}
+// …render the still…
+console.table(calls);
+```
+
+Read it for two things. **An identical `x` on every row with `y` advancing** is the injected-span
+bug — the text is being laid out one word per line. **A `font` that isn't the size you wrote** is
+a scaling bug, and the ratio names the culprit: `15.143px` against a declared `18.5px` is exactly
+`1.2222`, which was the `zoom` factor on an ancestor. Neither is legible in a screenshot, and the
+second is invisible even in `getImageData`.
+
 **Measure the pixels, don't just look.** Once a still is in a canvas, `getImageData` answers
 questions eyeballing can't, and it works even when the pane can't render a screenshot:
 
@@ -543,6 +644,9 @@ questions eyeballing can't, and it works even when the pane can't render a scree
 | **A toggle knob / radio dot / tab underline / bullet / scrim is simply absent** | It was a `::before` / `::after`. **Pseudo-elements are never rendered** — the exporter walks real DOM nodes only *(measured 4.0.496; zero pseudo-element handling in the renderer)* | Make it a real child element and move the rule onto it. Audit with `grep -rE '::?(before|after)' src` |
 | **Two lines of text inside one box overlap, or text wraps that shouldn't** | An inline `<span>` used as a flex item — CSS blockifies flex items, the export doesn't, so it shrinks to min-content and its block children stack at the same `y` *(measured 4.0.496)* | Spell out `display: block` + `min-width: 0` on the flex item. Free in Chromium, where it is already implied |
 | **Text wraps in the export but fits in the Player, same string** | Text metrics differ, so a fixed-width box that "just fits" isn't safe — especially one holding a name or other researched copy | `white-space: nowrap`, and let the box size to its content instead of tuning a pixel width |
+| **A paragraph exports one word per line, or its words are squashed/overlapping** — and nothing in your markup explains it | A CSS rule of yours matching `span`. **The renderer wraps every text node, and every word inside it, in a real injected `<span>`** to measure them, so `.foo span { width: … }` / `{ display: block }` resizes the thing it is about to draw *(source: `handleTextNode` + `findWords`, 4.0.496)* | Scope the rule to a class; never select a bare `span`. `.foo > span` does **not** help — the wrapper is a direct child. Audit: `grep -rnE '\bspan\b' src --include='*.css'`. Confirm by patching `fillText` (§4): identical `x`, advancing `y` |
+| **Every glyph is uniformly too small, with a gap after each word, at otherwise correct positions** | A `zoom` on an ancestor. **The renderer has no `zoom` handling at all**, and reads positions from `getBoundingClientRect()` (which *includes* zoom) but the canvas font from `getComputedStyle().fontSize` (which does *not*) — so glyphs draw at `1/zoom` scale in correctly-spaced slots *(measured 4.0.496)* | `transform: scale()` + `transform-origin` instead; the renderer composes transforms correctly. Write out the ancestor's scaled `width`/`height` explicitly — `transform` doesn't grow the layout box the way `zoom` did, so it will otherwise clip |
+| **An element sized from an SVG file's own attributes renders enormous** (an 18px icon at 300px) | `style={{ width: "18" }}` — React appends `px` to **numbers** only and passes strings through, so the value is invalid CSS and is dropped silently | Coerce bare-number strings to `${v}px` before they reach a style object. A React trap, not a renderer one — it misbehaves in the Player too |
 | **A CSS-border triangle (play button, caret, tooltip arrow) comes out as a solid square** | The zero-size-box-plus-borders trick relies on the browser **mitring** the corners; the export strokes each side independently and fills the whole border box *(measured 4.0.496)* | Draw it as an inline `<svg>` `<polygon>` |
 | Inner highlight on a card gone | `box-shadow: inset …` — unsupported | Use a border/overlay element instead |
 | Pill/chip/progress bar comes out as an **oval** (a full ellipse, no straight edges) | a sentinel `border-radius` — `999px`, `9999px`, `141.429px` — on a wide, short box. The exporter clamps an over-large radius **per axis independently** instead of by the CSS spec's single uniform factor, so a 220x40 pill ends up with corners 110 wide and 20 tall — i.e. an ellipse | Set the radius to **exactly half the border-box height** in px (`height: 40px` → `border-radius: 20px`). Identical in Chromium, and the only value the export's clamp leaves alone. Half-height *plus a bit* is not enough — it comes out egg-shaped. **A square box is the exception**: the same per-axis clamp lands on half the width *and* half the height, which is a correct circle — so `border-radius: 9999px` on a 36x36 avatar is fine and must not be "fixed" |
@@ -589,6 +693,16 @@ questions eyeballing can't, and it works even when the pane can't render a scree
       the export doesn't blockify flex items, so its children overlap.
 - [ ] **No fixed-width box holding variable-length text** (a person's name, researched copy) — set
       `white-space: nowrap` and let it size to its content; export text metrics differ from Chromium's.
+- [ ] **No bare-`span` selector sets a layout property on an element that can hold text** (`display`,
+      `width`, `height`, `flex`, `padding`, `position`). The renderer injects a real `<span>` around
+      every text node *and* every word, so such a rule resizes the text it is about to measure. Scope
+      to a class. `>` doesn't save you — the wrapper is a direct child. *(24 of this repo's 38
+      bare-`span` rules set layout; they're safe only because those parents hold icons, not raw text —
+      which is exactly what to re-check when markup changes.)*
+- [ ] **No `zoom` anywhere** — the renderer doesn't implement it, and it desynchronises word positions
+      from glyph size. Use `transform: scale()`, and write the parent's scaled size out explicitly.
+- [ ] **No bare-number strings in style objects** (`width: "18"` forwarded out of an SVG file) — React
+      only adds `px` to numbers, so the declaration is dropped and the element renders unsized.
 - [ ] **No CSS-border triangles** (zero-size box + one thick border) — inline `<svg>` `<polygon>` instead.
 - [ ] No `<symbol>`/`<use href="#…">` sprites in inline SVG — paths are inlined per consumer.
 - [ ] Every `inline-flex` chip/pill that must hug its content also sets `width: "fit-content"`.
@@ -741,6 +855,7 @@ touch it.
 - [`src/components/InlineSvg.tsx`](../src/components/InlineSvg.tsx) · [`CursorArrow.tsx`](../src/components/CursorArrow.tsx) — export-safe SVG, and the `fill` prop for unpainted silhouettes.
 - [`src/components/workvivo/WorkvivoLivestream.tsx`](../src/components/workvivo/WorkvivoLivestream.tsx) · [`WorkvivoCut.tsx`](../src/WorkvivoCut.tsx) (`MobileIrisOpen`) — the two `{progress > 0 && …}` gates, and why a collapsed box is not a clip.
 - [`src/components/workvivo/symbolRegistry.tsx`](../src/components/workvivo/symbolRegistry.tsx) — sprite `<use>` → inlined paths, at ~110 symbols / ~104 call sites.
+- [`src/components/workvivo/WorkvivoSpaceFeedStyles.css`](../src/components/workvivo/WorkvivoSpaceFeedStyles.css) — the `zoom` → `transform: scale()` conversion, with the shell's scaled height written out because `transform` no longer grows the box.
 - [`scripts/still.mjs`](../scripts/still.mjs) — `npm run still <frames…>`, the Chromium baseline to diff exports against.
 - [`remotion.config.ts`](../remotion.config.ts) — the PNG / `crf 15` / `slow` settings from §7.
 - [`web/browserRender.ts`](../web/browserRender.ts) — the export path, and the §8 findings recorded where the next person will change the bitrate.
