@@ -38,6 +38,15 @@ export const ICON_SLOTS = [
   "value.disc.1",
   "value.disc.2",
   "value.disc.3",
+
+  // --- the three Quick Links tiles ------------------------------------------------
+  // ONE slot per position, not one per screen. The same three apps are drawn at global
+  // ~498 on the desktop homepage, again on the mobile home screen, and again on the
+  // mobile Spotlight tab — so an operator who swaps Workday for their own HR system
+  // expects it swapped in all three, not to hunt down two more copies of the same tile.
+  "app.quicklink.0",
+  "app.quicklink.1",
+  "app.quicklink.2",
 ] as const;
 
 export type IconSlotKey = (typeof ICON_SLOTS)[number];
@@ -72,13 +81,25 @@ export const ICON_HIT_ATTR = "data-vc-icon-hit";
 export type IconAssignment = Partial<Record<IconSlotKey, string>>;
 
 /**
- * The shipped icon set the drawer offers, as the assets route names it.
+ * Which shipped set the drawer offers, PER ROLE.
  *
- * A key into that route's whitelist, not a path — the folder it stands for is decided
- * server-side (see `server/assetsRoute.ts`), so the browser never gets to name a
+ * A key into the assets route's whitelist, not a path — the folder it stands for is
+ * decided server-side (see `server/assetsRoute.ts`), so the browser never gets to name a
  * directory to read.
+ *
+ * Split by role because the two sets are not interchangeable: a space badge wants
+ * Workvivo's own value and space artwork, and a Quick Links tile wants a vendor logo.
+ * Offering an operator the wrong one is how a company value ends up as the Slack mark.
  */
-export const ICON_LIBRARY = "values-and-spaces";
+const ROLE_LIBRARY: Record<IconRole, string> = {
+  "space.badge": "values-and-spaces",
+  "value.disc": "values-and-spaces",
+  "app.quicklink": "integrations",
+};
+
+/** The set to offer for a given position. */
+export const iconLibraryFor = (key: IconSlotKey): string =>
+  ROLE_LIBRARY[key.slice(0, key.lastIndexOf(".")) as IconRole];
 
 type RoleOf<K extends string> = K extends `${infer Head}.${infer Tail}`
   ? Tail extends `${bigint}`
@@ -93,6 +114,7 @@ const ROLE_LABELS: Record<IconRole, string> = {
   // Not "Value icon": the target is the whole picker row and the panel it opens edits
   // the value's NAME as well as the disc beside it.
   "value.disc": "Company value",
+  "app.quicklink": "Quick link",
 };
 
 const roleCounts = ICON_SLOTS.reduce<Record<string, number>>((acc, key) => {

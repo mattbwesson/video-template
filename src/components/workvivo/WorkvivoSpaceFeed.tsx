@@ -145,7 +145,9 @@ const Comment: React.FC<{
 
 export const WorkvivoSpaceFeed: React.FC = () => {
   const { copy, image, person } = useCustomization();
-  const voice = copy.voice;
+  // Fixed, not researched — see FIXED_COPY.voice. The photographs on this screen are
+  // still per-customer; only the words are locked.
+  const voice = FIXED_COPY.voice;
 
   /** The nth avatar, wrapping — an operator upload if there is one, else the baseline. */
   const faceUrl = (i: number) => {
@@ -272,7 +274,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                       </span>
                     </div>
                     <div className="wsf-about">{voice.space.about}</div>
-                    <div className="wsf-members">{voice.space.members}</div>
+                    <div className="wsf-members">{companyWideMembers(copy.companySize)}</div>
                     <div className="wsf-avrow">
                       {[0, 1, 2, 3, 4].map((i) => (
                         <img className="wsf-av" key={i} src={faceUrl(i)} style={faceFit} alt="" />
@@ -530,3 +532,5 @@ export const WorkvivoSpaceFeed: React.FC = () => {
     </div>
   );
 };
+import { FIXED_COPY } from "../../customize/videoCopy";
+import { companyWideMembers } from "../../customize/memberCounts";

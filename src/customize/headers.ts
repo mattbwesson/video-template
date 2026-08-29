@@ -46,12 +46,17 @@ export type HeaderTreatment = {
  * What each header does with no override — i.e. exactly what the approved cut renders.
  *
  * The opacities are the values already in the stylesheets (`.hero::after` 0.65, the two
- * `-herowash` layers 0.78) and the logo flag matches which headers already carry a mark:
- * only the in-app banner does. Getting these wrong would silently restyle the baseline.
+ * `-herowash` layers 0.78). Getting these wrong would silently restyle the baseline.
+ *
+ * The phone header carries the customer's mark now (global 541, 1659 and 2727 — the home
+ * screen, the Spotlight tab, and the home screen again through the iris). It is the one
+ * screen in the cut that reads as "their app" and had nothing on it saying whose; the
+ * artwork, the placement and the width cap were already there (`.wm-heroM`) and only this
+ * flag was holding it back. Still an override, so an operator can switch it off per cut.
  */
 export const HEADER_DEFAULTS: Record<HeaderSlotKey, HeaderTreatment> = {
   "home.hero": { overlayHex: "", overlayOpacity: 0.65, showLogo: false },
-  "mobile.hero": { overlayHex: "", overlayOpacity: 0.78, showLogo: false },
+  "mobile.hero": { overlayHex: "", overlayOpacity: 0.78, showLogo: true },
   "app.hero": { overlayHex: "", overlayOpacity: 0.78, showLogo: true },
 };
 

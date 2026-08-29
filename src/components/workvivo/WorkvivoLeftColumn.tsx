@@ -125,15 +125,20 @@ export const WorkvivoLeftColumn: React.FC<WorkvivoLeftColumnProps> = ({ swap }) 
             </div>
             <div className="tbody">
               <div className="tbadge">
-                <SlotIcon slot="space.badge.0" size={31.43}>
-                  <Icon href="#i-ui-networking" width="31.43" height="31.43" />
-                </SlotIcon>
+                <div className="tbadge-fill">
+                  <SlotIcon slot="space.badge.0" size={31.43}>
+                    <Icon href="#i-ui-networking" width="31.43" height="31.43" />
+                  </SlotIcon>
+                </div>
               </div>
               <div className="joined">
                 <span className="jck">&#10003;</span>Joined
               </div>
               <div className="ttitle">{spaces[0].name}</div>
-              <div className="tmem">1,338 Members</div>
+              {/* Derived from `companySize`, not typed here — the same three spaces
+                  appear on the Spotlight tab and the in-app screen and must report
+                  the same counts. See memberCounts.ts. */}
+              <div className="tmem">{spaceMembers(copy.companySize, TRENDING_INDEX[0])}</div>
               <div className="tdesc">{spaces[0].description}</div>
             </div>
           </div>
@@ -151,15 +156,17 @@ export const WorkvivoLeftColumn: React.FC<WorkvivoLeftColumnProps> = ({ swap }) 
             </div>
             <div className="tbody">
               <div className="tbadge">
-                <SlotIcon slot="space.badge.1" size={31.43}>
-                  <Icon href="#i-ui-ai-innovation" width="31.43" height="31.43" />
-                </SlotIcon>
+                <div className="tbadge-fill">
+                  <SlotIcon slot="space.badge.1" size={31.43}>
+                    <Icon href="#i-ui-ai-innovation" width="31.43" height="31.43" />
+                  </SlotIcon>
+                </div>
               </div>
               <div className="joined">
                 <span className="jck">&#10003;</span>Joined
               </div>
               <div className="ttitle">{spaces[1].name}</div>
-              <div className="tmem">11,034 Members</div>
+              <div className="tmem">{spaceMembers(copy.companySize, TRENDING_INDEX[1])}</div>
               <div className="tdesc">{spaces[1].description}</div>
             </div>
           </div>
@@ -177,15 +184,17 @@ export const WorkvivoLeftColumn: React.FC<WorkvivoLeftColumnProps> = ({ swap }) 
             </div>
             <div className="tbody">
               <div className="tbadge">
-                <SlotIcon slot="space.badge.2" size={31.43}>
-                  <Icon href="#i-ui-charity" width="31.43" height="31.43" />
-                </SlotIcon>
+                <div className="tbadge-fill">
+                  <SlotIcon slot="space.badge.2" size={31.43}>
+                    <Icon href="#i-ui-charity" width="31.43" height="31.43" />
+                  </SlotIcon>
+                </div>
               </div>
               <div className="joined">
                 <span className="jck">&#10003;</span>Joined
               </div>
               <div className="ttitle">{spaces[2].name}</div>
-              <div className="tmem">5,768 Members</div>
+              <div className="tmem">{spaceMembers(copy.companySize, TRENDING_INDEX[2])}</div>
               <div className="tdesc">{spaces[2].description}</div>
             </div>
           </div>
@@ -351,3 +360,4 @@ export const WorkvivoLeftColumn: React.FC<WorkvivoLeftColumnProps> = ({ swap }) 
     </div>
   );
 };
+import { spaceMembers, TRENDING_INDEX } from "../../customize/memberCounts";

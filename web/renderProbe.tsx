@@ -9,6 +9,8 @@ import { WorkvivoAnalytics } from "../src/components/workvivo/WorkvivoAnalytics"
 import { WorkvivoSeerSurveyMobile } from "../src/components/workvivo/WorkvivoSeerSurveyMobile";
 import { WorkvivoSpaceFeed } from "../src/components/workvivo/WorkvivoSpaceFeed";
 import { CreateYourOwnScene } from "../src/CreateYourOwnScene";
+import { WorkvivoSpaces } from "../src/components/workvivo/WorkvivoSpaces";
+import { WorkvivoCatchMeUp } from "../src/components/workvivo/WorkvivoCatchMeUp";
 import { WorkvivoBillboardScreen } from "../src/components/workvivo/WorkvivoBillboardScreen";
 import { WorkvivoPostComposer } from "../src/components/workvivo/WorkvivoPostComposer";
 import "../src/components/workvivo/WorkvivoCatchMeUpStyles.css";
@@ -768,3 +770,101 @@ export const SparkleIconProbe: React.FC = () => (
     </Sequence>
   </CustomizationProvider>
 );
+
+/**
+ * The Spaces directory — do the white rings on the icon discs survive?
+ *
+ * `.sp-avatar` is a solid circle with `border: 3px solid #fff` and no clipped content, so
+ * it is the simplest possible version of the construction the HeadquartersScene rings were
+ * rebuilt to avoid. If the border paints here, borders on circles are fine and that rebuild
+ * was working around something else.
+ */
+export const SpacesRingProbe: React.FC = () => {
+  // `window.__ringOff` forces the border transparent, so the two renders differ by
+  // exactly the ring and nothing else. If the white-pixel counts match, it never drew.
+  const off = (window as unknown as { __ringOff?: boolean }).__ringOff;
+  return (
+    <CustomizationProvider input={{}}>
+      <AbsoluteFill style={{ background: "#010224" }}>
+        {off ? <style>{`.sp-avatar, .sp-trend-av { border-color: transparent !important; }`}</style> : null}
+        <WorkvivoSpaces />
+      </AbsoluteFill>
+    </CustomizationProvider>
+  );
+};
+
+/**
+ * Does `border` paint on a circular element in the export?
+ *
+ * Unresolved since the HeadquartersScene rings: a bordered circle survived in isolation
+ * but the ring was missing from the scene, and the fix sidestepped it (a white disc under
+ * inset content) without ever proving what failed. Three constructions, same geometry:
+ * a border, a box-shadow ring, and the disc-under-content pattern.
+ */
+export const RingProbe: React.FC = () => {
+  // Plain <div>s at absolute positions. An earlier version used inline <span>s as flex
+  // items and they collapsed — the export does not blockify flex items, which is the very
+  // bug documented in §"The layout engine is not Chromium's".
+  const at = (top: number): React.CSSProperties => ({
+    position: "absolute", left: 120, top, width: 160, height: 160, borderRadius: "50%",
+  });
+  return (
+    <AbsoluteFill style={{ background: "#101020" }}>
+      {/* A: border on the circle */}
+      <div style={{ ...at(40), background: "#7F39F3", border: "8px solid #fff", boxSizing: "border-box" }} />
+      {/* B: box-shadow spread ring */}
+      <div style={{ ...at(240), background: "#7F39F3", boxShadow: "0 0 0 8px #fff" }} />
+      {/* C: white disc with an inset coloured disc over it */}
+      <div style={{ ...at(440), background: "#fff" }}>
+        <div style={{ position: "absolute", inset: 8, borderRadius: "50%", background: "#7F39F3" }} />
+      </div>
+    </AbsoluteFill>
+  );
+};
+
+/**
+ * The Catch Me Up phone in both states, so the wizard's click targets can be counted.
+ *
+ * `window.__cmuOpen` picks whether the story overlay is up. With it open the two feed
+ * cards behind it must stop being targets, or the smaller of them takes the click.
+ */
+export const CmuTargetProbe: React.FC = () => {
+  const open = (window as unknown as { __cmuOpen?: boolean }).__cmuOpen ?? false;
+  return (
+    <CustomizationProvider input={{}}>
+      <AbsoluteFill style={{ background: "#101020", alignItems: "center", justifyContent: "center" }}>
+        <WorkvivoCatchMeUp storyOpen={open} activeSlide={1} />
+      </AbsoluteFill>
+    </CustomizationProvider>
+  );
+};
+
+/**
+ * Mount a probe component into the page and hand back its host, for DOM audits.
+ *
+ * Lives here rather than in a console snippet because React has to be resolved through
+ * the app's own module graph — importing it by bare specifier from the console fails, and
+ * importing a second copy is the "Invalid hook call" trap the render notes warn about.
+ */
+/**
+ * Mount a probe into the page at composition size and hand back its host.
+ *
+ * A concrete export rather than a console snippet because React has to resolve through
+ * the app's own module graph — importing it by bare specifier from the console fails, and
+ * importing a second copy is the "Invalid hook call" trap the render notes warn about.
+ *
+ * Positioned at 0,0 rather than off-screen: `elementFromPoint` needs real geometry inside
+ * the viewport, which is the whole point of mounting it.
+ */
+export const mountProbe = async (which: "composer" | "catchmeup"): Promise<HTMLElement> => {
+  const { createRoot } = await import("react-dom/client");
+  const host = document.createElement("div");
+  host.style.cssText =
+    "position:fixed;left:0;top:0;width:1920px;height:1080px;z-index:-1;opacity:0.01";
+  document.body.appendChild(host);
+  createRoot(host).render(
+    which === "composer" ? <ComposerProbe /> : <CmuTargetProbe />,
+  );
+  await new Promise((r) => setTimeout(r, 700));
+  return host;
+};

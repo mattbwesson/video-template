@@ -251,16 +251,31 @@
   margin-top: 46px;
 }
 
+/* The white stroke is a DISC UNDER the coloured fill, not a `border` on the circle.
+   Same construction as AvatarCircle in HeadquartersScene, and for the same reason: a
+   border on a circular element is the one thing in this file that has never been shown to
+   survive the in-browser export, and the ring is the whole point of the treatment. This
+   asks nothing of the renderer beyond `background` and `border-radius`.
+   `--sp-ring` is the stroke width, so a caller can scale the badge and its ring together
+   (the welcome card renders a 60px one at 2px). */
 .sp-avatar {
+  --sp-ring: 3px;
   width: 80px;
   height: 80px;
   border-radius: 50%;
+  background: #fff;
+  position: relative;
+  flex: none;
+}
+
+.sp-avatar > .sp-avatar-fill {
+  position: absolute;
+  inset: var(--sp-ring);
+  border-radius: 50%;
   background: var(--wv-brand, #7F39F3);
-  border: 3px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: none;
 }
 
 /* The reference offsets the button inside its own 26px top padding rather than centring
@@ -377,16 +392,25 @@
   gap: 10px;
 }
 
+/* Same disc-under-fill ring as .sp-avatar above. */
 .sp-trend-av {
+  --sp-ring: 2px;
   width: 52px;
   height: 52px;
   border-radius: 50%;
+  background: #fff;
+  position: relative;
+  flex: none;
+}
+
+.sp-trend-av > .sp-avatar-fill {
+  position: absolute;
+  inset: var(--sp-ring);
+  border-radius: 50%;
   background: var(--wv-brand, #7F39F3);
-  border: 2px solid #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex: none;
 }
 
 .sp-trend-name {

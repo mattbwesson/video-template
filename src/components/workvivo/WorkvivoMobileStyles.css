@@ -42,7 +42,12 @@
 }
 
 /* ---------- status bar ---------- */
-.wm-status {
+/* Self-chained on purpose, not a typo. `.wms-phone *` in WorkvivoMobileSpotlightStyles
+   resets padding on every descendant of the Spotlight phone; it is one class, same
+   specificity as `.wm-status`, and loads later, so it won. That is why all four call
+   sites used to repeat this padding inline — which in turn meant editing this rule looked
+   like it did nothing. Two classes beats the reset and keeps the value in one place. */
+.wm-status.wm-status {
   position: absolute;
   inset: 0 0 auto 0;
   height: 54px;
@@ -50,7 +55,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 32px 0 30px;
+  /* Tighter than the 30/32 it was: the time and the signal/wifi/battery cluster now sit
+     closer to the screen edges, the way a real status bar does.
+     These used to be repeated as an inline `paddingLeft/paddingRight` on all four call
+     sites, which silently beat this rule — the change looked applied in the stylesheet and
+     did nothing on screen. The inline copies are gone; this is the only place now. */
+  padding: 14px 18px 0 16px;
   color: #fff;
   box-sizing: border-box;
 }
@@ -162,10 +172,16 @@
   letter-spacing: -6px;
 }
 
+/* The avatar and the two round controls below are 25% smaller than they were (44 -> 33,
+   48 -> 36). Their `top` values are re-derived rather than left alone: both rows are
+   centred on y=86.4 — which is also where .wm-heroM puts the company mark — so shrinking
+   without moving would have dropped them below the logo's centre line.
+     avatar   86.4 - 33/2 = 69.9
+     controls 86.4 - 36/2 = 68.4  */
 .wm-avstack {
   position: absolute;
   left: 16px;
-  top: 64.4px;
+  top: 69.9px;
   display: flex;
   z-index: 5;
 }
@@ -175,8 +191,8 @@
    rules have to hold whether the child is the photo <img> or a placeholder <span>, and
    sizing an <img> needs object-fit as well — width/height alone would squash the crop. */
 .wm-avstack > * {
-  width: 44px;
-  height: 44px;
+  width: 33px;
+  height: 33px;
   border-radius: 50%;
   border: none;
   display: block;
@@ -189,22 +205,24 @@
 }
 
 .wm-avstack > *:nth-child(2) {
-  margin-left: -14px;
+  margin-left: -10.5px;
   background: linear-gradient(150deg, #E0A98B, #A55C46);
 }
 
 .wm-heroacts {
   position: absolute;
   right: 16px;
-  top: 62.4px;
+  top: 68.4px;
   display: flex;
-  gap: 12px;
+  /* Scaled with the buttons — a 12px gap between 36px circles reads much wider than the
+     same gap between 48px ones. */
+  gap: 9px;
   z-index: 5;
 }
 
 .wm-gbtn {
-  width: 48px;
-  height: 48px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.24);
   backdrop-filter: blur(6px);
@@ -225,18 +243,20 @@
   border-radius: 2px;
 }
 
+/* Both bars scale with the button and are re-centred in it: (36 - 15) / 2 = 10.5 across,
+   (36 - 1.95) / 2 = 17.025 down. */
 .wm-plus i:nth-child(1) {
-  width: 20px;
-  height: 2.6px;
-  left: 14px;
-  top: 22.7px;
+  width: 15px;
+  height: 1.95px;
+  left: 10.5px;
+  top: 17.025px;
 }
 
 .wm-plus i:nth-child(2) {
-  width: 2.6px;
-  height: 20px;
-  left: 22.7px;
-  top: 14px;
+  width: 1.95px;
+  height: 15px;
+  left: 17.025px;
+  top: 10.5px;
 }
 
 .wm-herotabs {
@@ -395,14 +415,28 @@
   padding: 12px;
   background: #fff;
   border-radius: 12px;
+  /* Lets the label below shrink inside the grid cell. Without it the flex item keeps its
+     min-content width and pushes the tile wider than its column. */
+  min-width: 0;
 }
 
+/* The label WRAPS rather than running off the tile.
+   The cell is 158px (328px of section width, two columns, 12px gap) and the label gets
+   80px of that once the 42px icon, the 12px gap and 12px of padding either side are
+   taken — but "Benefits Hub" wants ~88px and "Learning Centre" ~110px. With `nowrap` and
+   nothing clipping them they simply overflowed, and the right-hand column ran off the
+   screen edge.
+
+   Wrapping costs nothing here: the icon is 42px tall and two lines at 20px line-height
+   are 40px, so a two-line label still fits inside the tile's existing height and all four
+   stay level. */
 .wm-srow span {
   font-size: 14.5px;
   font-weight: 510;
   color: #111827;
   line-height: 20px;
-  white-space: nowrap;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .wm-rsq {

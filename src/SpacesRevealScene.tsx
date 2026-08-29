@@ -103,12 +103,6 @@ export const SpacesRevealScene: React.FC<SpacesRevealSceneProps> = ({ scale }) =
     { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
   );
 
-  // The card lights up under the press, so the click lands on something.
-  const press = interpolate(frame, [CLICK_AT - 2, CLICK_AT, CLICK_AT + 4], [0, 1, 0], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
-
   // Subtle scale-down after click leading into the 1549 Space page cut
   const exitScale = interpolate(frame, [74, 80], [1, 0.94], {
     extrapolateLeft: "clamp",
@@ -140,23 +134,10 @@ export const SpacesRevealScene: React.FC<SpacesRevealSceneProps> = ({ scale }) =
           <WorkvivoSpaces />
         </div>
 
-        {/* Press feedback, drawn over the card rather than inside WorkvivoSpaces — the
-            component has no interaction state and giving it one for a single frame of
-            video would be the wrong place to put it. */}
-        {press > 0 && (
-          <div
-            style={{
-              position: "absolute",
-              left: TARGET_X - (156 * z),
-              top: TARGET_Y - (165 * z),
-              width: 312 * z,
-              height: 329 * z,
-              borderRadius: 12 * z,
-              boxShadow: `0 0 0 ${3 * z}px rgba(97,3,237,${0.9 * press})`,
-              pointerEvents: "none",
-            }}
-          />
-        )}
+        {/* No press feedback on the card. There was a purple ring here — a 3px
+            rgba(97,3,237) box-shadow pulsed over ~6 frames on the click — and at this
+            speed it read as a stray stroke flashing on screen rather than as a button
+            responding. The cursor's own scale-down still carries the click. */}
       </AbsoluteFill>
 
       {/* Cursor sits outside the wiping panel — it is on the viewer's screen, not in the

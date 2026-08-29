@@ -302,7 +302,7 @@ const batchSchema = (keys: string[]): Record<string, unknown> => {
   };
 };
 
-/** Resolve `"quote.original"` / `"livestream.pills[]"` against the defaults object. */
+/** Resolve `"quote.original"` / `"livestream.chapters[]"` against the defaults object. */
 const readPath = (root: unknown, path: string): unknown => {
   let node: unknown = root;
   for (const seg of path.split(".")) {
@@ -385,7 +385,7 @@ type Overlong = { path: string; max: number; text: string };
 /**
  * Expand a limits path into every concrete path it names, with its current value.
  *
- * A path can contain `[]` at any depth — `livestream.pills[]` is a list of strings,
+ * A path can contain `[]` at any depth — `livestream.chapters[]` is a list of strings,
  * `feed.billboards[].title` a field inside a list of objects — so this walks segment by
  * segment and forks at each list rather than special-casing a trailing `[]`. Getting
  * that wrong is silent: over-long feed copy simply never gets repaired, and the first

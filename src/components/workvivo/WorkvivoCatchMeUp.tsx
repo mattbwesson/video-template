@@ -251,9 +251,18 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
               </button>
             </div>
 
+            {/* The two feed cards stop being click targets while the story is open.
+                They are still mounted — the story is an overlay, not a replacement — and
+                the wizard's hit-testing is deliberately geometric (`visibleBox` in
+                SwapOverlay checks clipping and opacity, never what is drawn on top, so
+                scrims over photographs do not hide them). Covered-but-marked meant the
+                card behind the story took the click, because targets are ordered smallest
+                on top and the card is smaller than the full-screen slide: the panel opened
+                on `catchup.N.title`, showed copy that was not on screen, and edited a card
+                the viewer could not see. */}
             <div className="wcmu-rail">
               <div className="wcmu-fcard">
-                <img data-vc-slot="cmu.feed.0"
+                <img data-vc-slot={storyOpen ? undefined : "cmu.feed.0"}
                   className="wcmu-img"
                   src={image("cmu.feed.0", staticFile("fillers/5b72ef3f8ea82faf108b4be0.webp"))}
                   style={{ objectFit: "cover" }}
@@ -266,7 +275,7 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                 </div>
               </div>
               <div className="wcmu-fcard">
-                <img data-vc-slot="cmu.feed.1"
+                <img data-vc-slot={storyOpen ? undefined : "cmu.feed.1"}
                   className="wcmu-img"
                   src={image("cmu.feed.1", staticFile("fillers/images (1).jpeg"))}
                   style={{ objectFit: "cover" }}

@@ -163,7 +163,7 @@ const WorkvivoMark = () => (
 const SharePointMark = () => (
   <InlineSvg
     className="whq-mark-sharepoint"
-    src={staticFile("img/integrations/icon-sharepoint.svg")}
+    src={staticFile("img/integrations/SharePoint.svg")}
   />
 );
 

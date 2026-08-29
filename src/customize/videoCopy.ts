@@ -26,6 +26,22 @@ import type { HeaderOverrides } from "./headers";
 export const BASELINE_COMPANY = "Spotify";
 
 export const COPY = defineCopy({
+  /**
+   * How big this employer is, as one of three bands.
+   *
+   * The only thing the model is asked about headcount. Every member count in the film is
+   * derived from it (see `memberCounts.ts`) rather than written per space: asking for a
+   * dozen independent numbers meant they never agreed with each other, and a 300-person
+   * agency could be handed a space with 28,000 people in it. An enum the model is good at
+   * answering, arithmetic the code is good at doing.
+   */
+  companySize: enumSlot({
+    default: "large",
+    options: ["small", "medium", "large"] as const,
+    guide:
+      "This company's size as an employer, by total headcount: 'small' under about 1,000 people, 'medium' up to about 10,000, 'large' above that. Judge the whole company, not one office or brand.",
+  }),
+
   /** The company the video is cut for. Everything else refers back to this. */
   companyName: text({
     default: BASELINE_COMPANY,
@@ -165,20 +181,11 @@ export const COPY = defineCopy({
       guide:
         "Four chapters an AI would have cut this company's all-hands into, in running order: a welcome, a look back at the period, the substance of what the business actually did, then what comes next. The third is where this company should be most recognisable.",
     }),
-    /** Three pills fanning out from behind the phone, starting at global 1380. */
-    pills: list({
-      length: 3,
-      defaults: ["LIVE REPLAY", "Smart Chapters", "Summarize with AI"],
-      of: text({
-        default: "LIVE REPLAY",
-        // Pill boxes are fixed-width (433 / 606 / 673px) because the reveal animation
-        // clips them against the phone's edge using their width. Text has to fit them.
-        max: 19,
-        guide: "A short feature name, title case (the first is upper case).",
-      }),
-      guide:
-        "Three capability labels for the replay experience. The first is a status badge and is upper case; the other two are AI features and are title case.",
-    }),
+    /*
+     * The three pills fanning out from behind the phone at global 1380 are NOT here —
+     * see `FIXED_COPY.livestreamPills`. They name Workvivo's own features, not anything
+     * about the customer.
+     */
   },
 
   /**
@@ -732,63 +739,58 @@ export const COPY = defineCopy({
      * Space page that opens takes its title from that entry rather than repeating it.
      * Keep the summit or flagship event there.
      */
+    /*
+     * No `members` field: every count in the film is derived from `companySize` — see
+     * memberCounts.ts. Asking for one number per space produced a set that never agreed
+     * with itself or with the company it was describing.
+     */
     directory: list({
       length: 10,
       defaults: [
         {
           name: "Leadership Corner",
-          members: "28,163 Members",
           description:
             "Leadership communications, AMAs, strategy updates, and All Hands content.",
         },
         {
           name: "Managers Network",
-          members: "3,655 Members",
           description: "Guidance, resources, and discussions for people leaders.",
         },
         {
           name: "Learning Hub",
-          members: "22,024 Members",
           description:
             "Training resources, workshops, certifications, and career development.",
         },
         {
           name: "Human Resources",
-          members: "3,296 Members",
           description:
             "Your destination for benefits, policies, career development, performance resources, and employee support.",
         },
         {
           name: "Annual Employee Summit",
-          members: "12,655 Members",
           description:
             "Everything you need to know, including agendas, speakers, key updates, and event resources.",
         },
         {
           name: "Customer Success Stories",
-          members: "3,824 Members",
           description: "Customer wins, case studies, and business impact stories.",
         },
         {
           name: "IT Support & Resources",
-          members: "9,412 Members",
           description: "Help desk guidance, service status, and how-to resources.",
         },
         {
           name: "Sales Enablement",
-          members: "5,108 Members",
           description:
             "Playbooks, competitive intel, and deal support for revenue teams.",
         },
         {
           name: "Run Club",
-          members: "1,977 Members",
           description:
             "Routes, race sign-ups, and training plans for runners of every pace.",
         },
         {
           name: "Wellbeing",
-          members: "14,206 Members",
           description:
             "Mental health support, benefits, and everyday wellbeing resources.",
         },
@@ -799,12 +801,6 @@ export const COPY = defineCopy({
           // 312px card at 19px bold, one line before it clips.
           max: 30,
           guide: "The name of an internal space. Title case, no full stop.",
-        }),
-        members: text({
-          default: "28,163 Members",
-          max: 18,
-          guide:
-            "A member count followed by the word Members, with a thousands separator — e.g. '3,655 Members'. Scale it to this company's real headcount: a company-wide space holds most of the workforce, a club holds a few hundred.",
         }),
         description: text({
           default:
@@ -829,12 +825,6 @@ export const COPY = defineCopy({
         multiline: true,
         guide:
           "The About text for the space the film clicks into — the fifth entry of `spaces.directory`. Two sentences: what the space is, then what people will find in it.",
-      }),
-      members: text({
-        default: "12,362 Members",
-        max: 18,
-        guide:
-          "The member count on the Space page. Should agree with the fifth entry of `spaces.directory`.",
       }),
       survey: {
         title: text({
@@ -1713,114 +1703,10 @@ export const COPY = defineCopy({
     }),
   },
 
-  /**
-   * The Employee Insights space and the article it links to, global 4066-4253.
+  /*
+   * The "Your Voice Matters" space is NOT here — see `FIXED_COPY.voice`. Its copy is a
+   * fixed beat of the film; only its photographs are per-customer.
    */
-  voice: {
-    space: {
-      name: text({
-        default: "Your Voice Matters",
-        // 1760px pane at 30px bold, one line.
-        max: 30,
-        guide:
-          "The name of the space where survey results are discussed. Title case, no full stop.",
-      }),
-      about: text({
-        default:
-          "A dedicated space to explore, discuss, and act on Employee Insights.",
-        max: 90,
-        guide: "One sentence on what the space is for. Ends in a full stop.",
-      }),
-      members: text({
-        default: "54,312 Members",
-        max: 18,
-        guide:
-          "The member count. This is a company-wide space, so it should be close to this company's whole workforce.",
-      }),
-    },
-    post: {
-      author: text({
-        default: "Lee Johnson",
-        max: 22,
-        guide: "Who posted the insights document. Not the main character.",
-      }),
-      space: text({
-        default: "Manager Insights Action Hub",
-        max: 30,
-        guide: "The sub-space chip above the post. Title case.",
-      }),
-      body: text({
-        default:
-          "We're sharing our latest insights and updates on the actions being taken based on the feedback we've received last week. This document highlights key themes, opportunities, and the steps we're taking to continue improving the employee experience.\nThank you to everyone who continues to share their perspectives! Your feedback helps guide meaningful change and shape the future of our organization \u{1F44F}",
-        // Two paragraphs in the 700px feed column at 16px; the newline is a real break.
-        max: 400,
-        multiline: true,
-        guide:
-          // "Two paragraphs" reads as 400-900 characters; the cap is 400 and the demo's own
-          // example lands on exactly 399, leaving nothing. Both halves have to be told they
-          // are short, or the second one runs off the end.
-          "A post sharing what the company is doing about survey feedback. Two SHORT paragraphs separated by a newline — under two hundred characters each: what the document covers, then a thank-you ending in a clapping emoji.",
-      }),
-      document: text({
-        default: "The Complete Guide to our HR System",
-        max: 40,
-        guide:
-          "The title of the attached document, shown on its cover and again as the caption below it.",
-      }),
-    },
-    comments: list({
-      length: 2,
-      defaults: [
-        { name: "Rachel Lopez", text: "Thanks for sharing!" },
-        { name: "Lee Johnson", text: "Was waiting for this one" },
-      ],
-      of: {
-        name: text({
-          default: "Rachel Lopez",
-          max: 22,
-          guide: "A colleague commenting. Not the main character.",
-        }),
-        text: text({
-          default: "Thanks for sharing!",
-          // One line at 14px in the comment row.
-          max: 34,
-          guide: "A short comment, the length people actually type.",
-        }),
-      },
-      guide: "Two brief comments under the post.",
-    }),
-    featured: {
-      headline: text({
-        default: "A New Hire's Guide to Success",
-        max: 34,
-        guide:
-          "The Featured News headline in the space's right rail. May repeat one of `feed.news`.",
-      }),
-      author: text({
-        default: "Megan Wilson",
-        max: 22,
-        guide: "Who wrote it.",
-      }),
-    },
-    event: {
-      title: text({
-        default: "Management Enablement Session",
-        // Two lines in the 260px rail at 15px.
-        max: 34,
-        guide: "An upcoming event in this space. Title case.",
-      }),
-      location: text({
-        default: "Conference Room B",
-        max: 24,
-        guide:
-          "Where it is held — a room, a site, or 'Livestream' if it is online.",
-      }),
-    },
-    /**
-     * The article the space links to, global 4110-4253, is NOT here: it is a fixed beat
-     * of the film — see `FIXED_COPY.feedbackArticle`.
-     */
-  },
 });
 
 /**
@@ -1859,6 +1745,59 @@ export const FIXED_COPY = {
    * what is on screen. Same reason the headquarters headline is fixed.
    */
   homeHeadlineLines: ["Personalized", "Homepage", "Experiences"] as const,
+  /**
+   * The three pills fanning out from behind the phone, global 1380-1477.
+   *
+   * A slot until it was locked, for the same reason as the line above: these are the
+   * PRODUCT's feature names. "Smart Chapters" and "Summarize with AI" are things Workvivo
+   * does — they are the same category as "Featured News" and "View All", which this table
+   * has always kept out of research — and "LIVE REPLAY" is a status badge. Asking a model
+   * for "three capability labels" only ever moved them away from what the shot is
+   * demonstrating, and a renamed feature is wrong on screen in a way a renamed space is
+   * not.
+   *
+   * All three move together: the scene reads them by index, and a list that is part
+   * researched and part fixed is a trap for whoever edits it next.
+   */
+  livestreamPills: ["LIVE REPLAY", "Smart Chapters", "Summarize with AI"] as const,
+  /**
+   * The "Your Voice Matters" space and the post on it, global 4066-4253.
+   *
+   * Locked at the client's request: this run is the survey-results story, and it always
+   * plays out on the same space with the same post and the same two comments. Rewriting
+   * the space's name or its post per tenant only ever moved it away from the beat the
+   * shot is showing, in the same way the livestream pills above did.
+   *
+   * Its PHOTOGRAPHS are still per-customer — `voice.banner.0`, `voice.doc.0` and the six
+   * `voice.face.N` avatars are image positions and untouched by this. Fixing the words
+   * and dealing the pictures is the whole point: the customer sees their own people on a
+   * screen whose story stays the one that was approved.
+   */
+  voice: {
+    space: {
+      name: "Your Voice Matters",
+      about: "A dedicated space to explore, discuss, and act on Employee Insights.",
+    },
+    post: {
+      author: "Lee Johnson",
+      space: "Manager Insights Action Hub",
+      body:
+        "We're sharing our latest insights and updates on the actions being taken based on the feedback we've received last week. This document highlights key themes, opportunities, and the steps we're taking to continue improving the employee experience.\nThank you to everyone who continues to share their perspectives! Your feedback helps guide meaningful change and shape the future of our organization \u{1F44F}",
+      document: "The Complete Guide to our HR System",
+    },
+    comments: [
+      { name: "Rachel Lopez", text: "Thanks for sharing!" },
+      { name: "Lee Johnson", text: "Was waiting for this one" },
+    ],
+    featured: {
+      headline: "A New Hire's Guide to Success",
+      author: "Megan Wilson",
+    },
+    event: {
+      title: "Management Enablement Session",
+      location: "Conference Room B",
+    },
+  },
   /**
    * The HQ Agent's own words, global 2268-2499 — the question typed into the ask bar and
    * the whole conversation that follows it. Locked at the client's request: this run is

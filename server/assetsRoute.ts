@@ -26,6 +26,9 @@ import path from "node:path";
 const FOLDERS: Record<string, string> = {
   // The trailing name really does contain spaces — it is the folder as shipped.
   "values-and-spaces": "img/values and spaces",
+  // Vendor marks for the Quick Links tiles. Fifty-odd of them, which is why the drawer
+  // filters this one.
+  integrations: "img/integrations",
 };
 
 const IMAGE_EXT = new Set([".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif"]);
@@ -57,11 +60,19 @@ export type AssetEntry = {
  */
 const labelFor = (file: string): string =>
   file
-    .replace(/^(values?|valeus|spaces?)[-_]/i, "")
+    // `icon-` is kept for safety rather than need: no file carries it today, but the
+    // folder is a drop-in directory and the next export from a design tool may.
+    .replace(/^(values?|valeus|spaces?|icon)[-_]/i, "")
     .replace(/[-_]+/g, " ")
     .replace(/\s+/g, " ")
     .trim()
-    .replace(/^./, (c) => c.toUpperCase());
+    // Title case, per word — this label is what the drawer writes into the tile's name
+    // when an operator picks an icon, so "active-directory" has to read "Active
+    // Directory" and not "Active directory".
+    //
+    // Only the FIRST letter is touched. Lowercasing the remainder would turn "ADP" into
+    // "Adp", and the folder carries several marks whose name is an initialism.
+    .replace(/(^|\s)(\S)/g, (_, sp: string, c: string) => sp + c.toUpperCase());
 
 const send = (res: ServerResponse, status: number, body: unknown): void => {
   const payload = JSON.stringify(body);

@@ -33,6 +33,10 @@ interface WorkvivoRightColumnProps {
 export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }) => {
   const { image, copy, theme } = useCustomization();
   const { sidePost, event, podcast, pages, weather } = copy.feed;
+  // The tile labels come from the same researched list the Spotlight tab draws, so a
+  // customer who does not use Workday is not told they do on one screen and not the
+  // other — and so swapping a tile's icon can be accompanied by renaming it.
+  const spotlightApps = copy.spotlight.apps;
   // Weather leads — it ends up on top, matching the left column's handoff direction so the
   // two columns read as the same move rather than mirrored ones.
   //
@@ -160,23 +164,31 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
           </div>
           <a className="viewall">View All</a>
         </div>
+        {/* Each tile's mark is a swappable position — the same three slots the mobile
+            home screen and the Spotlight tab draw, so a swap here lands on all three. */}
         <div className="qgrid">
           <div className="qtile">
-            <Icon href="#i-vendor-workday" width="62.86" height="62.86" />
-            <span>Workday</span>
+            <SlotIcon slot="app.quicklink.0" size={62.86}>
+              <Icon href="#i-vendor-workday" width="62.86" height="62.86" />
+            </SlotIcon>
+            <span>{spotlightApps[0]}</span>
           </div>
           <div className="qtile">
-            <Icon
-              href="#i-vendor-servicenow"
-              width="62.86"
-              height="62.86"
-              style={{ borderRadius: "14.286px", overflow: "hidden" }}
-            />
-            <span>Service Now</span>
+            <SlotIcon slot="app.quicklink.1" size={62.86}>
+              <Icon
+                href="#i-vendor-servicenow"
+                width="62.86"
+                height="62.86"
+                style={{ borderRadius: "14.286px", overflow: "hidden" }}
+              />
+            </SlotIcon>
+            <span>{spotlightApps[1]}</span>
           </div>
           <div className="qtile">
-            <img src={staticFile("img/zoomicon.png")} width="62.86" height="62.86" alt="" />
-            <span>Zoom</span>
+            <SlotIcon slot="app.quicklink.2" size={62.86}>
+              <img src={staticFile("img/zoomicon.png")} width="62.86" height="62.86" alt="" />
+            </SlotIcon>
+            <span>{spotlightApps[2]}</span>
           </div>
         </div>
       </section>
@@ -202,15 +214,18 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         </div>
         <div className="tbody">
           <div className="tbadge">
-            <SlotIcon slot="space.badge.3" size={31.43}>
-              <Icon href="#i-ui-run-club" width="31.43" height="31.43" />
-            </SlotIcon>
+            <div className="tbadge-fill">
+              <SlotIcon slot="space.badge.3" size={31.43}>
+                <Icon href="#i-ui-run-club" width="31.43" height="31.43" />
+              </SlotIcon>
+            </div>
           </div>
           <div className="joined">
             <span className="jck">&#10003;</span>Joined
           </div>
           <div className="ttitle">Run Club</div>
-          <div className="tmem">648 Members</div>
+          {/* A club, not a department — its own ratio. See memberCounts.ts. */}
+          <div className="tmem">{clubMembers(copy.companySize)}</div>
           <div className="tdesc">
             For runners of every level. Share routes, training tips, race updates, and celebrate milestones together.
           </div>
@@ -313,3 +328,4 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
     </div>
   );
 };
+import { clubMembers } from "../../customize/memberCounts";

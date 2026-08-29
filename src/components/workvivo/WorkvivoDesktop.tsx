@@ -279,7 +279,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       </span>
                       <span className="wvd-joined">✓ Joined</span>
                       <div className="wvd-tname">{spaces[0].name}</div>
-                      <div className="wvd-tmem">1,338 Members</div>
+                      <div className="wvd-tmem">{spaceMembers(copy.companySize, TRENDING_INDEX[0])}</div>
                       <div className="wvd-tdesc">{spaces[0].description}</div>
                     </div>
                   </div>
@@ -520,3 +520,4 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
     </div>
   );
 };
+import { spaceMembers, TRENDING_INDEX } from "../../customize/memberCounts";

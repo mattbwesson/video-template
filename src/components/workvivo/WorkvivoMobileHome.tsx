@@ -164,14 +164,28 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             {/* Quick Links */}
             <div className="wm-sec">
               <div className="wm-shead"><h2>Quick Links</h2><a href="#">View All</a></div>
+              {/* Same three `app.quicklink` slots the desktop homepage and the Spotlight
+                  tab draw — one swap, three screens. */}
               <div className="wm-qrow">
-                <div className="wm-qtile"><SymbolSvg width="56" height="56" href="#i-vendor-workday" /><span>Workday</span></div>
-                <div className="wm-qtile"><SymbolSvg className="wm-logo" width="56" height="56" href="#i-vendor-servicenow" /><span>Service Now</span></div>
                 <div className="wm-qtile">
-                  {/* The real mark, as at 1664 on the Spotlight tab — this tile used to
-                      draw the word "zoom" on a blue square as a stand-in. */}
-                  <img className="wm-zoomph" src={staticFile("img/zoomicon.png")} width={56} height={56} alt="" />
-                  <span>Zoom</span>
+                  <SlotIcon slot="app.quicklink.0" size={56}>
+                    <SymbolSvg width="56" height="56" href="#i-vendor-workday" />
+                  </SlotIcon>
+                  <span>{copy.spotlight.apps[0]}</span>
+                </div>
+                <div className="wm-qtile">
+                  <SlotIcon slot="app.quicklink.1" size={56}>
+                    <SymbolSvg className="wm-logo" width="56" height="56" href="#i-vendor-servicenow" />
+                  </SlotIcon>
+                  <span>{copy.spotlight.apps[1]}</span>
+                </div>
+                <div className="wm-qtile">
+                  <SlotIcon slot="app.quicklink.2" size={56}>
+                    {/* The real mark, as at 1664 on the Spotlight tab — this tile used to
+                        draw the word "zoom" on a blue square as a stand-in. */}
+                    <img className="wm-zoomph" src={staticFile("img/zoomicon.png")} width={56} height={56} alt="" />
+                  </SlotIcon>
+                  <span>{copy.spotlight.apps[2]}</span>
                 </div>
               </div>
             </div>
@@ -274,7 +288,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
           <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
           <div className="wm-heroacts">
             <div className="wm-gbtn wm-plus"><i/><i/></div>
-            <div className="wm-gbtn"><SymbolSvg width="22" height="22" href="#i-ui-employee-standalone" /></div>
+            <div className="wm-gbtn"><SymbolSvg width="16.5" height="16.5" href="#i-ui-employee-standalone" /></div>
           </div>
           <div className="wm-herotabs">
             <a href="#">Feed</a>
@@ -286,7 +300,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             is what the Player paints by; the in-browser export paints DOM order and
             ignores sibling z-index, so the order here has to agree with the ladder or
             the export buries the status bar under the header photo. */}
-        <div className="wm-status" style={{ paddingLeft: 30, paddingRight: 32 }}>
+        <div className="wm-status">
           <div className="wm-time">9:41</div>
           <div className="wm-sysico">
             <SymbolSvg width="17" height="11" href="#i-signal" />
@@ -299,6 +313,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
   );
 };
 import { GlassRing } from "./GlassRing";
+import { SlotIcon } from "../../customize/SlotIcon";
 
 // Feed this file's symbols into the inline registry (symbolRegistry.tsx): the hidden
 // sprite above cannot be referenced across <svg> roots in the in-browser export, so

@@ -153,6 +153,18 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
   const { before, after } = splitAroundName(copy.composed.body, copy.composed.recipient);
 
   const showTray = stage === "tray" || stage === "values";
+  /**
+   * The Select Value overlay is up, so nothing behind it is clickable.
+   *
+   * `.pc-scrim` is `inset: 0` — it covers the whole composer — but the composer stays
+   * mounted underneath, and a marked element that a viewer cannot see is still a target.
+   * The wizard's hit-testing is geometric (clipping and opacity, never what is drawn on
+   * top), and it puts the SMALLEST target topmost, so the 24px recipient avatar behind
+   * this modal outranks every value row in front of it. Same failure the Catch Me Up
+   * story had: the panel opens on copy that is not on screen and edits something the
+   * viewer cannot see change.
+   */
+  const valuesOpen = stage === "values";
 
   // 0 -> 1 through one entrance, replicating `animation: <dur> <ease> <delay> both` off the
   // frame the composer view appeared. `both` fill = clamped at each end, exactly interpolate's
@@ -255,25 +267,21 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
         {after}
       </div>
 
-      {/* Real <img> elements, not `background: url(...)`. A photo set as a CSS background
-          never paints in the in-browser export — the tray came out as two empty tiles with
-          the edit and remove badges floating on nothing. The slot stays on the wrapper so
-          the swap overlay still measures the tile, not the photo. */}
+      {/* ONE attachment, not two. The post being written here lands on the activity feed a
+          few seconds later (WorkvivoDesktop, `app.post.0`) carrying a single image, so a
+          tray holding two promised something the next shot did not deliver. The one kept is
+          that same slot, so the picture in the tray is the picture that posts.
+
+          A real <img>, not `background: url(...)`: a photo set as a CSS background never
+          paints in the in-browser export — the tray came out as empty tiles with the edit
+          and remove badges floating on nothing. The slot stays on the wrapper so the swap
+          overlay still measures the tile, not the photo. */}
       {showTray && (
         <div className="pc-tray">
-          <div data-vc-slot="app.post.0" className="pc-thumb">
+          <div data-vc-slot={valuesOpen ? undefined : "app.post.0"} className="pc-thumb">
             <img
               className="pc-thumb-img"
               src={image("app.post.0", staticFile("img/workvivo/hero_banner.png"))}
-              alt=""
-            />
-            <span className="pc-badge pc-edit"><span className="pc-g-pen"><i /><i /></span></span>
-            <span className="pc-badge pc-kill"><span className="pc-g-x"><i /><i /></span></span>
-          </div>
-          <div data-vc-slot="composer.tray.0" className="pc-thumb">
-            <img
-              className="pc-thumb-img"
-              src={image("composer.tray.0", staticFile("img/workvivo/post_virgin.png"))}
               alt=""
             />
             <span className="pc-badge pc-edit"><span className="pc-g-pen"><i /><i /></span></span>
@@ -286,7 +294,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
         <svg width="20" height="20" style={{ color: "#4B5563" }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3" />
         </svg>
-        <img data-vc-slot="composer.face.0"
+        <img data-vc-slot={valuesOpen ? undefined : "composer.face.0"}
           src={image("composer.face.0", staticFile("img/avatar-3.jpeg"))}
           alt={copy.composed.recipient}
           style={{ width: 24, height: 24, borderRadius: "50%", objectFit: "cover", display: "block" }}

@@ -3,6 +3,7 @@ import { CursorArrow } from "./components/CursorArrow";
 import { AbsoluteFill, Easing, Img, interpolate, Sequence, staticFile, useCurrentFrame } from "remotion";
 import { MobileClick, WorkvivoLiveReplay, WorkvivoLivestream } from "./components/workvivo";
 import { useCustomization } from "./customize/CustomizationProvider";
+import { FIXED_COPY } from "./customize/videoCopy";
 
 /**
  * The desktop livestream player on the brand colour, revealed as the closing circular mask on
@@ -136,7 +137,8 @@ type Pill = {
 };
 
 /**
- * Geometry only — the labels come from `copy.livestream.pills`, in this order.
+ * Geometry only — the labels come from `FIXED_COPY.livestreamPills`, in this order.
+ * Fixed, not researched: they are Workvivo's own feature names.
  *
  * `width` is fixed rather than shrink-to-fit because the reveal depends on it: a pill
  * starts tucked so its RIGHT edge sits on the phone's resting right edge, and that start
@@ -177,7 +179,7 @@ export const LivestreamScene: React.FC = () => {
   const { copy, theme } = useCustomization();
   const pills: Pill[] = PILLS.map((geometry, i) => ({
     ...geometry,
-    label: copy.livestream.pills[i],
+    label: FIXED_COPY.livestreamPills[i],
   }));
 
   const enterY = interpolate(frame, [0, ENTER_END], [STAGE_HEIGHT, 0], {

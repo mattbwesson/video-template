@@ -4,7 +4,7 @@ import { FramingStage } from "./FramingStage";
 import { loadAssets, type AssetEntry } from "./assets";
 import { isDefaultFraming, type Framing } from "./framing";
 import { readImages, type Upload } from "./uploads";
-import { ICON_LIBRARY } from "../src/customize/icons";
+import { iconLibraryFor } from "../src/customize/icons";
 import { textSlotAt, readCopyText } from "../src/customize/copyPaths";
 import type { Editable } from "../src/customize/editables";
 import type { ResolvedHeader, HeaderTreatment } from "../src/customize/headers";
@@ -138,7 +138,9 @@ export const EditPanel: React.FC<{
   copyOverrides: Record<string, string>;
   onAssignImage: (url: string) => void;
   onAddShots: (added: Upload[]) => void;
-  onAssignIcon: (path: string) => void;
+  /** `label` is the icon's name, derived from its filename — see `labelFor` in
+   *  server/assetsRoute.ts. The Quick Links tiles write it into their own caption. */
+  onAssignIcon: (path: string, label: string) => void;
   onResetIcon: () => void;
   onEditHeader: (patch: Partial<HeaderTreatment>) => void;
   onEditText: (path: string, value: string) => void;
@@ -166,6 +168,7 @@ export const EditPanel: React.FC<{
   const scroller = useRef<HTMLDivElement>(null);
   const [icons, setIcons] = useState<AssetEntry[] | null>(null);
   const [iconError, setIconError] = useState<string | null>(null);
+  const [iconQuery, setIconQuery] = useState("");
 
   const has = {
     image: Boolean(editable.image),
@@ -195,11 +198,17 @@ export const EditPanel: React.FC<{
   // A new component means a new panel, even though React reuses this instance.
   useEffect(() => setOpen(null), [editable.key]);
 
+  // Which set to offer depends on the position: a space badge gets Workvivo's own
+  // artwork, a Quick Links tile gets vendor marks. Keyed on the slot so switching between
+  // two components with different libraries refetches rather than showing the last one.
+  const iconLibrary = editable.icon ? iconLibraryFor(editable.icon) : null;
+
   useEffect(() => {
-    if (!has.icon) return;
+    if (!iconLibrary) return;
     let live = true;
     setIconError(null);
-    loadAssets(ICON_LIBRARY)
+    setIcons(null);
+    loadAssets(iconLibrary)
       .then((list) => live && setIcons(list))
       .catch((err: Error) => live && setIconError(err.message));
     // Cleanup rather than an AbortController: the fetch is shared and cached across every
@@ -207,7 +216,35 @@ export const EditPanel: React.FC<{
     return () => {
       live = false;
     };
-  }, [has.icon]);
+  }, [iconLibrary]);
+
+  // A new component means an empty box, not last component's search still applied.
+  useEffect(() => setIconQuery(""), [editable.key]);
+
+  /**
+   * Live filter over the icon set.
+   *
+   * Matches the tidied label AND the raw filename, because they differ often enough to
+   * matter — "icon-sharepoint" labels as "Sharepoint", and someone typing "x-twitter"
+   * from memory of the file should still find it. Case- and separator-insensitive, so
+   * "activedirectory" finds `active-directory.svg`.
+   */
+  const shownIcons = useMemo(() => {
+    if (!icons) return null;
+    const q = iconQuery.trim().toLowerCase().replace(/[\s_-]+/g, "");
+    if (!q) return icons;
+    return icons.filter((ic) =>
+      `${ic.label} ${ic.file}`.toLowerCase().replace(/[\s_-]+/g, "").includes(q),
+    );
+  }, [icons, iconQuery]);
+
+  /**
+   * Only worth a search box when the set is big enough to scroll past.
+   *
+   * The values-and-spaces set is a dozen icons the operator can see at once; the
+   * integrations set is fifty-odd. A box over twelve tiles is clutter.
+   */
+  const iconSearchable = (icons?.length ?? 0) > 16;
 
   const toggle = (id: SectionId) => setOpen((cur) => (cur === id ? null : id));
 
@@ -417,10 +454,29 @@ export const EditPanel: React.FC<{
               {!iconError && icons === null && (
                 <p className="vc-dr-note">Loading icons…</p>
               )}
-              {icons !== null && (
-                <div className="vc-icgrid">
+              {icons !== null && iconSearchable && (
+                <input
+                  className="vc-icsearch"
+                  type="search"
+                  value={iconQuery}
+                  placeholder={`Search ${icons.length} icons…`}
+                  aria-label="Filter icons"
+                  onChange={(e) => setIconQuery(e.target.value)}
+                />
+              )}
+              {shownIcons !== null && shownIcons.length === 0 && (
+                <p className="vc-dr-note">
+                  Nothing matches &ldquo;{iconQuery.trim()}&rdquo;.
+                </p>
+              )}
+              {shownIcons !== null && (
+                <div
+                  className={`vc-icgrid${iconLibrary === "integrations" ? " vc-icgrid-logos" : ""}`}
+                >
                   {/* The way back to the artwork the scene ships with. First, and marked
-                      when nothing is pinned, so "I have not changed this" is visible. */}
+                      when nothing is pinned, so "I have not changed this" is visible. It
+                      is not filtered out by a search — it is not one of the icons, and
+                      losing the undo because you typed is the wrong trade. */}
                   <button
                     className={`vc-icbtn vc-icnone${currentIcon ? "" : " vc-on"}`}
                     title="The original icon"
@@ -430,7 +486,7 @@ export const EditPanel: React.FC<{
                   >
                     —
                   </button>
-                  {icons.map((ic) => {
+                  {shownIcons.map((ic) => {
                     const cur = ic.path === currentIcon;
                     return (
                       <button
@@ -439,7 +495,7 @@ export const EditPanel: React.FC<{
                         title={ic.label}
                         aria-label={`Use ${ic.label}`}
                         aria-pressed={cur}
-                        onClick={() => onAssignIcon(ic.path)}
+                        onClick={() => onAssignIcon(ic.path, ic.label)}
                       >
                         <img src={ic.url} alt="" />
                       </button>

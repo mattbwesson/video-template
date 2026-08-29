@@ -135,6 +135,22 @@ const SWIPE_EASE = Easing.bezier(0.81, 0.01, 0.18, 1.00);
  * draws. Declared here rather than imported so neither component owns the other's
  * layout, and so adding a sixth condition breaks both call sites at once.
  */
+/**
+ * Keep a hyphenated word whole across a line break.
+ *
+ * A normal hyphen is a break opportunity, so "Global All-Hands & Kickoff" can wrap as
+ * "Global All-" / "Hands & Kickoff", which reads as a typo rather than a line break. CSS
+ * cannot switch that off — `hyphens: none` governs AUTOMATIC hyphenation, not breaks at a
+ * hyphen that is already in the string — so the character itself has to change: U+2011
+ * NON-BREAKING HYPHEN draws identically and carries no break opportunity.
+ *
+ * Applied at the render site rather than to the default string, so a researched title
+ * ("Field-Team Kickoff", "Q3 All-Hands") gets the same treatment. Only hyphens BETWEEN
+ * word characters are swapped, which leaves dashes used as punctuation alone.
+ */
+const keepHyphensWhole = (s: string): string =>
+  s.replace(/(\w)-(\w)/g, "$1\u2011$2");
+
 const BILLBOARD_WEATHER_ICON: Record<
   WorkvivoCopy["feed"]["weather"]["condition"],
   string
@@ -416,7 +432,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                 <div className="wbb-date-d">10</div>
               </div>
               <div className="wbb-event-copy">
-                <div className="wbb-card-title">{eventTitle ?? signage.event.title}</div>
+                <div className="wbb-card-title">{keepHyphensWhole(eventTitle ?? signage.event.title)}</div>
                 <div className="wbb-event-meta">
                   <span>
                     <Icon href="#i-ui-everyone" width={12} height={12} />

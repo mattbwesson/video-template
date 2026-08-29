@@ -262,12 +262,30 @@ export const Reveal: React.FC<{
     // `state` in full, because `resolveSlotSource` reads the overrides and the shots too.
   }, [state, dealt, setBakes]);
 
+  /**
+   * Pin an icon to the open position — and, for a Quick Links tile, rename it to match.
+   *
+   * A tile is a mark AND the name under it. Picking Slack and being left with a tile that
+   * still says "Service Now" is not a swap, it is a bug the operator then has to notice
+   * and fix by hand. The name comes from the icon's own filename (`labelFor`), which is
+   * the only thing that actually knows what was picked.
+   *
+   * Written as an override rather than silently: it lands in `copyOverrides` like any
+   * other edit, so the Text field shows it and the operator can still change it after.
+   */
   const assignIcon = useCallback(
-    (path: string) => {
+    (path: string, label: string) => {
       if (!editing?.icon) return;
-      patch({ iconOverrides: { ...state.iconOverrides, [editing.icon]: path } });
+      const next: Partial<WizardState> = {
+        iconOverrides: { ...state.iconOverrides, [editing.icon]: path },
+      };
+      const caption = editing.text.find((t) => t.path.startsWith("spotlight.apps."));
+      if (caption) {
+        next.copyOverrides = { ...state.copyOverrides, [caption.path]: label };
+      }
+      patch(next);
     },
-    [editing, patch, state.iconOverrides],
+    [editing, patch, state.iconOverrides, state.copyOverrides],
   );
 
   /**
@@ -279,10 +297,19 @@ export const Reveal: React.FC<{
    */
   const resetIcon = useCallback(() => {
     if (!editing?.icon) return;
-    const next = { ...state.iconOverrides };
-    delete next[editing.icon];
-    patch({ iconOverrides: next });
-  }, [editing, patch, state.iconOverrides]);
+    const icons = { ...state.iconOverrides };
+    delete icons[editing.icon];
+    const next: Partial<WizardState> = { iconOverrides: icons };
+    // The name that came WITH the icon goes back too, or "use the original" would restore
+    // Workday's mark under whatever the last pick was called.
+    const caption = editing.text.find((t) => t.path.startsWith("spotlight.apps."));
+    if (caption) {
+      const copy = { ...state.copyOverrides };
+      delete copy[caption.path];
+      next.copyOverrides = copy;
+    }
+    patch(next);
+  }, [editing, patch, state.iconOverrides, state.copyOverrides]);
 
   const editHeader = useCallback(
     // `next`, not `patch` — the outer `patch` is the wizard's own setter, and shadowing

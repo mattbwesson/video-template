@@ -384,6 +384,23 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
 .vc-icnone{background:var(--panel2);color:var(--mute);padding:0}
 .vc-icnone:hover{color:var(--txt)}
 
+/* Vendor marks, not Workvivo glyphs.
+   The disc above exists because the value and space icons are white silhouettes that need
+   a coloured ground. An integration logo brings its own colour and its own shape — a Slack
+   mark on a brand-green circle reads as a mistake — so this variant gives them a neutral
+   rounded tile instead, and drops the 22% padding that was there to keep a silhouette off
+   the disc's edge. */
+.vc-icgrid-logos .vc-icbtn{border-radius:9px;background:#fff;padding:14%}
+.vc-icgrid-logos .vc-icbtn.vc-on{box-shadow:0 0 0 2px var(--accent)}
+.vc-icgrid-logos .vc-icnone{background:var(--panel2);padding:0}
+
+/* Sits directly above the grid, so the list under it shortens as you type. */
+.vc-icsearch{width:100%;margin:0 0 8px;padding:7px 10px;border-radius:8px;
+  background:var(--panel2);color:var(--txt);border:1px solid transparent;
+  font:inherit;font-size:.85rem}
+.vc-icsearch::placeholder{color:var(--mute)}
+.vc-icsearch:focus{outline:none;border-color:var(--accent)}
+
 .vc-dr-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;max-height:34vh;overflow:auto;padding:2px}
 .vc-pick{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;background:var(--panel2);
   transition:.16s;display:block;cursor:pointer;border:0;padding:0}

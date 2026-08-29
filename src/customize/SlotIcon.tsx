@@ -2,6 +2,10 @@ import React from "react";
 import { Img } from "remotion";
 import { useCustomization } from "./CustomizationProvider";
 import { ICON_SLOT_ATTR, type IconSlotKey } from "./icons";
+import { InlineSvg } from "../components/InlineSvg";
+
+/** Overrides arrive as a `public/`-relative path, so the extension is all we have. */
+const isSvg = (url: string): boolean => /\.svg(\?|#|$)/i.test(url);
 
 /**
  * One swappable icon position: the operator's pick if they made one, otherwise the
@@ -41,12 +45,23 @@ export const SlotIcon: React.FC<{
       }}
     >
       {url ? (
-        <Img
-          src={url}
-          // `contain`, not `cover`: the shipped icons are not square (the star is 48×46)
-          // and cropping a glyph to fill a circle clips its points off.
-          style={{ width: "100%", height: "100%", objectFit: "contain" }}
-        />
+        isSvg(url) ? (
+          // An SVG has to be INLINED, never put behind an <Img>: delivered through an
+          // image element it exports corner-cropped, which for a vendor logo means
+          // whatever solid block sits in its top-left. The shipped sets are almost
+          // entirely SVG, so this is the normal path, not the exception.
+          // No explicit size — the wrapper below is already the drawn box, and the
+          // inner <svg> fills it at its own aspect (SVG's default preserveAspectRatio
+          // is the same meet-and-centre `objectFit: contain` gave the <Img>).
+          <InlineSvg src={url} style={{ width: "100%", height: "100%" }} />
+        ) : (
+          <Img
+            src={url}
+            // `contain`, not `cover`: the shipped icons are not square (the star is
+            // 48×46) and cropping a glyph to fill a circle clips its points off.
+            style={{ width: "100%", height: "100%", objectFit: "contain" }}
+          />
+        )
       ) : (
         children
       )}

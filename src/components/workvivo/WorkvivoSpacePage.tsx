@@ -372,7 +372,7 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           </div>
 
           <div className="wsp-members">
-            <div className="wsp-members-count">{page.members}</div>
+            <div className="wsp-members-count">{spaceMembers(copy.companySize, SPACE_PAGE_INDEX)}</div>
             <div className="wsp-avrow">
               {FACES.slice(0, 5).map((f, i) => (
                 <img
@@ -632,3 +632,4 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
     </div>
   );
 };
+import { spaceMembers, SPACE_PAGE_INDEX } from "../../customize/memberCounts";

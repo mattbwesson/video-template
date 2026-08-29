@@ -155,25 +155,27 @@ const NEWS_CHROME: { when: string; img: string; slot: ImageSlotKey }[] = [
 ];
 
 /**
- * The Spaces carousel: the same three spaces as `feed.spaces`, so only the badge, the
- * cover and the member count live here.
+ * The Spaces carousel: the same three spaces as `feed.spaces`, so only the badge and the
+ * cover live here.
+ *
+ * The member counts left: they are derived from `companySize` (memberCounts.ts) and shared
+ * with the homepage's Trending cards through TRENDING_INDEX, because these are the same
+ * three spaces and reporting different numbers for them on two screens is the bug that
+ * derivation exists to prevent.
  */
-const SPACE_CHROME: { members: string; icon: string; cover: string; slot: ImageSlotKey }[] =
+const SPACE_CHROME: { icon: string; cover: string; slot: ImageSlotKey }[] =
   [
     {
-      members: "1,338 Members",
       icon: "#i-ui-networking",
       cover: "img/workvivo/news_3.png",
       slot: "spotlight.space.0",
     },
     {
-      members: "11,034 Members",
       icon: "#i-ui-ai-innovation",
       cover: "img/workvivo/pages_1.png",
       slot: "spotlight.space.1",
     },
     {
-      members: "5,786 Members",
       icon: "#i-ui-charity",
       cover: "img/workvivo/post_1.png",
       slot: "spotlight.space.2",
@@ -253,12 +255,15 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
               <div className="wms-tiles">
                 {APP_MARKS.map((mark, i) => (
                   <div className="wms-tile" key={spotlight.apps[i]}>
+                    {/* Same three `app.quicklink` slots as both home screens. */}
                     <span className="wms-tile-ico">
-                      {mark.kind === "raster" ? (
-                        <img src={staticFile(mark.src)} alt="" />
-                      ) : (
-                        <Icon href={mark.href} width={68} height={68} />
-                      )}
+                      <SlotIcon slot={`app.quicklink.${i}` as IconSlotKey} size={68}>
+                        {mark.kind === "raster" ? (
+                          <img src={staticFile(mark.src)} alt="" />
+                        ) : (
+                          <Icon href={mark.href} width={68} height={68} />
+                        )}
+                      </SlotIcon>
                     </span>
                     <span className="wms-tile-label">{spotlight.apps[i]}</span>
                   </div>
@@ -360,7 +365,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                   </span>
                   <div className="wms-space-text">
                     <div className="wms-space-title">{copy.feed.spaces[i].name}</div>
-                    <div className="wms-space-members">{s.members}</div>
+                    <div className="wms-space-members">{spaceMembers(copy.companySize, TRENDING_INDEX[i])}</div>
                   </div>
                 </div>
               ))}
@@ -425,7 +430,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
         <div className="wm-avstack"><img src={person.avatarUrl} style={person.avatarFit} alt="" /></div>
         <div className="wm-heroacts">
           <div className="wm-gbtn wm-plus"><i/><i/></div>
-          <div className="wm-gbtn"><SymbolSvg width="22" height="22" href="#i-ui-employee-standalone" /></div>
+          <div className="wm-gbtn"><SymbolSvg width="16.5" height="16.5" href="#i-ui-employee-standalone" /></div>
         </div>
         <div className="wm-herotabs">
           <a href="#">Feed</a>
@@ -437,7 +442,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           is what the Player paints by; the in-browser export paints DOM order and
           ignores sibling z-index, so the order here has to agree with the ladder or
           the export buries the status bar under the header photo. */}
-      <div className="wm-status" style={{ paddingLeft: 30, paddingRight: 32 }}>
+      <div className="wm-status">
         <div className="wm-time">9:41</div>
         <div className="wm-sysico">
           <SymbolSvg width="17" height="11" href="#i-signal" />
@@ -468,3 +473,6 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
     </div>
   );
 };
+import { SlotIcon } from "../../customize/SlotIcon";
+import type { IconSlotKey } from "../../customize/icons";
+import { spaceMembers, TRENDING_INDEX } from "../../customize/memberCounts";

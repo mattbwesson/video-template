@@ -159,9 +159,16 @@ body{background:#F6F5F8;margin:0;padding:0;overflow-x:hidden;
 /* ---------- trending spaces (full card) ---------- */
 .tbody{position:relative;padding:45.714px 15.714px 18.571px}
 
+/* The white stroke is a disc UNDER the coloured fill, not a border — same construction as
+   .sp-avatar and AvatarCircle, and for the same reason: a border on a circular element is
+   the one ring treatment that has never been shown to survive the export. 3.214px is 3px at
+   this badge's scale (85.714 / 80), matching the Spaces directory's stroke.
+   No drop shadow: the white ring is what lifts the badge off the card now, and the two
+   together read as a stroke sitting in a dent. */
 .tbadge{position:absolute;left:15.714px;top:-55.714px;width:85.714px;height:85.714px;border-radius:50%;
-  background:var(--wv-brand, #44D760);display:flex;align-items:center;justify-content:center;z-index:3;
-  box-shadow:0 1.429px 5.714px rgba(0,0,0,.18)}
+  background:#fff;z-index:3}
+.tbadge > .tbadge-fill{position:absolute;inset:3.214px;border-radius:50%;
+  background:var(--wv-brand, #44D760);display:flex;align-items:center;justify-content:center}
 .joined{position:absolute;right:15.714px;top:-27.143px;display:inline-flex;align-items:center;gap:5.71px;
   padding:7.62px 15.24px;border-radius: 17px;background:#F0E6FE;color:#6103ED;font-size:13.33px;font-weight:500;line-height:19.05px;
   box-shadow:0 0.95px 1.90px rgba(0,0,0,.06),0 0.95px 2.86px rgba(0,0,0,.10);z-index:3}

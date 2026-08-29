@@ -78,7 +78,7 @@ const spaceCards = (): Record<string, Extra> =>
       {
         text: [
           { path: `spaces.directory.${i}.name`, label: "Space name" },
-          { path: `spaces.directory.${i}.members`, label: "Members" },
+          // No "Members" row: the counts are derived from `companySize`, not written.
           { path: `spaces.directory.${i}.description`, label: "Description" },
         ],
       } satisfies Extra,
@@ -300,7 +300,6 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
     text: [
       { path: "spaces.directory.4.name", label: "Space name" },
       { path: "spaces.page.about", label: "About" },
-      { path: "spaces.page.members", label: "Members" },
     ],
   },
   "spacepage.survey.0": {
@@ -541,37 +540,12 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
   },
 
   // --- global 4066-4253: the Employee Insights space and its article ----------------------
-  "voice.banner.0": {
-    text: [
-      { path: "voice.space.name", label: "Space name" },
-      { path: "voice.space.about", label: "About" },
-      { path: "voice.space.members", label: "Members" },
-    ],
-  },
-  "voice.doc.0": {
-    text: [
-      { path: "voice.post.author", label: "Posted by" },
-      { path: "voice.post.space", label: "Sub-space" },
-      { path: "voice.post.body", label: "Post" },
-      { path: "voice.post.document", label: "Document" },
-      { path: "voice.comments.0.name", label: "Comment 1 by" },
-      { path: "voice.comments.0.text", label: "Comment 1" },
-      { path: "voice.comments.1.name", label: "Comment 2 by" },
-      { path: "voice.comments.1.text", label: "Comment 2" },
-    ],
-  },
-  "voice.featured.0": {
-    text: [
-      { path: "voice.featured.headline", label: "Headline" },
-      { path: "voice.featured.author", label: "Author" },
-    ],
-  },
-  "voice.event.0": {
-    text: [
-      { path: "voice.event.title", label: "Event name" },
-      { path: "voice.event.location", label: "Location" },
-    ],
-  },
+  // The "Your Voice Matters" space carries no entries here. Its words are a fixed beat
+  // (FIXED_COPY.voice) so there is nothing to edit, but every photograph on the screen is
+  // still a position in its own right — `voice.banner.0`, `voice.doc.0`, `voice.featured.0`,
+  // `voice.event.0` and the six `voice.face.N` avatars are all built from IMAGE_SLOTS
+  // below, and each opens a picker with no Text section. Same shape as the feedback
+  // article beneath it.
   // The feedback article at 4110-4253 has no entry: the whole letter is a fixed beat of
   // the film (FIXED_COPY.feedbackArticle), so there is nothing here to edit.
 };
@@ -713,10 +687,11 @@ const TEXT_ONLY: Editable[] = [
  * clicking either the badge or the card photo should open that one card. The four value
  * discs have no photograph anywhere near them, so each is its own editable — an
  * icon-only one, which is what the panel's "draw only the sections that exist" rule was
- * written for.
+ * written for. The three Quick Links tiles are the same shape: a mark and the name under
+ * it, no photograph — so they open a panel with an icon picker and that one line.
  */
-const ICON_ONLY: IconSlotKey[] = ICON_SLOTS.filter((k) =>
-  k.startsWith("value.disc."),
+const ICON_ONLY: IconSlotKey[] = ICON_SLOTS.filter(
+  (k) => k.startsWith("value.disc.") || k.startsWith("app.quicklink."),
 );
 
 /**
@@ -726,8 +701,15 @@ const ICON_ONLY: IconSlotKey[] = ICON_SLOTS.filter((k) =>
  * a phrase with a picture next to it, and clicking the picture should let you fix the
  * phrase. Derived from the slot's index so the two lists cannot fall out of step.
  */
-const valueDiscText = (icon: IconSlotKey): TextFieldSpec[] => {
+const iconOnlyText = (icon: IconSlotKey): TextFieldSpec[] => {
   const n = icon.slice(icon.lastIndexOf(".") + 1);
+  // A Quick Links tile is a mark AND the name under it. Swapping the icon without being
+  // able to fix the label leaves a tile showing one vendor's logo above another's name,
+  // which is worse than not offering the swap. `spotlight.apps` is the same researched
+  // list all three screens draw, so renaming here renames everywhere.
+  if (icon.startsWith("app.quicklink.")) {
+    return [{ path: `spotlight.apps.${n}`, label: "App name" }];
+  }
   return [{ path: `composed.values.${n}`, label: "Value name" }];
 };
 
@@ -753,7 +735,7 @@ const build = (): Map<string, Editable> => {
       key: icon,
       label: iconSlotLabel(icon),
       icon,
-      text: valueDiscText(icon),
+      text: iconOnlyText(icon),
     });
   }
 

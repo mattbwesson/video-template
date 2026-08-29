@@ -114,7 +114,7 @@ const APPS: App[] = [
     tags: "IT Service Management",
     desc: "Connect to ServiceNow to sync IT tickets, employee service requests, and workflows.",
     status: "setup",
-    logo: "servicenow",
+    logo: "ServiceNow",
   },
 ];
 

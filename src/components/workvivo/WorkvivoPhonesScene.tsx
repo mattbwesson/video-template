@@ -221,7 +221,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
         <div className="wm-phone wv-glass-phone wp-glow">
           <GlassRing />
           <div className="wm-screen wp-screen-light">
-            <div className="wm-status wp-status-dark" style={{ paddingLeft: 30, paddingRight: 32 }}>
+            <div className="wm-status wp-status-dark">
               <div className="wm-time">9:41</div>
               <div className="wm-sysico">
                 <StatusIcons />
@@ -385,7 +385,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                 )}
               </div>
 
-              <div className="wm-status wp-status-call" style={{ paddingLeft: 30, paddingRight: 32 }}>
+              <div className="wm-status wp-status-call">
                 <div className="wm-time">9:41</div>
                 <div className="wm-sysico">
                   <StatusIcons />

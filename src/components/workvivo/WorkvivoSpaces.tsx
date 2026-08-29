@@ -146,7 +146,9 @@ const SpaceCard: React.FC<{
       </div>
       <div className="sp-card-mid">
         <span className="sp-avatar">
-          <Icon href={chrome.icon} width={40} height={40} />
+          <span className="sp-avatar-fill">
+            <Icon href={chrome.icon} width={40} height={40} />
+          </span>
         </span>
         <span className="sp-joinedwrap">
           <span className="sp-joined">
@@ -176,7 +178,7 @@ export const WorkvivoSpaces: React.FC = () => {
         chrome={chrome}
         cover={image(chrome.slot, staticFile(chrome.cover))}
         title={space.name}
-        members={space.members}
+        members={spaceMembers(copy.companySize, i)}
         desc={space.description}
       />
     );
@@ -201,8 +203,15 @@ export const WorkvivoSpaces: React.FC = () => {
         />
         <div className="sp-welcome">
           <div className="sp-welcome-head">
-            <span className="sp-avatar" style={{ width: 60, height: 60, borderWidth: 2 }}>
-              <Icon href="#i-ui-learning-hub" width={30} height={30} />
+            {/* `--sp-ring` rather than borderWidth: the stroke is a disc under the fill
+                now, so the ring's thickness is the fill's inset. */}
+            <span
+              className="sp-avatar"
+              style={{ width: 60, height: 60, ["--sp-ring" as string]: "2px" }}
+            >
+              <span className="sp-avatar-fill">
+                <Icon href="#i-ui-learning-hub" width={30} height={30} />
+              </span>
             </span>
             <div className="sp-welcome-title">{welcome.title}</div>
           </div>
@@ -238,7 +247,9 @@ export const WorkvivoSpaces: React.FC = () => {
                 <div className="sp-trend" key={t.icon}>
                   <div className="sp-trend-head">
                     <span className="sp-trend-av">
-                      <Icon href={t.icon} width={26} height={26} />
+                      <span className="sp-avatar-fill">
+                        <Icon href={t.icon} width={26} height={26} />
+                      </span>
                     </span>
                     <div className="sp-trend-name">{copy.feed.spaces[i].name}</div>
                     <span className={t.pillEmoji ? "sp-pill sp-pill-emoji" : "sp-pill"}>
@@ -256,3 +267,4 @@ export const WorkvivoSpaces: React.FC = () => {
     </div>
   );
 };
+import { spaceMembers } from "../../customize/memberCounts";
