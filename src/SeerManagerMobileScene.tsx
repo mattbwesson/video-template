@@ -6,6 +6,7 @@ import {
   interpolate,
   staticFile,
   useCurrentFrame,
+  useVideoConfig,
 } from "remotion";
 import { GlassRing } from "./components/workvivo/GlassRing";
 import { SeerScoreCard } from "./components/workvivo/WorkvivoSeerManagerInsights";
@@ -39,13 +40,26 @@ import "./components/workvivo/WorkvivoSeerManagerInsightsStyles.css";
  *
  *   0  - 13   the phone rises into the close framing
  *   13 - 85   it holds there and the page scrolls the whole way down
- *   85 - 135  it pulls back to its resting size while the page scrolls home, and the two
- *             cards and two props arrive in the room the pull-back opens up
- *   135+      held, which is what the iris at local 163 shuts on
+ *   85 - 105  it pulls back to its resting size in 800ms, the page scrolling home with it
+ *   97 - 139  the two cards and two props arrive in the room the pull-back opened
+ *   139+      held, which is what the iris at local 163 shuts on
+ *
+ * The pull-back is specified in MILLISECONDS, so it is converted against the composition's
+ * own fps rather than written down as a frame count — 800ms is 20 frames only while this
+ * renders at 25.
  */
 const T_SETTLE = 13;
 const T_SCROLL_END = 85;
-const T_ZOOMOUT_END = 135;
+const ZOOM_OUT_MS = 800;
+
+/**
+ * The props outlast the phone's move on purpose. Compressed into the same 800ms they read
+ * as one clatter of things appearing; running on past it, the camera settles first and the
+ * supporting elements populate after, which is the order the eye wants them in.
+ */
+const PROP_LEAD = 8;
+const PROP_STAGGER = 8;
+const PROP_RAMP = 18;
 
 /**
  * Placement, as supplied: centre and size in percent of the 1920x1080 frame.
@@ -102,9 +116,32 @@ const ZOOM = {
 /** How far the phone travels up into that framing over the first 13 frames. */
 const RISE = 190;
 
-/** The glass props, positioned off the reference's own proportions. */
-const BUBBLE = { cx: 25.0, cy: 31.4, size: 196 };
-const ARROW = { cx: 65.9, cy: 73.4, size: 190 };
+/**
+ * The glass props, positioned off the reference's own proportions and nudged 25px right of
+ * it. Sizes are half again the reference's, which is what lets them read as objects in the
+ * room rather than as icons pinned to the background.
+ */
+const PROP_DX = 25;
+const BUBBLE = { cx: 25.0, cy: 31.4, size: 294 };
+const ARROW = { cx: 65.9, cy: 73.4, size: 285 };
+
+/**
+ * The ambient float the glass props never quite settle out of, lifted from
+ * ContentListScreen so the two scenes' props behave alike: a 13-second loop, with the
+ * horizontal running at twice the vertical's rate so the path is a lazy figure-of-eight
+ * rather than a circle. `seed` staggers the two so they are never in step.
+ */
+const floatAt = (seconds: number, seed: number) => {
+  const phase = (((seconds + seed) % 13) / 13) * Math.PI * 2;
+  return {
+    dx: Math.sin(phase * 2) * 7,
+    dy: Math.sin(phase) * 14,
+    rot: Math.sin(phase) * 3,
+  };
+};
+
+/** The overshoot a card lands on — past its mark, then back. */
+const settleEase = Easing.bezier(0.22, 1.25, 0.5, 1);
 
 /**
  * How far the phone's page travels, in screen px — the column's height less the window
@@ -115,29 +152,34 @@ const SCROLL_END = 671;
 
 const ease = Easing.bezier(0.16, 1, 0.3, 1);
 
-/** A staggered fade-and-rise. `delay` is in frames from the scene's own start. */
-const useEntrance = (delay: number, rise = 34) => {
-  const frame = useCurrentFrame();
-  const t = interpolate(frame, [delay, delay + 20], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: ease,
-  });
-  return { opacity: t, y: (1 - t) * rise };
-};
+/**
+ * The pull-back's own curve, and a markedly different shape from the house easing: where
+ * that one is 97% done by its midpoint, this holds low and then leaves late and hard. Over
+ * 800ms that reads as a camera being pulled back rather than a card snapping to a mark.
+ *
+ * The -0.01 control point is nominal anticipation only — the curve barely dips below zero,
+ * so nothing visibly undershoots. Remotion constrains the two x values to [0, 1] and leaves
+ * y alone, so this is accepted as written.
+ */
+const easeOut = Easing.bezier(0.81, -0.01, 0.16, 1.0);
 
 export const SeerManagerMobileScene: React.FC = () => {
   const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+
+  /** 800ms in this composition's frames. */
+  const zoomOutEnd = T_SCROLL_END + Math.round((ZOOM_OUT_MS / 1000) * fps);
+  const seconds = frame / fps;
 
   /**
    * The pull-back, 0 at the close framing and 1 at rest. Everything about the phone's
    * placement is this one number, so the move cannot come apart into a scale that finishes
    * before the position does.
    */
-  const out = interpolate(frame, [T_SCROLL_END, T_ZOOMOUT_END], [0, 1], {
+  const out = interpolate(frame, [T_SCROLL_END, zoomOutEnd], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
-    easing: ease,
+    easing: easeOut,
   });
   const lerp = (from: number, to: number) => from + (to - from) * out;
 
@@ -156,7 +198,7 @@ export const SeerManagerMobileScene: React.FC = () => {
    */
   const scrollY = interpolate(
     frame,
-    [T_SETTLE, T_SCROLL_END, T_ZOOMOUT_END],
+    [T_SETTLE, T_SCROLL_END, zoomOutEnd],
     [0, SCROLL_END, 0],
     {
       extrapolateLeft: "clamp",
@@ -165,11 +207,36 @@ export const SeerManagerMobileScene: React.FC = () => {
     },
   );
 
-  // The props arrive into the space the pull-back opens, staggered across it.
-  const bubble = useEntrance(T_SCROLL_END + 3, 26);
-  const rate = useEntrance(T_SCROLL_END + 11, 30);
-  const score = useEntrance(T_SCROLL_END + 19, 30);
-  const arrow = useEntrance(T_SCROLL_END + 27, 26);
+  /**
+   * One arrival, with four things moving at once rather than a fade and a rise: it comes up,
+   * drifts in toward the phone, and lands on a scale that goes a little past its mark before
+   * settling. `dx` is signed, so each card travels in from its own side of the frame.
+   */
+  const arrive = (index: number, dx: number) => {
+    const start = zoomOutEnd - PROP_LEAD + index * PROP_STAGGER;
+    const t = interpolate(frame, [start, start + PROP_RAMP], [0, 1], {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    });
+    const s = interpolate(t, [0, 1], [0, 1], { easing: settleEase });
+    return {
+      // Opacity leads the movement slightly, so nothing is still fading once it has landed.
+      opacity: interpolate(t, [0, 0.55], [0, 1], { extrapolateRight: "clamp", easing: ease }),
+      x: (1 - s) * dx,
+      y: (1 - s) * 30,
+      scale: 0.9 + 0.1 * s,
+    };
+  };
+
+  const bubble = arrive(0, -34);
+  const rate = arrive(1, -46);
+  const score = arrive(2, 46);
+  const arrow = arrive(3, 34);
+
+  // The props never fully settle: a slow figure-of-eight, seeded apart so they are never
+  // in step with each other.
+  const bubbleFloat = floatAt(seconds, 0);
+  const arrowFloat = floatAt(seconds, 6.5);
 
   // Two rings, two jobs. The one inside the phone fills as the scroll brings it into view;
   // the one on the card beside it fills as that card arrives.
@@ -178,7 +245,7 @@ export const SeerManagerMobileScene: React.FC = () => {
     extrapolateRight: "clamp",
     easing: ease,
   });
-  const cardDonut = interpolate(frame, [T_SCROLL_END + 13, T_ZOOMOUT_END - 5], [0, 1], {
+  const cardDonut = interpolate(frame, [zoomOutEnd, zoomOutEnd + 26], [0, 1], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
     easing: ease,
@@ -195,7 +262,10 @@ export const SeerManagerMobileScene: React.FC = () => {
           width: BUBBLE.size,
           height: BUBBLE.size,
           opacity: bubble.opacity,
-          transform: `translate(-50%, -50%) translateY(${bubble.y}px)`,
+          transform:
+            `translate(-50%, -50%)` +
+            ` translate(${PROP_DX + bubble.x + bubbleFloat.dx}px, ${bubble.y + bubbleFloat.dy}px)` +
+            ` rotate(${bubbleFloat.rot}deg) scale(${bubble.scale})`,
           willChange: "transform, opacity",
         }}
       >
@@ -212,7 +282,7 @@ export const SeerManagerMobileScene: React.FC = () => {
           position: "absolute",
           left: `${PLACE.rate.cx}%`,
           top: `${PLACE.rate.cy}%`,
-          transform: `translate(-50%, -50%) translateY(${rate.y}px) scale(${RATE_SCALE})`,
+          transform: `translate(-50%, -50%) translate(${rate.x}px, ${rate.y}px) scale(${RATE_SCALE * rate.scale})`,
           // The card is width:100% so the phone's copy can go full-bleed; the floating one
           // needs its natural width stated, which is what RATE_SCALE is derived from.
           width: RATE_NATURAL_W,
@@ -264,7 +334,7 @@ export const SeerManagerMobileScene: React.FC = () => {
           position: "absolute",
           left: `${PLACE.score.cx}%`,
           top: `${PLACE.score.cy}%`,
-          transform: `translate(-50%, -50%) translateY(${score.y}px) scale(${SCORE_SCALE})`,
+          transform: `translate(-50%, -50%) translate(${score.x}px, ${score.y}px) scale(${SCORE_SCALE * score.scale})`,
           // `.wsmi-score` sizes itself with `flex: 0 0 342px`, which only binds as a flex
           // item. Standalone it shrank to content and rendered 2.5% narrow, so its designed
           // width is restated here — the value SCORE_SCALE is derived from.
@@ -287,7 +357,10 @@ export const SeerManagerMobileScene: React.FC = () => {
           width: ARROW.size,
           height: ARROW.size,
           opacity: arrow.opacity,
-          transform: `translate(-50%, -50%) translateY(${arrow.y}px)`,
+          transform:
+            `translate(-50%, -50%)` +
+            ` translate(${PROP_DX + arrow.x + arrowFloat.dx}px, ${arrow.y + arrowFloat.dy}px)` +
+            ` rotate(${arrowFloat.rot}deg) scale(${arrow.scale})`,
           willChange: "transform, opacity",
         }}
       >
