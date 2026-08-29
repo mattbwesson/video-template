@@ -210,7 +210,7 @@ const RING = "#f78d45";
  * diameter, appreciably thinner than a solid gauge, with round caps at both ends.
  * The percentage is set in two sizes, the number large and the % sign a third smaller.
  */
-const Donut: React.FC<{ pct: number; progress?: number }> = ({ pct, progress = 1 }) => {
+export const Donut: React.FC<{ pct: number; progress?: number }> = ({ pct, progress = 1 }) => {
   const size = 96;
   const stroke = 11;
   const r = (size - stroke) / 2;
@@ -267,6 +267,37 @@ const Donut: React.FC<{ pct: number; progress?: number }> = ({ pct, progress = 1
     </svg>
   );
 };
+
+/**
+ * The score card: the 9.2 tile, its three-line label, and the sentiment split.
+ *
+ * Extracted so SeerManagerMobileScene can float the same card beside the phone at 3903
+ * instead of rebuilding it. It is the whole card including `.wsmi-card`, so a caller only
+ * has to place it — and scale it, since the measurements here are the desktop page's.
+ */
+export const SeerScoreCard: React.FC = () => (
+  <div className="wsmi-card wsmi-score">
+    <div className="wsmi-tile">
+      <span>9.2</span>
+    </div>
+    <div className="wsmi-score-label">
+      {SCORE_LINES.map((l) =>
+        l === "Engagement" ? <b key={l}>{l}</b> : <div key={l}>{l}</div>,
+      )}
+    </div>
+    <div className="wsmi-sents">
+      {SENTIMENTS.map(({ pct, name, tone, Face }) => (
+        <div className="wsmi-sent" key={name}>
+          <span className={`wsmi-badge wsmi-badge-${tone}`}>
+            <Face size={12} />
+            {pct}
+          </span>
+          <span className="wsmi-sent-name">{name}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 const RateCard: React.FC<{
   title: string;
@@ -387,7 +418,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
   return (
     <WorkvivoSeerChrome activeTab={activeTab} accent={accent} accentSoft={accentSoft}>
       <div
-        className="wsc-page wsmi-page"
+        className="wsc-page wsmi-page wsmi-scope"
         style={{ "--wsmi-accent": accent } as React.CSSProperties}
       >
         <div className="wsmi-filters">
@@ -403,27 +434,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
 
         <div className="wsmi-sec wsmi-sec-overview">Overview</div>
         <div className="wsmi-overview">
-          <div className="wsmi-card wsmi-score">
-            <div className="wsmi-tile">
-              <span>9.2</span>
-            </div>
-            <div className="wsmi-score-label">
-              {SCORE_LINES.map((l) =>
-                l === "Engagement" ? <b key={l}>{l}</b> : <div key={l}>{l}</div>,
-              )}
-            </div>
-            <div className="wsmi-sents">
-              {SENTIMENTS.map(({ pct, name, tone, Face }) => (
-                <div className="wsmi-sent" key={name}>
-                  <span className={`wsmi-badge wsmi-badge-${tone}`}>
-                    <Face size={12} />
-                    {pct}
-                  </span>
-                  <span className="wsmi-sent-name">{name}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <SeerScoreCard />
 
           <div className="wsmi-card wsmi-stats">
             {STATS.map(({ Ico, tone, name, val }) => (

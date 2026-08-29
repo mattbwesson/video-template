@@ -30,6 +30,7 @@ import "./components/workvivo/WorkvivoGlassEdge.css";
 import { WidgetStoreRevealScene } from "./WidgetStoreRevealScene";
 import { WorkvivoWidgetListScene } from "./WorkvivoWidgetListScene";
 import { CreateYourOwnScene } from "./CreateYourOwnScene";
+import { SeerManagerMobileScene } from "./SeerManagerMobileScene";
 import { WorkvivoArticleScene } from "./WorkvivoArticleScene";
 import { WorkvivoAnalyticsScene } from "./WorkvivoAnalyticsScene";
 import { WorkvivoSeerSurveyMobileScene } from "./WorkvivoSeerSurveyMobileScene";
@@ -203,14 +204,26 @@ const SurveySignOffShot: React.FC = () => {
   );
 };
 
+/** Global frames the two ends of this transition are pinned to. */
+const SEER_MOBILE_FROM = 3903;
+const SPACE_FEED_IRIS_FROM = 4066;
+
 /**
  * At 4066, a circular mask closes down completing at 4070 (5 frames total),
- * shrinking the outgoing manager insights footage down to 0 and revealing
+ * shrinking the outgoing manager insights shot down to 0 and revealing
  * the brand green field with WorkvivoSpaceFeed rising up underneath it.
+ *
+ * What shrinks is SeerManagerMobileScene — the native screen — not the reference video it
+ * used to be. Before that scene existed this reached for the raw footage because there was
+ * nothing else to shrink; now that there is, keeping the video would cut from the native
+ * screen to Workvivo's own demo data on the iris's first frame. Same shot, different
+ * person's name, and a red ring round the avatar.
+ *
+ * The negative `from` is what holds it still: this Sequence starts at 4066, so the scene
+ * would otherwise replay its entrance inside the closing iris. Offsetting by the frames
+ * since 3903 puts it at the state the cut is leaving.
  */
-const SpaceFeedIrisTransition: React.FC<{ reference?: keyof typeof REFERENCE_VIDEO }> = ({
-  reference = "full",
-}) => {
+const SpaceFeedIrisTransition: React.FC = () => {
   const frame = useCurrentFrame();
 
   const maskRadius = interpolate(frame, [0, 4], [1101, 0], {
@@ -226,19 +239,9 @@ const SpaceFeedIrisTransition: React.FC<{ reference?: keyof typeof REFERENCE_VID
         WebkitClipPath: `circle(${maskRadius}px at 50% 50%)`,
         overflow: "hidden",
       }}>
-      <Video
-        src={staticFile(REFERENCE_VIDEO[reference])}
-        trimBefore={4066}
-        volume={0}
-        muted
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "contain",
-          scale: 0.712,
-          translate: "-1px 0px",
-        }}
-      />
+      <Sequence from={SEER_MOBILE_FROM - SPACE_FEED_IRIS_FROM} layout="none">
+        <SeerManagerMobileScene />
+      </Sequence>
     </AbsoluteFill>
   );
 };
@@ -1292,6 +1295,15 @@ export const WorkvivoCut: React.FC<{
         durationInFrames={3903 - 3843}>
         <SeerInsightsCutShot />
       </Sequence>
+      {/* Hard cut at 3903 to Manager Insights on the phone, its two headline cards floated
+          either side. Runs to 4072 — six frames past the Space Feed's iris at 4066, which
+          is declared later in the tree and so shuts over this rather than under it. */}
+      <Sequence
+        name="Seer Manager Insights, mobile (3903 - 4072)"
+        from={SEER_MOBILE_FROM}
+        durationInFrames={4072 - SEER_MOBILE_FROM}>
+        <SeerManagerMobileScene />
+      </Sequence>
       {/* Runs to 3776 rather than stopping at 3758: its line is still on screen for the
           18 frames the device above takes to arrive, being pushed up and off by it. */}
       <Sequence name="Go beyond (3702 - 3776)" from={3702} durationInFrames={74}>
@@ -1345,7 +1357,7 @@ export const WorkvivoCut: React.FC<{
         name="Space Feed Iris Close (4066 - 4070)"
         from={4066}
         durationInFrames={4070 - 4066 + 1}>
-        <SpaceFeedIrisTransition reference={reference} />
+        <SpaceFeedIrisTransition />
       </Sequence>
       {/* At 4110, hard cut from Space Feed to WorkvivoFeedbackArticle animating up on brand green. */}
       <Sequence

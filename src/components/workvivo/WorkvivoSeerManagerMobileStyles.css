@@ -1,0 +1,357 @@
+/* Seer Manager Insights, mobile — the phone at global 3903-4072.
+   Prefixed wsmm- so nothing collides with wsmi- (the desktop manager screen this shares
+   its score card with) or wm-/wms- (the other phones).
+
+   Export rules this file is written to, all from docs/browser-render-best-practices.md:
+   no ::before/::after, no bare `span` selectors carrying layout, linear-gradient only,
+   and every pill's border-radius is exactly half its own height — a sentinel radius on a
+   wide short box clamps per-axis in the export and comes out an ellipse. */
+
+.wsmm-screen {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  font-family: InterX, Inter, "SF Pro Text", -apple-system, "Segoe UI", system-ui, Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: #111827;
+  box-sizing: border-box;
+}
+
+.wsmm-screen * {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- dark head: status bar + title row ---------- */
+
+.wsmm-top {
+  flex: none;
+  background: #0a0d2a;
+  color: #ffffff;
+}
+
+.wsmm-status {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px 0 16px;
+}
+
+.wsmm-time {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.wsmm-sysico {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.wsmm-head {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.wsmm-back {
+  width: 24px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+}
+
+/* The title centres against the whole row, so the 24px back arrow is balanced by an
+   equal spacer on the right rather than by text-align alone. */
+.wsmm-title {
+  flex: 1 1 0;
+  min-width: 0;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wsmm-headpad {
+  width: 24px;
+  flex: none;
+}
+
+/* ---------- body ---------- */
+
+.wsmm-body {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0 16px;
+}
+
+.wsmm-tabs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 0 12px;
+}
+
+.wsmm-tab {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.wsmm-tab.wsmm-on {
+  background: #ffffff;
+  border: 1px solid #f0d9cf;
+  color: #ee6a35;
+  font-weight: 600;
+}
+
+.wsmm-segrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wsmm-seg {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 38px;
+  padding: 4px;
+  border-radius: 19px;
+  background: #f2f2f4;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wsmm-segbtn {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12.5px;
+  color: #6b7280;
+  white-space: nowrap;
+}
+
+.wsmm-segbtn.wsmm-on {
+  background: #ffffff;
+  color: #ee6a35;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.12);
+}
+
+.wsmm-filter {
+  flex: none;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 19px;
+  border: 1px solid #ececee;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.wsmm-filter-ico {
+  display: flex;
+  align-items: center;
+  color: #374151;
+}
+
+/* ---------- the welcome note ---------- */
+
+.wsmm-note {
+  margin-top: 14px;
+  padding: 13px 14px 15px;
+  border-radius: 10px;
+  background: #fdf1ec;
+}
+
+.wsmm-note-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.wsmm-note-ico {
+  flex: none;
+  display: flex;
+  align-items: center;
+  color: #ee6a35;
+}
+
+.wsmm-note-title {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wsmm-note-body {
+  font-size: 12.5px;
+  line-height: 19px;
+  color: #4b5563;
+}
+
+/* ---------- overview ---------- */
+
+.wsmm-sec {
+  margin: 16px 0 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.wsmm-card {
+  border: 1px solid #ececee;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 12px 14px;
+}
+
+.wsmm-card + .wsmm-card {
+  margin-top: 10px;
+}
+
+.wsmm-person {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.wsmm-av {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 17px;
+  display: block;
+}
+
+.wsmm-person-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.wsmm-person-role {
+  margin-top: 2px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.wsmm-score {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+/* Green into lime across the diagonal — the same ramp the desktop card's tile uses. */
+.wsmm-tile {
+  width: 74px;
+  height: 74px;
+  flex: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(140deg, #86d99a 0%, #a9e186 55%, #cfe878 100%);
+}
+
+.wsmm-tile-num {
+  font-size: 27px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  color: #14532d;
+}
+
+.wsmm-score-body {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.wsmm-score-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 19px;
+  color: #111827;
+}
+
+.wsmm-score-foot {
+  margin-top: 9px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wsmm-pill {
+  height: 22px;
+  padding: 0 9px;
+  border-radius: 11px;
+  background: #dcf5e3;
+  color: #1a7f47;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+}
+
+.wsmm-score-note {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+/* ---------- bottom nav ---------- */
+
+.wsmm-nav {
+  flex: none;
+  height: 70px;
+  border-top: 1px solid #ececee;
+  background: #ffffff;
+  display: flex;
+  align-items: flex-start;
+  padding-top: 9px;
+}
+
+.wsmm-navitem {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  color: #8e8e8f;
+}
+
+.wsmm-navitem.wsmm-on {
+  color: #ee6a35;
+}
+
+.wsmm-navlabel {
+  font-size: 10px;
+  line-height: 14px;
+  color: #8e8e8f;
+}
+
+.wsmm-navitem.wsmm-on .wsmm-navlabel {
+  color: #ee6a35;
+}

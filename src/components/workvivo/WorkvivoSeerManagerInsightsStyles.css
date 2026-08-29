@@ -28,7 +28,11 @@
    page px. The 505 height covers that and the shell clips the rest — the reference
    capture ends part-way through the metrics cards for the same reason. */
 
-.wsmi-page {
+/* The tokens and the reset, as their own class so a consumer can carry them WITHOUT the
+   page's geometry. SeerManagerMobileScene floats this screen's score card on its own at
+   3903; outside a token host `var(--wsmi-card)` resolves to nothing and the card paints
+   transparent, which is exactly how that first render came out. */
+.wsmi-scope {
   --wsmi-accent: #ee6a35;
   --wsmi-text: #111827;
   --wsmi-muted: #6b7280;
@@ -36,6 +40,16 @@
   --wsmi-line: #e5e7eb;
   --wsmi-field: #f4f5f7;
 
+  color: var(--wsmi-text);
+}
+
+.wsmi-scope * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.wsmi-page {
   width: 997px;
   height: 505px;
   transform: scale(1.3801404);
@@ -44,11 +58,6 @@
      the Rater's filter row gets. */
   padding: 2px 26px 0 20px;
   color: var(--wsmi-text);
-}
-
-.wsmi-page * {
-  margin: 0;
-  padding: 0;
 }
 
 /* ── Filter pills ────────────────────────────────────────────────────────────── */
