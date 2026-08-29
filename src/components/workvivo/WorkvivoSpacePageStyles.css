@@ -24,6 +24,10 @@
   height: 1480px;
   overflow: hidden;
   background: #ffffff;
+  /* Matches .wsp-top. Without it this white box kept square corners behind the rounded
+     topbar and showed as a white wedge in each top corner, which read as the UI having
+     lost its rounding. Bottom stays square — it runs off the bottom of frame. */
+  border-radius: 12px 12px 0 0;
   font-family: InterX, Inter, -apple-system, "Segoe UI", system-ui, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   color: #111827;
