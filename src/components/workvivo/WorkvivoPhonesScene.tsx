@@ -369,13 +369,15 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
             <div className="wp-call">
               <div className="wp-call-video">
                 {callerVideoSrc ? (
+                  // objectFit is a PROP, not a style. <Video> renders a <canvas> carrying
+                  // Remotion's own __remotion_objectfitcontain class, and it rebuilds the
+                  // style as `{...style, objectFit: objectFitProp}` — so an objectFit set
+                  // inside `style` is overwritten with undefined and the class wins. The
+                  // video letterboxes no matter what the style says.
                   <Video
                     src={staticFile(callerVideoSrc)}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    objectFit="cover"
+                    style={{ width: "100%", height: "100%" }}
                   />
                 ) : (
                   <img
@@ -401,13 +403,11 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
 
               <div className="wp-pip">
                 {selfVideoSrc ? (
+                  // objectFit as a prop — see the caller video above.
                   <Video
                     src={staticFile(selfVideoSrc)}
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
+                    objectFit="cover"
+                    style={{ width: "100%", height: "100%" }}
                   />
                 ) : (
                   <img
