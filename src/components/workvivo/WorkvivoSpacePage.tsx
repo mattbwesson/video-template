@@ -82,20 +82,43 @@ const TABS = [
 ];
 
 /**
- * The six faces the export stacks under ABOUT and SPACE ADMINS.
+ * The faces under ABOUT and SPACE ADMINS. Fixed, not customisable.
  *
- * `img/vatar-2.jpeg` is the reference's own typo and the file does not exist, so that
- * position renders empty in the baseline. It is left as it is rather than corrected,
- * because the second avatar being blank is what the approved cut shows — and it is now a
- * swap position, so an operator upload fills it.
+ * They used to be `spacepage.face.N` image slots fed by the operator's uploads, which put
+ * the same handful of a customer's photographs in both rows — and the previous baseline
+ * carried the reference's own typo, `img/vatar-2.jpeg`, a file that does not exist, so the
+ * second member rendered as an empty circle in every un-customised cut.
+ *
+ * These are a space's membership, not the customer's brand imagery. Nine distinct
+ * portraits, so the two groups are visibly different people rather than one set shown
+ * twice.
  */
-const FACES: { src: string; slot: ImageSlotKey }[] = [
-  { src: "img/avatar-1.jpeg", slot: "spacepage.face.0" },
-  { src: "img/vatar-2.jpeg", slot: "spacepage.face.1" },
-  { src: "img/avatar-3.jpeg", slot: "spacepage.face.2" },
-  { src: "img/avatar-4.jpeg", slot: "spacepage.face.3" },
-  { src: "img/avatar-5.jpeg", slot: "spacepage.face.4" },
-  { src: "img/avatar-6.jpeg", slot: "spacepage.face.5" },
+const MEMBER_FACES = [
+  "avatars/avatar-4.png",
+  "avatars/avatar-7.png",
+  "avatars/avatar-9.png",
+  "avatars/avatar-10.png",
+  "avatars/avatar-1.png",
+];
+
+const ADMIN_FACES = [
+  "avatars/avatar-5.png",
+  "avatars/avatar-2.png",
+  "avatars/avatar-12.png",
+  "avatars/avatar-8.png",
+];
+
+/**
+ * The two faces on the feed post below — its author, and the colleague they credit.
+ *
+ * These stay customisable where the rows above no longer are, because they are not a
+ * membership list: they are the people in a post the operator's own copy names. Two slots
+ * rather than the six this page used to carry, because a slot nothing renders still takes
+ * an upload out of the deal and shows it nowhere.
+ */
+const POST_FACES: { src: string; slot: ImageSlotKey }[] = [
+  { src: "img/avatars/avatar-3.png", slot: "spacepage.face.0" },
+  { src: "img/avatars/avatar-11.png", slot: "spacepage.face.1" },
 ];
 
 const RailItem: React.FC<{ href: string }> = ({ href }) => (
@@ -197,7 +220,9 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
   const countdown =
     countdownSrc ?? image("spacepage.countdown.0", staticFile("fillers/images (3).jpeg"));
   const me = meSrc ?? person.avatarUrl;
-  const face = (i: number) => image(FACES[i].slot, staticFile(FACES[i].src));
+
+  const postFace = (i: number) =>
+    image(POST_FACES[i].slot, staticFile(POST_FACES[i].src));
 
   return (
     <div className="wsp-frame">
@@ -374,14 +399,8 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-members">
             <div className="wsp-members-count">{spaceMembers(copy.companySize, SPACE_PAGE_INDEX)}</div>
             <div className="wsp-avrow">
-              {FACES.slice(0, 5).map((f, i) => (
-                <img
-                  key={f.slot}
-                  className="wsp-av"
-                  data-vc-slot={f.slot}
-                  src={face(i)}
-                  alt=""
-                />
+              {MEMBER_FACES.map((src) => (
+                <img key={src} className="wsp-av" src={staticFile(`img/${src}`)} alt="" />
               ))}
               <div className="wsp-avmore">12k+</div>
             </div>
@@ -390,29 +409,12 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
 
         <section className="wsp-lcard wsp-lcard-admins">
           <div className="wsp-caplabel">SPACE ADMINS</div>
-          {/* The same six faces twice, the second row reversed — the export's own way of
-              filling a second row without a seventh portrait. Only the first row carries
-              the swap attributes, so clicking a face opens one editable rather than two
-              that fight over the same position. */}
-          <div className="wsp-avrow wsp-avrow-fill">
-            {FACES.map((f, i) => (
-              <img
-                key={f.slot}
-                className="wsp-av"
-                data-vc-slot={f.slot}
-                src={face(i)}
-                alt=""
-              />
-            ))}
-          </div>
-          <div className="wsp-avrow wsp-avrow-fill">
-            {FACES.map((f, i) => (
-              <img
-                key={f.slot}
-                className="wsp-av"
-                src={face(FACES.length - 1 - i)}
-                alt=""
-              />
+          {/* One row of four. It was the same six portraits twice, the second row
+              reversed — the export's trick for filling a second row without a seventh
+              face, which on inspection reads as the same people listed again. */}
+          <div className="wsp-avrow wsp-avrow-start">
+            {ADMIN_FACES.map((src) => (
+              <img key={src} className="wsp-av" src={staticFile(`img/${src}`)} alt="" />
             ))}
           </div>
         </section>
@@ -478,8 +480,8 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-post-row">
             <img
               className="wsp-post-av"
-              data-vc-slot={FACES[0].slot}
-              src={face(0)}
+              data-vc-slot={POST_FACES[0].slot}
+              src={postFace(0)}
               alt=""
             />
             <div className="wsp-post-head">
@@ -499,7 +501,7 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-hooray">
             <div className="wsp-hooray-lbl">Hooray to:</div>
             <div className="wsp-hooray-chip">
-              <img src={face(2)} alt="" />
+              <img data-vc-slot={POST_FACES[1].slot} src={postFace(1)} alt="" />
               <span>{page.post.credit}</span>
             </div>
           </div>

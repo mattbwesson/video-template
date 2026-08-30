@@ -143,12 +143,12 @@ export const IMAGE_SLOTS = [
   "spacepage.survey.0",
   "spacepage.story.0",
   "spacepage.countdown.0",
+  // Two, not six. The ABOUT and SPACE ADMINS rows are fixed portraits now — a space's
+  // membership is not the customer's brand imagery — so only the feed post's author and
+  // the colleague it credits are still swappable. The four that went were rendering
+  // nowhere, and a slot that renders nowhere still takes an upload out of the deal.
   "spacepage.face.0",
   "spacepage.face.1",
-  "spacepage.face.2",
-  "spacepage.face.3",
-  "spacepage.face.4",
-  "spacepage.face.5",
 
   // --- global 1630-1677: the phone's Spotlight tab ------------------------------
   // No header position: the Spotlight tab draws the SAME .wm-hero as the home screen at
@@ -333,7 +333,7 @@ const ROLE_LABELS: Record<ImageRole, string> = {
   "spacepage.survey": "Space survey",
   "spacepage.story": "Space featured story",
   "spacepage.countdown": "Space countdown",
-  "spacepage.face": "Space member",
+  "spacepage.face": "Space post face",
   "spotlight.journey": "Spotlight journey",
   "spotlight.lead": "Spotlight lead story",
   "spotlight.news": "Spotlight news",

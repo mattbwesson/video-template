@@ -558,10 +558,12 @@
   flex: none;
 }
 
-.wsp-avrow-fill .wsp-av {
-  flex: 1 1 0;
-  width: auto;
-  min-width: 0;
+/* The base row centres, which never showed while it held five faces and the "12k+"
+   bubble — together they fill the card. The four admins do not, so that row says where it
+   starts. (`.wsp-avrow-fill`, which stretched six faces across the width, went with the
+   second admin row it existed for.) */
+.wsp-avrow-start {
+  justify-content: flex-start;
 }
 
 .wsp-avmore {
