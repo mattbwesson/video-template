@@ -248,6 +248,23 @@ export const EditPanel: React.FC<{
 
   const toggle = (id: SectionId) => setOpen((cur) => (cur === id ? null : id));
 
+  /** The vendor grid: full-colour tiles that carry a name under each. */
+  const named = iconLibrary === "integrations";
+
+  /**
+   * The copy path holding this tile's label, and whether the current mark is an upload.
+   *
+   * A library pick takes its name from the file it came with, and there is deliberately
+   * no way to type over it — that is what stops one vendor's name appearing under
+   * another's logo. An upload has no such guarantee: its filename is whatever happened to
+   * be on disk, so the name gets a field, and only then.
+   */
+  const captionPath =
+    editable.icon?.startsWith("app.quicklink.") === true
+      ? `spotlight.apps.${editable.icon.slice(editable.icon.lastIndexOf(".") + 1)}`
+      : null;
+  const uploaded = !!currentIcon && /^data:/.test(currentIcon);
+
   const addIcon = async (files: FileList | File[]) => {
     const picked = await readIcon(files);
     if (picked) onAssignIcon(picked.url, picked.name);
@@ -476,24 +493,53 @@ export const EditPanel: React.FC<{
               )}
               {shownIcons !== null && (
                 <div
-                  className={`vc-icgrid${iconLibrary === "integrations" ? " vc-icgrid-logos" : ""}`}
+                  className={`vc-icgrid${named ? " vc-icgrid-logos vc-icgrid-named" : ""}`}
                 >
                   {/* The way back to the artwork the scene ships with. First, and marked
                       when nothing is pinned, so "I have not changed this" is visible. It
                       is not filtered out by a search — it is not one of the icons, and
                       losing the undo because you typed is the wrong trade. */}
-                  <button
-                    className={`vc-icbtn vc-icnone${currentIcon ? "" : " vc-on"}`}
-                    title="The original icon"
-                    aria-label="Use the original icon"
-                    aria-pressed={!currentIcon}
-                    onClick={onResetIcon}
-                  >
-                    —
-                  </button>
+                  {named ? (
+                    <button
+                      className={`vc-iccell${currentIcon ? "" : " vc-on"}`}
+                      aria-label="Use the original icon"
+                      aria-pressed={!currentIcon}
+                      onClick={onResetIcon}
+                    >
+                      <span className="vc-ictile vc-icnone">—</span>
+                      <span className="vc-iccap">Original</span>
+                    </button>
+                  ) : (
+                    <button
+                      className={`vc-icbtn vc-icnone${currentIcon ? "" : " vc-on"}`}
+                      title="The original icon"
+                      aria-label="Use the original icon"
+                      aria-pressed={!currentIcon}
+                      onClick={onResetIcon}
+                    >
+                      —
+                    </button>
+                  )}
                   {shownIcons.map((ic) => {
                     const cur = ic.path === currentIcon;
-                    return (
+                    // The vendor grid names every mark. A logo is recognisable but not
+                    // always nameable, and the label under it is what the tile in the film
+                    // will say — so it is shown here rather than left to a hover.
+                    return named ? (
+                      <button
+                        key={ic.path}
+                        className={`vc-iccell${cur ? " vc-on" : ""}`}
+                        title={ic.label}
+                        aria-label={`Use ${ic.label}`}
+                        aria-pressed={cur}
+                        onClick={() => onAssignIcon(ic.path, ic.label)}
+                      >
+                        <span className="vc-ictile">
+                          <img src={ic.url} alt="" />
+                        </span>
+                        <span className="vc-iccap">{ic.label}</span>
+                      </button>
+                    ) : (
                       <button
                         key={ic.path}
                         className={`vc-icbtn${cur ? " vc-on" : ""}`}
@@ -520,9 +566,23 @@ export const EditPanel: React.FC<{
                   <span>Upload your own app icon</span>
                 </FileDrop>
               )}
+              {captionPath && uploaded && (
+                <label className="vc-icname">
+                  <span>App name</span>
+                  <input
+                    type="text"
+                    value={copyOverrides[captionPath] ?? readCopyText(copy, captionPath)}
+                    maxLength={16}
+                    placeholder="Name under the tile"
+                    onChange={(e) => onEditText(captionPath, e.target.value)}
+                  />
+                </label>
+              )}
               <p className="vc-dr-note vc-dr-foot">
-                {iconLibrary === "integrations"
-                  ? "The label under the tile comes from the icon's filename."
+                {named
+                  ? uploaded
+                    ? "Uploaded marks take their name from the file — change it above."
+                    : "The label under the tile comes from the icon's name."
                   : "The disc behind the icon keeps the brand colour."}
               </p>
             </Section>

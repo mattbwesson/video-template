@@ -402,12 +402,36 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
 .vc-icgrid-logos .vc-icbtn.vc-on{box-shadow:0 0 0 2px var(--accent)}
 .vc-icgrid-logos .vc-icnone{background:var(--panel2);padding:0}
 
+/* Named tiles: four to a row rather than six, because the point of them is the caption
+   and six columns leaves no room to read one. The cell is the button — the white tile and
+   the name are both inside it, so the whole thing is one click target. */
+.vc-icgrid-named{grid-template-columns:repeat(4,1fr);gap:10px 8px}
+.vc-iccell{background:none;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;
+  align-items:center;gap:5px;transition:.15s}
+.vc-iccell:hover{transform:translateY(-2px)}
+.vc-ictile{width:100%;aspect-ratio:1;border-radius:9px;background:#fff;overflow:hidden;
+  display:grid;place-items:center;color:var(--mute)}
+.vc-ictile img{width:100%;height:100%;object-fit:contain;display:block}
+.vc-iccell.vc-on .vc-ictile{box-shadow:0 0 0 2px var(--accent)}
+.vc-iccap{max-width:100%;font-size:.66rem;line-height:1.15;color:var(--mute);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc-iccell.vc-on .vc-iccap{color:var(--txt)}
+
 /* Bring your own mark, for an app the library does not carry. Spans the grid's width
    under it. */
 .vc-icupload{margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;
   padding:10px;border-radius:9px;border:1px dashed var(--line);background:var(--panel2);
   color:var(--mute);font-size:.82rem;cursor:pointer;transition:.15s}
 .vc-icupload:hover,.vc-icupload.vc-over{color:var(--txt);border-color:var(--accent)}
+
+/* Only shown for an uploaded mark. A library pick takes its name from the file it came
+   with and is not typed over; an upload's filename is whatever was on disk, so this is
+   the one place the name is editable. */
+.vc-icname{margin-top:8px;display:block}
+.vc-icname span{display:block;margin-bottom:4px;font-size:.72rem;color:var(--mute)}
+.vc-icname input{width:100%;padding:7px 10px;border-radius:8px;background:var(--panel2);
+  color:var(--txt);border:1px solid transparent;font:inherit;font-size:.85rem}
+.vc-icname input:focus{border-color:var(--accent);outline:none}
 
 /* Sits directly above the grid, so the list under it shortens as you type. */
 .vc-icsearch{width:100%;margin:0 0 8px;padding:7px 10px;border-radius:8px;

@@ -53,6 +53,24 @@ export const textSlotAt = (path: string): TextSlot | null => {
   return isSlotNode(node) && node.kind === "text" ? node : null;
 };
 
+/**
+ * Can an override write to this path at all?
+ *
+ * Wider than `textSlotAt`, which answers "may the panel offer a text field here" and is
+ * what `brokenEditablePaths` checks. An `asset` slot takes a written value too — it is
+ * simply not one the model or a free-text field may write. The Quick Links tile labels
+ * are exactly that: absent from the research schema, but set by the icon picker from the
+ * chosen file's name.
+ *
+ * Keeping the two separate matters. Folding assets into `textSlotAt` would have the
+ * editables guard start passing text fields that point at non-text slots, which is the
+ * fault it exists to catch.
+ */
+export const writableSlotAt = (path: string): boolean => {
+  const node = nodeAt(path);
+  return isSlotNode(node) && (node.kind === "text" || node.kind === "asset");
+};
+
 /** The current value at a path in a merged copy object. "" if the path is missing. */
 export const readCopyText = (copy: WorkvivoCopy, path: string): string => {
   let cur: unknown = copy;
@@ -81,7 +99,10 @@ export const expandCopyOverrides = (
   const root: Record<string, unknown> = {};
 
   for (const [path, value] of Object.entries(overrides)) {
-    if (!textSlotAt(path)) continue; // stale key from an older build of the table
+    // Not `textSlotAt`: the Quick Links labels are `asset` slots — writable, but not by
+    // the model or by a typed field. Filtering on "is text" silently dropped the icon
+    // picker's own label write, so the tile kept the previous app's name.
+    if (!writableSlotAt(path)) continue; // stale key from an older build of the table
     const segs = path.split(".");
     let shape: Node = COPY.shape;
     let cur: Record<string, unknown> | unknown[] = root;
