@@ -622,10 +622,19 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           padFoot
           height={272.24}
           media={
-            <div className="wsp-rimg wsp-rimg-grad">
+            /* Icon and wordmark as one centred group. The wordmark used to be pinned at
+               `left: 127` — an absolute offset carried over from the capture, which parked
+               it against the tile's right edge with nothing to its left. */
+            <div className="wsp-rimg wsp-rimg-grad wsp-rimg-podcast">
+              <InlineSvg
+                className="wsp-podmark"
+                src={staticFile("img/podcast icon.svg")}
+                fill="#ffffff"
+                alt=""
+              />
               <Wordmark
                 text={copy.feed.event.countdownName}
-                style={{ left: 127, top: 51, fontSize: 21.49, lineHeight: "16.52px" }}
+                style={{ position: "static", fontSize: 21.49, lineHeight: "16.52px" }}
               />
             </div>
           }

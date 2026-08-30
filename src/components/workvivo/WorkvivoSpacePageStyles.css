@@ -1071,6 +1071,27 @@
   background: linear-gradient(180deg, var(--wv-brand, #7f39f3) 0%, #000000 100%);
 }
 
+/* The podcast tile lays its mark and its wordmark out as a row rather than pinning each
+   by hand. The wordmark's own rule is `position: absolute`, so that instance passes
+   `position: static` inline to hand itself back to the flow. */
+.wsp-rimg-podcast {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  padding: 0 14px;
+}
+
+/* 328.32 x 303.17 in the file, so 72 tall is 78 wide. The art has no fills of its own —
+   InlineSvg's `fill` stamps the white on, rather than a CSS filter, which the browser
+   export does not scope to the element that sets it. */
+.wsp-podmark {
+  width: 78px;
+  height: 72px;
+  flex: none;
+  display: block;
+}
+
 .wsp-rbody {
   align-self: stretch;
   padding: 8.21px 12.32px 0;
