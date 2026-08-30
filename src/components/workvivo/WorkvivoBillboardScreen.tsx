@@ -4,6 +4,7 @@ import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
 import "./WorkvivoBillboardScreenStyles.css";
+import { weatherInDisplayScale } from "../../customize/weather";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { WorkvivoCopy } from "../../customize/videoCopy";
 import type { ImageSlotKey } from "../../customize/imagery";
@@ -182,6 +183,8 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
   const { copy, image, logo: brandLogo, theme, person } = useCustomization();
   const signage = copy.signage;
   const weather = copy.feed.weather;
+  // Slots hold Celsius; a US city shows Fahrenheit. See src/customize/weather.ts.
+  const wx = weatherInDisplayScale(weather);
 
   // The screen's field is three stops of one hue. `theme.d1`/`d3` are the same ramp every
   // other Workvivo surface in the cut paints with, so the board matches the frame it sits
@@ -280,7 +283,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
           <span>{signage.location}</span>
           <span className="wbb-sep">|</span>
           <span>
-            {weather.temperature}&deg; {weather.unit}
+            {wx.temperature}&deg; {wx.unit}
           </span>
         </div>
       </div>

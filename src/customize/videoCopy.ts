@@ -505,38 +505,40 @@ export const COPY = defineCopy({
           "Typical weather for that city at this time of year. Must be one of the listed values exactly — each one draws its own icon.",
       }),
       /**
-       * Which scale the three temperatures are written in.
+       * Which scale the card DISPLAYS. Not the scale the numbers below are written in.
        *
-       * An enum the model fills rather than something the card works out, because working
-       * it out means knowing whether an arbitrary city is in the United States — a fact a
-       * language model already has and a lookup table would only ever approximate. The
-       * card reads the value; it never guesses (guide §4 — enum in, lookup out).
+       * The three temperatures are always Celsius; `weatherInDisplayScale` converts them
+       * when this says F. That split is deliberate. This used to name the scale the model
+       * had also written the numbers in, with the guides asking it to keep four fields in
+       * step, and it drifted — Newark, Ohio arrived at 18° with a high of 23, a Celsius
+       * forecast on a Fahrenheit city, and the card shows no unit letter to give it away.
        *
-       * It also has to be a SLOT rather than a derived flag, because the numbers and the
-       * unit must agree: whatever writes 46 has to be the same thing that says F.
+       * Now the model answers one question it is reliable on, is this city in the United
+       * States, and does no arithmetic. The numbers and the scale cannot disagree because
+       * the same code produces both.
        */
       unit: enumSlot({
         default: "C",
         options: ["C", "F"] as const,
         guide:
-          "The temperature scale for this company's headquarters city. F if `city` is in the United States. C everywhere else in the world — including Canada, the UK, Ireland and Australia, which all use Celsius.",
+          "Which scale this city's country uses. F if `city` is in the United States. C everywhere else in the world — including Canada, the UK, Ireland and Australia, which all use Celsius. Write the temperatures below in Celsius either way; the card converts.",
       }),
       temperature: text({
         default: "11",
         // Set at 64px; three glyphs is the most that fits beside the condition block.
         max: 3,
         guide:
-          "The current temperature as a bare number, no degree sign and no unit — the card draws the symbol. Plausible for `city` in an average month, IN THE SCALE `unit` names: a US city is Fahrenheit (so 40-95 in most months), anywhere else is Celsius (so 0-35). Getting these two out of step reads as a broken card, not a wrong forecast.",
+          "The current temperature in CELSIUS, as a bare number — no degree sign, no unit, and no conversion even for a US city. Plausible for `city` in an average month, so roughly 0-35. The card converts to Fahrenheit itself when `unit` is F.",
       }),
       high: text({
         default: "14",
         max: 3,
-        guide: "The day's high, in the same scale as `temperature` and `unit`. A bare number.",
+        guide: "The day's high in CELSIUS, a bare number. Never converted here.",
       }),
       low: text({
         default: "9",
         max: 3,
-        guide: "The day's low, in the same scale as `temperature` and `unit`. A bare number.",
+        guide: "The day's low in CELSIUS, a bare number. Never converted here.",
       }),
     },
 

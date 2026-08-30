@@ -5,6 +5,7 @@ import type { SwapProgress } from "./WorkvivoHomeContainer";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { SlotIcon } from "../../customize/SlotIcon";
 import { InlineSvg } from "../InlineSvg";
+import { weatherInDisplayScale } from "../../customize/weather";
 import type { WorkvivoCopy } from "../../customize/videoCopy";
 
 /**
@@ -33,6 +34,9 @@ interface WorkvivoRightColumnProps {
 export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }) => {
   const { image, copy, theme } = useCustomization();
   const { sidePost, event, podcast, pages, weather } = copy.feed;
+  // The slots hold Celsius; this is what the card should show. A US city reads in
+  // Fahrenheit — see src/customize/weather.ts.
+  const wx = weatherInDisplayScale(weather);
   // The tile labels come from the same researched list the Spotlight tab draws, so a
   // customer who does not use Workday is not told they do on one screen and not the
   // other — and so swapping a tile's icon can be accompanied by renaming it.
@@ -64,7 +68,7 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
           {/* The degree signs and the H/L prefixes are drawn here, not stored in the
               slots — the numbers arrive bare so a stray symbol cannot wrap the card. */}
           <div className="wtemp">
-            {weather.temperature}
+            {wx.temperature}
             <sup>&deg;</sup>
           </div>
           <div className="wcity">{weather.city}</div>
@@ -86,8 +90,8 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
             <span>{weather.condition}</span>
           </div>
           <div className="whl">
-            <span>H {weather.high}&deg;</span>
-            <span>L {weather.low}&deg;</span>
+            <span>H {wx.high}&deg;</span>
+            <span>L {wx.low}&deg;</span>
           </div>
         </div>
         <div className="wdots">
