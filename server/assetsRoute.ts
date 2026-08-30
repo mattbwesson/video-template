@@ -33,6 +33,15 @@ const FOLDERS: Record<string, string> = {
 
 const IMAGE_EXT = new Set([".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif"]);
 
+/**
+ * Marks the picker does not offer, by basename without extension, case-insensitive.
+ *
+ * Hidden rather than deleted: the files stay on disk, so an existing project that already
+ * points at one keeps rendering it, and putting one back is a line here rather than
+ * finding the artwork again.
+ */
+const HIDDEN = new Set(["chatgpt", "claude"]);
+
 export type AssetEntry = {
   /** Web path, ready to use as a `src`. Not URL-encoded; `fetch` and the DOM handle that. */
   url: string;
@@ -110,6 +119,9 @@ export const handleAssets = (
 
   const assets: AssetEntry[] = names
     .filter((n) => IMAGE_EXT.has(path.extname(n).toLowerCase()))
+    .filter(
+      (n) => !HIDDEN.has(n.slice(0, n.length - path.extname(n).length).toLowerCase()),
+    )
     .sort((a, b) => a.localeCompare(b))
     .map((n) => {
       const file = n.slice(0, n.length - path.extname(n).length);
