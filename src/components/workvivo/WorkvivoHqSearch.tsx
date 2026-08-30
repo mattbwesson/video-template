@@ -1,7 +1,7 @@
 import React from "react";
 import { InlineSvg } from "../InlineSvg";
 import { CursorArrow } from "../CursorArrow";
-import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import { WorkvivoHqSidebar } from "./WorkvivoHqSidebar";
 import "./WorkvivoHqSearchStyles.css";
@@ -372,11 +372,14 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
               }}
             >
               <div className="whq-agent-head">
-                <InlineSvg
+                {/* The real lockup. Both dimensions stated rather than `width: auto`:
+                    the file is 1388x478, so 22px tall is 63.9px wide, and the browser
+                    export does not resolve auto sizing on a replaced element reliably. */}
+                <Img
                   className="whq-agent-ico"
-                  src={staticFile("img/hq-agent-logo.svg")}
+                  src={staticFile("img/HQAgent_Black.png")}
                   alt="HQ agent"
-                  style={{ height: 22, width: "auto", display: "block" }}
+                  style={{ height: 22, width: 63.9, display: "block" }}
                 />
                 <span className="whq-viewmore">View More</span>
               </div>

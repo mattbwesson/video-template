@@ -94,16 +94,20 @@ const SENTIMENTS = [
  *
  * NOT in the reference captures, which stop at the Managers / Individual Contributor
  * filter — a section header and a filter with nothing under them reads as a half-built
- * screen, and the page needs the height to scroll through. Held here as chrome rather than
- * as copy slots: these are a manager's team, so an LLM inventing names for them would be
- * writing personnel the rest of the film knows nothing about.
+ * screen, and the page needs the height to scroll through.
+ *
+ * Fixed, not customised, and deliberately: these are one manager's direct reports. An
+ * operator's uploaded photographs are their own leadership and their own brand moments,
+ * and dealing them onto a subordinate's row misreads who is who. The names are chrome for
+ * the same reason — an LLM writing them would be inventing personnel the rest of the film
+ * knows nothing about.
  */
 const REPORTS = [
-  { name: "Aoife Byrne", role: "Product Design", score: "9.4", tone: "green", avatar: "avatar-3.jpeg" },
-  { name: "Marcus Hale", role: "Engineering", score: "9.1", tone: "green", avatar: "avatar-1.jpeg" },
-  { name: "Priya Raman", role: "Customer Success", score: "7.6", tone: "amber", avatar: "avatar-4.jpeg" },
-  { name: "Tom Okafor", role: "Data & Insights", score: "8.9", tone: "green", avatar: "avatar-5.jpeg" },
-  { name: "Lena Fischer", role: "People Ops", score: "7.2", tone: "amber", avatar: "avatar-6.jpeg" },
+  { name: "Aoife Byrne", role: "Product Design", score: "9.4", tone: "green", avatar: "avatars/avatar-3.png" },
+  { name: "Marcus Hale", role: "Engineering", score: "9.1", tone: "green", avatar: "avatars/avatar-11.png" },
+  { name: "Priya Raman", role: "Customer Success", score: "7.6", tone: "amber", avatar: "avatars/avatar-8.png" },
+  { name: "Tom Okafor", role: "Data & Insights", score: "8.9", tone: "green", avatar: "avatars/avatar-12.png" },
+  { name: "Lena Fischer", role: "People Ops", score: "7.2", tone: "amber", avatar: "avatars/avatar-6.png" },
 ] as const;
 
 export interface WorkvivoSeerManagerMobileProps {

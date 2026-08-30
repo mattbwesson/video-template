@@ -34,17 +34,12 @@
  * Those are not photographs and swapping them would break the product, not brand it.
  */
 export const IMAGE_SLOTS = [
-  // --- global 33-90: ten portraits orbiting the headline -------------------------
-  "hq.face.0",
-  "hq.face.1",
-  "hq.face.2",
-  "hq.face.3",
-  "hq.face.4",
-  "hq.face.5",
-  "hq.face.6",
-  "hq.face.7",
-  "hq.face.8",
-  "hq.face.9",
+  // The ten portraits orbiting the headline at global 33-90 are NOT here. They are fixed
+  // in HeadquartersScene, because the opening is a wall of faces that means "people"
+  // before the film has said whose people — dealing a handful of the operator's uploads
+  // onto the biggest circles and leaving stock on the rest read as a mistake, not a mix.
+  // Their removal also moves every upload one group earlier, onto the billboards below,
+  // which is where an operator's first photographs do the most work.
 
   // --- global 417-534: the desktop homepage (WorkvivoHomeContainer) --------------
   "home.billboard.0",
@@ -303,7 +298,6 @@ export type ImageRole = RoleOf<ImageSlotKey>;
  * trailing digit.
  */
 const ROLE_LABELS: Record<ImageRole, string> = {
-  "hq.face": "Opening face",
   "home.billboard": "Billboard",
   "home.hero": "Homepage banner",
   "home.news": "Featured news",
@@ -377,7 +371,7 @@ const roleCounts = IMAGE_SLOTS.reduce<Record<string, number>>((acc, key) => {
   return acc;
 }, {});
 
-/** `"hq.face.2"` -> `"Opening face · 3"`; a role with one position drops the number. */
+/** `"home.billboard.2"` -> `"Billboard · 3"`; a role with one position drops the number. */
 export const imageSlotLabel = (key: ImageSlotKey): string => {
   const cut = key.lastIndexOf(".");
   const role = key.slice(0, cut) as ImageRole;

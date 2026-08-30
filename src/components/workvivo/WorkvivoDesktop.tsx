@@ -1,7 +1,7 @@
 import React from 'react';
 import { InlineSvg } from "../InlineSvg";
 import { SymbolSvg } from "./symbolRegistry";
-import { staticFile } from 'remotion';
+import { Img, staticFile } from 'remotion';
 import './WorkvivoDesktopStyles.css';
 import './WorkvivoGlassEdge.css';
 import { WorkvivoSvgDefs } from './WorkvivoIcons';
@@ -317,7 +317,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
               <div>
                 <section className="wvd-card">
                   <div className="wvd-chead">
-                    <div className="wvd-hq"><span className="wvd-hqb">HQ</span><span>agent</span></div>
+                    <Img className="wvd-hqlogo" src={staticFile("img/HQAgent_Black.png")} alt="HQ agent" />
                     <span className="wvd-viewall">Expand</span>
                   </div>
                   <div className="wvd-compose">Write a message

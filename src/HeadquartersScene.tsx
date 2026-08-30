@@ -10,14 +10,16 @@ import {
 } from "remotion";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { FIXED_COPY } from "./customize/videoCopy";
-import type { ImageSlotKey } from "./customize/imagery";
 
 interface AvatarItem {
   id: string;
-  /** Which of the ten face positions this circle is — see `IMAGE_SLOTS`. */
-  slot: ImageSlotKey;
-  /** The baseline demo's portrait, used until the operator uploads enough photos. */
-  fallback: string;
+  /**
+   * The portrait, fixed. These ten are NOT customisable and are not meant to be: the
+   * opening is a wall of faces that says "people", before the film has said whose people.
+   * Dealing the operator's uploads into it put a handful of the same company's staff on
+   * the biggest circles and stock on the rest, which read as a mistake rather than a mix.
+   */
+  src: string;
   xPercent: number; // Center X as %
   yPercent: number; // Center Y as %
   size: number; // Diameter in px
@@ -31,40 +33,35 @@ interface AvatarItem {
 const FOREGROUND_AVATARS: AvatarItem[] = [
   {
     id: "top-left-large",
-    slot: "hq.face.0",
-    fallback: staticFile("img/vatar-2.jpeg"),
+    src: staticFile("img/avatars/avatar-1.png"),
     xPercent: 32.5,
     yPercent: 17.5,
     size: 185,
   },
   {
     id: "top-right-large",
-    slot: "hq.face.1",
-    fallback: staticFile("img/avatar-4.jpeg"),
+    src: staticFile("img/avatars/avatar-2.png"),
     xPercent: 71.0,
     yPercent: 12.0,
     size: 170,
   },
   {
     id: "bottom-left-large",
-    slot: "hq.face.2",
-    fallback: staticFile("img/avatar-6.jpeg"),
+    src: staticFile("img/avatars/avatar-3.png"),
     xPercent: 23.5,
     yPercent: 69.0,
     size: 155,
   },
   {
     id: "bottom-center-left",
-    slot: "hq.face.3",
-    fallback: staticFile("img/avatar-1.jpeg"),
+    src: staticFile("img/avatars/avatar-4.png"),
     xPercent: 42.5,
     yPercent: 76.0,
     size: 150,
   },
   {
     id: "bottom-right-med",
-    slot: "hq.face.4",
-    fallback: staticFile("img/avatar-4.jpeg"),
+    src: staticFile("img/avatars/avatar-5.png"),
     xPercent: 68.0,
     yPercent: 69.5,
     size: 130,
@@ -75,40 +72,35 @@ const FOREGROUND_AVATARS: AvatarItem[] = [
 const BACKGROUND_AVATARS: AvatarItem[] = [
   {
     id: "top-far-left",
-    slot: "hq.face.5",
-    fallback: staticFile("img/avatar-1.jpeg"),
+    src: staticFile("img/avatars/avatar-6.png"),
     xPercent: 14.5,
     yPercent: 31.5,
     size: 86,
   },
   {
     id: "top-center-med",
-    slot: "hq.face.6",
-    fallback: staticFile("img/avatar-3.jpeg"),
+    src: staticFile("img/avatars/avatar-7.png"),
     xPercent: 48.5,
     yPercent: 29.0,
     size: 120,
   },
   {
     id: "top-far-right",
-    slot: "hq.face.7",
-    fallback: staticFile("img/avatar-5.jpeg"),
+    src: staticFile("img/avatars/avatar-8.png"),
     xPercent: 79.0,
     yPercent: 23.0,
     size: 86,
   },
   {
     id: "bottom-center-small",
-    slot: "hq.face.8",
-    fallback: staticFile("img/avatar-3.jpeg"),
+    src: staticFile("img/avatars/avatar-9.png"),
     xPercent: 55.0,
     yPercent: 70.0,
     size: 92,
   },
   {
     id: "bottom-far-right",
-    slot: "hq.face.9",
-    fallback: staticFile("img/avatar-5.jpeg"),
+    src: staticFile("img/avatars/avatar-10.png"),
     xPercent: 83.5,
     yPercent: 81.0,
     size: 96,
@@ -128,8 +120,7 @@ const BACKGROUND_AVATARS: AvatarItem[] = [
 const AvatarCircle: React.FC<{
   avatar: AvatarItem;
   ringWidth: number;
-  src: string;
-}> = ({ avatar, ringWidth, src }) => (
+}> = ({ avatar, ringWidth }) => (
   <div
     style={{
       position: "absolute",
@@ -151,8 +142,7 @@ const AvatarCircle: React.FC<{
       }}
     >
       <Img
-        data-vc-slot={avatar.slot}
-        src={src}
+        src={avatar.src}
         style={{
           width: "100%",
           height: "100%",
@@ -365,7 +355,6 @@ export const HeadquartersScene: React.FC = () => {
             key={avatar.id}
             avatar={avatar}
             ringWidth={avatar.size > 100 ? 4 : 3.5}
-            src={image(avatar.slot, avatar.fallback)}
           />
         ))}
       </div>
@@ -387,7 +376,6 @@ export const HeadquartersScene: React.FC = () => {
             key={avatar.id}
             avatar={avatar}
             ringWidth={avatar.size > 140 ? 5 : 4}
-            src={image(avatar.slot, avatar.fallback)}
           />
         ))}
       </div>

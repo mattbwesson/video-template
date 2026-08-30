@@ -511,25 +511,14 @@
 }
 
 /* HQ agent */
-.wvd-hq {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: #3D424A;
-}
-
-.wvd-hqb {
-  width: 26px;
+/* The real lockup, not a rounded square with "HQ" set in it beside the word. Both
+   dimensions are stated: the file is 1388x478, so 26px tall is 75.5px wide, and `width:
+   auto` on a replaced element is not something the browser export resolves reliably. */
+.wvd-hqlogo {
+  width: 75.5px;
   height: 26px;
-  border-radius: 6px;
-  background: #00031F;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 10px;
-  font-weight: 700;
+  display: block;
+  flex: none;
 }
 
 .wvd-compose {
