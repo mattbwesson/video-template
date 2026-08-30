@@ -391,7 +391,6 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
       { path: "signage.stories.0.scope", label: "Audience" },
       { path: "signage.translatedFrom", label: "Translated from" },
       { path: "signage.stories.0.value", label: "Value" },
-      { path: "signage.location", label: "Screen location" },
     ],
   },
   "signage.story.1": {

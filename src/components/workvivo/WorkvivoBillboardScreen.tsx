@@ -270,17 +270,21 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
         </div>
 
         {/* The screen shows the SAME forecast the feed card does — one company, one day
-            — so the condition, the temperature and the scale all come from
+            — so the city, the condition, the temperature and the scale all come from
             `feed.weather` rather than being written twice. It used to print "6 C / 47 F",
-            both scales at once; `unit` is the model's answer to which one this city
-            actually uses (F in the United States, C everywhere else). */}
+            both scales at once; `unit` is the model's answer to which scale this city's
+            country uses, and weatherInDisplayScale does the conversion.
+
+            The city was its own slot, `signage.location`, until the pair could disagree:
+            one city researched for the forecast and another for the sign hanging under
+            it. */}
         <div className="wbb-weather">
           <InlineSvg
             className="wbb-weather-ico"
             src={staticFile(BILLBOARD_WEATHER_ICON[weather.condition])}
             fill="#ffffff"
           />
-          <span>{signage.location}</span>
+          <span>{weather.city}</span>
           <span className="wbb-sep">|</span>
           <span>
             {wx.temperature}&deg; {wx.unit}

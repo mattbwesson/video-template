@@ -1116,12 +1116,10 @@ export const COPY = defineCopy({
         "'Translated from <language>', naming a language this company really works in other than English.",
     }),
 
-    location: text({
-      default: "London",
-      max: 18,
-      guide:
-        "The city this screen is hanging in — a place this company really has an office, warehouse, store or site. Usually the same city as `feed.weather.city`; pick a different real site only if this company's frontline staff are obviously somewhere else.",
-    }),
+    // No `location`. The screen prints its city beside a forecast, and the two were
+    // separate slots — so the model could research one city for the weather card and a
+    // different one for the sign, and the strip read "London | 64 F" with an Ohio
+    // forecast behind it. It draws `feed.weather.city` now: one place, researched once.
 
     /**
      * One reaction emoji on the middle story, at global ~1913.
