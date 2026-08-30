@@ -14,7 +14,7 @@
  * comment, because the next person to raise a cap needs to know what will overflow.
  */
 
-import { defineCopy, enumSlot, list, text, type ValueOf } from "./slots";
+import { asset, defineCopy, enumSlot, list, text, type ValueOf } from "./slots";
 import { DEFAULT_BRAND_HEX, type Hex } from "./color";
 import type { HeaderOverrides } from "./headers";
 
@@ -901,17 +901,31 @@ export const COPY = defineCopy({
         "The name of a Journey running on the phone's home screen. Ends with a single emoji.",
     }),
     /** The three vendor tiles at the top of Quick Links. */
+    /**
+     * The three Quick Links tile labels — and NOT researched copy, which is the whole
+     * point of them being `asset` slots: an asset is absent from the JSON schema, so the
+     * model cannot write one.
+     *
+     * They were text slots with a guide asking for "three tools this company's employees
+     * would open every day", and the model answered it well — Kronos, Microsoft Teams. But
+     * the MARK beside each label is a separate icon slot the model has no say in, so a
+     * researched name landed under whatever logo the tile shipped with: ServiceNow's mark
+     * labelled Kronos, Zoom's labelled Microsoft Teams. A label is only ever right if it
+     * came from the icon next to it.
+     *
+     * So these defaults name the three default marks, and the only thing that changes them
+     * is picking or uploading an icon — which sets both together, from the file's own name.
+     * See `assignIcon` in web/Reveal.tsx.
+     */
     apps: list({
       length: 3,
-      defaults: ["Workday", "Service Now", "Zoom"],
-      of: text({
+      defaults: ["Workday", "ServiceNow", "Zoom"],
+      of: asset({
         default: "Workday",
-        // Tile labels are 12px in a 96px column.
-        max: 16,
-        guide: "The name of a third-party tool this company's staff use daily.",
+        guide: "Set from the icon beside it, never written.",
       }),
       guide:
-        "Three tools this company's employees would open every day — an HR system, a service desk, and a meeting or comms tool. Real product names, not categories. Keep them to tools any company could plausibly license; do not invent internal system names.",
+        "The three Quick Links tile labels. Each is the name of the mark next to it and is set from that icon's filename, so it is not researched.",
     }),
     quickLinks: list({
       length: 4,

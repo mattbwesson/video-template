@@ -93,3 +93,27 @@ export const readImages = (files: FileList | File[]): Promise<Upload[]> =>
 export const readOneImage = async (
   files: FileList | File[],
 ): Promise<Upload | null> => (await readImages(files))[0] ?? null;
+
+/**
+ * Read one file as an app icon.
+ *
+ * Not `readImage`: that downscales through a canvas, which rasterises an SVG and throws
+ * away the one property a vendor mark most needs. Icons are small enough that the raw
+ * data URL is cheaper than the photo path anyway.
+ *
+ * The returned `name` is the filename with its extension and any `icon-` prefix removed —
+ * the same shape `labelFor` gives library picks, because it becomes the tile's label and
+ * the two must agree.
+ */
+export const readIcon = async (
+  files: FileList | File[],
+): Promise<Upload | null> => {
+  const file = Array.from(files).find(isImageFile);
+  if (!file) return null;
+  const name = file.name
+    .replace(/\.[^.]+$/, "")
+    .replace(/^icon[-_]/i, "")
+    .replace(/[-_]+/g, " ")
+    .trim();
+  return { id: newUploadId(), name: name || "Custom", url: await readAsDataUrl(file) };
+};

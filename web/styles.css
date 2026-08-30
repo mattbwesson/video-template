@@ -390,9 +390,24 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
    mark on a brand-green circle reads as a mistake — so this variant gives them a neutral
    rounded tile instead, and drops the 22% padding that was there to keep a silhouette off
    the disc's edge. */
-.vc-icgrid-logos .vc-icbtn{border-radius:9px;background:#fff;padding:14%}
+/* No padding: these marks are supplied as finished tiles — most carry their own brand
+   ground out to the edge — so the 14% inset that used to be here drew a white border
+   round every one of them.
+
+   Still `contain`, not `cover`. 48 of the 53 are square and fill the tile exactly either
+   way; the handful that are not (gmail is 1.31:1) would be cropped by `cover`, and a
+   clipped logo is a worse fault than a sliver of ground beside it. The white stays for
+   those, and for any mark that is a transparent silhouette. */
+.vc-icgrid-logos .vc-icbtn{border-radius:9px;background:#fff;padding:0;overflow:hidden}
 .vc-icgrid-logos .vc-icbtn.vc-on{box-shadow:0 0 0 2px var(--accent)}
 .vc-icgrid-logos .vc-icnone{background:var(--panel2);padding:0}
+
+/* Bring your own mark, for an app the library does not carry. Spans the grid's width
+   under it. */
+.vc-icupload{margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:10px;border-radius:9px;border:1px dashed var(--line);background:var(--panel2);
+  color:var(--mute);font-size:.82rem;cursor:pointer;transition:.15s}
+.vc-icupload:hover,.vc-icupload.vc-over{color:var(--txt);border-color:var(--accent)}
 
 /* Sits directly above the grid, so the list under it shortens as you type. */
 .vc-icsearch{width:100%;margin:0 0 8px;padding:7px 10px;border-radius:8px;

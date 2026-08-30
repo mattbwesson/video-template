@@ -604,11 +604,10 @@ const TEXT_ONLY: Editable[] = [
     // the Quick Links block itself.
     key: "spotlight.links",
     label: "Phone quick links",
+    // The three Quick Links tile labels are NOT here. They are set from the icon beside
+    // them and nowhere else — see `iconOnlyText` above — so a text field for them is a
+    // way to put one vendor's name under another's mark.
     text: [
-      ...Array.from({ length: 3 }, (_, i) => ({
-        path: `spotlight.apps.${i}`,
-        label: `App ${i + 1}`,
-      })),
       ...Array.from({ length: 4 }, (_, i) => ({
         path: `spotlight.quickLinks.${i}`,
         label: `Quick link ${i + 1}`,
@@ -703,12 +702,12 @@ const ICON_ONLY: IconSlotKey[] = ICON_SLOTS.filter(
  */
 const iconOnlyText = (icon: IconSlotKey): TextFieldSpec[] => {
   const n = icon.slice(icon.lastIndexOf(".") + 1);
-  // A Quick Links tile is a mark AND the name under it. Swapping the icon without being
-  // able to fix the label leaves a tile showing one vendor's logo above another's name,
-  // which is worse than not offering the swap. `spotlight.apps` is the same researched
-  // list all three screens draw, so renaming here renames everywhere.
+  // A Quick Links tile is a mark and the name under it, and the name is NOT typed: it
+  // comes from the icon's own filename when one is picked or uploaded. Offering a text
+  // field here is offering the chance to put one vendor's name under another's logo,
+  // which is the exact fault this arrangement exists to make impossible.
   if (icon.startsWith("app.quicklink.")) {
-    return [{ path: `spotlight.apps.${n}`, label: "App name" }];
+    return [];
   }
   return [{ path: `composed.values.${n}`, label: "Value name" }];
 };

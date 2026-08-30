@@ -273,15 +273,27 @@ export const Reveal: React.FC<{
    * Written as an override rather than silently: it lands in `copyOverrides` like any
    * other edit, so the Text field shows it and the operator can still change it after.
    */
+  /**
+   * The copy path holding a Quick Links tile's label, given its icon slot.
+   *
+   * Derived from the slot rather than looked up in `editing.text`, which is where this
+   * used to come from: the panel no longer offers a text field for these tiles — a label
+   * is only ever right if it came from the icon — so there is nothing in `text` to find.
+   */
+  const captionPathFor = (icon: string): string | null =>
+    icon.startsWith("app.quicklink.")
+      ? `spotlight.apps.${icon.slice(icon.lastIndexOf(".") + 1)}`
+      : null;
+
   const assignIcon = useCallback(
     (path: string, label: string) => {
       if (!editing?.icon) return;
       const next: Partial<WizardState> = {
         iconOverrides: { ...state.iconOverrides, [editing.icon]: path },
       };
-      const caption = editing.text.find((t) => t.path.startsWith("spotlight.apps."));
+      const caption = captionPathFor(editing.icon);
       if (caption) {
-        next.copyOverrides = { ...state.copyOverrides, [caption.path]: label };
+        next.copyOverrides = { ...state.copyOverrides, [caption]: label };
       }
       patch(next);
     },
@@ -302,10 +314,10 @@ export const Reveal: React.FC<{
     const next: Partial<WizardState> = { iconOverrides: icons };
     // The name that came WITH the icon goes back too, or "use the original" would restore
     // Workday's mark under whatever the last pick was called.
-    const caption = editing.text.find((t) => t.path.startsWith("spotlight.apps."));
+    const caption = captionPathFor(editing.icon);
     if (caption) {
       const copy = { ...state.copyOverrides };
-      delete copy[caption.path];
+      delete copy[caption];
       next.copyOverrides = copy;
     }
     patch(next);

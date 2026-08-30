@@ -3,7 +3,7 @@ import { FileDrop } from "./Dropzone";
 import { FramingStage } from "./FramingStage";
 import { loadAssets, type AssetEntry } from "./assets";
 import { isDefaultFraming, type Framing } from "./framing";
-import { readImages, type Upload } from "./uploads";
+import { readIcon, readImages, type Upload } from "./uploads";
 import { iconLibraryFor } from "../src/customize/icons";
 import { textSlotAt, readCopyText } from "../src/customize/copyPaths";
 import type { Editable } from "../src/customize/editables";
@@ -247,6 +247,11 @@ export const EditPanel: React.FC<{
   const iconSearchable = (icons?.length ?? 0) > 16;
 
   const toggle = (id: SectionId) => setOpen((cur) => (cur === id ? null : id));
+
+  const addIcon = async (files: FileList | File[]) => {
+    const picked = await readIcon(files);
+    if (picked) onAssignIcon(picked.url, picked.name);
+  };
 
   const addShots = async (files: FileList | File[]) => {
     const added = await readImages(files);
@@ -503,8 +508,22 @@ export const EditPanel: React.FC<{
                   })}
                 </div>
               )}
+              {/* An app the library does not carry. The upload sets the tile's label
+                  from the file's own name, exactly as a library pick does — the label and
+                  the mark are never set separately. */}
+              {iconLibrary === "integrations" && (
+                <FileDrop
+                  className="vc-icupload"
+                  label="Upload an app icon"
+                  onFiles={addIcon}
+                >
+                  <span>Upload your own app icon</span>
+                </FileDrop>
+              )}
               <p className="vc-dr-note vc-dr-foot">
-                The disc behind the icon keeps the brand colour.
+                {iconLibrary === "integrations"
+                  ? "The label under the tile comes from the icon's filename."
+                  : "The disc behind the icon keeps the brand colour."}
               </p>
             </Section>
           )}
