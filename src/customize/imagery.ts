@@ -113,10 +113,12 @@ export const IMAGE_SLOTS = [
   "app.face.7",
   "app.face.8",
   "app.face.9",
+  // One fewer than there were faces: the composed post at 1070 is the hero's own, so it
+  // draws person.avatarUrl and no longer takes a slot. The rest closed up rather than
+  // leaving a hole — a slot nothing renders still takes an upload out of the deal.
   "app.face.10",
   "app.face.11",
   "app.face.12",
-  "app.face.13",
 
   // --- global 1275-1477: the livestream replay ----------------------------------
   // Only the FIRST chapter's thumbnail. It is the one the sheet opens on and the only one

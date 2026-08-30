@@ -333,16 +333,20 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                 {showComposedPost ? (
                   <section className="wvd-card">
                     <div className="wvd-prow">
-                      <img data-vc-slot="app.face.10"
+                      {/* The hero's own face, not a swappable one: this is the post they
+                          just wrote in the composer above, and their name is on it. It
+                          used to be app.face.10, so a customer's upload could put a
+                          stranger's photograph next to the customer's own name. */}
+                      <img
                         className="wvd-pav"
-                        src={image("app.face.10", staticFile("img/avatar-1.jpeg"))}
-                        style={PERSON_AVATAR_FIT}
+                        src={person.avatarUrl}
+                        style={person.avatarFit}
                         alt=""
                       />
                       <div>
                         <div className="wvd-pby"><b>{person.name}</b> posted a document.</div>
                         <div className="wvd-pmeta">
-                          1 Sec ago &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" />
+                          Just now &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" />
                         </div>
                         <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
                           Value: {copy.composed.value}
@@ -399,7 +403,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                 ) : (
                   <section className="wvd-card">
                     <div className="wvd-prow">
-                      <img data-vc-slot="app.face.11" className="wvd-pav" src={image("app.face.11", staticFile("img/avatar-3.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
+                      <img data-vc-slot="app.face.10" className="wvd-pav" src={image("app.face.10", staticFile("img/avatar-3.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
                       <div>
                         <div className="wvd-pby"><b>{appPost.document.author}</b> posted a document.</div>
                         <div className="wvd-pmeta">1 day ago &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" /></div>
@@ -428,7 +432,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                     </div>
                     <div className="wvd-allc">View all 12 comments</div>
                     <div className="wvd-cbox">
-                      <img data-vc-slot="app.face.12" className="wvd-cav" src={image("app.face.12", staticFile("img/avatar-4.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
+                      <img data-vc-slot="app.face.11" className="wvd-cav" src={image("app.face.11", staticFile("img/avatar-4.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
                       <div className="wvd-cin">Leave a comment…
                         <span className="wvd-tools">
                           <SymbolSvg width="18" height="18" href="#i-ui-add-image" />
@@ -441,7 +445,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
 
                 <section className="wvd-card">
                   <div className="wvd-prow">
-                    <img data-vc-slot="app.face.13" className="wvd-pav" src={image("app.face.13", staticFile("img/avatar-5.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
+                    <img data-vc-slot="app.face.12" className="wvd-pav" src={image("app.face.12", staticFile("img/avatar-5.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
                     <div>
                       <div className="wvd-pby"><b>{appPost.anniversary.author}</b> is celebrating a work anniversary.</div>
                       <div className="wvd-pmeta">2 days ago &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" /></div>

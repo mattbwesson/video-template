@@ -261,7 +261,7 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
   // The centre column's document post. Its cover is a brand gradient rather than a photo,
   // so the block's only swappable picture is the poster's avatar — that is what these
   // fields hang off.
-  "app.face.11": {
+  "app.face.10": {
     text: [
       { path: "feed.appPost.document.author", label: "Posted by" },
       { path: "feed.appPost.document.space", label: "Space" },
@@ -270,7 +270,7 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
     ],
   },
   // The work-anniversary post below it, on the same footing.
-  "app.face.13": {
+  "app.face.12": {
     text: [
       { path: "feed.appPost.anniversary.author", label: "Name" },
       { path: "feed.appPost.anniversary.body", label: "Anniversary post" },
