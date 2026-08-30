@@ -124,26 +124,36 @@
   flex: none;
 }
 
-/* Washed-out photo strip behind the header, centred over the band. The outer frames
-   fade rather than ending on a hard edge — one mask instead of per-image opacities. */
-.wah-collage {
+/* The photo band, as WorkvivoAnalytics draws it. It replaces a centred strip that faded
+   at its left and right with `mask-image` — the export ignores masks and paints the whole
+   box, so those four photographs came out as hard-edged rectangles floating in the header.
+   The fade only ever existed in the Player; a real gradient element does it in both.
+
+   The wash goes to #f1ecfc, not white: this hero is lavender, and fading photographs into
+   a colour the band does not have would read as a white smear rather than as depth. */
+.wah-banner {
   position: absolute;
-  left: 50%;
-  top: 20px;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 172px;
   display: flex;
-  gap: 10px;
-  opacity: 0.3;
-  mask-image: linear-gradient(90deg, transparent 0%, #000 28%, #000 72%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 28%, #000 72%, transparent 100%);
 }
 
-.wah-collage img {
-  width: 113px;
-  height: 112px;
+.wah-banner img {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 172px;
   object-fit: cover;
-  border-radius: 12px;
-  display: block;
+  opacity: 0.28;
+}
+
+/* A real element, not ::after — pseudo-elements are never painted by the export. */
+.wah-banner-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(241, 236, 252, 0) 0%, #f1ecfc 72%);
+  pointer-events: none;
 }
 
 .wah-fav {

@@ -252,20 +252,26 @@ export const WorkvivoNewsletters: React.FC<WorkvivoNewslettersProps> = ({
               </aside>
 
               <main className="nl-main">
+                {/* The photo strip is a full-bleed band behind the header, washed out and
+                    fading into the page — the treatment WorkvivoAnalytics uses. It sits
+                    before .nl-head in the DOM so the title paints over it: the export
+                    ignores z-index and pays attention only to order. */}
+                <div className="nl-banner">
+                  {COLLAGE.map((src, i) => (
+                    <img
+                      key={src}
+                      data-vc-slot={COLLAGE_SLOTS[i]}
+                      src={image(COLLAGE_SLOTS[i], staticFile(src))}
+                      alt=""
+                    />
+                  ))}
+                  <div className="nl-banner-fade" />
+                </div>
+
                 <div className="nl-head">
                   <div className="nl-title">
                     <Icon href="#i-ui-newsletters" width={24} height={24} />
                     Newsletters
-                  </div>
-                  <div className="nl-collage">
-                    {COLLAGE.map((src, i) => (
-                      <img
-                        key={src}
-                        data-vc-slot={COLLAGE_SLOTS[i]}
-                        src={image(COLLAGE_SLOTS[i], staticFile(src))}
-                        alt=""
-                      />
-                    ))}
                   </div>
                   <div className="nl-headacts">
                     <span className="nl-btn">

@@ -95,6 +95,7 @@
 /* ── Content ────────────────────────────────────────────────────────────────── */
 
 .nl-main {
+  position: relative;
   flex: 1 1 0;
   min-width: 0;
   background: #fff;
@@ -127,25 +128,40 @@
   color: #6103ED;
 }
 
-.nl-collage {
+/* The photo band, as WorkvivoAnalytics draws it: full bleed, held right back, and
+   dissolving downward into the page rather than stopping on an edge.
+
+   This replaces a centred strip that faded at its left and right with `mask-image`. The
+   export ignores masks and paints the masked element's whole box, so those photographs
+   came out as five hard-edged rectangles floating in the header — the fade only ever
+   existed in the Player. A real gradient element does it in both.
+
+   `left/right: 0` reaches the padding box, so the band runs the full width of the pane
+   under .nl-main's 24px side padding. */
+.nl-banner {
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: 0;
   top: 0;
-  transform: translateX(-50%);
-  height: 100px;
+  height: 150px;
   display: flex;
-  gap: 8px;
-  /* The outer photos fade rather than ending on a hard edge, which is what the reference
-     shows. A mask does that without a stack of per-image opacities. */
-  mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 30%, #000 70%, transparent 100%);
 }
 
-.nl-collage img {
-  width: 96px;
-  height: 100px;
+.nl-banner img {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 150px;
   object-fit: cover;
-  border-radius: 6px;
+  opacity: 0.28;
+}
+
+/* A real element, not ::after — pseudo-elements are never painted by the export. Last
+   child, so it lands over the photographs. */
+.nl-banner-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 72%);
+  pointer-events: none;
 }
 
 .nl-headacts {
@@ -189,7 +205,12 @@
   transform: rotate(45deg) translate(-2px, -2px);
 }
 
+/* Positioned, like .nl-head above it and like every row WorkvivoAnalytics puts under its
+   own band. The band is absolutely positioned, and CSS paints positioned elements above
+   in-flow ones whatever the DOM order — so an unpositioned search field ends up UNDER the
+   white wash and all but disappears. */
 .nl-field {
+  position: relative;
   margin-top: 16px;
   width: 311px;
   height: 40px;

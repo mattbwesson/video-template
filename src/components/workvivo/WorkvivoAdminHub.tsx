@@ -168,7 +168,10 @@ export const WorkvivoAdminHub: React.FC = () => {
               <main className="wah-main">
                 {/* ------------------------------------------------ lavender header */}
                 <div className="wah-hero">
-                  <div className="wah-collage">
+                  {/* Full-bleed photo band behind the header, washed out and dissolving
+                      downward — the treatment WorkvivoAnalytics uses. First in the hero so
+                      the title paints over it; the export goes by DOM order, not z-index. */}
+                  <div className="wah-banner">
                     {COLLAGE.map((c) => (
                       <img
                         key={c.slot}
@@ -177,6 +180,7 @@ export const WorkvivoAdminHub: React.FC = () => {
                         alt=""
                       />
                     ))}
+                    <div className="wah-banner-fade" />
                   </div>
 
                   <div className="wah-headrow">
