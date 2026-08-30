@@ -16,6 +16,21 @@ const SCENE_EASE = Easing.bezier(0.16, 1, 0.3, 1);
 /** Frames the panel takes to travel its own height. */
 const WIPE_FRAMES = 20;
 
+/**
+ * Dark headroom above the pane, carried by the travelling card.
+ *
+ * The pane is scaled about `center 40%`, which lifts its top edge above the card's own.
+ * With the card ending exactly at the frame's top edge that never showed — the frame did
+ * the cropping. Mid-travel it does show: the card's leading edge lands in the middle of
+ * the banner and slices it, which reads as the UI being cut off by the background coming
+ * in rather than as a card arriving.
+ *
+ * Extending the card upward moves that edge clear of the pane, so what leads the move is a
+ * band of its own background. Nothing else shifts: the pane's `top` takes the same offset
+ * back, and at rest the card's edge is off-frame either way.
+ */
+const CARD_HEADROOM = 160;
+
 /** Natural width of the content pane WorkvivoSpaces draws. */
 const PANE_WIDTH = 1320;
 /** Seats the 1320 pane in 1600 of the 1920 frame. */
@@ -112,8 +127,13 @@ export const SpacesRevealScene: React.FC<SpacesRevealSceneProps> = ({ scale }) =
 
   return (
     <AbsoluteFill style={{ overflow: "hidden" }}>
-      <AbsoluteFill
+      <div
         style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: -CARD_HEADROOM,
+          height: 1080 + CARD_HEADROOM,
           background: "#010224",
           transform: `translateY(${travel * 1080}px)`,
           willChange: "transform",
@@ -124,7 +144,7 @@ export const SpacesRevealScene: React.FC<SpacesRevealSceneProps> = ({ scale }) =
           style={{
             position: "absolute",
             left: "50%",
-            top: PANE_TOP,
+            top: PANE_TOP + CARD_HEADROOM,
             width: PANE_WIDTH,
             marginLeft: -PANE_WIDTH / 2,
             transform: `scale(${z * exitScale}) translateY(${-scrollTop}px)`,
@@ -138,7 +158,7 @@ export const SpacesRevealScene: React.FC<SpacesRevealSceneProps> = ({ scale }) =
             rgba(97,3,237) box-shadow pulsed over ~6 frames on the click — and at this
             speed it read as a stray stroke flashing on screen rather than as a button
             responding. The cursor's own scale-down still carries the click. */}
-      </AbsoluteFill>
+      </div>
 
       {/* Cursor sits outside the wiping panel — it is on the viewer's screen, not in the
           product, so it must not ride the entrance transform. */}
