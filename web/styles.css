@@ -398,7 +398,7 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
    way; the handful that are not (gmail is 1.31:1) would be cropped by `cover`, and a
    clipped logo is a worse fault than a sliver of ground beside it. The white stays for
    those, and for any mark that is a transparent silhouette. */
-.vc-icgrid-logos .vc-icbtn{border-radius:9px;background:#fff;padding:0;overflow:hidden}
+.vc-icgrid-logos .vc-icbtn{border-radius:16px;background:#fff;padding:0;overflow:hidden}
 .vc-icgrid-logos .vc-icbtn.vc-on{box-shadow:0 0 0 2px var(--accent)}
 .vc-icgrid-logos .vc-icnone{background:var(--panel2);padding:0}
 
@@ -409,7 +409,10 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
 .vc-iccell{background:none;border:0;padding:0;cursor:pointer;display:flex;flex-direction:column;
   align-items:center;gap:5px;transition:.15s}
 .vc-iccell:hover{transform:translateY(-2px)}
-.vc-ictile{width:100%;aspect-ratio:1;border-radius:9px;background:#fff;overflow:hidden;
+/* 16px, and it is the ONLY radius in play: `overflow:hidden` clips the mark to it, so an
+   icon that bakes its own rounder or squarer corner still reads as the same tile as the
+   one beside it. */
+.vc-ictile{width:100%;aspect-ratio:1;border-radius:16px;background:#fff;overflow:hidden;
   display:grid;place-items:center;color:var(--mute)}
 .vc-ictile img{width:100%;height:100%;object-fit:contain;display:block}
 .vc-iccell.vc-on .vc-ictile{box-shadow:0 0 0 2px var(--accent)}

@@ -4,10 +4,15 @@ Crop the padding out of the app icons in public/img/integrations so every mark d
 the same visual size.
 
 The set arrived from two different conventions. Most marks are a full-bleed square — a
-coloured tile with the logo already sized inside it, like Zoom or LinkedIn. Eight were a
+coloured tile with the logo already sized inside it, like Zoom or LinkedIn. Eleven were a
 bare glyph sitting in a large OPAQUE WHITE square, so at the same box size they rendered
 visibly smaller than everything beside them, and picking one for a Quick Links tile made
 that tile look wrong.
+
+The target is FULL, not "most of the box". A first pass cropped to 86% and only moved the
+problem: 40 icons fill their box completely and cannot go further, so the cropped ones
+were then the odd ones out in the other direction — smaller on the right of the grid
+rather than larger. Uniform means matching the 40, which means 100%.
 
 The white is opaque, which is why this is not obvious and why an alpha-bounds check misses
 it: by transparency every icon already fills its box. What differs is the INK.
@@ -29,17 +34,21 @@ import re
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DIR = os.path.join(ROOT, "public", "img", "integrations")
 
-# file stem -> the square viewBox that puts its ink at ~86% of the box, measured by
-# rendering the original at 512px and finding the non-white bounds.
+# file stem -> the square viewBox that crops to the mark exactly, measured by rendering
+# each file at 512px and finding its non-white bounds with a sensitive threshold, so an
+# antialiased edge is not shaved off.
 BOXES = {
-    "altera": (22.56, 22.56, 160.47, 160.47),
-    "google-drive": (29.36, 30.92, 741.28, 741.28),
-    "hailey": (48.73, 48.73, 110.54, 110.54),
-    "humi": (23.87, 16.76, 166.75, 166.75),
-    "microsoft": (53.49, 45.45, 346.44, 346.44),
-    "paychex": (32.95, 32.76, 136.36, 136.36),
-    "salesforce": (53.11, 54.67, 692.22, 692.22),
-    "sesame": (26.10, 26.48, 144.75, 144.75),
+    "altera": (33.69, 33.84, 137.90, 137.90),
+    "google-drive": (81.48, 82.32, 637.04, 637.04),
+    "hailey": (56.50, 56.50, 94.78, 94.78),
+    "humi": (35.43, 28.48, 143.30, 143.30),
+    "microsoft": (77.85, 69.81, 297.72, 297.72),
+    "OneDrive": (50.00, 7.03, 701.56, 701.56),
+    "paychex": (42.80, 42.35, 116.92, 116.92),
+    "salesforce": (101.78, 102.67, 594.88, 594.88),
+    "sesame": (36.28, 36.66, 124.39, 124.39),
+    "slack": (70.31, 70.31, 659.38, 659.38),
+    "workspace": (34.20, 57.37, 392.91, 392.91),
 }
 
 VIEWBOX = re.compile(r'viewBox="[-\d.eE]+[ ,]+[-\d.eE]+[ ,]+[-\d.eE]+[ ,]+[-\d.eE]+"')
