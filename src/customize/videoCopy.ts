@@ -496,7 +496,7 @@ export const COPY = defineCopy({
         // 200px column at 15px; a long city name pushes the dots off the card.
         max: 22,
         guide:
-          "The city this company is headquartered in, as its own site names it. If research does not find one, use London — a plausible generic beats a wrong specific.",
+          "The city this company is headquartered in, as its own site names it, WITH its state or country: \"Canton, MA\" for a US city, \"Dublin, Ireland\" otherwise. The card reads that suffix to decide whether to show Fahrenheit, so a bare city name leaves it guessing. If research does not find one, use \"London, England\" — a plausible generic beats a wrong specific.",
       }),
       condition: enumSlot({
         default: "Rainy",
