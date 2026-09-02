@@ -56,6 +56,7 @@ const STYLE = `
   .fail .co{font-weight:600}
   .tag{font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;
     border-radius:5px;background:var(--panel2);color:var(--mute)}
+  .tag.live{background:rgba(61,220,151,.16);color:var(--good)}
   .tag.failed{background:rgba(240,51,141,.16);color:var(--accent)}
   .tag.unsupported{background:rgba(255,180,84,.16);color:var(--warn)}
   .fail .why{margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
@@ -127,6 +128,7 @@ const draw = (s) => {
       card("Cost per video", money(t.costPerRenderUsd), "per render that finished") +
     "</div>" +
     "<h2>Runs and renders by day</h2><div class=\\"panel\\">" + chart(s.byDay) + "</div>" +
+    "<h2>Model in use</h2><div class=\\"panel\\">" + modelsTable(s.models) + "</div>" +
     "<h2>By company</h2><div class=\\"panel\\">" + companies(s.companies) + "</div>" +
     "<h2>Renders that produced no file</h2><div class=\\"panel\\">" + failures(s.failures) + "</div>";
 };
@@ -134,6 +136,30 @@ const draw = (s) => {
 const card = (k, v, n) =>
   '<div class="card"><div class="k">' + k + '</div><div class="v">' + v + "</div>" +
   (n ? (n.startsWith("<") ? n : '<div class="n">' + n + "</div>") : "") + "</div>";
+
+/**
+ * Which model produced what.
+ *
+ * The top row is the live one, since the sort is by most recent activity — so "is the new
+ * model actually running?" is answered by looking, rather than by an SSH session. Cost per
+ * run is the column that matters across a migration; the totals are dominated by whichever
+ * model has been in service longest.
+ */
+const modelsTable = (rows) => {
+  if (!rows || !rows.length) return '<p class="empty">Nothing recorded yet.</p>';
+  const days = (a, b) =>
+    Math.max(1, Math.round((new Date(b) - new Date(a)) / 86400000) + 1);
+  return '<table><thead><tr><th>Model</th><th class="num">Runs</th>' +
+    '<th class="num">Cost / run</th><th class="num">Total</th><th>In use</th></tr></thead><tbody>' +
+    rows.map((r, i) =>
+      "<tr><td>" + esc(r.model) + (i === 0 ? ' <span class="tag live">live</span>' : "") +
+      '</td><td class="num">' + fmt.format(r.runs) + "</td>" +
+      '<td class="num">' + money(r.avgCostUsd) + "</td>" +
+      '<td class="num">' + money(r.costUsd) + "</td>" +
+      "<td>" + r.firstAt.slice(0, 10) + " to " + r.lastAt.slice(0, 10) +
+      " (" + days(r.firstAt, r.lastAt) + "d)</td></tr>",
+    ).join("") + "</tbody></table>";
+};
 
 const companies = (rows) => {
   if (!rows.length) return '<p class="empty">Nothing recorded yet.</p>';

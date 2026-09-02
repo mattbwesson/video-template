@@ -167,6 +167,24 @@ export type Summary = {
   /** Renders over time, by UTC day, oldest first. */
   byDay: { day: string; runs: number; renders: number; costUsd: number | null }[];
   /**
+   * What each model was used for and what it cost, newest activity first.
+   *
+   * Here because "which model is actually running?" had no answer short of an SSH session,
+   * which is a poor way to check the one thing a model migration changes. Every run already
+   * recorded its model and `costOf` already prices from it; this is that fact reaching the
+   * page. It also shows the migration itself — the old model's rows stop growing while the
+   * new one's start, at its own cost per run.
+   */
+  models: {
+    model: string;
+    runs: number;
+    costUsd: number | null;
+    /** Per run, which is the number worth comparing across a migration. */
+    avgCostUsd: number | null;
+    firstAt: string;
+    lastAt: string;
+  }[];
+  /**
    * Every render that did not produce a file, newest first — with why.
    *
    * Cancellations are in here too, marked as such rather than dropped: "the operator gave
@@ -187,6 +205,7 @@ export const summarise = (records = readAll()): Summary => {
 
   const companies = new Map<string, Summary["companies"][number]>();
   const days = new Map<string, { runs: number; renders: number; cost: number }>();
+  const models = new Map<string, { runs: number; cost: number; priced: boolean; firstAt: string; lastAt: string }>();
   const t = {
     runs: 0,
     runsFailed: 0,
@@ -227,6 +246,17 @@ export const summarise = (records = readAll()): Summary => {
         c.costUsd = (c.costUsd ?? 0) + money;
         d.cost += money;
       }
+      // Runs only. A render has no model — the MP4 is made in the browser.
+      const key = r.model || "(unrecorded)";
+      const m = models.get(key) ?? { runs: 0, cost: 0, priced: false, firstAt: r.at, lastAt: r.at };
+      m.runs++;
+      if (money !== null) {
+        m.cost += money;
+        m.priced = true;
+      }
+      if (r.at < m.firstAt) m.firstAt = r.at;
+      if (r.at > m.lastAt) m.lastAt = r.at;
+      models.set(key, m);
     } else {
       // Only a finished render counts as a video; the rest are recorded so the failure
       // rate is visible rather than inferred from a gap.
@@ -255,9 +285,21 @@ export const summarise = (records = readAll()): Summary => {
       ...(detail ? { detail } : {}),
     }));
 
+  const byModel = [...models.entries()]
+    .map(([model, m]) => ({
+      model,
+      runs: m.runs,
+      costUsd: m.priced ? +m.cost.toFixed(4) : null,
+      avgCostUsd: m.priced && m.runs ? +(m.cost / m.runs).toFixed(4) : null,
+      firstAt: m.firstAt,
+      lastAt: m.lastAt,
+    }))
+    .sort((a, b) => b.lastAt.localeCompare(a.lastAt));
+
   return {
     priced,
     failures,
+    models: byModel,
     totals: {
       runs: t.runs,
       runsFailed: t.runsFailed,
