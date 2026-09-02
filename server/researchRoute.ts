@@ -151,6 +151,7 @@ export const handleResearch = async (
       inputTokens: result?.usage?.input ?? 0,
       outputTokens: result?.usage?.output ?? 0,
       reasoningTokens: result?.stats?.reasoning ?? 0,
+      cachedTokens: result?.stats?.cached ?? 0,
       incompleteCalls: result?.stats?.incomplete ?? 0,
       warnings: {
         unbatched: unbatched.length,

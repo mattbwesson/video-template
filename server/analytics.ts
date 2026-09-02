@@ -50,6 +50,8 @@ export type RunRecord = {
   outputTokens: number;
   /** Inside `outputTokens`, never added to it — the API bills them as output. */
   reasoningTokens: number;
+  /** Inside `inputTokens`, and billed at a tenth of the rate. Same subset rule. */
+  cachedTokens: number;
   incompleteCalls: number;
   warnings: { unbatched: number; dangling: number; brokenEditables: number };
   error?: string;
@@ -107,12 +109,21 @@ export const readAll = (): Record_[] => {
   }
 };
 
-/** Tokens -> money, or null when the price table has not been filled in. */
+/**
+ * Tokens -> money, or null when the price table has not been filled in.
+ *
+ * Cached tokens are subtracted from the input total before it is priced, not added to it:
+ * the API reports them as a subset of `input_tokens`, so charging both would bill the same
+ * tokens twice. Reasoning tokens sit inside `outputTokens` the same way and are therefore
+ * never mentioned here at all.
+ */
 export const costOf = (r: RunRecord): number | null => {
-  const { priceInPerM, priceOutPerM, priceSearchCall } = analyticsConfig();
+  const { priceInPerM, priceCachedPerM, priceOutPerM, priceSearchCall } = analyticsConfig();
   if (!priceInPerM && !priceOutPerM && !priceSearchCall) return null;
+  const cached = Math.min(r.cachedTokens ?? 0, r.inputTokens);
   return (
-    (r.inputTokens / 1e6) * priceInPerM +
+    ((r.inputTokens - cached) / 1e6) * priceInPerM +
+    (cached / 1e6) * priceCachedPerM +
     (r.outputTokens / 1e6) * priceOutPerM +
     r.searchCalls * priceSearchCall
   );

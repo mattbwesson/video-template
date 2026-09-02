@@ -30,6 +30,8 @@ export type CallTiming = {
    * without them a slow call looks identical to a verbose one.
    */
   reasoningTokens: number;
+  /** Part of `inputTokens`, billed at the cached rate. */
+  cachedTokens: number;
   /** Set when the model stopped early — the shape of failure that still returns 200. */
   incomplete?: string;
 };
@@ -47,6 +49,7 @@ export const logCall = (t: CallTiming): void => {
     `effort=${t.effort}`,
     t.search ? "search=on" : "search=off",
     `in=${t.inputTokens}`,
+    t.cachedTokens ? `cached=${t.cachedTokens}` : "",
     `out=${t.outputTokens}`,
     t.reasoningTokens ? `reasoning=${t.reasoningTokens}` : "",
     t.incomplete ? `INCOMPLETE=${t.incomplete}` : "",

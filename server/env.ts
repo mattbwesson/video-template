@@ -73,6 +73,15 @@ export type LlmConfig = {
 
 export const llmConfig = (): LlmConfig => ({
   apiKey: str("OPENAI_API_KEY", ""),
+  /**
+   * gpt-5-mini is flagged LEGACY and is scheduled to shut down on 2026-12-11.
+   *
+   * The successor tier is gpt-5.6-luna at $0.20 input / $1.20 output / $0.02 cached, which
+   * is cheaper on every axis — so the move is a cost saving as well as a deadline. It is
+   * left alone here because changing the model changes the copy, and that is a decision to
+   * make with a render in front of you rather than as a footnote to an analytics change.
+   * The prices below are per-deployment config, so switching is a secret and a redeploy.
+   */
   model: str("OPENAI_MODEL", "gpt-5-mini"),
   reasoningEffort: str("OPENAI_REASONING_EFFORT", "low"),
   writeReasoningEffort: str("OPENAI_WRITE_REASONING_EFFORT", "minimal"),
@@ -104,11 +113,15 @@ export const passcodeGuard = (): string => str("PASSCODE", "");
  * instead, which is a question rather than a lie. Token counts are recorded either way, so
  * setting the prices later re-prices the whole history.
  *
- * Per MILLION tokens, matching how the vendors publish them.
+ * Per MILLION tokens, matching how the vendors publish them. As of 2026-08-28 the list
+ * price for gpt-5-mini is $0.25 input, $0.025 cached input, $2.00 output, and the hosted
+ * web search tool is $10.00 per 1,000 calls.
  *
  * `OPENAI_PRICE_SEARCH_CALL` is per call, not per token: the hosted search tool is billed
  * by invocation, and the brief is the only call that uses it. Leaving it out understates
- * every run by the same amount, which is the kind of error that hides.
+ * every run by the same amount, which is the kind of error that hides. The content the
+ * search pulls into the prompt is billed at the input rate on top, and needs no line of
+ * its own — it arrives inside `input_tokens` and is already counted there.
  */
 /**
  * `/data` on Fly, where the volume mounts. A local folder anywhere else.
@@ -130,6 +143,8 @@ const defaultAnalyticsDir = (): string => {
 export type AnalyticsConfig = {
   dir: string;
   priceInPerM: number;
+  /** A tenth of the input rate on gpt-5-mini, and a large share of this pipeline's input. */
+  priceCachedPerM: number;
   priceOutPerM: number;
   priceSearchCall: number;
 };
@@ -137,6 +152,7 @@ export type AnalyticsConfig = {
 export const analyticsConfig = (): AnalyticsConfig => ({
   dir: str("ANALYTICS_DIR", "") || defaultAnalyticsDir(),
   priceInPerM: num("OPENAI_PRICE_IN_PER_M", 0),
+  priceCachedPerM: num("OPENAI_PRICE_CACHED_PER_M", 0),
   priceOutPerM: num("OPENAI_PRICE_OUT_PER_M", 0),
   priceSearchCall: num("OPENAI_PRICE_SEARCH_CALL", 0),
 });

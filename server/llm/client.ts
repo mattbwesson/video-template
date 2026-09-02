@@ -49,7 +49,13 @@ export type StructuredResult<T> = {
   value: T;
   /** URLs the model actually consulted, for showing the operator its sources. */
   citations: string[];
-  usage?: { input?: number; output?: number; reasoning?: number; incomplete?: boolean };
+  usage?: {
+    input?: number;
+    output?: number;
+    reasoning?: number;
+    cached?: number;
+    incomplete?: boolean;
+  };
 };
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
@@ -120,10 +126,19 @@ const extractText = (body: any): string => {
  */
 const tokensOf = (
   body: any,
-): { inputTokens: number; outputTokens: number; reasoningTokens: number } => ({
+): {
+  inputTokens: number;
+  outputTokens: number;
+  reasoningTokens: number;
+  cachedTokens: number;
+} => ({
   inputTokens: body?.usage?.input_tokens ?? 0,
   outputTokens: body?.usage?.output_tokens ?? 0,
   reasoningTokens: body?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
+  // A SUBSET of `input_tokens`, like reasoning is of output — billed at a tenth of the
+  // rate. This pipeline sends the same brief to nine writing calls, so the share of input
+  // that is a cache hit is large, and counting it at full price overstates every run.
+  cachedTokens: body?.usage?.input_tokens_details?.cached_tokens ?? 0,
 });
 
 /** Every URL the hosted search tool surfaced, deduped, in the order first cited. */
@@ -154,7 +169,13 @@ export const callText = async (
 ): Promise<{
   text: string;
   citations: string[];
-  usage?: { input?: number; output?: number; reasoning?: number; incomplete?: boolean };
+  usage?: {
+    input?: number;
+    output?: number;
+    reasoning?: number;
+    cached?: number;
+    incomplete?: boolean;
+  };
 }> => {
   if (!cfg.apiKey) throw new LlmError("OPENAI_API_KEY is not set.");
 
@@ -222,6 +243,7 @@ export const callText = async (
       // Already inside `output`. Carried separately so a run's analytics can show what
       // share of the bill was thinking nobody reads — never added to the total.
       reasoning: (json as any)?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
+      cached: (json as any)?.usage?.input_tokens_details?.cached_tokens ?? 0,
       incomplete: (json as any)?.status === "incomplete",
     },
   };
@@ -344,6 +366,7 @@ export const callStructured = async <T>(
       // Already inside `output`. Carried separately so a run's analytics can show what
       // share of the bill was thinking nobody reads — never added to the total.
       reasoning: (json as any)?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
+      cached: (json as any)?.usage?.input_tokens_details?.cached_tokens ?? 0,
       incomplete: (json as any)?.status === "incomplete",
     },
   };

@@ -35,6 +35,8 @@ export type ResearchResult = {
     calls: number;
     searchCalls: number;
     reasoning: number;
+    /** Part of the input total, billed at the cached rate. */
+    cached: number;
     incomplete: number;
     ms: number;
     model: string;
@@ -451,7 +453,13 @@ const findOverlong = (copy: WorkvivoCopy): Overlong[] => {
 const repairOverlong = async (
   overlong: Overlong[],
   /** Told about this call's usage, so the repair pass is not free in the accounting. */
-  account?: (u?: { input?: number; output?: number; reasoning?: number; incomplete?: boolean }) => void,
+  account?: (u?: {
+    input?: number;
+    output?: number;
+    reasoning?: number;
+    cached?: number;
+    incomplete?: boolean;
+  }) => void,
 ): Promise<Record<string, string>> => {
   const schema = {
     type: "object",
@@ -620,17 +628,19 @@ export const researchCompany = async (
    * Counted here rather than inside the logger, because a logger that also accumulates
    * state is a logger that reports the wrong totals the first time two runs overlap.
    */
-  const stats = { calls: 0, searchCalls: 0, reasoning: 0, incomplete: 0 };
+  const stats = { calls: 0, searchCalls: 0, reasoning: 0, cached: 0, incomplete: 0 };
   const account = (u?: {
     input?: number;
     output?: number;
     reasoning?: number;
+    cached?: number;
     incomplete?: boolean;
   }): void => {
     usage.input += u?.input ?? 0;
     usage.output += u?.output ?? 0;
     stats.calls += 1;
     stats.reasoning += u?.reasoning ?? 0;
+    stats.cached += u?.cached ?? 0;
     if (u?.incomplete) stats.incomplete += 1;
   };
 
