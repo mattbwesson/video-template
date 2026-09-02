@@ -14,13 +14,18 @@
  * historical run is priced at today's rate rather than the rate on the day — acceptable
  * here, where the question is "what does a video cost", not "what did we bill".
  *
+ * Repricing is per MODEL, though, not global. Each run records the model that produced it
+ * and `tokenPricesFor` gives that model its own rates, because otherwise switching model
+ * reprices every older run at the new model's rates and erases the difference between
+ * them — which is the one thing a model migration exists to show.
+ *
  * Nothing generated is written down: token counts, timings and outcomes only. Same rule
  * as server/llm/timing.ts, for the same reason.
  */
 
 import fs from "node:fs";
 import path from "node:path";
-import { analyticsConfig } from "./env";
+import { analyticsConfig, tokenPricesFor } from "./env";
 
 const FILE = "analytics.jsonl";
 
@@ -124,13 +129,15 @@ export const readAll = (): Record_[] => {
  * never mentioned here at all.
  */
 export const costOf = (r: RunRecord): number | null => {
-  const { priceInPerM, priceCachedPerM, priceOutPerM, priceSearchCall } = analyticsConfig();
-  if (!priceInPerM && !priceOutPerM && !priceSearchCall) return null;
+  const { priceSearchCall } = analyticsConfig();
+  // The model that produced THIS run, not whichever one is configured today.
+  const { inPerM, cachedPerM, outPerM } = tokenPricesFor(r.model);
+  if (!inPerM && !outPerM && !priceSearchCall) return null;
   const cached = Math.min(r.cachedTokens ?? 0, r.inputTokens);
   return (
-    ((r.inputTokens - cached) / 1e6) * priceInPerM +
-    (cached / 1e6) * priceCachedPerM +
-    (r.outputTokens / 1e6) * priceOutPerM +
+    ((r.inputTokens - cached) / 1e6) * inPerM +
+    (cached / 1e6) * cachedPerM +
+    (r.outputTokens / 1e6) * outPerM +
     r.searchCalls * priceSearchCall
   );
 };

@@ -60,9 +60,12 @@ export type LlmConfig = {
    * just these calls from `low` to `minimal` took round one 20.8s -> 15.3s, round two
    * 29.6s -> 13.0s and the repair pass 19.0s -> 5.0s.
    *
-   * The research call cannot follow it there: `web_search` is rejected outright at
-   * `minimal` ("The following tools cannot be used with reasoning.effort 'minimal'"), which
-   * is why `searchSafeEffort` exists rather than one shared setting.
+   * The research call cannot follow it there: the lowest efforts are rejected or degraded
+   * when `web_search` is attached, which is why `searchSafeEffort` exists rather than one
+   * shared setting.
+   *
+   * The value is `none` on gpt-5.6, not `minimal`. `minimal` is a gpt-5 level and 5.6
+   * rejects it outright — see the default below for why that mattered so much.
    */
   writeReasoningEffort: string;
   maxOutputTokens: number;
@@ -74,17 +77,50 @@ export type LlmConfig = {
 export const llmConfig = (): LlmConfig => ({
   apiKey: str("OPENAI_API_KEY", ""),
   /**
-   * gpt-5-mini is flagged LEGACY and is scheduled to shut down on 2026-12-11.
+   * gpt-5.6-luna since 2026-09-02. The predecessor, gpt-5-mini-2025-08-07, shuts down on
+   * 2026-12-11 — the deadline is what forced this, not the saving.
    *
-   * The successor tier is gpt-5.6-luna at $0.20 input / $1.20 output / $0.02 cached, which
-   * is cheaper on every axis — so the move is a cost saving as well as a deadline. It is
-   * left alone here because changing the model changes the copy, and that is a decision to
-   * make with a render in front of you rather than as a footnote to an analytics change.
-   * The prices below are per-deployment config, so switching is a secret and a redeploy.
+   * OpenAI's deprecation table names **gpt-5.6-terra** as mini's replacement, not luna.
+   * Terra is $2.00 input / $12.00 output, which on this pipeline's token profile is about
+   * 5x what luna costs and 4x what mini cost. Luna is the cheaper nano tier, so taking it
+   * is a departure from the documented path and was measured rather than assumed —
+   * gpt-5-mini vs gpt-5.6-luna, three runs each, same real company (Aegean Airlines):
+   *
+   *   wall clock        56.8s -> 31.9s
+   *   cost per run    $0.0330 -> $0.0235
+   *   output tokens     6.3k  -> 4.6k
+   *   fields truncated    5.0 -> 0.3
+   *
+   * That last row is why the cheaper tier was comfortable. Machine truncation is the
+   * quality FLOOR — `truncateAtWord` cutting a sentence mid-thought because the repair
+   * pass could not get a field under its cap — and it went from happening 4-6 times a run
+   * to not happening. Everything else is speed and money; that one is the video.
+   *
+   * What the bench does not measure is whether the copy is any GOOD. It counts characters,
+   * not sentences. See docs/research-pass-performance.md §9 for what was read.
    */
-  model: str("OPENAI_MODEL", "gpt-5-mini"),
+  model: str("OPENAI_MODEL", "gpt-5.6-luna"),
   reasoningEffort: str("OPENAI_REASONING_EFFORT", "low"),
-  writeReasoningEffort: str("OPENAI_WRITE_REASONING_EFFORT", "minimal"),
+  /**
+   * `none`, because gpt-5.6 does not have `minimal`:
+   *
+   *   400 Unsupported value: 'minimal' is not supported with the 'gpt-5.6-luna' model.
+   *   Supported values are: 'none', 'low', 'medium', 'high', 'xhigh', and 'max'.
+   *
+   * Worth stating how badly that fails, because it does not look like a failure. The
+   * writing calls pass `search: false`, so they skip `searchSafeEffort` and the raw value
+   * reaches the API; `runBatch` is inside a `Promise.allSettled`, so each 400 becomes a
+   * pushed issue rather than a throw. A real run of the migration with this left at
+   * `minimal` returned exit code 0, reported ten issues nobody reads, and looked like the
+   * best result ever measured:
+   *
+   *   wall clock 18.5s (best ever), round one 405ms, fields over cap 1 (from 18)
+   *
+   * Every number improved because all ten writing calls 400'd in parallel and the video
+   * kept the demo's copy. If this ever needs to change, change it with a bench run and
+   * read the ISSUE LIST, not the timings.
+   */
+  writeReasoningEffort: str("OPENAI_WRITE_REASONING_EFFORT", "none"),
   maxOutputTokens: num("OPENAI_MAX_OUTPUT_TOKENS", 6000),
   webSearch: bool("OPENAI_WEB_SEARCH", true),
   // The hosted search tool has been renamed across API versions
@@ -113,9 +149,12 @@ export const passcodeGuard = (): string => str("PASSCODE", "");
  * instead, which is a question rather than a lie. Token counts are recorded either way, so
  * setting the prices later re-prices the whole history.
  *
- * Per MILLION tokens, matching how the vendors publish them. As of 2026-08-28 the list
- * price for gpt-5-mini is $0.25 input, $0.025 cached input, $2.00 output, and the hosted
+ * Per MILLION tokens, matching how the vendors publish them. As of 2026-09-02 the list
+ * price for gpt-5.6-luna is $0.20 input, $0.02 cached input, $1.20 output, and the hosted
  * web search tool is $10.00 per 1,000 calls.
+ *
+ * These are the price of the CONFIGURED model. A model this deployment no longer runs is
+ * priced from `RETIRED_TOKEN_PRICES` instead — see `tokenPricesFor`.
  *
  * `OPENAI_PRICE_SEARCH_CALL` is per call, not per token: the hosted search tool is billed
  * by invocation, and the brief is the only call that uses it. Leaving it out understates
@@ -143,10 +182,68 @@ const defaultAnalyticsDir = (): string => {
 export type AnalyticsConfig = {
   dir: string;
   priceInPerM: number;
-  /** A tenth of the input rate on gpt-5-mini, and a large share of this pipeline's input. */
+  /**
+   * A tenth of the input rate.
+   *
+   * This used to say "and a large share of this pipeline's input", which the log does not
+   * support: measured over six benched runs the cached share is 9-27% of input and the
+   * line is worth about $0.0002 a run. It also does not warm the way the comment implied —
+   * the first run for a company gets nothing and the ones after it get the same brief
+   * back, so caching is a repeat-run effect, not a within-run one.
+   */
   priceCachedPerM: number;
   priceOutPerM: number;
+  /**
+   * Per CALL, and model-independent: the hosted search tool is $10.00 per 1,000
+   * invocations whichever model invokes it. That is why it is not in the per-model table
+   * below — and why it is now the single largest line in a run, at $0.010 of $0.0235.
+   * A model swap cannot touch it.
+   */
   priceSearchCall: number;
+};
+
+/** Token prices, per million, for one model. The search call is priced separately. */
+export type TokenPrices = { inPerM: number; cachedPerM: number; outPerM: number };
+
+/**
+ * What a model charged while this deployment was running it.
+ *
+ * Cost is computed at read time from token counts, so the whole history reprices whenever
+ * the price table changes. That is deliberate and it was right while there was one model.
+ * With two in the log it silently rewrites the past: setting luna's rates would re-price
+ * every gpt-5-mini run at luna's, and the saving the migration was measured on would
+ * vanish from `/analytics` at the moment it started being real.
+ *
+ * So the CONFIGURED model is priced from the environment, where it belongs — list prices
+ * move, and a redeploy should be able to correct them. A model that is no longer
+ * configured never will again, so its rates are a literal here. Keyed by prefix because
+ * the log stores the dated snapshot (`gpt-5-mini-2025-08-07`), not the alias.
+ */
+const RETIRED_TOKEN_PRICES: Record<string, TokenPrices> = {
+  // List price as of 2026-08-28, the rate every logged gpt-5-mini run was billed at.
+  // Shut down 2026-12-11.
+  "gpt-5-mini": { inPerM: 0.25, cachedPerM: 0.025, outPerM: 2.0 },
+};
+
+/**
+ * The token prices that apply to a run, given the model that produced it.
+ *
+ * An unrecognised model falls back to the environment. That is a guess, but it is the
+ * conservative one: the alternative is dropping the run from every total silently, and a
+ * model gets here only by being benched and never configured.
+ */
+export const tokenPricesFor = (model?: string): TokenPrices => {
+  const cfg = analyticsConfig();
+  const fromEnv: TokenPrices = {
+    inPerM: cfg.priceInPerM,
+    cachedPerM: cfg.priceCachedPerM,
+    outPerM: cfg.priceOutPerM,
+  };
+  if (!model || model === llmConfig().model) return fromEnv;
+  for (const [prefix, prices] of Object.entries(RETIRED_TOKEN_PRICES)) {
+    if (model.startsWith(prefix)) return prices;
+  }
+  return fromEnv;
 };
 
 export const analyticsConfig = (): AnalyticsConfig => ({

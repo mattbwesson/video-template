@@ -372,8 +372,106 @@ the rendered frame.
 - **The baseline was never re-measured.** The 87.3s "before" is a single run and the
   variance on this pass is wide. Everything here is directionally solid and none of the
   precise deltas should be quoted to two significant figures.
-- **Model choice** — everything runs on `gpt-5-mini`. Nothing has been measured against
-  anything else.
+- **Model choice** — ~~nothing has been measured against anything else~~. Measured, and
+  moved: see [§9](#9-the-move-to-gpt-56-luna).
+
+---
+
+## 9. The move to gpt-5.6-luna
+
+`gpt-5-mini-2025-08-07` shuts down **2026-12-11**. That deadline is the reason for this
+change; the saving is real but small at this volume, roughly a cent a video.
+
+OpenAI's deprecation table names **`gpt-5.6-terra`** as mini's replacement. Terra is $2.00
+input / $12.00 output — about 5x what this pipeline costs on luna. Luna is the cheaper
+nano tier, so choosing it is a departure from the documented path, and it was measured
+rather than argued.
+
+### ⚠️ Everything above this section is a fictional company
+
+The benchmarks in §4–§7 were run on **"Northwind Logistics"**, which does not exist. The
+search finds nothing, so the brief is short and fast. Every real customer is a real
+company, and the difference is not small — same code, same day:
+
+| | Northwind (§4) | Aegean Airlines |
+|---|---|---|
+| Wall clock | 37.7s | **56.8s** |
+| Brief | ~17s | **25.1s** (44% of the run) |
+
+So the "after" numbers in §4 understate production by roughly half. Anything benched from
+here on should use a real company. The numbers below all do.
+
+### The blocker: `minimal` does not exist on gpt-5.6
+
+`OPENAI_WRITE_REASONING_EFFORT` was `minimal`, which 5.6 rejects:
+
+```
+400 Unsupported value: 'minimal' is not supported with the 'gpt-5.6-luna' model.
+    Supported values are: 'none', 'low', 'medium', 'high', 'xhigh', and 'max'.
+```
+
+**This is the §6 trap again, ten times bigger, and worth studying.** The writing calls pass
+`search: false` so they never touch `searchSafeEffort`; `runBatch` sits inside a
+`Promise.allSettled`, so each 400 became a pushed issue rather than a throw. The run exited
+**0** and posted the best figures ever recorded on this pipeline:
+
+| | mini baseline | luna, still on `minimal` |
+|---|---|---|
+| Wall clock | 56.8s | **18.5s** |
+| Round one | 12.9s | **405ms** |
+| Fields over cap | 18.3 | **1** |
+
+Three times faster and seventeen times better on cap discipline, because all ten writing
+calls failed in parallel and the video kept the demo's copy. The single over-cap field is
+`chat.summary`, the demo's own known-bad field from §8. **On this pass, a large sudden
+improvement in the timings is a symptom, not a result.**
+
+### The comparison, once it actually ran
+
+`gpt-5-mini` vs `gpt-5.6-luna` at `--write-effort=none`, n=3 each, Aegean Airlines:
+
+| | mini | luna | |
+|---|---:|---:|---:|
+| **Wall clock** | 56.8s | **31.9s** | −44% |
+| ⤷ brief (search) | 25.1s | 14.5s | −42% |
+| ⤷ round one | 12.9s | 7.9s | −39% |
+| ⤷ round two | 10.1s | 5.9s | −42% |
+| ⤷ repair | 8.7s | 3.6s | −59% |
+| Fields over cap | 18.3 | 16.7 | −9% |
+| **Machine-truncated** | 5.0 | **0.3** | **−93%** |
+| Citations | 6.7 | 5.7 | −15% |
+| Input tokens | 45.9k | 49.9k | +9% |
+| ⤷ cached | 4.3k | 10.6k | +149% |
+| Output tokens | 6.3k | 4.6k | −27% |
+| **Cost per run** | $0.0330 | **$0.0235** | **−29%** |
+
+The row that justified the cheaper tier is **machine-truncated**, not wall clock.
+Truncation is the quality floor — `truncateAtWord` cutting a sentence mid-thought because
+the repair pass could not get a field under its cap. Baseline hit it 4–6 times a run; luna
+hit it zero, zero, once. Two of three runs reported `Rewrote N over-long field(s) to fit.`
+with no trailing "still needed trimming", meaning the repair pass now completes.
+
+Cost fell more than list price predicts (−29% against a −21% estimate) because output
+tokens fell 27% — 5.6 is genuinely more concise — and cache hits more than doubled. It does
+not fall further because **$0.010 of every run is the hosted search call**, billed per
+invocation and identical on every model. That is now the largest single line in a run, and
+no model choice can move it.
+
+### What this does not establish
+
+- **Whether the copy is good.** Every number here is speed, money, or whether text fits a
+  box. A model could win all of them and write bland or subtly wrong copy.
+- **Citations, 6.7 → 5.7.** Inside the noise at n=3 against a 5–9 baseline spread, but it
+  is the only number pointing the wrong way and it is the closest thing to a
+  research-quality proxy.
+
+### Analytics had to change first
+
+`costOf` priced every run from one global table, ignoring the `model` each record already
+stored. Setting luna's prices would therefore have re-priced all the historical mini runs
+at luna's rates and erased the −29% at the moment it became real. Prices are now per model:
+the configured one from the environment, retired ones from a frozen table in
+[`server/env.ts`](../server/env.ts).
 
 ---
 

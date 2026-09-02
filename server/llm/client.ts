@@ -72,9 +72,65 @@ const RESPONSES_URL = "https://api.openai.com/v1/responses";
  *
  * Measured 2026-08: brief failed in 1.4s with 0 citations, and the pass still returned
  * "successfully" with an issue buried in the list.
+ *
+ * `none` is lifted for a different reason, and a worse one. It is gpt-5.6's replacement for
+ * `minimal` and it is the default the WRITING calls now run at, so it is one stray
+ * `OPENAI_REASONING_EFFORT=none` away from reaching the brief. OpenAI documents that
+ * pairing as lower-quality rather than rejected — so unlike `minimal` it would not 400, it
+ * would return a thinner brief, with citations, and nothing anywhere would say so. The
+ * failure that does not throw is the one worth spending a line to prevent.
  */
 const searchSafeEffort = (effort: string): string =>
-  effort === "minimal" ? "low" : effort;
+  effort === "minimal" || effort === "none" ? "low" : effort;
+
+/**
+ * The lowest reasoning level is spelled differently by different model families, and
+ * sending the wrong spelling is a 400 on every call that uses it.
+ *
+ *   gpt-5    accepts minimal, low, medium, high
+ *   gpt-5.6  accepts none, low, medium, high, xhigh, max
+ *
+ * So `OPENAI_MODEL` and `OPENAI_WRITE_REASONING_EFFORT` are not independent settings, even
+ * though they are two independent secrets — and a deployment changes them one at a time.
+ * Both orderings break, in the same silent way, because the writing calls degrade to demo
+ * copy rather than throwing:
+ *
+ *   luna + minimal  ->  400 'minimal' is not supported with 'gpt-5.6-luna'
+ *   mini + none     ->  400 'none' is not supported with 'gpt-5-mini-2025-08-07'
+ *
+ * Both were hit for real during this migration, the second one by simply changing the code
+ * default while `.env` still pinned the old model. Ten writing calls fail, the run exits 0,
+ * and the timings look like the best result ever recorded.
+ *
+ * Rather than trust two secrets to be edited together, the effort is translated to what the
+ * configured model actually accepts. That makes the migration safe in either order and
+ * makes rollback — flip `OPENAI_MODEL` back — safe on its own too. An unrecognised model is
+ * passed through untouched: guessing on its behalf would be the same mistake.
+ */
+const EFFORT_RANK: Record<string, number> = {
+  none: 0, minimal: 0, low: 1, medium: 2, high: 3, xhigh: 4, max: 5,
+};
+
+/** Each family's levels, indexed by the rank above and clamped at its own ceiling. */
+const EFFORT_LADDERS: { match: RegExp; levels: string[] }[] = [
+  // gpt-5.6 before gpt-5: the second pattern would otherwise swallow it.
+  { match: /^gpt-5\.6/, levels: ["none", "low", "medium", "high", "xhigh", "max"] },
+  { match: /^gpt-5/, levels: ["minimal", "low", "medium", "high", "high", "high"] },
+];
+
+export const modelSafeEffort = (model: string, effort: string): string => {
+  const ladder = EFFORT_LADDERS.find((l) => l.match.test(model))?.levels;
+  const rank = EFFORT_RANK[effort];
+  if (!ladder || rank === undefined) return effort;
+  const mapped = ladder[Math.min(rank, ladder.length - 1)];
+  if (mapped !== effort) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[llm] reasoning effort '${effort}' is not a ${model} level; using '${mapped}'`,
+    );
+  }
+  return mapped;
+};
 
 /**
  * Turn a bare `TypeError: fetch failed` into something actionable.
@@ -136,8 +192,13 @@ const tokensOf = (
   outputTokens: body?.usage?.output_tokens ?? 0,
   reasoningTokens: body?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
   // A SUBSET of `input_tokens`, like reasoning is of output — billed at a tenth of the
-  // rate. This pipeline sends the same brief to nine writing calls, so the share of input
-  // that is a cache hit is large, and counting it at full price overstates every run.
+  // rate, so counting it at full price overstates a run.
+  //
+  // Not by much, though. This used to claim the cached share was large on the reasoning
+  // that the same brief goes to nine writing calls; measured across six benched runs it is
+  // 9-27% of input and worth about $0.0002. The cache is keyed on the prompt PREFIX and the
+  // brief arrives late in it, so the hits mostly come from re-running the same company, not
+  // from the fan-out within one run.
   cachedTokens: body?.usage?.input_tokens_details?.cached_tokens ?? 0,
 });
 
@@ -179,7 +240,7 @@ export const callText = async (
 }> => {
   if (!cfg.apiKey) throw new LlmError("OPENAI_API_KEY is not set.");
 
-  const requested = req.effort ?? cfg.reasoningEffort;
+  const requested = modelSafeEffort(cfg.model, req.effort ?? cfg.reasoningEffort);
   const effort = cfg.webSearch ? searchSafeEffort(requested) : requested;
   if (effort !== requested) {
     // eslint-disable-next-line no-console
@@ -262,9 +323,11 @@ export const callStructured = async <T>(
   const model = req.model ?? cfg.model;
   const search = req.search ?? cfg.webSearch;
   // Same guard as `callText`: attaching the search tool forbids `minimal`.
-  const effort = search
-    ? searchSafeEffort(req.effort ?? cfg.reasoningEffort)
-    : (req.effort ?? cfg.reasoningEffort);
+  // Translated to a level this model accepts BEFORE the search guard, so both hazards are
+  // handled and in the order that matters: an illegal value is a 400, a legal-but-too-low
+  // one with search attached is a quietly worse brief.
+  const wanted = modelSafeEffort(model, req.effort ?? cfg.reasoningEffort);
+  const effort = search ? searchSafeEffort(wanted) : wanted;
 
   const body: Record<string, unknown> = {
     model,
