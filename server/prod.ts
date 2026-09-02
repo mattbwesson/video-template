@@ -14,6 +14,7 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sirv from "sirv";
+import { analyticsPage } from "./analyticsPage";
 import { handleAssets } from "./assetsRoute";
 import { handleAnalytics, handleRenderEvent } from "./analyticsRoute";
 import { handleResearch } from "./researchRoute";
@@ -133,6 +134,12 @@ const server = http.createServer(async (req, res) => {
     }
     if (url === "/api/analytics" || url.startsWith("/api/analytics?")) {
       handleAnalytics(req, res);
+      return;
+    }
+    // Before the shell rewrite below, which answers every unmatched path with the
+    // wizard's index.html — left to fall through, /analytics would serve the wizard.
+    if (url === "/analytics" || url === "/analytics/") {
+      analyticsPage(res);
       return;
     }
     if (url === "/api/assets" || url.startsWith("/api/assets?")) {

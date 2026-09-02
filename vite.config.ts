@@ -14,6 +14,7 @@ import path from "node:path";
  */
 const RESEARCH_MODULE = path.resolve(__dirname, "server/researchRoute.ts");
 const ASSETS_MODULE = path.resolve(__dirname, "server/assetsRoute.ts");
+const ANALYTICS_PAGE_MODULE = path.resolve(__dirname, "server/analyticsPage.ts");
 const ANALYTICS_MODULE = path.resolve(__dirname, "server/analyticsRoute.ts");
 const SESSION_MODULE = path.resolve(__dirname, "server/sessionRoute.ts");
 const PUBLIC_DIR = path.resolve(__dirname, "public");
@@ -63,6 +64,12 @@ const apiPlugin = (): Plugin => ({
       }
     });
 
+    // Same page the production server serves, so the two cannot drift.
+    server.middlewares.use("/analytics", async (req, res, next) => {
+      if (req.url !== "/" && req.url !== "") return next();
+      const { analyticsPage } = await server.ssrLoadModule(ANALYTICS_PAGE_MODULE);
+      analyticsPage(res);
+    });
     server.middlewares.use("/api/assets", async (req, res, next) => {
       try {
         const { handleAssets } = await server.ssrLoadModule(ASSETS_MODULE);
