@@ -114,7 +114,8 @@ The two effort settings are separate and must stay that way: the lowest levels a
 rejected or quietly degraded when `web_search` is attached, which `searchSafeEffort`
 exists to catch. See [research-pass-performance.md §9](./research-pass-performance.md)
 for what happens when a model does not accept the value it is given — it does not look
-like an error.
+like an error, and [llm-model-migration.md](./llm-model-migration.md) for the migration
+itself, written to be reusable on other projects.
 
 Two prompting strategies:
 

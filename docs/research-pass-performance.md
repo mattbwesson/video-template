@@ -483,4 +483,5 @@ the configured one from the environment, retired ones from a frozen table in
 - [`scripts/bench-research.mjs`](../scripts/bench-research.mjs) — reproduce any of the timings.
 - [`scripts/audit-guides.mjs`](../scripts/audit-guides.mjs) — re-run the guide/cap audit after touching the copy table.
 - [`src/customize/videoCopy.ts`](../src/customize/videoCopy.ts) — the copy table the prompt is built from.
+- [`docs/llm-model-migration.md`](./llm-model-migration.md) — how the gpt-5-mini -> gpt-5.6-luna move was done, portable to other projects.
 - [`docs/video-customization-guide.md`](./video-customization-guide.md) — the rules this pipeline is an application of.
