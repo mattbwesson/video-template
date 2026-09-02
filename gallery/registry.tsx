@@ -45,6 +45,7 @@ import { WorkvivoHqChat } from "../src/components/workvivo/WorkvivoHqChat";
 import { WorkvivoArticle } from "../src/components/workvivo/WorkvivoArticle";
 import { WorkvivoWidgetList } from "../src/components/workvivo/WorkvivoWidgetList";
 import { WorkvivoAdminHub } from "../src/components/workvivo/WorkvivoAdminHub";
+import { WorkvivoHqFan } from "../src/components/workvivo/WorkvivoHqFan";
 import { WorkvivoJourneyBuilder } from "../src/components/workvivo/WorkvivoJourneyBuilder";
 import { WorkvivoJourneyPhone } from "../src/components/workvivo/WorkvivoJourneyPhone";
 import { WorkvivoNewsletters } from "../src/components/workvivo/WorkvivoNewsletters";
@@ -1103,6 +1104,20 @@ export const ENTRIES: Entry[] = [
         </AbsoluteFill>
       </Provided>
     ),
+  },
+
+  {
+    id: "hq-fan",
+    name: "WorkvivoHqFan",
+    file: "src/components/workvivo/WorkvivoHqFan.tsx",
+    group: "Screens",
+    summary:
+      "The HQ capability fan — three glass wedges radiating from the HQ mark, each with its own icon cluster and label. Drawn as one inline `<svg>` because the CSS version (conic/radial gradients, a pseudo-element ring) renders in the Player and exports as a flat rectangle. Geometry derives from `CX`/`CY`/`R_IN`/`R_OUT` at the top of the file.",
+    width: 1920,
+    height: 1080,
+    durationInFrames: 1,
+    poster: 0,
+    Stage: () => <WorkvivoHqFan />,
   },
 
   // ---------------------------------------------------------------- overlays

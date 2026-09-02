@@ -5,9 +5,9 @@ import "./WorkvivoHqFanStyles.css";
 /**
  * The HQ capability fan — three glass wedges radiating from the HQ mark.
  *
- * Geometry is computed, not hand-drawn. Everything hangs off `C`, `R_IN` and `R_OUT`
- * below, so nudging the fan is changing three numbers rather than re-authoring nine path
- * commands, and the three wedges stay concentric by construction.
+ * Geometry is computed, not hand-drawn. Everything hangs off `CX`/`CY`, `R_IN` and
+ * `R_OUT`, so nudging the fan is changing three numbers rather than re-authoring the
+ * path commands, and the three wedges stay concentric by construction.
  *
  * BUILT AS ONE INLINE <svg> ON PURPOSE
  *
@@ -20,6 +20,19 @@ import "./WorkvivoHqFanStyles.css";
  * Inline SVG sidesteps all three: real elements, in DOM order, with gradients the
  * rasterizer honours. `width`/`height` are set alongside `viewBox` because the exporter
  * decodes at intrinsic size and a viewBox-only root has none.
+ *
+ * TWO THINGS THE FIRST VERSION GOT WRONG, AND WHY THEY ARE SUBTLE
+ *
+ * The gap between wedges was ANGULAR — six degrees — which reads as even and is not: a
+ * 6° gap is 13px wide at the hub and 76px at the rim. The reference's gaps are parallel
+ * bands of constant width. That is a perpendicular OFFSET of each straight edge, and
+ * on a circle an offset of `d` shows up as an angle of `asin(d / r)` — larger at the
+ * hub, smaller at the rim. `edgeAt` is that one line of trigonometry.
+ *
+ * And the corners were sharp. SVG paths have no corner radius, so each corner is a
+ * quadratic fillet: both edges are trimmed back by `CORNER` and joined with a curve
+ * whose control point is the corner itself. At these radii the fillet is
+ * indistinguishable from a true arc.
  */
 
 const W = 1920;
@@ -31,54 +44,146 @@ const CY = 858;
 const R_IN = 120;
 const R_OUT = 725;
 
+/** The band between wedges, in px, the same width from hub to rim. */
+const GAP = 26;
+/** Fillet radius on every wedge corner. */
+const CORNER = 16;
+
 /** Badge and its halo. */
 const BADGE_R = 102;
 const RING_R = 113;
 
 /**
- * Wedge spans, in degrees CCW from the +x axis. The fan is a half-circle split three ways
- * with a 6° gap between each, and the centre wedge is narrower so the eye lands on it.
+ * Wedge spans, in degrees CCW from the +x axis, sharing a boundary line at 119° and
+ * 61°. The gap is centred on each boundary, so the centre wedge is 58° and the sides
+ * 61° — slightly narrower, so the eye lands on it.
  */
 const WEDGES = [
-  { key: "comm", from: 180, to: 122 },
-  { key: "search", from: 116, to: 64 },
-  { key: "people", from: 58, to: 0 },
+  { key: "comm", from: 180, to: 119 },
+  { key: "search", from: 119, to: 61 },
+  { key: "people", from: 61, to: 0 },
 ] as const;
 
-const pt = (deg: number, r: number): [number, number] => {
-  const a = (deg * Math.PI) / 180;
+type Pt = [number, number];
+
+const rad = (d: number) => (d * Math.PI) / 180;
+const deg = (r: number) => (r * 180) / Math.PI;
+
+const pt = (angle: number, r: number): Pt => {
+  const a = rad(angle);
   // Minus on y because SVG's y grows downward while the angle is measured the maths way.
   return [CX + r * Math.cos(a), CY - r * Math.sin(a)];
 };
 
 /**
- * An annular sector.
+ * Where a wedge's straight edge meets a circle of radius `r`, once that edge has been
+ * pushed inward by half the gap. Points at every radius on the same offset line ARE the
+ * line, which is what keeps the edge straight and the gap parallel.
+ */
+const edgeAt = (boundary: number, r: number, side: "from" | "to"): number => {
+  const shift = deg(Math.asin(GAP / 2 / r));
+  return side === "from" ? boundary - shift : boundary + shift;
+};
+
+/** A point `dist` along the segment from `a` toward `b`. */
+const along = (a: Pt, b: Pt, dist: number): Pt => {
+  const dx = b[0] - a[0];
+  const dy = b[1] - a[1];
+  const len = Math.hypot(dx, dy);
+  return [a[0] + (dx / len) * dist, a[1] + (dy / len) * dist];
+};
+
+const f = (p: Pt) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
+
+/**
+ * An annular sector with parallel gaps and rounded corners.
  *
- * Sweep flags are the fiddly part: `from > to` walks clockwise **on screen** (again, the
- * flipped y), so the outer arc takes sweep 1 and the inner arc, retraced the other way,
- * takes 0. Large-arc is always 0 — no wedge here reaches 180°.
+ * Corners in screen order: P1 outer-left, P2 outer-right, P3 inner-right, P4 inner-left.
+ * The outer arc walks clockwise on screen (decreasing angle, sweep 1); the inner arc is
+ * retraced the other way (sweep 0). Every edge is trimmed by `CORNER` at both ends and
+ * the corner itself becomes the control point of the joining curve.
  */
 const wedgePath = (from: number, to: number): string => {
-  const [x1, y1] = pt(from, R_OUT);
-  const [x2, y2] = pt(to, R_OUT);
-  const [x3, y3] = pt(to, R_IN);
-  const [x4, y4] = pt(from, R_IN);
+  const fo = edgeAt(from, R_OUT, "from");
+  const tOut = edgeAt(to, R_OUT, "to");
+  const fi = edgeAt(from, R_IN, "from");
+  const tIn = edgeAt(to, R_IN, "to");
+
+  const P1 = pt(fo, R_OUT);
+  const P2 = pt(tOut, R_OUT);
+  const P3 = pt(tIn, R_IN);
+  const P4 = pt(fi, R_IN);
+
+  // Trim distances along the arcs, as angles.
+  const dO = deg(CORNER / R_OUT);
+  const dI = deg(CORNER / R_IN);
+
+  const A1 = pt(fo - dO, R_OUT);
+  const A2 = pt(tOut + dO, R_OUT);
+  const A3 = pt(tIn + dI, R_IN);
+  const A4 = pt(fi - dI, R_IN);
+
+  const S1 = along(P2, P3, CORNER);
+  const S2 = along(P3, P2, CORNER);
+  const S3 = along(P4, P1, CORNER);
+  const S4 = along(P1, P4, CORNER);
+
   return [
-    `M ${x1.toFixed(1)} ${y1.toFixed(1)}`,
-    `A ${R_OUT} ${R_OUT} 0 0 1 ${x2.toFixed(1)} ${y2.toFixed(1)}`,
-    `L ${x3.toFixed(1)} ${y3.toFixed(1)}`,
-    `A ${R_IN} ${R_IN} 0 0 0 ${x4.toFixed(1)} ${y4.toFixed(1)}`,
+    `M ${f(A1)}`,
+    `A ${R_OUT} ${R_OUT} 0 0 1 ${f(A2)}`,
+    `Q ${f(P2)} ${f(S1)}`,
+    `L ${f(S2)}`,
+    `Q ${f(P3)} ${f(A3)}`,
+    `A ${R_IN} ${R_IN} 0 0 0 ${f(A4)}`,
+    `Q ${f(P4)} ${f(S3)}`,
+    `L ${f(S4)}`,
+    `Q ${f(P1)} ${f(A1)}`,
     "Z",
   ].join(" ");
 };
 
-/** Where a wedge's label block sits: on its bisector, at a given fraction of the radius. */
-const seat = (from: number, to: number, frac: number): [number, number] =>
+/** A point on a wedge's bisector, at a fraction of the way from hub to rim. */
+const seat = (from: number, to: number, frac: number): Pt =>
   pt((from + to) / 2, R_IN + (R_OUT - R_IN) * frac);
 
-const COMM = seat(180, 122, 0.52);
-const SEARCH = seat(116, 64, 0.62);
-const PEOPLE = seat(58, 0, 0.52);
+/**
+ * Where each wedge's highlight sits.
+ *
+ * The reference is lit from above the centre, so every wedge is brightest at the part of
+ * its rim NEAREST the top — for the centre wedge that is its own apex, for the sides it
+ * is the upper corner facing inward. Biasing the bisector 60% of the way toward 90°
+ * puts the sheen there for all three without a per-wedge number.
+ */
+const sheenAt = (from: number, to: number): Pt => {
+  const mid = (from + to) / 2;
+  return pt(mid + (90 - mid) * 0.6, R_OUT * 0.8);
+};
+
+// Label seats, and the icon clusters as offsets from them — so moving a label by
+// changing a fraction above moves its icons with it.
+const COMM = seat(180, 119, 0.52);
+const SEARCH = seat(119, 61, 0.62);
+const PEOPLE = seat(61, 0, 0.52);
+
+const at = (base: Pt, dx: number, dy: number): React.CSSProperties => ({
+  left: base[0] + dx,
+  top: base[1] + dy,
+});
+
+/**
+ * Sparkle specks around the halo — the reference scatters a few tiny points of light
+ * in the ring's upper half, which is most of what makes it read as glowing rather than
+ * merely stroked. Angle, distance beyond the ring, radius, opacity.
+ */
+const SPECKS: [number, number, number, number][] = [
+  [128, 28, 2.4, 0.9],
+  [104, 42, 1.6, 0.7],
+  [78, 34, 2.0, 0.85],
+  [152, 46, 1.4, 0.55],
+  [58, 52, 1.5, 0.6],
+  [96, 62, 1.2, 0.45],
+  [140, 20, 1.3, 0.75],
+];
 
 export const WorkvivoHqFan: React.FC = () => (
   <AbsoluteFill className="hqf">
@@ -90,87 +195,172 @@ export const WorkvivoHqFan: React.FC = () => (
       xmlns="http://www.w3.org/2000/svg"
     >
       <defs>
-        {/* The field: near-black navy in the corners, lifting to violet at the bottom
-            left of centre, which is where the reference's light source sits. */}
-        <linearGradient id="hqf-field" x1="0.8" y1="0" x2="0.2" y2="1">
-          <stop offset="0" stopColor="#090717" />
-          <stop offset="0.34" stopColor="#120b30" />
-          <stop offset="0.62" stopColor="#241456" />
-          <stop offset="0.85" stopColor="#4d2cb0" />
-          <stop offset="1" stopColor="#7b4ee6" />
+        {/* The field. Darkest top-right, blue-violet top-left, a broad violet lift across
+            the whole bottom — the reference is a blurred mesh, and one diagonal plus
+            three soft blooms is the cheapest thing that reads the same. */}
+        <linearGradient id="hqf-field" x1="0.9" y1="0" x2="0.15" y2="1">
+          <stop offset="0" stopColor="#0a0826" />
+          <stop offset="0.4" stopColor="#151040" />
+          <stop offset="0.72" stopColor="#2b1c78" />
+          <stop offset="1" stopColor="#5638cc" />
         </linearGradient>
-        <radialGradient id="hqf-bloom" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#8a5cff" stopOpacity="0.85" />
-          <stop offset="0.55" stopColor="#6a3ce0" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#4a25b0" stopOpacity="0" />
+        <radialGradient id="hqf-bloom-tl" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#3434a8" stopOpacity="0.6" />
+          <stop offset="1" stopColor="#3434a8" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="hqf-bloom-b" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#7a52f2" stopOpacity="0.9" />
+          <stop offset="0.5" stopColor="#6540e0" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#4a2cb8" stopOpacity="0" />
         </radialGradient>
 
-        {/* Each wedge lightens toward its outer arc, so the fan reads as lit from below. */}
-        <linearGradient id="hqf-w-comm" x1="0.1" y1="1" x2="0.7" y2="0">
-          <stop offset="0" stopColor="#3a22c4" stopOpacity="0.88" />
-          <stop offset="1" stopColor="#5233e8" stopOpacity="0.86" />
-        </linearGradient>
-        <linearGradient id="hqf-w-search" x1="0.5" y1="1" x2="0.5" y2="0">
-          <stop offset="0" stopColor="#5a30f2" stopOpacity="0.90" />
-          <stop offset="1" stopColor="#6f45ff" stopOpacity="0.9" />
-        </linearGradient>
-        <linearGradient id="hqf-w-people" x1="0.9" y1="1" x2="0.3" y2="0">
-          <stop offset="0" stopColor="#4326d4" stopOpacity="0.88" />
-          <stop offset="1" stopColor="#5b39ee" stopOpacity="0.84" />
+        {/* Wedge fills run hub -> rim along each bisector, deeper and more translucent
+            at the hub, lighter and more saturated at the rim. userSpaceOnUse so the
+            direction is the wedge's own, not its bounding box's. */}
+        {WEDGES.map((w) => {
+          const [x1, y1] = seat(w.from, w.to, 0);
+          const [x2, y2] = seat(w.from, w.to, 1);
+          const centre = w.key === "search";
+          const light = w.key === "people";
+          return (
+            <linearGradient
+              key={w.key}
+              id={`hqf-w-${w.key}`}
+              gradientUnits="userSpaceOnUse"
+              x1={x1}
+              y1={y1}
+              x2={x2}
+              y2={y2}
+            >
+              <stop
+                offset="0"
+                stopColor={centre ? "#3e1fd2" : "#2c189c"}
+                stopOpacity={centre ? 0.93 : light ? 0.66 : 0.72}
+              />
+              <stop
+                offset="0.5"
+                stopColor={centre ? "#5a34f4" : "#4a2ed8"}
+                stopOpacity={centre ? 0.96 : light ? 0.76 : 0.82}
+              />
+              <stop
+                offset="1"
+                stopColor={centre ? "#8464ff" : light ? "#7864f6" : "#6c4ef4"}
+                stopOpacity={centre ? 0.98 : light ? 0.86 : 0.9}
+              />
+            </linearGradient>
+          );
+        })}
+
+        {/* A soft white sheen near the rim of each wedge — the "lit from above" haze. */}
+        {WEDGES.map((w) => {
+          const [cx, cy] = sheenAt(w.from, w.to);
+          return (
+            <radialGradient
+              key={w.key}
+              id={`hqf-s-${w.key}`}
+              gradientUnits="userSpaceOnUse"
+              cx={cx}
+              cy={cy}
+              r={320}
+            >
+              <stop offset="0" stopColor="#ffffff" stopOpacity="0.34" />
+              <stop offset="0.4" stopColor="#d2c6ff" stopOpacity="0.13" />
+              <stop offset="1" stopColor="#d2c6ff" stopOpacity="0" />
+            </radialGradient>
+          );
+        })}
+
+        {/* Edge light. Brightest along the top of the rim, almost gone at the hub. */}
+        <linearGradient
+          id="hqf-edge"
+          gradientUnits="userSpaceOnUse"
+          x1={CX}
+          y1={CY - R_OUT}
+          x2={CX}
+          y2={CY}
+        >
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.62" />
+          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.2" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0.07" />
         </linearGradient>
 
-        {/* Edge light. Brightest at the top of the arc, gone by the straight edges. */}
-        <linearGradient id="hqf-edge" x1="0.5" y1="0" x2="0.5" y2="1">
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.55" />
-          <stop offset="0.6" stopColor="#ffffff" stopOpacity="0.16" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0.05" />
+        {/* The halo, in three layers: a wide soft cyan glow, a thin bright ring that is
+            cyan at the upper-left and fades to nothing at the lower-right, and a
+            fainter inner ring a few px inside it. Plus the specks. */}
+        <radialGradient id="hqf-halo" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0.5" stopColor="#9ff0ff" stopOpacity="0" />
+          <stop offset="0.66" stopColor="#9ff0ff" stopOpacity="0.32" />
+          <stop offset="0.8" stopColor="#a8b8ff" stopOpacity="0.12" />
+          <stop offset="1" stopColor="#a8b8ff" stopOpacity="0" />
+        </radialGradient>
+        <linearGradient
+          id="hqf-ring"
+          gradientUnits="userSpaceOnUse"
+          x1={CX - RING_R}
+          y1={CY - RING_R}
+          x2={CX + RING_R}
+          y2={CY + RING_R}
+        >
+          <stop offset="0" stopColor="#a4f6ee" />
+          <stop offset="0.3" stopColor="#b8c6ff" stopOpacity="0.85" />
+          <stop offset="0.6" stopColor="#8a70f8" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#8a70f8" stopOpacity="0.04" />
         </linearGradient>
-
-        {/* The halo: a cyan-to-violet sweep, which is why it is a gradient on a stroked
-            circle rather than a flat ring colour. */}
-        <linearGradient id="hqf-ring" x1="0.05" y1="0.15" x2="0.85" y2="1">
-          <stop offset="0" stopColor="#8ff2e4" />
-          <stop offset="0.28" stopColor="#a6b4ff" stopOpacity="0.8" />
-          <stop offset="0.62" stopColor="#7a5cf0" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#7a5cf0" stopOpacity="0.08" />
-        </linearGradient>
-        <radialGradient id="hqf-ring-glow" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0.55" stopColor="#8fe6ff" stopOpacity="0" />
-          <stop offset="0.78" stopColor="#8fe6ff" stopOpacity="0.5" />
-          <stop offset="1" stopColor="#8fe6ff" stopOpacity="0" />
+        {/* Light spilling up between the wedges from the hub. */}
+        <radialGradient id="hqf-spill" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#b9f0ff" stopOpacity="0.28" />
+          <stop offset="0.5" stopColor="#9c8cff" stopOpacity="0.1" />
+          <stop offset="1" stopColor="#9c8cff" stopOpacity="0" />
         </radialGradient>
       </defs>
 
       <rect width={W} height={H} fill="url(#hqf-field)" />
-      {/* Two blooms, not one. The wide one sets the violet wash across the lower canvas;
-          the tight one sits under the badge, which is the brightest point in the
-          reference and what makes the mark read as the light source. */}
-      <ellipse cx={CX - 250} cy={CY + 150} rx={880} ry={430} fill="url(#hqf-bloom)" />
-      <ellipse cx={CX} cy={CY + 90} rx={430} ry={300} fill="url(#hqf-bloom)" />
+      <ellipse cx={300} cy={220} rx={760} ry={480} fill="url(#hqf-bloom-tl)" />
+      <ellipse cx={620} cy={1040} rx={980} ry={420} fill="url(#hqf-bloom-b)" />
+      <ellipse cx={CX} cy={CY + 120} rx={520} ry={300} fill="url(#hqf-bloom-b)" />
 
-      {WEDGES.map((w) => (
-        <g key={w.key}>
-          <path d={wedgePath(w.from, w.to)} fill={`url(#hqf-w-${w.key})`} />
-          <path
-            d={wedgePath(w.from, w.to)}
-            fill="none"
-            stroke="url(#hqf-edge)"
-            strokeWidth="2"
-            strokeLinejoin="round"
-          />
-        </g>
-      ))}
+      {WEDGES.map((w) => {
+        const d = wedgePath(w.from, w.to);
+        return (
+          <g key={w.key}>
+            <path d={d} fill={`url(#hqf-w-${w.key})`} />
+            <path d={d} fill={`url(#hqf-s-${w.key})`} />
+            <path
+              d={d}
+              fill="none"
+              stroke="url(#hqf-edge)"
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+          </g>
+        );
+      })}
 
-      {/* Badge halo, then the badge, in DOM order — the renderer ignores z-index. */}
-      <circle cx={CX} cy={CY} r={RING_R + 26} fill="url(#hqf-ring-glow)" />
+      {/* Halo layers, then the badge — in DOM order, since the export ignores z-index. */}
+      <ellipse cx={CX} cy={CY - 30} rx={230} ry={190} fill="url(#hqf-spill)" />
+      <circle cx={CX} cy={CY} r={RING_R + 70} fill="url(#hqf-halo)" />
       <circle
         cx={CX}
         cy={CY}
         r={RING_R}
         fill="none"
         stroke="url(#hqf-ring)"
-        strokeWidth="3.5"
+        strokeWidth="3"
       />
+      <circle
+        cx={CX}
+        cy={CY}
+        r={RING_R - 7}
+        fill="none"
+        stroke="#ffffff"
+        strokeOpacity="0.14"
+        strokeWidth="1"
+      />
+      {SPECKS.map(([a, dist, r, o], i) => {
+        const [x, y] = pt(a, RING_R + dist);
+        return <circle key={i} cx={x} cy={y} r={r} fill="#ffffff" fillOpacity={o} />;
+      })}
+
       <circle cx={CX} cy={CY} r={BADGE_R} fill="#07060f" />
       <rect
         x={CX - 52}
@@ -182,6 +372,8 @@ export const WorkvivoHqFan: React.FC = () => (
         stroke="#ffffff"
         strokeWidth="3.5"
       />
+      {/* The mark, inlined from public/img/hq-logo.svg (viewBox 0 0 118 70) — SVG
+          delivered through an <img> comes out garbled in the export. */}
       <g transform={`translate(${CX - 36} ${CY - 21}) scale(${72 / 118})`}>
         <path
           d="M0 61.6015V1.18048H14.3572V25.2556H36.593V1.18048H51.0326V61.6015H36.593V37.0049H14.3572V61.6015H0Z"
@@ -195,48 +387,29 @@ export const WorkvivoHqFan: React.FC = () => (
     </svg>
 
     {/* --- glass icons -------------------------------------------------------------
-        Real PNGs rather than drawn shapes: these are the same assets the HQ scenes use,
-        so the fan matches them exactly instead of approximating them. */}
-    <Img className="hqf-i hqf-i-chat" src={staticFile("img/glass/chat.png")} alt="" />
-    <Img className="hqf-i hqf-i-chat2" src={staticFile("img/glass/chat.png")} alt="" />
-    <Img className="hqf-i hqf-i-mag" src={staticFile("img/glass/mag.png")} alt="" />
-    <Img className="hqf-i hqf-i-rocket" src={staticFile("img/glass/rocket.png")} alt="" />
-    <Img className="hqf-i hqf-i-scale" src={staticFile("img/glass/scale.png")} alt="" />
-    <Img
-      className="hqf-i hqf-i-sparkle"
-      src={staticFile("img/hq-sparkle-NEW.png")}
-      alt=""
-    />
-
-    {/* Heart and document have no asset in the library, so they are drawn — inline, and
-        in the same glassy white as the PNGs so the cluster reads as one set. */}
-    <svg className="hqf-i hqf-i-heart" width="64" height="64" viewBox="0 0 64 64">
+        Real PNGs rather than drawn shapes: the same assets the HQ scenes use, so the
+        fan matches them exactly. Each cluster is placed relative to its label. */}
+    <Img className="hqf-i hqf-i-chat" style={at(COMM, -75, -147)} src={staticFile("img/glass/chat.png")} alt="" />
+    <Img className="hqf-i hqf-i-chat2" style={at(COMM, 8, -94)} src={staticFile("img/glass/chat.png")} alt="" />
+    <svg className="hqf-i hqf-i-heart" style={at(COMM, 5, -181)} width="60" height="60" viewBox="0 0 64 64">
       <path
         d="M32 56S6 40.5 6 23.5C6 14.4 13.2 7 22.2 7c5.9 0 9.2 3 9.8 4.6C32.6 10 35.9 7 41.8 7 50.8 7 58 14.4 58 23.5 58 40.5 32 56 32 56Z"
         fill="rgba(255,255,255,0.92)"
       />
     </svg>
-    <svg className="hqf-i hqf-i-doc" width="56" height="56" viewBox="0 0 56 56">
-      <rect
-        x="12"
-        y="6"
-        width="32"
-        height="44"
-        rx="5"
-        fill="rgba(255,255,255,0.18)"
-        stroke="rgba(255,255,255,0.85)"
-        strokeWidth="2.5"
-      />
-      <path
-        d="M20 18h16M20 27h16M20 36h10"
-        stroke="rgba(255,255,255,0.85)"
-        strokeWidth="2.5"
-        strokeLinecap="round"
-      />
+
+    <Img className="hqf-i hqf-i-mag" style={at(SEARCH, 3, -127)} src={staticFile("img/glass/mag.png")} alt="" />
+    <svg className="hqf-i hqf-i-doc" style={at(SEARCH, -91, -110)} width="52" height="52" viewBox="0 0 56 56">
+      <rect x="12" y="6" width="32" height="44" rx="5" fill="rgba(255,255,255,0.18)" stroke="rgba(255,255,255,0.85)" strokeWidth="2.5" />
+      <path d="M20 18h16M20 27h16M20 36h10" stroke="rgba(255,255,255,0.85)" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
 
+    <Img className="hqf-i hqf-i-rocket" style={at(PEOPLE, -20, -107)} src={staticFile("img/glass/rocket.png")} alt="" />
+    <Img className="hqf-i hqf-i-scale" style={at(PEOPLE, 27, -182)} src={staticFile("img/glass/scale.png")} alt="" />
+    <Img className="hqf-i hqf-i-sparkle" style={at(PEOPLE, 112, -135)} src={staticFile("img/hq-sparkle-NEW.png")} alt="" />
+
     {/* --- labels ----------------------------------------------------------------- */}
-    <div className="hqf-label" style={{ left: COMM[0], top: COMM[1] }}>
+    <div className="hqf-label" style={at(COMM, 0, 0)}>
       <div className="hqf-title">
         Communication
         <br />& Engagement
@@ -248,7 +421,7 @@ export const WorkvivoHqFan: React.FC = () => (
       </div>
     </div>
 
-    <div className="hqf-label" style={{ left: SEARCH[0], top: SEARCH[1] }}>
+    <div className="hqf-label" style={at(SEARCH, 0, 0)}>
       <div className="hqf-title">
         Search &<br />
         Knowledge
@@ -260,7 +433,7 @@ export const WorkvivoHqFan: React.FC = () => (
       </div>
     </div>
 
-    <div className="hqf-label" style={{ left: PEOPLE[0], top: PEOPLE[1] }}>
+    <div className="hqf-label" style={at(PEOPLE, 0, 0)}>
       <div className="hqf-title">
         People
         <br />
