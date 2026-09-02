@@ -3,6 +3,7 @@ import { Composition } from "remotion";
 import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
 import { Japanese } from "./Japanese";
+import { WorkvivoHqFan } from "./components/workvivo/WorkvivoHqFan";
 import { CustomizedWorkvivo } from "./CustomizedWorkvivo";
 import { WorkvivoSpacesScene } from "./WorkvivoSpacesScene";
 import { WorkvivoNewslettersScene } from "./WorkvivoNewslettersScene";
@@ -115,6 +116,15 @@ export const RemotionRoot: React.FC = () => {
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
         defaultProps={DEFAULT_INPUT_PROPS}
+      />
+      {/* Still frame: the HQ capability fan — three glass wedges around the HQ mark. */}
+      <Composition
+        id="WorkvivoHqFan"
+        component={WorkvivoHqFan}
+        durationInFrames={VIRGIN_FPS * 5}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
       />
       {/* Still frame: the Workvivo Space page for the Annual Employee Summit, at the
           1440x1415 size of the Figma export it recreates. */}

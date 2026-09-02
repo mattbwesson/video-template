@@ -1,0 +1,111 @@
+/* The HQ capability fan. Every class is prefixed hqf- so nothing collides with
+   WorkvivoStyles.css (which owns the bare .rail/.nav/.topbar names) or any other ported
+   sheet. See WorkvivoHqFan.tsx for why the artwork itself is one inline <svg>.
+
+   No element-type selectors anywhere in this file. The exporter wraps every text node in a
+   <span> and every word in another, so a rule like `.hqf-label div {…}` would match those
+   injected wrappers and lay the copy out one word per line. Style the classes directly. */
+
+.hqf {
+  background: #0a0820;
+  overflow: hidden;
+}
+
+.hqf-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* --- icons ------------------------------------------------------------------------
+   Positioned from their own centres via a translate, so the coordinates below are where
+   the icon SITS rather than where its top-left corner lands — which is what the geometry
+   in the .tsx is expressed in too. */
+.hqf-i {
+  position: absolute;
+  transform: translate(-50%, -50%);
+}
+
+/* Communication cluster — two bubbles and a heart, the big one leading. */
+.hqf-i-chat {
+  left: 505px;
+  top: 500px;
+  width: 128px;
+  height: 128px;
+}
+.hqf-i-chat2 {
+  left: 588px;
+  top: 553px;
+  width: 88px;
+  height: 88px;
+}
+.hqf-i-heart {
+  left: 585px;
+  top: 466px;
+  width: 60px;
+  height: 60px;
+}
+
+/* Search cluster — the glass loupe, with a document tucked behind its left shoulder. */
+.hqf-i-mag {
+  left: 963px;
+  top: 236px;
+  width: 148px;
+  height: 148px;
+}
+.hqf-i-doc {
+  left: 869px;
+  top: 253px;
+  width: 52px;
+  height: 52px;
+}
+
+/* People cluster — rocket low-left, trend arrow above it, sparkle leading right. */
+.hqf-i-rocket {
+  left: 1320px;
+  top: 540px;
+  width: 116px;
+  height: 116px;
+}
+.hqf-i-scale {
+  left: 1367px;
+  top: 465px;
+  width: 96px;
+  height: 96px;
+}
+.hqf-i-sparkle {
+  left: 1452px;
+  top: 512px;
+  width: 150px;
+  height: 150px;
+}
+
+/* --- labels ----------------------------------------------------------------------- */
+.hqf-label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: #fff;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  /* The wedge is the widest thing under the text; keeping the block narrower than the
+     wedge's waist stops a long line spilling over a gap and onto the next wedge. */
+  width: 420px;
+}
+
+.hqf-title {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1.18;
+  letter-spacing: -0.01em;
+  /* Lifts the white off the violet without reading as a drop shadow. */
+  text-shadow: 0 2px 18px rgba(10, 4, 40, 0.45);
+}
+
+.hqf-sub {
+  margin-top: 12px;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 1.36;
+  color: rgba(255, 255, 255, 0.88);
+}
