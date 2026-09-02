@@ -156,7 +156,7 @@ const seat = (from: number, to: number, frac: number): Pt =>
  */
 const sheenAt = (from: number, to: number): Pt => {
   const mid = (from + to) / 2;
-  return pt(mid + (90 - mid) * 0.6, R_OUT * 0.8);
+  return pt(mid + (90 - mid) * 0.72, R_OUT * 0.86);
 };
 
 // Label seats, and the icon clusters as offsets from them — so moving a label by
@@ -198,30 +198,42 @@ export const WorkvivoHqFan: React.FC = () => (
         {/* The field. Darkest top-right, blue-violet top-left, a broad violet lift across
             the whole bottom — the reference is a blurred mesh, and one diagonal plus
             three soft blooms is the cheapest thing that reads the same. */}
-        <linearGradient id="hqf-field" x1="0.9" y1="0" x2="0.15" y2="1">
-          <stop offset="0" stopColor="#0a0826" />
-          <stop offset="0.4" stopColor="#151040" />
-          <stop offset="0.72" stopColor="#2b1c78" />
-          <stop offset="1" stopColor="#5638cc" />
+        <linearGradient id="hqf-field" x1="1" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#0b0a2c" />
+          <stop offset="0.32" stopColor="#151348" />
+          <stop offset="0.62" stopColor="#2c2390" />
+          <stop offset="0.84" stopColor="#4a38ca" />
+          <stop offset="1" stopColor="#5e4ae6" />
         </linearGradient>
         <radialGradient id="hqf-bloom-tl" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#3434a8" stopOpacity="0.6" />
-          <stop offset="1" stopColor="#3434a8" stopOpacity="0" />
+          <stop offset="0" stopColor="#3a38b4" stopOpacity="0.78" />
+          <stop offset="0.6" stopColor="#2e2c9c" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#2a2890" stopOpacity="0" />
         </radialGradient>
         <radialGradient id="hqf-bloom-b" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#7a52f2" stopOpacity="0.9" />
-          <stop offset="0.5" stopColor="#6540e0" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#4a2cb8" stopOpacity="0" />
+          <stop offset="0" stopColor="#7458f6" stopOpacity="0.85" />
+          <stop offset="0.5" stopColor="#6244e4" stopOpacity="0.4" />
+          <stop offset="1" stopColor="#4a30c0" stopOpacity="0" />
+        </radialGradient>
+        <radialGradient id="hqf-bloom-br" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#4e3ccc" stopOpacity="0.5" />
+          <stop offset="1" stopColor="#4e3ccc" stopOpacity="0" />
         </radialGradient>
 
         {/* Wedge fills run hub -> rim along each bisector, deeper and more translucent
             at the hub, lighter and more saturated at the rim. userSpaceOnUse so the
             direction is the wedge's own, not its bounding box's. */}
         {WEDGES.map((w) => {
-          const [x1, y1] = seat(w.from, w.to, 0);
-          const [x2, y2] = seat(w.from, w.to, 1);
           const centre = w.key === "search";
           const light = w.key === "people";
+          // Dark end -> light end, per wedge. The sides run outer-bottom corner to
+          // top-inner corner; the centre runs hub to apex.
+          const [x1, y1] = centre
+            ? pt(90, R_IN)
+            : pt(w.key === "comm" ? 176 : 4, R_OUT * 0.55);
+          const [x2, y2] = centre
+            ? pt(90, R_OUT)
+            : pt(w.key === "comm" ? 116 : 64, R_OUT * 0.96);
           return (
             <linearGradient
               key={w.key}
@@ -234,18 +246,18 @@ export const WorkvivoHqFan: React.FC = () => (
             >
               <stop
                 offset="0"
-                stopColor={centre ? "#3e1fd2" : "#2c189c"}
-                stopOpacity={centre ? 0.93 : light ? 0.66 : 0.72}
+                stopColor={centre ? "#4a2ce0" : "#3826b4"}
+                stopOpacity={centre ? 0.96 : 0.8}
               />
               <stop
                 offset="0.5"
-                stopColor={centre ? "#5a34f4" : "#4a2ed8"}
-                stopOpacity={centre ? 0.96 : light ? 0.76 : 0.82}
+                stopColor={centre ? "#5a3cf0" : "#4c38d2"}
+                stopOpacity={centre ? 0.97 : 0.76}
               />
               <stop
                 offset="1"
-                stopColor={centre ? "#8464ff" : light ? "#7864f6" : "#6c4ef4"}
-                stopOpacity={centre ? 0.98 : light ? 0.86 : 0.9}
+                stopColor={centre ? "#7256fa" : light ? "#7a70ee" : "#6e62ea"}
+                stopOpacity={centre ? 0.96 : light ? 0.64 : 0.68}
               />
             </linearGradient>
           );
@@ -261,11 +273,11 @@ export const WorkvivoHqFan: React.FC = () => (
               gradientUnits="userSpaceOnUse"
               cx={cx}
               cy={cy}
-              r={320}
+              r={360}
             >
-              <stop offset="0" stopColor="#ffffff" stopOpacity="0.34" />
-              <stop offset="0.4" stopColor="#d2c6ff" stopOpacity="0.13" />
-              <stop offset="1" stopColor="#d2c6ff" stopOpacity="0" />
+              <stop offset="0" stopColor="#ffffff" stopOpacity="0.3" />
+              <stop offset="0.35" stopColor="#dcd2ff" stopOpacity="0.14" />
+              <stop offset="1" stopColor="#dcd2ff" stopOpacity="0" />
             </radialGradient>
           );
         })}
@@ -279,9 +291,9 @@ export const WorkvivoHqFan: React.FC = () => (
           x2={CX}
           y2={CY}
         >
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.62" />
-          <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.2" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0.07" />
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.72" />
+          <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0.1" />
         </linearGradient>
 
         {/* The halo, in three layers: a wide soft cyan glow, a thin bright ring that is
@@ -315,9 +327,10 @@ export const WorkvivoHqFan: React.FC = () => (
       </defs>
 
       <rect width={W} height={H} fill="url(#hqf-field)" />
-      <ellipse cx={300} cy={220} rx={760} ry={480} fill="url(#hqf-bloom-tl)" />
-      <ellipse cx={620} cy={1040} rx={980} ry={420} fill="url(#hqf-bloom-b)" />
-      <ellipse cx={CX} cy={CY + 120} rx={520} ry={300} fill="url(#hqf-bloom-b)" />
+      <ellipse cx={260} cy={170} rx={720} ry={470} fill="url(#hqf-bloom-tl)" />
+      <ellipse cx={500} cy={1010} rx={920} ry={390} fill="url(#hqf-bloom-b)" />
+      <ellipse cx={CX} cy={CY + 150} rx={520} ry={250} fill="url(#hqf-bloom-b)" />
+      <ellipse cx={1580} cy={1050} rx={640} ry={300} fill="url(#hqf-bloom-br)" />
 
       {WEDGES.map((w) => {
         const d = wedgePath(w.from, w.to);
