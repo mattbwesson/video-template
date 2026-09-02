@@ -66,6 +66,12 @@ export type RenderRecord = {
   ms?: number;
   bytes?: number;
   reason?: string;
+  /**
+   * Where and on what it died — frame reached, composition size, and the machine doing
+   * the encoding. The MP4 is made in the operator's browser, so most of what explains a
+   * failure is a fact about their laptop and is unknowable here otherwise.
+   */
+  detail?: Record<string, unknown>;
 };
 
 export type Record_ = RunRecord | RenderRecord;
@@ -153,6 +159,20 @@ export type Summary = {
   }[];
   /** Renders over time, by UTC day, oldest first. */
   byDay: { day: string; runs: number; renders: number; costUsd: number | null }[];
+  /**
+   * Every render that did not produce a file, newest first — with why.
+   *
+   * Cancellations are in here too, marked as such rather than dropped: "the operator gave
+   * up after nine minutes" is a finding about the render being too slow, not noise.
+   */
+  failures: {
+    at: string;
+    company: string;
+    outcome: RenderRecord["outcome"];
+    ms?: number;
+    reason?: string;
+    detail?: Record<string, unknown>;
+  }[];
 };
 
 export const summarise = (records = readAll()): Summary => {
@@ -215,8 +235,22 @@ export const summarise = (records = readAll()): Summary => {
     days.set(day, d);
   }
 
+  const failures = records
+    .filter((r): r is RenderRecord => r.kind === "render" && r.outcome !== "done")
+    .sort((a, b) => b.at.localeCompare(a.at))
+    .slice(0, 50)
+    .map(({ at, company, outcome, ms, reason, detail }) => ({
+      at,
+      company,
+      outcome,
+      ...(ms !== undefined ? { ms } : {}),
+      ...(reason ? { reason } : {}),
+      ...(detail ? { detail } : {}),
+    }));
+
   return {
     priced,
+    failures,
     totals: {
       runs: t.runs,
       runsFailed: t.runsFailed,

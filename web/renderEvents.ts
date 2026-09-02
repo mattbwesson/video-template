@@ -20,6 +20,55 @@ export type RenderEvent = {
   ms?: number;
   bytes?: number;
   reason?: string;
+  /**
+   * Everything about a failure that is not the message.
+   *
+   * A render that dies nine minutes in and one that dies on frame two have the same
+   * message surprisingly often, and the difference is the whole diagnosis: the first is
+   * memory or the encoder giving up, the second is the composition. `frame` and `progress`
+   * are what tell them apart, so they are worth more here than any wording.
+   *
+   * The browser fields are here for the same reason. This encodes on the operator's own
+   * machine through WebCodecs, so "it failed" is often a fact about their laptop — how
+   * much memory it admits to and how many cores it has — and none of that is knowable
+   * from the server side afterwards.
+   */
+  detail?: {
+    errorName?: string;
+    stack?: string;
+    frame?: number;
+    encodedFrame?: number;
+    totalFrames?: number;
+    progress?: number;
+    width?: number;
+    height?: number;
+    fps?: number;
+    ua?: string;
+    deviceMemoryGb?: number;
+    cores?: number;
+  };
+};
+
+/**
+ * What the browser will admit about itself.
+ *
+ * `deviceMemory` and `hardwareConcurrency` are both optional in the platform and absent in
+ * Safari, hence the guards — a missing field is recorded as missing rather than as zero,
+ * which would read as a machine with no memory.
+ */
+export const browserFacts = (): Pick<
+  NonNullable<RenderEvent["detail"]>,
+  "ua" | "deviceMemoryGb" | "cores"
+> => {
+  if (typeof navigator === "undefined") return {};
+  const nav = navigator as Navigator & { deviceMemory?: number };
+  return {
+    ua: nav.userAgent,
+    ...(typeof nav.deviceMemory === "number" ? { deviceMemoryGb: nav.deviceMemory } : {}),
+    ...(typeof nav.hardwareConcurrency === "number"
+      ? { cores: nav.hardwareConcurrency }
+      : {}),
+  };
 };
 
 export const reportRender = (ev: RenderEvent): void => {

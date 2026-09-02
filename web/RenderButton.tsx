@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { reportRender } from "./renderEvents";
+import { browserFacts, reportRender } from "./renderEvents";
 import {
   downloadBlob,
   renderFilename,
@@ -51,6 +51,8 @@ export const RenderButton: React.FC<{
 }> = ({ inputProps, company, durationInFrames, fps, width, height }) => {
   const [state, setState] = useState<State>({ kind: "idle" });
   const handle = useRef<RenderHandle | null>(null);
+  /** The last progress the renderer reported, for a failure to say where it died. */
+  const lastProgress = useRef<RenderProgress | null>(null);
   /** Guards against a cancelled render's rejection landing on an unmounted component. */
   const live = useRef(true);
   useEffect(() => {
@@ -70,7 +72,12 @@ export const RenderButton: React.FC<{
       // Recorded even though nothing was spent: a browser that cannot encode is the one
       // failure the operator cannot work around, and it is invisible in a log that only
       // counts renders that started.
-      reportRender({ company, outcome: "unsupported", reason: ready.blockers.join("; ") });
+      reportRender({
+        company,
+        outcome: "unsupported",
+        reason: ready.blockers.join("; "),
+        detail: { width, height, fps, totalFrames: durationInFrames, ...browserFacts() },
+      });
       setState({ kind: "unsupported", blockers: ready.blockers });
       return;
     }
@@ -88,6 +95,9 @@ export const RenderButton: React.FC<{
       width,
       height,
       onProgress: (progress) => {
+        // Kept outside React state as well: the failure handler needs the last progress,
+        // and reading it from state there would close over the value at render time.
+        lastProgress.current = progress;
         if (live.current) setState({ kind: "rendering", progress });
       },
     });
@@ -110,15 +120,45 @@ export const RenderButton: React.FC<{
     } catch (err) {
       // An abort is the operator's own doing, so it returns to idle rather than reporting
       // a failure at them.
+      //
+      // `cancel` as well as `abort`: the renderer's own word is "cancelled"
+      // ("renderMediaOnWeb() was cancelled"), which the abort-only test missed — so every
+      // operator who pressed Cancel was shown a red failure and logged as one. The first
+      // failure this log ever recorded was that, not a broken render.
       const message = err instanceof Error ? err.message : String(err);
-      const aborted = /abort/i.test(message);
+      const aborted = /abort|cancel/i.test(message);
+      const p = lastProgress.current;
       // Recorded before the `live` check, like the success above: closing the tab is one
       // of the ways a render fails, and it is the way that unmounts this component.
       reportRender({
         company,
         outcome: aborted ? "aborted" : "failed",
         ms: Date.now() - startedAt,
-        ...(aborted ? {} : { reason: message }),
+        ...(aborted
+          ? {}
+          : {
+              reason: message,
+              detail: {
+                errorName: err instanceof Error ? err.name : typeof err,
+                // First three frames only. The whole stack is mostly renderer internals
+                // and would bloat every line of the log for no extra diagnosis.
+                ...(err instanceof Error && err.stack
+                  ? { stack: err.stack.split("\n").slice(0, 3).join(" | ").slice(0, 400) }
+                  : {}),
+                ...(p
+                  ? {
+                      frame: p.renderedFrames,
+                      encodedFrame: p.encodedFrames,
+                      progress: +p.progress.toFixed(3),
+                    }
+                  : {}),
+                totalFrames: durationInFrames,
+                width,
+                height,
+                fps,
+                ...browserFacts(),
+              },
+            }),
       });
       if (!live.current) return;
       if (aborted) {

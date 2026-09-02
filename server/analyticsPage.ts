@@ -50,6 +50,18 @@ const STYLE = `
     color:#fff;font:inherit;font-weight:600;cursor:pointer}
   .err{color:var(--accent);font-size:.8rem;min-height:1.2em}
   .warn{color:var(--warn)}
+  .fail{border-bottom:1px solid var(--line);padding:12px 2px}
+  .fail:last-child{border-bottom:0}
+  .fail .top{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+  .fail .co{font-weight:600}
+  .tag{font-size:.66rem;text-transform:uppercase;letter-spacing:.06em;padding:2px 7px;
+    border-radius:5px;background:var(--panel2);color:var(--mute)}
+  .tag.failed{background:rgba(240,51,141,.16);color:var(--accent)}
+  .tag.unsupported{background:rgba(255,180,84,.16);color:var(--warn)}
+  .fail .why{margin-top:5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:.76rem;color:var(--txt);word-break:break-word}
+  .fail .meta{margin-top:5px;color:var(--mute);font-size:.74rem}
+  .fail .meta span{margin-right:14px;white-space:nowrap}
 `;
 
 /**
@@ -58,7 +70,8 @@ const STYLE = `
  * Plain DOM, no framework: this is one page that draws three tables and a bar chart, and
  * a build pipeline for it would be more moving parts than the thing it builds.
  */
-const SCRIPT = `
+/** Exported so the build can parse it; see scripts/build-server.mjs. */
+export const ANALYTICS_CLIENT_SCRIPT = `
 const KEY = "vc-passcode";
 const $ = (s) => document.querySelector(s);
 const fmt = new Intl.NumberFormat("en-US");
@@ -114,7 +127,8 @@ const draw = (s) => {
       card("Cost per video", money(t.costPerRenderUsd), "per render that finished") +
     "</div>" +
     "<h2>Runs and renders by day</h2><div class=\\"panel\\">" + chart(s.byDay) + "</div>" +
-    "<h2>By company</h2><div class=\\"panel\\">" + companies(s.companies) + "</div>";
+    "<h2>By company</h2><div class=\\"panel\\">" + companies(s.companies) + "</div>" +
+    "<h2>Renders that produced no file</h2><div class=\\"panel\\">" + failures(s.failures) + "</div>";
 };
 
 const card = (k, v, n) =>
@@ -130,6 +144,49 @@ const companies = (rows) => {
       '</td><td class="num">' + r.renders + '</td><td class="num">' + money(r.costUsd) +
       "</td><td>" + r.lastAt.slice(0, 16).replace("T", " ") + "</td></tr>"
     ).join("") + "</tbody></table>";
+};
+
+/**
+ * Why a render produced nothing.
+ *
+ * Cancellations are listed alongside genuine failures rather than hidden: an operator
+ * giving up nine minutes in is a fact about the render, and the frame it reached is what
+ * says whether it was close.
+ */
+const failures = (rows) => {
+  if (!rows || !rows.length) return '<p class="empty">Every render produced a file.</p>';
+  const secs = (ms) => ms === undefined ? "" : (ms / 1000).toFixed(0) + "s";
+  return rows.map((r) => {
+    const d = r.detail || {};
+    const bits = [];
+    if (d.frame !== undefined)
+      bits.push("frame " + fmt.format(d.frame) +
+        (d.totalFrames ? " / " + fmt.format(d.totalFrames) : "") +
+        (d.progress !== undefined ? " (" + Math.round(d.progress * 100) + "%)" : ""));
+    if (r.ms !== undefined) bits.push("after " + secs(r.ms));
+    if (d.width && d.height) bits.push(d.width + "x" + d.height + (d.fps ? " @" + d.fps : ""));
+    if (d.deviceMemoryGb !== undefined) bits.push(d.deviceMemoryGb + " GB RAM");
+    if (d.cores !== undefined) bits.push(d.cores + " cores");
+    if (d.ua && browser(d.ua)) bits.push(browser(d.ua));
+    return '<div class="fail"><div class="top"><span class="co">' + esc(r.company) +
+      '</span><span class="tag ' + r.outcome + '">' + r.outcome + "</span>" +
+      '<span class="tag">' + r.at.slice(0, 16).replace("T", " ") + "</span></div>" +
+      (r.reason ? '<div class="why">' + esc(r.reason) + "</div>" : "") +
+      (d.stack ? '<div class="why" style="opacity:.6">' + esc(d.stack) + "</div>" : "") +
+      (bits.length ? '<div class="meta"><span>' + bits.map(esc).join("</span><span>") + "</span></div>" : "") +
+      "</div>";
+  }).join("");
+};
+
+/** Just enough of a UA string to tell two machines apart. */
+const browser = (ua) => {
+  // The slash is a character class, not an escape: this source is a template literal, so
+  // a backslash here is consumed before the browser ever sees the regex.
+  const m = ua.match(/(Chrome|Firefox|Safari|Edg)[/]([0-9]+)/);
+  const os = /Mac OS X/.test(ua) ? "macOS" : /Windows/.test(ua) ? "Windows" :
+             /Linux/.test(ua) ? "Linux" : "";
+  if (!m && !os) return "";
+  return (m ? m[1].replace("Edg", "Edge") + " " + m[2] : "browser") + (os ? " \u00b7 " + os : "");
 };
 
 const gate = (message) => {
@@ -172,7 +229,7 @@ export const analyticsPage = (res: ServerResponse): void => {
 <meta name="robots" content="noindex,nofollow">
 <title>Analytics</title>
 <style>${STYLE}</style>
-</head><body><main id="app"></main><script>${SCRIPT}</script></body></html>`;
+</head><body><main id="app"></main><script>${ANALYTICS_CLIENT_SCRIPT}</script></body></html>`;
   res.statusCode = 200;
   res.setHeader("Content-Type", "text/html; charset=utf-8");
   // Never cached: it is a live read of a log that names customers.

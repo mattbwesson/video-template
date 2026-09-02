@@ -18,6 +18,43 @@ import { companyKey, record, summarise, type RenderRecord } from "./analytics";
 
 const MAX_BODY_BYTES = 8 * 1024;
 
+/**
+ * The failure detail, whitelisted field by field.
+ *
+ * This body is written by a page, so it is not trusted: an unknown key is dropped rather
+ * than stored, strings are capped, and a number is only kept if it really is one. A NaN
+ * or an unbounded string in a JSONL log is a line that breaks every later read of it.
+ */
+const NUM_FIELDS = [
+  "frame",
+  "encodedFrame",
+  "totalFrames",
+  "progress",
+  "width",
+  "height",
+  "fps",
+  "deviceMemoryGb",
+  "cores",
+] as const;
+const STR_FIELDS = [
+  ["errorName", 80],
+  ["stack", 400],
+  ["ua", 240],
+] as const;
+
+const cleanDetail = (raw: unknown): Record<string, unknown> | undefined => {
+  if (!raw || typeof raw !== "object") return undefined;
+  const src = raw as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+  for (const k of NUM_FIELDS) {
+    if (Number.isFinite(src[k])) out[k] = Number(src[k]);
+  }
+  for (const [k, max] of STR_FIELDS) {
+    if (typeof src[k] === "string" && src[k]) out[k] = (src[k] as string).slice(0, max);
+  }
+  return Object.keys(out).length ? out : undefined;
+};
+
 const send = (res: ServerResponse, status: number, body: unknown): void => {
   const json = JSON.stringify(body);
   res.statusCode = status;
@@ -98,6 +135,10 @@ export const handleRenderEvent = async (
     ...(Number.isFinite(body.ms) ? { ms: Number(body.ms) } : {}),
     ...(Number.isFinite(body.bytes) ? { bytes: Number(body.bytes) } : {}),
     ...(body.reason ? { reason: String(body.reason).slice(0, 200) } : {}),
+    ...((): Record<string, unknown> => {
+      const detail = cleanDetail(body.detail);
+      return detail ? { detail } : {};
+    })(),
   });
 
   // 204: the page is not waiting for this, and `sendBeacon` ignores the body anyway.

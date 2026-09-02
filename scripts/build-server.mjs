@@ -11,7 +11,7 @@
 
 import { build } from "esbuild";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -36,3 +36,34 @@ await build({
   },
   logLevel: "info",
 });
+
+/**
+ * Parse the /analytics client script.
+ *
+ * That page carries its own browser code as a STRING, so neither tsc nor esbuild ever
+ * looks inside it: a syntax error there compiles clean, deploys clean, and shows a blank
+ * page. It has already happened once — a `\/` inside the template literal was eaten
+ * before the browser saw it, leaving an unterminated regex.
+ *
+ * `new Function` parses without running. Nothing in the script executes here.
+ */
+// Built on its own rather than pulled out of the server bundle: importing that would run
+// `prod.ts`, which starts listening. This module is inert — consts and one function.
+const probe = path.join(root, "build/server/.analytics-script.mjs");
+await build({
+  entryPoints: [path.join(root, "server/analyticsPage.ts")],
+  outfile: probe,
+  bundle: true,
+  platform: "node",
+  target: "node20",
+  format: "esm",
+  logLevel: "silent",
+});
+const { ANALYTICS_CLIENT_SCRIPT } = await import(pathToFileURL(probe).href);
+try {
+  new Function(ANALYTICS_CLIENT_SCRIPT);
+  console.log("  /analytics client script parses");
+} catch (err) {
+  console.error(`\n  /analytics client script is not valid JavaScript: ${err.message}`);
+  process.exit(1);
+}
