@@ -5,6 +5,7 @@
  *   node scripts/bench-research.mjs "Northwind Logistics"
  *   node scripts/bench-research.mjs "Northwind Logistics" --effort=minimal
  *   node scripts/bench-research.mjs "Northwind Logistics" --effort=minimal --runs=2
+ *   node scripts/bench-research.mjs "Aegean Airlines" --model=gpt-5.6-luna --write-effort=none
  *
  * Why a script rather than curling the route: the pass is the slowest thing the wizard
  * does, its cost is spread over eight model calls, and the only honest way to tune it is
@@ -12,9 +13,17 @@
  * four wizard steps each time, and doing it through `curl` means the settings come from
  * `.env` and cannot be varied per run.
  *
- * Environment set here wins over `.env` (see server/env.ts), so `--effort` and `--model`
- * override the deployment's configuration for this run only. Nothing is written anywhere;
- * this makes real, billed API calls and prints what they cost.
+ * Environment set here wins over `.env` (see server/env.ts), so these flags override the
+ * deployment's configuration for this run only. Nothing is written anywhere; this makes
+ * real, billed API calls and prints what they cost.
+ *
+ * `--effort` moves the RESEARCH call; `--write-effort` moves the other ten. They are
+ * separate settings in env.ts and the split matters here more than anywhere: on a model
+ * swap the write effort is the parameter most likely to be rejected, and without a flag
+ * for it a bench run silently keeps `.env`'s value while appearing to test the new model.
+ * That is not hypothetical — benching gpt-5.6-luna without this flag 400s all ten writing
+ * calls, and the pass reports it as a fast, clean run. See §8 of
+ * docs/research-pass-performance.md.
  *
  * The per-call and per-phase lines come from server/llm/timing.ts — this script only adds
  * the run-over-run summary at the end.
@@ -32,7 +41,7 @@ const flag = (name) => {
 const company = args.find((a) => !a.startsWith("--"));
 if (!company) {
   console.error(
-    'Usage: node scripts/bench-research.mjs "<company>" [--effort=minimal|low|medium|high] [--model=…] [--runs=N]',
+    'Usage: node scripts/bench-research.mjs "<company>" [--effort=…] [--write-effort=…] [--model=…] [--runs=N]',
   );
   process.exit(1);
 }
@@ -40,8 +49,10 @@ if (!company) {
 // Set BEFORE the server modules are imported: env.ts reads the environment once, at first
 // use, and a variable already present wins over .env.
 const effort = flag("effort");
+const writeEffort = flag("write-effort");
 const model = flag("model");
 if (effort) process.env.OPENAI_REASONING_EFFORT = effort;
+if (writeEffort) process.env.OPENAI_WRITE_REASONING_EFFORT = writeEffort;
 if (model) process.env.OPENAI_MODEL = model;
 const runs = Number(flag("runs") ?? 1) || 1;
 
@@ -49,7 +60,9 @@ const runs = Number(flag("runs") ?? 1) || 1;
 // tsx loader and takes a moment; a script that prints nothing until that finishes looks
 // like it has hung, which is exactly what it did the first time this was written.
 console.log(
-  `\n[bench] ${company} — ${runs} run(s), effort=${effort ?? "(from .env)"}, model=${model ?? "(from .env)"}\n`,
+  `\n[bench] ${company} — ${runs} run(s), effort=${effort ?? "(from .env)"}, write-effort=${
+    writeEffort ?? "(from .env)"
+  }, model=${model ?? "(from .env)"}\n`,
 );
 
 // Run this file through tsx (`npx tsx scripts/bench-research.mjs …`), which is what lets it

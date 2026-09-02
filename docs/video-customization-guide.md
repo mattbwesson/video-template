@@ -104,11 +104,18 @@ card's two-line layout). Enforcement is layered, gentlest first:
 ## 2. Passing slots to the model efficiently
 
 All four builders use the OpenAI **Responses API** through one config module,
-`server/llm/client.ts` — model `gpt-5-mini` by default (`:156`, override with
-`OPENAI_MODEL`), `reasoning_effort: "low"` (`:174`), hosted web search on with
-`search_context_size: "low"` (`:207-221`), `max_output_tokens` 5–6k (`:233`). Cheap,
-fast, and researched — the search step is what makes the copy company-specific rather
-than mad-libs.
+`server/llm/client.ts` — model `gpt-5.6-luna` by default (override with `OPENAI_MODEL`),
+`reasoning.effort` `low` for the research call and `none` for the ten writing calls
+(`OPENAI_REASONING_EFFORT` / `OPENAI_WRITE_REASONING_EFFORT`), hosted web search on with
+`search_context_size: "low"`, `max_output_tokens` 5–6k. Cheap, fast, and researched — the
+search step is what makes the copy company-specific rather than mad-libs.
+
+The two effort settings are separate and must stay that way: the lowest levels are
+rejected or quietly degraded when `web_search` is attached, which `searchSafeEffort`
+exists to catch. See [research-pass-performance.md §9](./research-pass-performance.md)
+for what happens when a model does not accept the value it is given — it does not look
+like an error, and [llm-model-migration.md](./llm-model-migration.md) for the migration
+itself, written to be reusable on other projects.
 
 Two prompting strategies:
 
