@@ -2,6 +2,7 @@ import React from "react";
 import { Composition } from "remotion";
 import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
+import { Japanese } from "./Japanese";
 import { CustomizedWorkvivo } from "./CustomizedWorkvivo";
 import { WorkvivoSpacesScene } from "./WorkvivoSpacesScene";
 import { WorkvivoNewslettersScene } from "./WorkvivoNewslettersScene";
@@ -86,6 +87,17 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="L2VirginAirline"
         component={VirginAirline}
+        durationInFrames={VIRGIN_DURATION_IN_FRAMES}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* The same cut in Japanese. Same scenes, same 5300 frames — it differs in its words
+          (passed as inputProps) and its typography (a `.jp`-scoped stylesheet), so nothing
+          about it can reach L2VirginAirline above. See src/Japanese.tsx. */}
+      <Composition
+        id="Japanese"
+        component={Japanese}
         durationInFrames={VIRGIN_DURATION_IN_FRAMES}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
