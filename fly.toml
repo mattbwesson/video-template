@@ -10,6 +10,19 @@ primary_region = "iad"
   # depend on that staying true — see server/env.ts.
   REQUIRE_API_KEY = "1"
 
+# One small volume, and therefore ONE machine.
+#
+# A Fly volume attaches to a single machine. With the two this app had, requests landed on
+# either and half the analytics would have been written to a machine with no volume — or,
+# with a volume each, split into two halves neither of which is the answer. `count = 1`
+# below is what makes a single volume correct rather than a data-loss bug.
+#
+# The trade is that a deploy is briefly a full outage instead of rolling. For a demo that
+# is idle most of the time and cold-starts in a couple of seconds anyway, that is nothing.
+[mounts]
+  source = "analytics"
+  destination = "/data"
+
 [http_service]
   internal_port = 8080
   force_https = true
@@ -38,3 +51,5 @@ primary_region = "iad"
   memory = "512mb"
   cpu_kind = "shared"
   cpus = 1
+  # One machine, because one volume — see the [mounts] note above.
+  count = 1

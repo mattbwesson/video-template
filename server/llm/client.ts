@@ -49,7 +49,7 @@ export type StructuredResult<T> = {
   value: T;
   /** URLs the model actually consulted, for showing the operator its sources. */
   citations: string[];
-  usage?: { input?: number; output?: number };
+  usage?: { input?: number; output?: number; reasoning?: number; incomplete?: boolean };
 };
 
 const RESPONSES_URL = "https://api.openai.com/v1/responses";
@@ -151,7 +151,11 @@ const extractCitations = (body: any): string[] => {
 export const callText = async (
   req: { instructions: string; input: string; label?: string; effort?: string },
   cfg: LlmConfig = llmConfig(),
-): Promise<{ text: string; citations: string[]; usage?: { input?: number; output?: number } }> => {
+): Promise<{
+  text: string;
+  citations: string[];
+  usage?: { input?: number; output?: number; reasoning?: number; incomplete?: boolean };
+}> => {
   if (!cfg.apiKey) throw new LlmError("OPENAI_API_KEY is not set.");
 
   const requested = req.effort ?? cfg.reasoningEffort;
@@ -215,6 +219,10 @@ export const callText = async (
     usage: {
       input: (json as any)?.usage?.input_tokens,
       output: (json as any)?.usage?.output_tokens,
+      // Already inside `output`. Carried separately so a run's analytics can show what
+      // share of the bill was thinking nobody reads — never added to the total.
+      reasoning: (json as any)?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
+      incomplete: (json as any)?.status === "incomplete",
     },
   };
 };
@@ -333,6 +341,10 @@ export const callStructured = async <T>(
     usage: {
       input: (json as any)?.usage?.input_tokens,
       output: (json as any)?.usage?.output_tokens,
+      // Already inside `output`. Carried separately so a run's analytics can show what
+      // share of the bill was thinking nobody reads — never added to the total.
+      reasoning: (json as any)?.usage?.output_tokens_details?.reasoning_tokens ?? 0,
+      incomplete: (json as any)?.status === "incomplete",
     },
   };
 };

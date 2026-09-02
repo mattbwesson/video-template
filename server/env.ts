@@ -96,6 +96,52 @@ export const llmConfig = (): LlmConfig => ({
 export const passcodeGuard = (): string => str("PASSCODE", "");
 
 /**
+ * Where the analytics log lives, and what a token costs.
+ *
+ * The prices are CONFIGURATION, not constants, and they default to zero on purpose. A
+ * wrong number here is worse than no number: it produces a plausible cost per video that
+ * is silently wrong, and every figure downstream inherits it. Zero reports as "priced: no"
+ * instead, which is a question rather than a lie. Token counts are recorded either way, so
+ * setting the prices later re-prices the whole history.
+ *
+ * Per MILLION tokens, matching how the vendors publish them.
+ *
+ * `OPENAI_PRICE_SEARCH_CALL` is per call, not per token: the hosted search tool is billed
+ * by invocation, and the brief is the only call that uses it. Leaving it out understates
+ * every run by the same amount, which is the kind of error that hides.
+ */
+/**
+ * `/data` on Fly, where the volume mounts. A local folder anywhere else.
+ *
+ * Chosen by looking rather than by guessing at an environment variable: the check is
+ * whether the mount point is actually there and writable. Defaulting to `/data`
+ * unconditionally made every local run print a permission warning per record, which is
+ * how a real warning gets ignored.
+ */
+const defaultAnalyticsDir = (): string => {
+  try {
+    fs.accessSync("/data", fs.constants.W_OK);
+    return "/data";
+  } catch {
+    return path.resolve(process.cwd(), ".analytics");
+  }
+};
+
+export type AnalyticsConfig = {
+  dir: string;
+  priceInPerM: number;
+  priceOutPerM: number;
+  priceSearchCall: number;
+};
+
+export const analyticsConfig = (): AnalyticsConfig => ({
+  dir: str("ANALYTICS_DIR", "") || defaultAnalyticsDir(),
+  priceInPerM: num("OPENAI_PRICE_IN_PER_M", 0),
+  priceOutPerM: num("OPENAI_PRICE_OUT_PER_M", 0),
+  priceSearchCall: num("OPENAI_PRICE_SEARCH_CALL", 0),
+});
+
+/**
  * Enforce `API_KEY` even for a request that arrives on the loopback interface.
  *
  * The research route exempts loopback, on the reasoning that a connection from this

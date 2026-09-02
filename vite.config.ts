@@ -14,6 +14,7 @@ import path from "node:path";
  */
 const RESEARCH_MODULE = path.resolve(__dirname, "server/researchRoute.ts");
 const ASSETS_MODULE = path.resolve(__dirname, "server/assetsRoute.ts");
+const ANALYTICS_MODULE = path.resolve(__dirname, "server/analyticsRoute.ts");
 const SESSION_MODULE = path.resolve(__dirname, "server/sessionRoute.ts");
 const PUBLIC_DIR = path.resolve(__dirname, "public");
 
@@ -39,6 +40,24 @@ const apiPlugin = (): Plugin => ({
       try {
         const { handleSession } = await server.ssrLoadModule(SESSION_MODULE);
         await handleSession(req, res);
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    server.middlewares.use("/api/render-event", async (req, res, next) => {
+      try {
+        const { handleRenderEvent } = await server.ssrLoadModule(ANALYTICS_MODULE);
+        await handleRenderEvent(req, res);
+      } catch (err) {
+        next(err);
+      }
+    });
+
+    server.middlewares.use("/api/analytics", async (req, res, next) => {
+      try {
+        const { handleAnalytics } = await server.ssrLoadModule(ANALYTICS_MODULE);
+        handleAnalytics(req, res);
       } catch (err) {
         next(err);
       }

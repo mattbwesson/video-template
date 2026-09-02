@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { reportRender } from "./renderEvents";
 import {
   downloadBlob,
   renderFilename,
@@ -66,9 +67,14 @@ export const RenderButton: React.FC<{
     const ready = await renderReadiness(width, height);
     if (!live.current) return;
     if (!ready.supported) {
+      // Recorded even though nothing was spent: a browser that cannot encode is the one
+      // failure the operator cannot work around, and it is invisible in a log that only
+      // counts renders that started.
+      reportRender({ company, outcome: "unsupported", reason: ready.blockers.join("; ") });
       setState({ kind: "unsupported", blockers: ready.blockers });
       return;
     }
+    const startedAt = Date.now();
 
     setState({
       kind: "rendering",
@@ -89,16 +95,33 @@ export const RenderButton: React.FC<{
 
     try {
       const blob = await job.done;
+      // Reported before the `live` check: the component may already be unmounted, and a
+      // finished render still happened.
+      reportRender({
+        company,
+        outcome: "done",
+        ms: Date.now() - startedAt,
+        bytes: blob.size,
+      });
       if (!live.current) return;
       const filename = renderFilename(company);
       downloadBlob(blob, filename);
       setState({ kind: "done", filename });
     } catch (err) {
-      if (!live.current) return;
       // An abort is the operator's own doing, so it returns to idle rather than reporting
       // a failure at them.
       const message = err instanceof Error ? err.message : String(err);
-      if (/abort/i.test(message)) {
+      const aborted = /abort/i.test(message);
+      // Recorded before the `live` check, like the success above: closing the tab is one
+      // of the ways a render fails, and it is the way that unmounts this component.
+      reportRender({
+        company,
+        outcome: aborted ? "aborted" : "failed",
+        ms: Date.now() - startedAt,
+        ...(aborted ? {} : { reason: message }),
+      });
+      if (!live.current) return;
+      if (aborted) {
         setState({ kind: "idle" });
         return;
       }

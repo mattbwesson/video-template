@@ -8,14 +8,17 @@
 
 import type { IncomingMessage, ServerResponse } from "node:http";
 import { passcodeGuard, requireApiKey } from "./env";
+import { isLoopback } from "./loopback";
 import { LlmError } from "./llm/client";
 import {
   researchCompany,
   unbatchedCopyKeys,
   danglingCrossReferences,
   type ResearchInput,
+  type ResearchResult,
 } from "./llm/researchCompany";
 import { brokenEditablePaths } from "../src/customize/editables";
+import { companyKey, record } from "./analytics";
 
 /** Refuse anything larger than this outright rather than buffering it. */
 const MAX_BODY_BYTES = 64 * 1024;
@@ -52,22 +55,6 @@ const send = (res: ServerResponse, status: number, body: unknown): void => {
   res.end(payload);
 };
 
-/**
- * True when the TCP peer is this machine.
- *
- * Read off the socket, never off a header: `X-Forwarded-For` and friends are attacker-
- * supplied, so trusting them here would let any remote caller claim to be local and walk
- * straight past the guard.
- */
-const isLoopback = (req: IncomingMessage): boolean => {
-  const addr = req.socket.remoteAddress ?? "";
-  return (
-    addr === "127.0.0.1" ||
-    addr === "::1" ||
-    addr === "::ffff:127.0.0.1" ||
-    addr.startsWith("127.")
-  );
-};
 
 export const handleResearch = async (
   req: IncomingMessage,
@@ -135,10 +122,51 @@ export const handleResearch = async (
     );
   }
 
+  /**
+   * One line per run, whichever way it goes.
+   *
+   * A failed run records zero tokens, and that is a real gap rather than a claim that it
+   * was free: `researchCompany` accumulates its counters locally and a throw loses them,
+   * and the calls that had already returned inside a `Promise.all` are lost with it. What
+   * this does capture is the failure itself, so the failure RATE is visible instead of
+   * being inferred from runs that never reached a render.
+   */
+  const logRun = (
+    ok: boolean,
+    result?: ResearchResult,
+    error?: string,
+  ): void => {
+    const company = (body.company ?? "").trim();
+    record({
+      kind: "run",
+      at: new Date().toISOString(),
+      company,
+      key: companyKey(company),
+      ok,
+      issues: result?.issues?.length ?? 0,
+      ms: result?.stats?.ms ?? 0,
+      model: result?.stats?.model ?? "",
+      calls: result?.stats?.calls ?? 0,
+      searchCalls: result?.stats?.searchCalls ?? 0,
+      inputTokens: result?.usage?.input ?? 0,
+      outputTokens: result?.usage?.output ?? 0,
+      reasoningTokens: result?.stats?.reasoning ?? 0,
+      incompleteCalls: result?.stats?.incomplete ?? 0,
+      warnings: {
+        unbatched: unbatched.length,
+        dangling: dangling.length,
+        brokenEditables: broken.length,
+      },
+      ...(error ? { error } : {}),
+    });
+  };
+
   try {
     const result = await researchCompany(body);
+    logRun(true, result);
     send(res, 200, result);
   } catch (err) {
+    logRun(false, undefined, err instanceof Error ? err.message : "unknown");
     if (err instanceof LlmError) {
       // 502, not 500: the failure is upstream, and the wizard says so rather than
       // implying the operator did something wrong.

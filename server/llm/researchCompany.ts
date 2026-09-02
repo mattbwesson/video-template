@@ -30,6 +30,15 @@ export type ResearchResult = {
   issues: string[];
   citations: string[];
   usage?: { input?: number; output?: number };
+  /** Per-run counters for the analytics log — no content, only counts and timings. */
+  stats?: {
+    calls: number;
+    searchCalls: number;
+    reasoning: number;
+    incomplete: number;
+    ms: number;
+    model: string;
+  };
 };
 
 /**
@@ -441,6 +450,8 @@ const findOverlong = (copy: WorkvivoCopy): Overlong[] => {
  */
 const repairOverlong = async (
   overlong: Overlong[],
+  /** Told about this call's usage, so the repair pass is not free in the accounting. */
+  account?: (u?: { input?: number; output?: number; reasoning?: number; incomplete?: boolean }) => void,
 ): Promise<Record<string, string>> => {
   const schema = {
     type: "object",
@@ -479,7 +490,7 @@ const repairOverlong = async (
     ),
   ].join("\n");
 
-  const { value } = await callStructured<{ fields: { field: string; text: string }[] }>({
+  const { value, usage } = await callStructured<{ fields: { field: string; text: string }[] }>({
     instructions:
       "You shorten copy to fit fixed-width UI. You return the same fields you are given, rewritten shorter.",
     input,
@@ -493,6 +504,8 @@ const repairOverlong = async (
     effort: llmConfig().writeReasoningEffort,
     label: "repair:shorten",
   });
+
+  account?.(usage);
 
   const out: Record<string, string> = {};
   for (const f of value.fields ?? []) {
@@ -601,6 +614,25 @@ export const researchCompany = async (
   // counter started after the search call, so the reported cost of a run excluded the one
   // call that pays for web search.
   const usage = { input: 0, output: 0 };
+  /**
+   * What the run cost to make, for src/../server/analytics.ts.
+   *
+   * Counted here rather than inside the logger, because a logger that also accumulates
+   * state is a logger that reports the wrong totals the first time two runs overlap.
+   */
+  const stats = { calls: 0, searchCalls: 0, reasoning: 0, incomplete: 0 };
+  const account = (u?: {
+    input?: number;
+    output?: number;
+    reasoning?: number;
+    incomplete?: boolean;
+  }): void => {
+    usage.input += u?.input ?? 0;
+    usage.output += u?.output ?? 0;
+    stats.calls += 1;
+    stats.reasoning += u?.reasoning ?? 0;
+    if (u?.incomplete) stats.incomplete += 1;
+  };
 
   // Step 1: research, unconstrained, with search on. See `callText` for why this is not
   // folded into the structured call.
@@ -615,8 +647,9 @@ export const researchCompany = async (
     });
     brief = research.text;
     citations = research.citations;
-    usage.input += research.usage?.input ?? 0;
-    usage.output += research.usage?.output ?? 0;
+    account(research.usage);
+    // The one call that pays for the hosted search tool, which is billed per call.
+    if (llmConfig().webSearch) stats.searchCalls += 1;
   } catch (err) {
     // A failed search should not lose the whole run: the copy step can still write
     // something reasonable and generic, and the operator is told it did.
@@ -669,8 +702,7 @@ export const researchCompany = async (
       effort: llmConfig().writeReasoningEffort,
       label: `batch:${batch.keys[0]}`,
     });
-    usage.input += res.usage?.input ?? 0;
-    usage.output += res.usage?.output ?? 0;
+    account(res.usage);
     return res.value;
   };
 
@@ -736,7 +768,7 @@ export const researchCompany = async (
     );
     const repairStart = Date.now();
     try {
-      const rewritten = await repairOverlong(overlong);
+      const rewritten = await repairOverlong(overlong, account);
       for (const o of overlong) {
         const fixed = rewritten[o.path];
         if (typeof fixed === "string" && fixed.trim()) writePath(copy, o.path, fixed.trim());
@@ -775,5 +807,5 @@ export const researchCompany = async (
     `[research] TOTAL ${ms(totalMs).padStart(17)}  ${req.company.trim()}  (${phases.join(", ")})  in=${usage.input} out=${usage.output}`,
   );
 
-  return { copy, brief, issues, citations, usage };
+  return { copy, brief, issues, citations, usage, stats: { ...stats, ms: totalMs, model: llmConfig().model } };
 };

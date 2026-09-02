@@ -36,3 +36,4 @@ cut_check_*
 # blocks the whole branch.
 workvivo-*.mp4
 workvivo-*.json
+.analytics/

@@ -15,6 +15,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import sirv from "sirv";
 import { handleAssets } from "./assetsRoute";
+import { handleAnalytics, handleRenderEvent } from "./analyticsRoute";
 import { handleResearch } from "./researchRoute";
 import { handleSession } from "./sessionRoute";
 
@@ -124,6 +125,14 @@ const server = http.createServer(async (req, res) => {
     }
     if (url === "/api/research" || url.startsWith("/api/research?")) {
       await handleResearch(req, res);
+      return;
+    }
+    if (url === "/api/render-event") {
+      await handleRenderEvent(req, res);
+      return;
+    }
+    if (url === "/api/analytics" || url.startsWith("/api/analytics?")) {
+      handleAnalytics(req, res);
       return;
     }
     if (url === "/api/assets" || url.startsWith("/api/assets?")) {
