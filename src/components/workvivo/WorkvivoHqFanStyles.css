@@ -1,16 +1,17 @@
 /* The HQ capability fan. Every class is prefixed hqf- so nothing collides with
    WorkvivoStyles.css (which owns the bare .rail/.nav/.topbar names) or any other ported
-   sheet. See WorkvivoHqFan.tsx for why the artwork itself is one inline <svg>.
+   sheet. Geometry and every number here are measured from docs/reference/hq-fan-original.png.
 
    No element-type selectors anywhere in this file. The exporter wraps every text node in a
    <span> and every word in another, so a rule like `.hqf-label div {…}` would match those
    injected wrappers and lay the copy out one word per line. Style the classes directly. */
 
 .hqf {
-  background: #0a0820;
+  background: #1e1a82;
   overflow: hidden;
 }
 
+.hqf-field,
 .hqf-svg {
   position: absolute;
   inset: 0;
@@ -18,41 +19,38 @@
   height: 100%;
 }
 
-/* --- icons ------------------------------------------------------------------------
-   Position and size are inline from the .tsx, measured off the reference. The translate
-   centres each icon on its point. */
+/* Position and size are inline from the .tsx. The translate centres each icon on its point. */
 .hqf-i {
   position: absolute;
   transform: translate(-50%, -50%);
 }
 
-/* --- labels ----------------------------------------------------------------------- */
+/* Anchored at the block's TOP-centre, not its middle, so the title's first baseline can
+   be placed against a measured y without the subtitle's height moving it. */
 .hqf-label {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 0);
   text-align: center;
   color: #fff;
   font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
-  /* The wedge is the widest thing under the text; keeping the block narrower than the
-     wedge's waist stops a long line spilling over a gap and onto the next wedge. */
-  width: 420px;
+  width: 480px;
 }
 
 .hqf-title {
-  font-size: 38px;
+  font-size: 40px;
   font-weight: 700;
-  /* 47px line pitch, measured off the reference. */
-  line-height: 1.24;
-  letter-spacing: -0.01em;
-  /* Lifts the white off the violet without reading as a drop shadow. */
-  text-shadow: 0 2px 18px rgba(10, 4, 40, 0.45);
+  /* 46px baseline pitch, measured. */
+  line-height: 46px;
+  letter-spacing: -0.012em;
+  text-shadow: 0 2px 18px rgba(10, 4, 40, 0.4);
 }
 
 .hqf-sub {
-  margin-top: 12px;
-  font-size: 22px;
+  /* Title last baseline -> subtitle first baseline is 48px, measured. */
+  margin-top: 15px;
+  font-size: 23px;
   font-weight: 500;
-  /* 32px line pitch, measured off the reference. */
-  line-height: 1.45;
-  color: rgba(255, 255, 255, 0.88);
+  /* 33px baseline pitch, measured. */
+  line-height: 33px;
+  color: rgba(255, 255, 255, 0.9);
 }

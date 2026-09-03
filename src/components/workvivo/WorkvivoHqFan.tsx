@@ -5,91 +5,84 @@ import "./WorkvivoHqFanStyles.css";
 /**
  * The HQ capability fan — three glass wedges radiating from the HQ mark.
  *
- * Geometry is computed, not hand-drawn. Everything hangs off `CX`/`CY`, `R_IN` and
- * `R_OUT`, so nudging the fan is changing three numbers rather than re-authoring the
- * path commands, and the three wedges stay concentric by construction.
+ * Every number in this file is MEASURED from docs/reference/hq-fan-original.png at
+ * 1920x1080, not designed. Where the measurement disagrees with what looked right, the
+ * measurement won, and the disagreements are the interesting part:
  *
- * BUILT AS ONE INLINE <svg> ON PURPOSE
+ * - The fan is not concentric with the badge. The rim fits a circle at (950, 869)
+ *   R=740 to 1.9px; the badge disc is centred at (961, 864). Both are kept as they are.
+ * - The three wedges are 60° each, with the two internal gaps 36px wide and constant
+ *   from hub to rim, and the two OUTER edges inset 5px from the 180°/0° radials.
+ * - The fill axes are not the supplied angles. The supplied 45/-11/-65 are what the
+ *   design tool reports; the composite on screen — that fill, translucent, over a field
+ *   that brightens toward the bottom-left — regresses to 69°/123°/180° CSS with R² of
+ *   0.52/0.89/0.87, and its stops land INSIDE the wedge rather than on the bounding-box
+ *   corners. `FILL_LINE` is that fit, endpoint for endpoint.
+ * - The field is a bitmap. It is the reference's own pixels outside the fan and an
+ *   inpainted continuation under it (scripts/prep-fan-field.py), because the mesh it
+ *   is cannot be stated in SVG and three blooms over a diagonal were wrong everywhere
+ *   the eye lands.
  *
- * The obvious CSS approach — `conic-gradient` for the wedges, `radial-gradient` for the
- * glows, a pseudo-element for the ring — would look right in the Player and render as a
- * flat rectangle in the export. The browser renderer paints no `radial-gradient` at all,
- * never draws pseudo-elements, and ignores `z-index`. See
- * docs/browser-render-best-practices.md.
- *
- * Inline SVG sidesteps all three: real elements, in DOM order, with gradients the
- * rasterizer honours. `width`/`height` are set alongside `viewBox` because the exporter
- * decodes at intrinsic size and a viewBox-only root has none.
- *
- * TWO THINGS THE FIRST VERSION GOT WRONG, AND WHY THEY ARE SUBTLE
- *
- * The gap between wedges was ANGULAR — six degrees — which reads as even and is not: a
- * 6° gap is 13px wide at the hub and 76px at the rim. The reference's gaps are parallel
- * bands of constant width. That is a perpendicular OFFSET of each straight edge, and
- * on a circle an offset of `d` shows up as an angle of `asin(d / r)` — larger at the
- * hub, smaller at the rim. `edgeAt` is that one line of trigonometry.
- *
- * And the corners were sharp. SVG paths have no corner radius, so each corner is a
- * quadratic fillet: both edges are trimmed back by `CORNER` and joined with a curve
- * whose control point is the corner itself. At these radii the fillet is
- * indistinguishable from a true arc.
+ * BUILT AS ONE INLINE <svg> ON PURPOSE. The CSS equivalents — conic-gradient wedges,
+ * radial-gradient glows, a pseudo-element ring — render in the Player and export as a
+ * flat rectangle: the browser renderer paints no radial-gradient, never draws
+ * pseudo-elements, and ignores z-index. See docs/browser-render-best-practices.md.
  */
 
 const W = 1920;
 const H = 1080;
 
-/** Fan origin — the centre of the HQ badge. */
-const CX = 960;
-const CY = 858;
-/**
- * The wedges run in UNDER the badge — their tips are hidden by the disc, which is drawn
- * after them — so this is well inside `BADGE_R`.
- */
-const R_IN = 76;
-const R_OUT = 725;
+// ── Geometry, measured ───────────────────────────────────────────────────────────────
 
-/** The band between wedges, in px, the same width from hub to rim. */
-const GAP = 26;
-/** Fillet radius on every wedge corner. */
-const CORNER = 16;
+/** Fan origin: the rim circle's centre. NOT the badge centre — see the header. */
+const FX = 950;
+const FY = 869;
+const R_OUT = 740;
+/** Well inside the badge disc, so the tips are hidden by it. */
+const R_IN = 70;
 
-/** Badge and its halo. */
-const BADGE_R = 102;
-const RING_R = 113;
+/** Internal gaps, constant width; outer edges sit 5px inside the horizontal. */
+const GAP = 36;
+const OUTER_INSET = 5;
+const CORNER = 17;
 
-/**
- * Wedge spans, in degrees CCW from the +x axis, sharing a boundary line at 119° and
- * 61°. The gap is centred on each boundary, so the centre wedge is 58° and the sides
- * 61° — slightly narrower, so the eye lands on it.
- */
+/** Badge disc and its ring, measured from the disc's own centre. */
+const BX = 961;
+const BY = 864;
+const BADGE_R = 117;
+const RING_R = 121;
+/** The HQ mark box's centre — 2px left and 2px below the disc centre, per the reference. */
+const MX = 958;
+const MY = 862;
+
 const WEDGES = [
-  { key: "comm", from: 180, to: 119 },
-  { key: "search", from: 119, to: 61 },
-  { key: "people", from: 61, to: 0 },
+  { key: "comm", from: 180, to: 120 },
+  { key: "search", from: 120, to: 60 },
+  { key: "people", from: 60, to: 0 },
 ] as const;
+type Key = (typeof WEDGES)[number]["key"];
 
 type Pt = [number, number];
-
 const rad = (d: number) => (d * Math.PI) / 180;
 const deg = (r: number) => (r * 180) / Math.PI;
 
 const pt = (angle: number, r: number): Pt => {
   const a = rad(angle);
   // Minus on y because SVG's y grows downward while the angle is measured the maths way.
-  return [CX + r * Math.cos(a), CY - r * Math.sin(a)];
+  return [FX + r * Math.cos(a), FY - r * Math.sin(a)];
 };
 
 /**
- * Where a wedge's straight edge meets a circle of radius `r`, once that edge has been
- * pushed inward by half the gap. Points at every radius on the same offset line ARE the
- * line, which is what keeps the edge straight and the gap parallel.
+ * Where a wedge's straight edge meets a circle of radius `r`, once the edge has been
+ * pushed inward by half the gap — or by the smaller outer inset on the fan's own two
+ * boundaries. A perpendicular offset of `d` shows up on a circle as `asin(d / r)`.
  */
 const edgeAt = (boundary: number, r: number, side: "from" | "to"): number => {
-  const shift = deg(Math.asin(GAP / 2 / r));
+  const inset = boundary === 180 || boundary === 0 ? OUTER_INSET : GAP / 2;
+  const shift = deg(Math.asin(inset / r));
   return side === "from" ? boundary - shift : boundary + shift;
 };
 
-/** A point `dist` along the segment from `a` toward `b`. */
 const along = (a: Pt, b: Pt, dist: number): Pt => {
   const dx = b[0] - a[0];
   const dy = b[1] - a[1];
@@ -100,38 +93,30 @@ const along = (a: Pt, b: Pt, dist: number): Pt => {
 const f = (p: Pt) => `${p[0].toFixed(1)} ${p[1].toFixed(1)}`;
 
 /**
- * An annular sector with parallel gaps and rounded corners.
- *
- * Corners in screen order: P1 outer-left, P2 outer-right, P3 inner-right, P4 inner-left.
- * The outer arc walks clockwise on screen (decreasing angle, sweep 1); the inner arc is
- * retraced the other way (sweep 0). Every edge is trimmed by `CORNER` at both ends and
- * the corner itself becomes the control point of the joining curve.
+ * An annular sector with parallel gaps and rounded corners. Corners in screen order:
+ * P1 outer-left, P2 outer-right, P3 inner-right, P4 inner-left. The outer arc walks
+ * clockwise on screen (sweep 1); the inner arc is retraced (sweep 0). Each corner is a
+ * quadratic fillet: both edges trimmed by CORNER, the corner itself the control point.
  */
 const wedgePath = (from: number, to: number): string => {
   const fo = edgeAt(from, R_OUT, "from");
   const tOut = edgeAt(to, R_OUT, "to");
   const fi = edgeAt(from, R_IN, "from");
   const tIn = edgeAt(to, R_IN, "to");
-
   const P1 = pt(fo, R_OUT);
   const P2 = pt(tOut, R_OUT);
   const P3 = pt(tIn, R_IN);
   const P4 = pt(fi, R_IN);
-
-  // Trim distances along the arcs, as angles.
   const dO = deg(CORNER / R_OUT);
   const dI = deg(CORNER / R_IN);
-
   const A1 = pt(fo - dO, R_OUT);
   const A2 = pt(tOut + dO, R_OUT);
   const A3 = pt(tIn + dI, R_IN);
   const A4 = pt(fi - dI, R_IN);
-
   const S1 = along(P2, P3, CORNER);
   const S2 = along(P3, P2, CORNER);
   const S3 = along(P4, P1, CORNER);
   const S4 = along(P1, P4, CORNER);
-
   return [
     `M ${f(A1)}`,
     `A ${R_OUT} ${R_OUT} 0 0 1 ${f(A2)}`,
@@ -147,14 +132,11 @@ const wedgePath = (from: number, to: number): string => {
 };
 
 /**
- * The endpoints of a CSS-style `linear-gradient(θ)` over a wedge's bounding box.
- *
- * CSS measures θ clockwise from "up", and runs the gradient line through the centre with
- * a length equal to the box's projection onto it — so the two colour stops sit exactly on
- * the far corners. Reproduced here so the angles can be read straight off a design tool.
+ * A CSS-style `linear-gradient(θ)` over a wedge's bounding box: the line through the
+ * centre, sized to the box's projection. Used for the EDGE light, whose direction was
+ * read off the rim's brightness by angle. The fills do not use it — see FILL_LINE.
  */
 const cssGradientLine = (from: number, to: number, thetaDeg: number): [Pt, Pt] => {
-  // Bounding box, from the outer arc sampled every degree plus the inner corners.
   let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
   const take = ([x, y]: Pt) => {
     if (x < minX) minX = x; if (x > maxX) maxX = x;
@@ -169,387 +151,228 @@ const cssGradientLine = (from: number, to: number, thetaDeg: number): [Pt, Pt] =
   const t = rad(thetaDeg);
   const dx = Math.sin(t), dy = -Math.cos(t);
   const len = Math.abs(w * Math.sin(t)) + Math.abs(h * Math.cos(t));
-  return [
-    [cx - (dx * len) / 2, cy - (dy * len) / 2],
-    [cx + (dx * len) / 2, cy + (dy * len) / 2],
-  ];
+  return [[cx - (dx * len) / 2, cy - (dy * len) / 2], [cx + (dx * len) / 2, cy + (dy * len) / 2]];
+};
+
+// ── Fills, fitted ────────────────────────────────────────────────────────────────────
+
+/**
+ * The supplied stops are #1d1470 -> #580fe6. Diffed against the reference, the render came
+ * out 14 lower in BLUE at every sample — all three panes, hub to rim, red and green within
+ * ±2 — which is the export's colour-profile conversion showing, not the gradient's shape.
+ * At FILL_ALPHA that is +16 on the stop, so these are the supplied values with that lift.
+ */
+const FILL_FROM = "#1d1480";
+const FILL_TO = "#580ff6";
+/** Fitted fill opacity over the field bitmap; the diff against the reference chose it. */
+const FILL_ALPHA = 0.86;
+
+/**
+ * The gradient line per pane — where the fill is exactly FILL_FROM and exactly FILL_TO —
+ * regressed from the reference's pixels. The supplied design angles (45, -11, -65) are
+ * what the tool says; these are what the screen shows once the field is under it.
+ */
+const FILL_LINE: Record<Key, [Pt, Pt]> = {
+  comm: [[-456, 1070], [700, 621]],
+  search: [[590, 231], [1042, 527]],
+  people: [[1303, 154], [1306, 784]],
 };
 
 /**
- * Fill angle per pane, AS SUPPLIED — measured the way design tools measure a gradient:
- * from the horizontal, counter-clockwise positive. CSS measures from vertical, clockwise,
- * so the conversion is `90 - θ`. The tell was which panes looked wrong after a literal
- * CSS reading: 45° is the one angle both conventions agree on, and the two that differed
- * were exactly the two flagged.
+ * Edge light per pane: where the 1.5px rim line is brightest, read off the rim by angle.
+ * Left is lit from the BOTTOM-left (the field is brightest there), centre from the top,
+ * right from the top-left. `lit` is the CSS angle toward the bright end.
  */
-const FILL_ANGLE: Record<(typeof WEDGES)[number]["key"], number> = {
-  comm: 45,
-  search: -11,
-  people: -65,
+const EDGE: Record<Key, { lit: number; dim: number; bright: number }> = {
+  comm: { lit: 225, dim: 0.22, bright: 0.34 },
+  search: { lit: 0, dim: 0.22, bright: 0.4 },
+  people: { lit: -45, dim: 0.22, bright: 0.46 },
 };
-const toCssAngle = (designDeg: number): number => 90 - designDeg;
-const FILL_FROM = "#1d1470";
-const FILL_TO = "#580fe6";
 
-/**
- * Label and icon placement, measured off the reference at 1920x1080.
- *
- * Measured, not derived: the reference's labels do not sit on the wedges' bisectors and
- * are not symmetric about the centre — the left block is 437px out, the right 403 — so a
- * formula would be a formula for something other than the reference. Each is the CENTRE
- * of the thing, since every element here is placed by translate(-50%, -50%).
- */
-const LABEL: Record<(typeof WEDGES)[number]["key"], Pt> = {
-  comm: [523, 706],
-  search: [960, 459],
-  people: [1363, 706],
+// ── Text and icons, measured ─────────────────────────────────────────────────────────
+
+/** Title-block top-centre. The .hqf-label is anchored at its top so a baseline can be hit. */
+const LABEL: Record<Key, Pt> = {
+  comm: [526, 615],
+  search: [955, 368],
+  people: [1365, 615],
 };
 
 /**
- * Each icon's ink centre and ink size, in px, measured off the reference — followed by
- * how much of its own canvas the source art actually fills, and where the ink's centre
- * sits within it (as fractions), measured from the PNG's alpha.
- *
- * The second pair is what makes the first pair honest. The glass PNGs carry padding:
- * the chat bubble is 59% of its canvas, the rocket 57%. Size the BOX to the reference's
- * number and the bubble draws at two-thirds of it. So `spot` sizes the box so that the
- * INK matches, and shifts it so the ink's centre — not the canvas's — lands on the point.
- *
- * Re-measure with: alpha > 40 bbox over public/img/glass/fan/*.png.
+ * Icon ink centre and size from the reference; then how much of its canvas each PNG's
+ * ink fills and where the ink's centre sits (alpha > 40 bbox), so `spot` sizes the box
+ * for the INK and lands the ink's centre — not the canvas's — on the point.
  */
-type IconSpot = {
-  x: number;
-  y: number;
-  ink: number;
-  frac: number;
-  cx: number;
-  cy: number;
-};
+type IconSpot = { x: number; y: number; ink: number; frac: number; cx: number; cy: number };
 const ICON: Record<string, IconSpot> = {
-  chat: { x: 472, y: 506, ink: 110, frac: 0.59, cx: 0.506, cy: 0.494 },
-  chat2: { x: 570, y: 557, ink: 64, frac: 0.59, cx: 0.506, cy: 0.494 },
-  // Inline SVGs: fraction and centre are the path's extent within its viewBox.
-  heart: { x: 566, y: 487, ink: 34, frac: 0.81, cx: 0.5, cy: 0.49 },
-  mag: { x: 961, y: 238, ink: 94, frac: 0.676, cx: 0.5, cy: 0.471 },
-  doc: { x: 857, y: 251, ink: 30, frac: 0.786, cx: 0.5, cy: 0.5 },
-  rocket: { x: 1293, y: 510, ink: 77, frac: 0.566, cx: 0.498, cy: 0.486 },
-  scale: { x: 1348, y: 457, ink: 51, frac: 0.735, cx: 0.494, cy: 0.483 },
-  sparkle: { x: 1432, y: 520, ink: 118, frac: 0.878, cx: 0.504, cy: 0.502 },
+  chat: { x: 478, y: 512, ink: 104, frac: 0.59, cx: 0.506, cy: 0.494 },
+  chat2: { x: 579, y: 555, ink: 67, frac: 0.59, cx: 0.506, cy: 0.494 },
+  heart: { x: 573, y: 482, ink: 33, frac: 0.81, cx: 0.5, cy: 0.49 },
+  mag: { x: 960, y: 238, ink: 122, frac: 0.676, cx: 0.5, cy: 0.471 },
+  doc: { x: 859, y: 249, ink: 37, frac: 0.786, cx: 0.5, cy: 0.5 },
+  chip: { x: 1044, y: 276, ink: 24, frac: 0.8, cx: 0.5, cy: 0.5 },
+  target: { x: 1357, y: 460, ink: 34, frac: 0.9, cx: 0.5, cy: 0.5 },
+  rocket: { x: 1308, y: 518, ink: 80, frac: 0.566, cx: 0.498, cy: 0.486 },
+  sparkle: { x: 1416, y: 512, ink: 105, frac: 0.878, cx: 0.504, cy: 0.502 },
 };
-
-const place = ([x, y]: Pt): React.CSSProperties => ({ left: x, top: y });
 const spot = ({ x, y, ink, frac, cx, cy }: IconSpot): React.CSSProperties => {
   const box = ink / frac;
-  return {
-    left: x - (cx - 0.5) * box,
-    top: y - (cy - 0.5) * box,
-    width: box,
-    height: box,
-  };
+  return { left: x - (cx - 0.5) * box, top: y - (cy - 0.5) * box, width: box, height: box };
 };
+const place = ([x, y]: Pt): React.CSSProperties => ({ left: x, top: y });
 
-/**
- * Sparkle specks around the halo — the reference scatters a few tiny points of light
- * in the ring's upper half, which is most of what makes it read as glowing rather than
- * merely stroked. Angle, distance beyond the ring, radius, opacity.
- */
+/** Specks in the halo's upper half: angle from the badge, distance beyond the ring, r, α. */
 const SPECKS: [number, number, number, number][] = [
-  [128, 28, 2.4, 0.9],
-  [104, 42, 1.6, 0.7],
-  [78, 34, 2.0, 0.85],
-  [152, 46, 1.4, 0.55],
-  [58, 52, 1.5, 0.6],
-  [96, 62, 1.2, 0.45],
-  [140, 20, 1.3, 0.75],
+  [120, 30, 2.2, 0.85],
+  [100, 46, 1.5, 0.6],
+  [76, 36, 1.8, 0.8],
+  [146, 50, 1.3, 0.5],
+  [56, 56, 1.4, 0.55],
+  [94, 66, 1.1, 0.4],
 ];
+const bpt = (angle: number, r: number): Pt => [BX + r * Math.cos(rad(angle)), BY - r * Math.sin(rad(angle))];
 
 export const WorkvivoHqFan: React.FC = () => (
   <AbsoluteFill className="hqf">
-    <svg
-      className="hqf-svg"
-      width={W}
-      height={H}
-      viewBox={`0 0 ${W} ${H}`}
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    {/* The reference's own field. See the header and scripts/prep-fan-field.py. */}
+    <Img className="hqf-field" src={staticFile("img/hq-fan-field.png")} alt="" />
+
+    <svg className="hqf-svg" width={W} height={H} viewBox={`0 0 ${W} ${H}`} xmlns="http://www.w3.org/2000/svg">
       <defs>
-        {/* The field. Darkest top-right, blue-violet top-left, a broad violet lift across
-            the whole bottom — the reference is a blurred mesh, and one diagonal plus
-            three soft blooms is the cheapest thing that reads the same. */}
-        <linearGradient id="hqf-field" x1="1" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#0b0a2c" />
-          <stop offset="0.32" stopColor="#151348" />
-          <stop offset="0.62" stopColor="#2c2390" />
-          <stop offset="0.84" stopColor="#4a38ca" />
-          <stop offset="1" stopColor="#5e4ae6" />
-        </linearGradient>
-        <radialGradient id="hqf-bloom-tl" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#3a38b4" stopOpacity="0.78" />
-          <stop offset="0.6" stopColor="#2e2c9c" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#2a2890" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="hqf-bloom-b" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#7458f6" stopOpacity="0.85" />
-          <stop offset="0.5" stopColor="#6244e4" stopOpacity="0.4" />
-          <stop offset="1" stopColor="#4a30c0" stopOpacity="0" />
-        </radialGradient>
-        <radialGradient id="hqf-bloom-br" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#4e3ccc" stopOpacity="0.5" />
-          <stop offset="1" stopColor="#4e3ccc" stopOpacity="0" />
-        </radialGradient>
-
-        {/* Wedge fills run hub -> rim along each bisector, deeper and more translucent
-            at the hub, lighter and more saturated at the rim. userSpaceOnUse so the
-            direction is the wedge's own, not its bounding box's. */}
         {WEDGES.map((w) => {
-          const [[x1, y1], [x2, y2]] = cssGradientLine(w.from, w.to, toCssAngle(FILL_ANGLE[w.key]));
-          return (
-            <linearGradient
-              key={w.key}
-              id={`hqf-w-${w.key}`}
-              gradientUnits="userSpaceOnUse"
-              x1={x1}
-              y1={y1}
-              x2={x2}
-              y2={y2}
-            >
-              <stop offset="0" stopColor={FILL_FROM} stopOpacity="0.9" />
-              <stop offset="1" stopColor={FILL_TO} stopOpacity="0.9" />
-            </linearGradient>
-          );
-        })}
-
-        {/* One clip per wedge, so the inner rim light below can be a wide stroke that
-            only shows on the INSIDE of the edge — that inset glow is most of what makes
-            a translucent shape read as a pane of glass rather than a tinted region. */}
-        {WEDGES.map((w) => (
-          <clipPath key={w.key} id={`hqf-c-${w.key}`}>
-            <path d={wedgePath(w.from, w.to)} />
-          </clipPath>
-        ))}
-        {/* The glass edge, per pane: a 1.4px line that is white where the light hits and
-            fades to NOTHING by the far corner — the border is itself on a transparency
-            gradient, which is what makes it read as the edge of a pane rather than an
-            outline around a shape. The rim inside it follows the same direction, much
-            softer. Light direction is screen-space, from the top of each pane. */}
-        {WEDGES.map((w) => {
-          const lit = w.key === "comm" ? 45 : w.key === "search" ? 0 : -45;
-          const [[x1, y1], [x2, y2]] = cssGradientLine(w.from, w.to, lit);
+          const [[x1, y1], [x2, y2]] = FILL_LINE[w.key];
+          const [[ex1, ey1], [ex2, ey2]] = cssGradientLine(w.from, w.to, EDGE[w.key].lit);
           return (
             <React.Fragment key={w.key}>
-              <linearGradient
-                id={`hqf-edge-${w.key}`}
-                gradientUnits="userSpaceOnUse"
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-              >
-                <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
-                <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.16" />
-                <stop offset="1" stopColor="#ffffff" stopOpacity="0.85" />
+              <linearGradient id={`hqf-w-${w.key}`} gradientUnits="userSpaceOnUse" x1={x1} y1={y1} x2={x2} y2={y2}>
+                <stop offset="0" stopColor={FILL_FROM} stopOpacity={FILL_ALPHA} />
+                <stop offset="1" stopColor={FILL_TO} stopOpacity={FILL_ALPHA} />
               </linearGradient>
-              <linearGradient
-                id={`hqf-rim-${w.key}`}
-                gradientUnits="userSpaceOnUse"
-                x1={x1}
-                y1={y1}
-                x2={x2}
-                y2={y2}
-              >
-                <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
-                <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.04" />
-                <stop offset="1" stopColor="#ffffff" stopOpacity="0.2" />
+              <linearGradient id={`hqf-edge-${w.key}`} gradientUnits="userSpaceOnUse" x1={ex1} y1={ey1} x2={ex2} y2={ey2}>
+                <stop offset="0" stopColor="#ffffff" stopOpacity={EDGE[w.key].dim} />
+                <stop offset="1" stopColor="#ffffff" stopOpacity={EDGE[w.key].bright} />
               </linearGradient>
+              <linearGradient id={`hqf-rim-${w.key}`} gradientUnits="userSpaceOnUse" x1={ex1} y1={ey1} x2={ex2} y2={ey2}>
+                <stop offset="0" stopColor="#ffffff" stopOpacity="0.03" />
+                <stop offset="1" stopColor="#ffffff" stopOpacity="0.1" />
+              </linearGradient>
+              <clipPath id={`hqf-c-${w.key}`}>
+                <path d={wedgePath(w.from, w.to)} />
+              </clipPath>
             </React.Fragment>
           );
         })}
-        {/* Frost: a white wash that is strongest along the top of each pane and gone by
-            its middle. Vertical in screen space, since that is where the light is. */}
-        <linearGradient
-          id="hqf-frost"
-          gradientUnits="userSpaceOnUse"
-          x1={CX}
-          y1={CY - R_OUT}
-          x2={CX}
-          y2={CY - R_OUT * 0.35}
-        >
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.16" />
-          <stop offset="0.5" stopColor="#e8e2ff" stopOpacity="0.06" />
-          <stop offset="1" stopColor="#e8e2ff" stopOpacity="0" />
-        </linearGradient>
 
-        {/* The halo, in three layers: a wide soft cyan glow, a thin bright ring that is
-            cyan at the upper-left and fades to nothing at the lower-right, and a
-            fainter inner ring a few px inside it. Plus the specks. */}
-        <radialGradient id="hqf-halo" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0.5" stopColor="#9ff0ff" stopOpacity="0" />
-          <stop offset="0.66" stopColor="#9ff0ff" stopOpacity="0.32" />
-          <stop offset="0.8" stopColor="#a8b8ff" stopOpacity="0.12" />
-          <stop offset="1" stopColor="#a8b8ff" stopOpacity="0" />
-        </radialGradient>
-        <linearGradient
-          id="hqf-ring"
-          gradientUnits="userSpaceOnUse"
-          x1={CX - RING_R}
-          y1={CY - RING_R}
-          x2={CX + RING_R}
-          y2={CY + RING_R}
-        >
-          <stop offset="0" stopColor="#a4f6ee" />
-          <stop offset="0.3" stopColor="#b8c6ff" stopOpacity="0.85" />
-          <stop offset="0.6" stopColor="#8a70f8" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#8a70f8" stopOpacity="0.04" />
+        {/* Ring: near-white at the top, lavender at the bottom, dim at the sides — sampled
+            at r=122: top #f1e1ff, bottom #bac2e7, sides #6b73ce. */}
+        <linearGradient id="hqf-box" gradientUnits="userSpaceOnUse" x1={MX} y1={MY - 50} x2={MX} y2={MY + 50}>
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.92" />
+          <stop offset="1" stopColor="#d8d8ee" stopOpacity="0.5" />
         </linearGradient>
-        {/* Light spilling up between the wedges from the hub. */}
-        <radialGradient id="hqf-spill" cx="0.5" cy="0.5" r="0.5">
-          <stop offset="0" stopColor="#b9f0ff" stopOpacity="0.28" />
-          <stop offset="0.5" stopColor="#9c8cff" stopOpacity="0.1" />
-          <stop offset="1" stopColor="#9c8cff" stopOpacity="0" />
+        {/* The disc is not flat: near-black at the centre, lifting to a navy band inside
+            its edge (ref mean over r60-112 is #090a2b against a flat #0c0a1f). */}
+        <radialGradient id="hqf-disc" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0" stopColor="#06041a" />
+          <stop offset="0.78" stopColor="#080628" />
+          <stop offset="1" stopColor="#11103a" />
+        </radialGradient>
+        {/* Ring, sampled at r=121 around the circle and placed on a vertical gradient by
+            (1 - sin θ) / 2: the highlight is a NARROW band at the very top — #f1e1ff at
+            90°, already #6b6ad8 by 45° — with a softer lift at the bottom. A two-stop
+            gradient lit the whole upper half and was 34/255 off in the ring band. */}
+        <linearGradient id="hqf-ring" gradientUnits="userSpaceOnUse" x1={BX} y1={BY - RING_R} x2={BX} y2={BY + RING_R}>
+          <stop offset="0" stopColor="#f1e1ff" />
+          <stop offset="0.146" stopColor="#7c7bd5" />
+          <stop offset="0.5" stopColor="#6c75b8" />
+          <stop offset="0.854" stopColor="#979cc2" />
+          <stop offset="1" stopColor="#bac2e7" />
+        </linearGradient>
+        {/* Halo: the radial profile from the badge centre — +106 lum at the ring, +52 at
+            r132, +17 at r140, gone by r150 — as stops on a circle of r=152. */}
+        <radialGradient id="hqf-halo" cx="0.5" cy="0.5" r="0.5">
+          <stop offset="0.66" stopColor="#dfe6ff" stopOpacity="0" />
+          <stop offset="0.77" stopColor="#dfe6ff" stopOpacity="0.07" />
+          <stop offset="0.8" stopColor="#dfe6ff" stopOpacity="0.36" />
+          <stop offset="0.868" stopColor="#cfe0ff" stopOpacity="0.2" />
+          <stop offset="0.92" stopColor="#cfe0ff" stopOpacity="0.06" />
+          <stop offset="0.97" stopColor="#cfe0ff" stopOpacity="0" />
         </radialGradient>
       </defs>
-
-      <rect width={W} height={H} fill="url(#hqf-field)" />
-      <ellipse cx={260} cy={170} rx={720} ry={470} fill="url(#hqf-bloom-tl)" />
-      <ellipse cx={500} cy={1010} rx={920} ry={390} fill="url(#hqf-bloom-b)" />
-      <ellipse cx={CX} cy={CY + 150} rx={520} ry={250} fill="url(#hqf-bloom-b)" />
-      <ellipse cx={1580} cy={1050} rx={640} ry={300} fill="url(#hqf-bloom-br)" />
 
       {WEDGES.map((w) => {
         const d = wedgePath(w.from, w.to);
         return (
           <g key={w.key}>
             <path d={d} fill={`url(#hqf-w-${w.key})`} />
-            <path d={d} fill="url(#hqf-frost)" />
             <g clipPath={`url(#hqf-c-${w.key})`}>
-              <path
-                d={d}
-                fill="none"
-                stroke={`url(#hqf-rim-${w.key})`}
-                strokeWidth="14"
-                strokeLinejoin="round"
-              />
+              <path d={d} fill="none" stroke={`url(#hqf-rim-${w.key})`} strokeWidth="12" strokeLinejoin="round" />
             </g>
-            <path
-              d={d}
-              fill="none"
-              stroke={`url(#hqf-edge-${w.key})`}
-              strokeWidth="1.4"
-              strokeLinejoin="round"
-            />
+            <path d={d} fill="none" stroke={`url(#hqf-edge-${w.key})`} strokeWidth="1.5" strokeLinejoin="round" />
           </g>
         );
       })}
 
-      {/* Halo layers, then the badge — in DOM order, since the export ignores z-index. */}
-      <ellipse cx={CX} cy={CY - 30} rx={230} ry={190} fill="url(#hqf-spill)" />
-      <circle cx={CX} cy={CY} r={RING_R + 70} fill="url(#hqf-halo)" />
-      <circle
-        cx={CX}
-        cy={CY}
-        r={RING_R}
-        fill="none"
-        stroke="url(#hqf-ring)"
-        strokeWidth="3"
-      />
-      <circle
-        cx={CX}
-        cy={CY}
-        r={RING_R - 7}
-        fill="none"
-        stroke="#ffffff"
-        strokeOpacity="0.14"
-        strokeWidth="1"
-      />
+      {/* Disc, halo, ring, specks, mark — in DOM order, since the export ignores z-index.
+          The disc goes under the halo so the halo's inner stops read as a glow on the
+          disc's edge, which the reference has (lum 15 -> 38 across r104..116). */}
+      <circle cx={BX} cy={BY} r={BADGE_R} fill="url(#hqf-disc)" />
+      <circle cx={BX} cy={BY} r={152} fill="url(#hqf-halo)" />
+      <circle cx={BX} cy={BY} r={RING_R} fill="none" stroke="url(#hqf-ring)" strokeWidth="6" />
       {SPECKS.map(([a, dist, r, o], i) => {
-        const [x, y] = pt(a, RING_R + dist);
+        const [x, y] = bpt(a, RING_R + dist);
         return <circle key={i} cx={x} cy={y} r={r} fill="#ffffff" fillOpacity={o} />;
       })}
-
-      <circle cx={CX} cy={CY} r={BADGE_R} fill="#07060f" />
-      <rect
-        x={CX - 52}
-        y={CY - 40}
-        width={104}
-        height={80}
-        rx={19}
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth="3.5"
-      />
-      {/* The mark, inlined from public/img/hq-logo.svg (viewBox 0 0 118 70) — SVG
-          delivered through an <img> comes out garbled in the export. */}
-      <g transform={`translate(${CX - 36} ${CY - 21}) scale(${72 / 118})`}>
-        <path
-          d="M0 61.6015V1.18048H14.3572V25.2556H36.593V1.18048H51.0326V61.6015H36.593V37.0049H14.3572V61.6015H0Z"
-          fill="#ffffff"
-        />
-        <path
-          d="M71.0184 31.4321C71.0184 43.6755 77.2773 50.9502 86.9952 50.9502C96.7131 50.9502 102.972 43.7579 102.972 31.4321C102.972 19.1063 96.6307 11.8317 86.9952 11.8317C77.3597 11.8317 71.0184 19.024 71.0184 31.4321ZM56.2219 31.4321C56.2219 12.0787 68.4654 0 87.0501 0C105.635 0 117.796 11.9964 117.796 31.4321C117.796 41.6441 114.419 49.7698 108.6 55.1778L111.949 60.0642C114.831 64.2643 111.812 69.9742 106.733 69.9742C104.564 69.9742 102.56 68.8761 101.407 67.0643L97.5366 61.1897C94.4072 62.2054 90.8659 62.7819 87.0501 62.7819C68.383 62.7819 56.2219 50.7855 56.2219 31.4321Z"
-          fill="#ffffff"
-        />
+      {/* The mark's box is SQUARE — 100x100 at (958, 862) — with a 2px outline that is
+          bright at the top and about half that at the bottom. A white-threshold bbox read
+          it as 100x74 because the dim bottom edge fell under the threshold; the 3x crop
+          against the reference caught that. The letters are centred in it. */}
+      <rect x={MX - 50} y={MY - 50} width={100} height={100} rx={12} fill="none" stroke="url(#hqf-box)" strokeWidth="2.2" />
+      {/* Inlined from public/img/hq-logo.svg (viewBox 0 0 118 70) — SVG through an <img>
+          comes out garbled in the export. */}
+      <g transform={`translate(${MX - 35 + 3} ${MY - 20.8 + 4}) scale(${70 / 118})`}>
+        <path d="M0 61.6015V1.18048H14.3572V25.2556H36.593V1.18048H51.0326V61.6015H36.593V37.0049H14.3572V61.6015H0Z" fill="#ffffff" />
+        <path d="M71.0184 31.4321C71.0184 43.6755 77.2773 50.9502 86.9952 50.9502C96.7131 50.9502 102.972 43.7579 102.972 31.4321C102.972 19.1063 96.6307 11.8317 86.9952 11.8317C77.3597 11.8317 71.0184 19.024 71.0184 31.4321ZM56.2219 31.4321C56.2219 12.0787 68.4654 0 87.0501 0C105.635 0 117.796 11.9964 117.796 31.4321C117.796 41.6441 114.419 49.7698 108.6 55.1778L111.949 60.0642C114.831 64.2643 111.812 69.9742 106.733 69.9742C104.564 69.9742 102.56 68.8761 101.407 67.0643L97.5366 61.1897C94.4072 62.2054 90.8659 62.7819 87.0501 62.7819C68.383 62.7819 56.2219 50.7855 56.2219 31.4321Z" fill="#ffffff" />
       </g>
     </svg>
 
-    {/* --- glass icons -------------------------------------------------------------
-        The HQ scenes' glass PNGs with a purple overlay BAKED IN by
-        scripts/prep-fan-icons.py — a CSS tint would not survive the export. Positions and
-        sizes are the reference's, measured. */}
-    <Img className="hqf-i hqf-i-chat" style={spot(ICON.chat)} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <Img className="hqf-i hqf-i-chat2" style={spot(ICON.chat2)} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <svg className="hqf-i hqf-i-heart" style={spot(ICON.heart)} viewBox="0 0 64 64">
-      <path
-        d="M32 56S6 40.5 6 23.5C6 14.4 13.2 7 22.2 7c5.9 0 9.2 3 9.8 4.6C32.6 10 35.9 7 41.8 7 50.8 7 58 14.4 58 23.5 58 40.5 32 56 32 56Z"
-        fill="#cfc2ff"
-      />
+    {/* Glass PNGs with the purple overlay baked in by scripts/prep-fan-icons.py — a CSS
+        tint would not survive the export. Three have no asset and are drawn: the heart,
+        the document, the target, and the small chip beside the loupe. */}
+    <Img className="hqf-i" style={spot(ICON.chat)} src={staticFile("img/glass/fan/chat.png")} alt="" />
+    <Img className="hqf-i" style={spot(ICON.chat2)} src={staticFile("img/glass/fan/chat.png")} alt="" />
+    <svg className="hqf-i" style={spot(ICON.heart)} viewBox="0 0 64 64">
+      <path d="M32 56S6 40.5 6 23.5C6 14.4 13.2 7 22.2 7c5.9 0 9.2 3 9.8 4.6C32.6 10 35.9 7 41.8 7 50.8 7 58 14.4 58 23.5 58 40.5 32 56 32 56Z" fill="#e9e2ff" />
     </svg>
 
-    <Img className="hqf-i hqf-i-mag" style={spot(ICON.mag)} src={staticFile("img/glass/fan/mag.png")} alt="" />
-    <svg className="hqf-i hqf-i-doc" style={spot(ICON.doc)} viewBox="0 0 56 56">
-      <rect x="12" y="6" width="32" height="44" rx="5" fill="rgba(170,140,255,0.28)" stroke="#d6caff" strokeWidth="2.5" />
-      <path d="M20 18h16M20 27h16M20 36h10" stroke="#d6caff" strokeWidth="2.5" strokeLinecap="round" />
+    <Img className="hqf-i" style={spot(ICON.mag)} src={staticFile("img/glass/fan/mag.png")} alt="" />
+    <svg className="hqf-i" style={spot(ICON.doc)} viewBox="0 0 56 56">
+      <rect x="12" y="6" width="32" height="44" rx="5" fill="rgba(190,170,255,0.3)" stroke="#dcd2ff" strokeWidth="2.5" />
+      <path d="M20 18h16M20 27h16M20 36h10" stroke="#dcd2ff" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+    <svg className="hqf-i" style={spot(ICON.chip)} viewBox="0 0 40 40">
+      <rect x="4" y="4" width="32" height="32" rx="7" fill="rgba(190,170,255,0.3)" stroke="#dcd2ff" strokeWidth="2.5" />
+      <circle cx="14" cy="20" r="2.6" fill="#f0eaff" /><circle cx="20" cy="20" r="2.6" fill="#f0eaff" /><circle cx="26" cy="20" r="2.6" fill="#f0eaff" />
     </svg>
 
-    <Img className="hqf-i hqf-i-rocket" style={spot(ICON.rocket)} src={staticFile("img/glass/fan/rocket.png")} alt="" />
-    <Img className="hqf-i hqf-i-scale" style={spot(ICON.scale)} src={staticFile("img/glass/fan/scale.png")} alt="" />
-    <Img className="hqf-i hqf-i-sparkle" style={spot(ICON.sparkle)} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
+    <svg className="hqf-i" style={spot(ICON.target)} viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="16" fill="rgba(190,170,255,0.25)" stroke="#e6e0ff" strokeWidth="2.5" />
+      <circle cx="20" cy="20" r="9.5" fill="none" stroke="#e6e0ff" strokeWidth="2.5" />
+      <circle cx="20" cy="20" r="3.2" fill="#f4f0ff" />
+    </svg>
+    <Img className="hqf-i" style={spot(ICON.rocket)} src={staticFile("img/glass/fan/rocket.png")} alt="" />
+    <Img className="hqf-i" style={spot(ICON.sparkle)} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
 
-    {/* --- labels ----------------------------------------------------------------- */}
     <div className="hqf-label" style={place(LABEL.comm)}>
-      <div className="hqf-title">
-        Communication
-        <br />& Engagement
-      </div>
-      <div className="hqf-sub">
-        Reach, engage, and
-        <br />
-        align every employee
-      </div>
+      <div className="hqf-title">Communication<br />&amp; Engagement</div>
+      <div className="hqf-sub">Reach, engage, and<br />align every employee</div>
     </div>
-
     <div className="hqf-label" style={place(LABEL.search)}>
-      <div className="hqf-title">
-        Search &<br />
-        Knowledge
-      </div>
-      <div className="hqf-sub">
-        Find and access what
-        <br />
-        you need instantly
-      </div>
+      <div className="hqf-title">Search &amp;<br />Knowledge</div>
+      <div className="hqf-sub">Find and access what<br />you need instantly</div>
     </div>
-
     <div className="hqf-label" style={place(LABEL.people)}>
-      <div className="hqf-title">
-        People
-        <br />
-        Intelligence
-      </div>
-      <div className="hqf-sub">
-        Turn signals into insight,
-        <br />
-        action, and results
-      </div>
+      <div className="hqf-title">People<br />Intelligence</div>
+      <div className="hqf-sub">Turn signals into insight,<br />action, and results</div>
     </div>
   </AbsoluteFill>
 );
