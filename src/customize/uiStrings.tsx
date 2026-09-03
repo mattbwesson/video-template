@@ -49,7 +49,11 @@ export const useT = (): (<T extends Text>(s: T) => T) => {
       // Same-line spaces around a JSX text node are part of it, so they arrive here.
       // Look up the trimmed core and hand the spaces back, so keys stay clean.
       const m = /^(\s*)([\s\S]*?)(\s*)$/.exec(s) as RegExpExecArray;
-      const [, before, core, after] = m;
+      const [, before, raw, after] = m;
+      // JSX collapses a text node's internal newlines and indentation to single spaces
+      // when it renders; do the same to the key, so a paragraph split across source lines
+      // matches a dictionary entry written on one.
+      const core = raw.replace(/\s+/g, " ");
       const put = (v: string) => (before + v + after) as T;
       const hit = strings.exact[core];
       if (hit !== undefined) return put(hit);

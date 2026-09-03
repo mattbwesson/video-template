@@ -3,6 +3,8 @@ import { AbsoluteFill } from "remotion";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
 import { WorkvivoCut } from "./WorkvivoCut";
 import { JAPANESE_INPUT } from "./japanese/japaneseCopy";
+import { JAPANESE_UI } from "./japanese/japaneseUi";
+import { UiStringsProvider } from "./customize/uiStrings";
 import "./japanese/JapaneseFont.css";
 import "./japanese/JapaneseType.css";
 
@@ -47,10 +49,15 @@ import "./japanese/JapaneseType.css";
 
 export const Japanese: React.FC = () => (
   <CustomizationProvider input={JAPANESE_INPUT}>
-    {/* AbsoluteFill rather than a plain div: WorkvivoCut's own root is one, and a
-        statically-sized wrapper would give it a zero-height parent to lay out inside. */}
-    <AbsoluteFill className="jp">
-      <WorkvivoCut />
-    </AbsoluteFill>
+    {/* The product's own chrome — nav, buttons, "View All" — is not copy and is not in
+        the copy table. It reaches the components through this provider; without it,
+        every component renders its English literal. See src/customize/uiStrings.tsx. */}
+    <UiStringsProvider strings={JAPANESE_UI}>
+      {/* AbsoluteFill rather than a plain div: WorkvivoCut's own root is one, and a
+          statically-sized wrapper would give it a zero-height parent to lay out inside. */}
+      <AbsoluteFill className="jp">
+        <WorkvivoCut />
+      </AbsoluteFill>
+    </UiStringsProvider>
   </CustomizationProvider>
 );

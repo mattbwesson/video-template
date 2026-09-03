@@ -88,7 +88,7 @@ export const WorkvivoFeedbackArticle: React.FC = () => {
           <h2 className="wfa-heading">{ui(section.heading)}</h2>
           {/* Split on blank lines: each becomes its own <p>, and the single newlines
               inside one are the reference's hand-set wrap points. */}
-          {section.body.split(/\n\s*\n/).map((para) => (
+          {ui(section.body).split(/\n\s*\n/).map((para) => (
             <p className="wfa-p" key={para.slice(0, 32)} style={{ whiteSpace: "pre-line" }}>
               {ui(para.trim())}
             </p>
