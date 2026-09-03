@@ -246,18 +246,18 @@ export const WorkvivoHqFan: React.FC = () => (
             >
               <stop
                 offset="0"
-                stopColor={centre ? "#4a2ce0" : "#3826b4"}
-                stopOpacity={centre ? 0.96 : 0.8}
+                stopColor={centre ? "#4a2ce8" : "#3e2ccc"}
+                stopOpacity={centre ? 0.84 : 0.62}
               />
               <stop
                 offset="0.5"
-                stopColor={centre ? "#5a3cf0" : "#4c38d2"}
-                stopOpacity={centre ? 0.97 : 0.76}
+                stopColor={centre ? "#5c3cf6" : "#5242dc"}
+                stopOpacity={centre ? 0.88 : 0.6}
               />
               <stop
                 offset="1"
-                stopColor={centre ? "#7256fa" : light ? "#7a70ee" : "#6e62ea"}
-                stopOpacity={centre ? 0.96 : light ? 0.64 : 0.68}
+                stopColor={centre ? "#7c5eff" : light ? "#7c72f2" : "#7266ee"}
+                stopOpacity={centre ? 0.84 : light ? 0.5 : 0.54}
               />
             </linearGradient>
           );
@@ -282,7 +282,43 @@ export const WorkvivoHqFan: React.FC = () => (
           );
         })}
 
-        {/* Edge light. Brightest along the top of the rim, almost gone at the hub. */}
+        {/* One clip per wedge, so the inner rim light below can be a wide stroke that
+            only shows on the INSIDE of the edge — that inset glow is most of what makes
+            a translucent shape read as a pane of glass rather than a tinted region. */}
+        {WEDGES.map((w) => (
+          <clipPath key={w.key} id={`hqf-c-${w.key}`}>
+            <path d={wedgePath(w.from, w.to)} />
+          </clipPath>
+        ))}
+        <linearGradient
+          id="hqf-rim"
+          gradientUnits="userSpaceOnUse"
+          x1={CX}
+          y1={CY - R_OUT}
+          x2={CX}
+          y2={CY}
+        >
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.3" />
+          <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.1" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0.05" />
+        </linearGradient>
+        {/* Frost: a white wash that is strongest along the top of each pane and gone by
+            its middle. Vertical in screen space, since that is where the light is. */}
+        <linearGradient
+          id="hqf-frost"
+          gradientUnits="userSpaceOnUse"
+          x1={CX}
+          y1={CY - R_OUT}
+          x2={CX}
+          y2={CY - R_OUT * 0.35}
+        >
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.2" />
+          <stop offset="0.5" stopColor="#e8e2ff" stopOpacity="0.08" />
+          <stop offset="1" stopColor="#e8e2ff" stopOpacity="0" />
+        </linearGradient>
+
+        {/* Edge light. Brightest along the top of the rim, and still visible at the hub —
+            a glass edge catches light along its whole length. */}
         <linearGradient
           id="hqf-edge"
           gradientUnits="userSpaceOnUse"
@@ -291,9 +327,9 @@ export const WorkvivoHqFan: React.FC = () => (
           x2={CX}
           y2={CY}
         >
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.72" />
-          <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0.1" />
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.9" />
+          <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.45" />
+          <stop offset="1" stopColor="#ffffff" stopOpacity="0.28" />
         </linearGradient>
 
         {/* The halo, in three layers: a wide soft cyan glow, a thin bright ring that is
@@ -337,12 +373,24 @@ export const WorkvivoHqFan: React.FC = () => (
         return (
           <g key={w.key}>
             <path d={d} fill={`url(#hqf-w-${w.key})`} />
+            <path d={d} fill="url(#hqf-frost)" />
             <path d={d} fill={`url(#hqf-s-${w.key})`} />
+            {/* 16px stroke, clipped to the pane, so 8px of soft light sits just inside
+                every edge and none of it spills into the gap. */}
+            <g clipPath={`url(#hqf-c-${w.key})`}>
+              <path
+                d={d}
+                fill="none"
+                stroke="url(#hqf-rim)"
+                strokeWidth="16"
+                strokeLinejoin="round"
+              />
+            </g>
             <path
               d={d}
               fill="none"
               stroke="url(#hqf-edge)"
-              strokeWidth="1.6"
+              strokeWidth="1.5"
               strokeLinejoin="round"
             />
           </g>
