@@ -43,12 +43,10 @@ const CX = 960;
 const CY = 858;
 /**
  * The wedges run in UNDER the badge — their tips are hidden by the disc, which is drawn
- * after them — so this is well inside `BADGE_R`. Everything that should stay put on
- * screen (labels, icons) is seated from `SEAT_IN` instead.
+ * after them — so this is well inside `BADGE_R`.
  */
 const R_IN = 76;
 const R_OUT = 725;
-const SEAT_IN = 120;
 
 /** The band between wedges, in px, the same width from hub to rim. */
 const GAP = 26;
@@ -177,42 +175,78 @@ const cssGradientLine = (from: number, to: number, thetaDeg: number): [Pt, Pt] =
   ];
 };
 
-/** CSS gradient angle per wedge — light lands at each pane's top-inner corner. */
+/**
+ * Fill angle per pane, AS SUPPLIED — measured the way design tools measure a gradient:
+ * from the horizontal, counter-clockwise positive. CSS measures from vertical, clockwise,
+ * so the conversion is `90 - θ`. The tell was which panes looked wrong after a literal
+ * CSS reading: 45° is the one angle both conventions agree on, and the two that differed
+ * were exactly the two flagged.
+ */
 const FILL_ANGLE: Record<(typeof WEDGES)[number]["key"], number> = {
   comm: 45,
   search: -11,
   people: -65,
 };
+const toCssAngle = (designDeg: number): number => 90 - designDeg;
 const FILL_FROM = "#1d1470";
 const FILL_TO = "#580fe6";
 
-/** A point on a wedge's bisector, at a fraction of the way from hub to rim. */
-const seat = (from: number, to: number, frac: number): Pt =>
-  pt((from + to) / 2, SEAT_IN + (R_OUT - SEAT_IN) * frac);
-
 /**
- * Where each wedge's highlight sits.
+ * Label and icon placement, measured off the reference at 1920x1080.
  *
- * The reference is lit from above the centre, so every wedge is brightest at the part of
- * its rim NEAREST the top — for the centre wedge that is its own apex, for the sides it
- * is the upper corner facing inward. Biasing the bisector 60% of the way toward 90°
- * puts the sheen there for all three without a per-wedge number.
+ * Measured, not derived: the reference's labels do not sit on the wedges' bisectors and
+ * are not symmetric about the centre — the left block is 437px out, the right 403 — so a
+ * formula would be a formula for something other than the reference. Each is the CENTRE
+ * of the thing, since every element here is placed by translate(-50%, -50%).
  */
-const sheenAt = (from: number, to: number): Pt => {
-  const mid = (from + to) / 2;
-  return pt(mid + (90 - mid) * 0.72, R_OUT * 0.86);
+const LABEL: Record<(typeof WEDGES)[number]["key"], Pt> = {
+  comm: [523, 706],
+  search: [960, 459],
+  people: [1363, 706],
 };
 
-// Label seats, and the icon clusters as offsets from them — so moving a label by
-// changing a fraction above moves its icons with it.
-const COMM = seat(180, 119, 0.52);
-const SEARCH = seat(119, 61, 0.62);
-const PEOPLE = seat(61, 0, 0.52);
+/**
+ * Each icon's ink centre and ink size, in px, measured off the reference — followed by
+ * how much of its own canvas the source art actually fills, and where the ink's centre
+ * sits within it (as fractions), measured from the PNG's alpha.
+ *
+ * The second pair is what makes the first pair honest. The glass PNGs carry padding:
+ * the chat bubble is 59% of its canvas, the rocket 57%. Size the BOX to the reference's
+ * number and the bubble draws at two-thirds of it. So `spot` sizes the box so that the
+ * INK matches, and shifts it so the ink's centre — not the canvas's — lands on the point.
+ *
+ * Re-measure with: alpha > 40 bbox over public/img/glass/fan/*.png.
+ */
+type IconSpot = {
+  x: number;
+  y: number;
+  ink: number;
+  frac: number;
+  cx: number;
+  cy: number;
+};
+const ICON: Record<string, IconSpot> = {
+  chat: { x: 472, y: 506, ink: 110, frac: 0.59, cx: 0.506, cy: 0.494 },
+  chat2: { x: 570, y: 557, ink: 64, frac: 0.59, cx: 0.506, cy: 0.494 },
+  // Inline SVGs: fraction and centre are the path's extent within its viewBox.
+  heart: { x: 566, y: 487, ink: 34, frac: 0.81, cx: 0.5, cy: 0.49 },
+  mag: { x: 961, y: 238, ink: 94, frac: 0.676, cx: 0.5, cy: 0.471 },
+  doc: { x: 857, y: 251, ink: 30, frac: 0.786, cx: 0.5, cy: 0.5 },
+  rocket: { x: 1293, y: 510, ink: 77, frac: 0.566, cx: 0.498, cy: 0.486 },
+  scale: { x: 1348, y: 457, ink: 51, frac: 0.735, cx: 0.494, cy: 0.483 },
+  sparkle: { x: 1432, y: 520, ink: 118, frac: 0.878, cx: 0.504, cy: 0.502 },
+};
 
-const at = (base: Pt, dx: number, dy: number): React.CSSProperties => ({
-  left: base[0] + dx,
-  top: base[1] + dy,
-});
+const place = ([x, y]: Pt): React.CSSProperties => ({ left: x, top: y });
+const spot = ({ x, y, ink, frac, cx, cy }: IconSpot): React.CSSProperties => {
+  const box = ink / frac;
+  return {
+    left: x - (cx - 0.5) * box,
+    top: y - (cy - 0.5) * box,
+    width: box,
+    height: box,
+  };
+};
 
 /**
  * Sparkle specks around the halo — the reference scatters a few tiny points of light
@@ -268,7 +302,7 @@ export const WorkvivoHqFan: React.FC = () => (
             at the hub, lighter and more saturated at the rim. userSpaceOnUse so the
             direction is the wedge's own, not its bounding box's. */}
         {WEDGES.map((w) => {
-          const [[x1, y1], [x2, y2]] = cssGradientLine(w.from, w.to, FILL_ANGLE[w.key]);
+          const [[x1, y1], [x2, y2]] = cssGradientLine(w.from, w.to, toCssAngle(FILL_ANGLE[w.key]));
           return (
             <linearGradient
               key={w.key}
@@ -285,25 +319,6 @@ export const WorkvivoHqFan: React.FC = () => (
           );
         })}
 
-        {/* A soft white sheen near the rim of each wedge — the "lit from above" haze. */}
-        {WEDGES.map((w) => {
-          const [cx, cy] = sheenAt(w.from, w.to);
-          return (
-            <radialGradient
-              key={w.key}
-              id={`hqf-s-${w.key}`}
-              gradientUnits="userSpaceOnUse"
-              cx={cx}
-              cy={cy}
-              r={360}
-            >
-              <stop offset="0" stopColor="#ffffff" stopOpacity="0.22" />
-              <stop offset="0.35" stopColor="#dcd2ff" stopOpacity="0.1" />
-              <stop offset="1" stopColor="#dcd2ff" stopOpacity="0" />
-            </radialGradient>
-          );
-        })}
-
         {/* One clip per wedge, so the inner rim light below can be a wide stroke that
             only shows on the INSIDE of the edge — that inset glow is most of what makes
             a translucent shape read as a pane of glass rather than a tinted region. */}
@@ -312,18 +327,43 @@ export const WorkvivoHqFan: React.FC = () => (
             <path d={wedgePath(w.from, w.to)} />
           </clipPath>
         ))}
-        <linearGradient
-          id="hqf-rim"
-          gradientUnits="userSpaceOnUse"
-          x1={CX}
-          y1={CY - R_OUT}
-          x2={CX}
-          y2={CY}
-        >
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.3" />
-          <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.1" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0.05" />
-        </linearGradient>
+        {/* The glass edge, per pane: a 1.4px line that is white where the light hits and
+            fades to NOTHING by the far corner — the border is itself on a transparency
+            gradient, which is what makes it read as the edge of a pane rather than an
+            outline around a shape. The rim inside it follows the same direction, much
+            softer. Light direction is screen-space, from the top of each pane. */}
+        {WEDGES.map((w) => {
+          const lit = w.key === "comm" ? 45 : w.key === "search" ? 0 : -45;
+          const [[x1, y1], [x2, y2]] = cssGradientLine(w.from, w.to, lit);
+          return (
+            <React.Fragment key={w.key}>
+              <linearGradient
+                id={`hqf-edge-${w.key}`}
+                gradientUnits="userSpaceOnUse"
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+              >
+                <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+                <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.16" />
+                <stop offset="1" stopColor="#ffffff" stopOpacity="0.85" />
+              </linearGradient>
+              <linearGradient
+                id={`hqf-rim-${w.key}`}
+                gradientUnits="userSpaceOnUse"
+                x1={x1}
+                y1={y1}
+                x2={x2}
+                y2={y2}
+              >
+                <stop offset="0" stopColor="#ffffff" stopOpacity="0" />
+                <stop offset="0.5" stopColor="#ffffff" stopOpacity="0.04" />
+                <stop offset="1" stopColor="#ffffff" stopOpacity="0.2" />
+              </linearGradient>
+            </React.Fragment>
+          );
+        })}
         {/* Frost: a white wash that is strongest along the top of each pane and gone by
             its middle. Vertical in screen space, since that is where the light is. */}
         <linearGradient
@@ -334,24 +374,9 @@ export const WorkvivoHqFan: React.FC = () => (
           x2={CX}
           y2={CY - R_OUT * 0.35}
         >
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.2" />
-          <stop offset="0.5" stopColor="#e8e2ff" stopOpacity="0.08" />
+          <stop offset="0" stopColor="#ffffff" stopOpacity="0.16" />
+          <stop offset="0.5" stopColor="#e8e2ff" stopOpacity="0.06" />
           <stop offset="1" stopColor="#e8e2ff" stopOpacity="0" />
-        </linearGradient>
-
-        {/* Edge light. Brightest along the top of the rim, and still visible at the hub —
-            a glass edge catches light along its whole length. */}
-        <linearGradient
-          id="hqf-edge"
-          gradientUnits="userSpaceOnUse"
-          x1={CX}
-          y1={CY - R_OUT}
-          x2={CX}
-          y2={CY}
-        >
-          <stop offset="0" stopColor="#ffffff" stopOpacity="0.9" />
-          <stop offset="0.45" stopColor="#ffffff" stopOpacity="0.45" />
-          <stop offset="1" stopColor="#ffffff" stopOpacity="0.28" />
         </linearGradient>
 
         {/* The halo, in three layers: a wide soft cyan glow, a thin bright ring that is
@@ -396,23 +421,20 @@ export const WorkvivoHqFan: React.FC = () => (
           <g key={w.key}>
             <path d={d} fill={`url(#hqf-w-${w.key})`} />
             <path d={d} fill="url(#hqf-frost)" />
-            <path d={d} fill={`url(#hqf-s-${w.key})`} />
-            {/* 16px stroke, clipped to the pane, so 8px of soft light sits just inside
-                every edge and none of it spills into the gap. */}
             <g clipPath={`url(#hqf-c-${w.key})`}>
               <path
                 d={d}
                 fill="none"
-                stroke="url(#hqf-rim)"
-                strokeWidth="16"
+                stroke={`url(#hqf-rim-${w.key})`}
+                strokeWidth="14"
                 strokeLinejoin="round"
               />
             </g>
             <path
               d={d}
               fill="none"
-              stroke="url(#hqf-edge)"
-              strokeWidth="1.5"
+              stroke={`url(#hqf-edge-${w.key})`}
+              strokeWidth="1.4"
               strokeLinejoin="round"
             />
           </g>
@@ -471,29 +493,29 @@ export const WorkvivoHqFan: React.FC = () => (
 
     {/* --- glass icons -------------------------------------------------------------
         The HQ scenes' glass PNGs with a purple overlay BAKED IN by
-        scripts/prep-fan-icons.py — a CSS tint would not survive the export. Each cluster
-        is placed relative to its label. */}
-    <Img className="hqf-i hqf-i-chat" style={at(COMM, -75, -147)} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <Img className="hqf-i hqf-i-chat2" style={at(COMM, 8, -94)} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <svg className="hqf-i hqf-i-heart" style={at(COMM, 5, -181)} width="60" height="60" viewBox="0 0 64 64">
+        scripts/prep-fan-icons.py — a CSS tint would not survive the export. Positions and
+        sizes are the reference's, measured. */}
+    <Img className="hqf-i hqf-i-chat" style={spot(ICON.chat)} src={staticFile("img/glass/fan/chat.png")} alt="" />
+    <Img className="hqf-i hqf-i-chat2" style={spot(ICON.chat2)} src={staticFile("img/glass/fan/chat.png")} alt="" />
+    <svg className="hqf-i hqf-i-heart" style={spot(ICON.heart)} viewBox="0 0 64 64">
       <path
         d="M32 56S6 40.5 6 23.5C6 14.4 13.2 7 22.2 7c5.9 0 9.2 3 9.8 4.6C32.6 10 35.9 7 41.8 7 50.8 7 58 14.4 58 23.5 58 40.5 32 56 32 56Z"
         fill="#cfc2ff"
       />
     </svg>
 
-    <Img className="hqf-i hqf-i-mag" style={at(SEARCH, 3, -127)} src={staticFile("img/glass/fan/mag.png")} alt="" />
-    <svg className="hqf-i hqf-i-doc" style={at(SEARCH, -91, -110)} width="52" height="52" viewBox="0 0 56 56">
+    <Img className="hqf-i hqf-i-mag" style={spot(ICON.mag)} src={staticFile("img/glass/fan/mag.png")} alt="" />
+    <svg className="hqf-i hqf-i-doc" style={spot(ICON.doc)} viewBox="0 0 56 56">
       <rect x="12" y="6" width="32" height="44" rx="5" fill="rgba(170,140,255,0.28)" stroke="#d6caff" strokeWidth="2.5" />
       <path d="M20 18h16M20 27h16M20 36h10" stroke="#d6caff" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
 
-    <Img className="hqf-i hqf-i-rocket" style={at(PEOPLE, -20, -107)} src={staticFile("img/glass/fan/rocket.png")} alt="" />
-    <Img className="hqf-i hqf-i-scale" style={at(PEOPLE, 27, -182)} src={staticFile("img/glass/fan/scale.png")} alt="" />
-    <Img className="hqf-i hqf-i-sparkle" style={at(PEOPLE, 112, -135)} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
+    <Img className="hqf-i hqf-i-rocket" style={spot(ICON.rocket)} src={staticFile("img/glass/fan/rocket.png")} alt="" />
+    <Img className="hqf-i hqf-i-scale" style={spot(ICON.scale)} src={staticFile("img/glass/fan/scale.png")} alt="" />
+    <Img className="hqf-i hqf-i-sparkle" style={spot(ICON.sparkle)} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
 
     {/* --- labels ----------------------------------------------------------------- */}
-    <div className="hqf-label" style={at(COMM, 0, 0)}>
+    <div className="hqf-label" style={place(LABEL.comm)}>
       <div className="hqf-title">
         Communication
         <br />& Engagement
@@ -505,7 +527,7 @@ export const WorkvivoHqFan: React.FC = () => (
       </div>
     </div>
 
-    <div className="hqf-label" style={at(SEARCH, 0, 0)}>
+    <div className="hqf-label" style={place(LABEL.search)}>
       <div className="hqf-title">
         Search &<br />
         Knowledge
@@ -517,7 +539,7 @@ export const WorkvivoHqFan: React.FC = () => (
       </div>
     </div>
 
-    <div className="hqf-label" style={at(PEOPLE, 0, 0)}>
+    <div className="hqf-label" style={place(LABEL.people)}>
       <div className="hqf-title">
         People
         <br />

@@ -19,50 +19,11 @@
 }
 
 /* --- icons ------------------------------------------------------------------------
-   Sizes only. Position is inline from the .tsx, as an offset from each wedge's label
-   seat, so the cluster moves with its wedge when the geometry constants change. The
-   translate centres each icon on that point. */
+   Position and size are inline from the .tsx, measured off the reference. The translate
+   centres each icon on its point. */
 .hqf-i {
   position: absolute;
   transform: translate(-50%, -50%);
-}
-
-/* Communication cluster — two bubbles and a heart, the big one leading. */
-.hqf-i-chat {
-  width: 128px;
-  height: 128px;
-}
-.hqf-i-chat2 {
-  width: 88px;
-  height: 88px;
-}
-.hqf-i-heart {
-  width: 60px;
-  height: 60px;
-}
-
-/* Search cluster — the glass loupe, with a document tucked behind its left shoulder. */
-.hqf-i-mag {
-  width: 148px;
-  height: 148px;
-}
-.hqf-i-doc {
-  width: 52px;
-  height: 52px;
-}
-
-/* People cluster — rocket low-left, trend arrow above it, sparkle leading right. */
-.hqf-i-rocket {
-  width: 116px;
-  height: 116px;
-}
-.hqf-i-scale {
-  width: 96px;
-  height: 96px;
-}
-.hqf-i-sparkle {
-  width: 150px;
-  height: 150px;
 }
 
 /* --- labels ----------------------------------------------------------------------- */
@@ -80,7 +41,8 @@
 .hqf-title {
   font-size: 38px;
   font-weight: 700;
-  line-height: 1.18;
+  /* 47px line pitch, measured off the reference. */
+  line-height: 1.24;
   letter-spacing: -0.01em;
   /* Lifts the white off the violet without reading as a drop shadow. */
   text-shadow: 0 2px 18px rgba(10, 4, 40, 0.45);
@@ -90,6 +52,7 @@
   margin-top: 12px;
   font-size: 22px;
   font-weight: 500;
-  line-height: 1.36;
+  /* 32px line pitch, measured off the reference. */
+  line-height: 1.45;
   color: rgba(255, 255, 255, 0.88);
 }
