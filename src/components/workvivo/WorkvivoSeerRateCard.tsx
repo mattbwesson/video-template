@@ -1,6 +1,7 @@
 import React from "react";
 import { Donut } from "./WorkvivoSeerManagerInsights";
 import "./WorkvivoSeerRateCardStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * The Response Rate card that floats beside the phone at global 3903-4072.
@@ -52,11 +53,13 @@ export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
   responses = "10,395/13,860",
   large = false,
   style,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div className={large ? "wsrc-card wsrc-lg" : "wsrc-card"} style={style}>
     <div className="wsrc-tabs">
-      <span className="wsrc-tab wsrc-on">Response Rate</span>
-      <span className="wsrc-tab">Completion Rate</span>
+      <span className="wsrc-tab wsrc-on">{ui("Response Rate")}</span>
+      <span className="wsrc-tab">{ui("Completion Rate")}</span>
     </div>
 
     <div className="wsrc-body">
@@ -66,8 +69,8 @@ export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
 
       <div className="wsrc-stats">
         <div className="wsrc-box">
-          <div className="wsrc-num">{responses}</div>
-          <div className="wsrc-label">Responses</div>
+          <div className="wsrc-num">{ui(responses)}</div>
+          <div className="wsrc-label">{ui("Responses")}</div>
         </div>
         <div className="wsrc-box">
           <div className="wsrc-figure">
@@ -76,9 +79,10 @@ export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
             </span>
             <span className="wsrc-num">75%</span>
           </div>
-          <div className="wsrc-label">Company Score</div>
+          <div className="wsrc-label">{ui("Company Score")}</div>
         </div>
       </div>
     </div>
   </div>
 );
+};

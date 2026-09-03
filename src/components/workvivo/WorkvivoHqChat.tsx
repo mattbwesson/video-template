@@ -6,6 +6,7 @@ import { WorkvivoHqSidebar } from "./WorkvivoHqSidebar";
 import "./WorkvivoHqChatStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { FIXED_COPY } from "../../customize/videoCopy";
+import { useT } from "../../customize/uiStrings";
 
 export const HQ_CHAT_W = 988;
 export const HQ_CHAT_H = 680;
@@ -128,7 +129,9 @@ const MoreDots: React.FC = () => (
   </svg>
 );
 
-const WorkdayAvatar = () => (
+const WorkdayAvatar = () => {
+  const ui = useT();
+  return (
   <div
     style={{
       width: 20,
@@ -147,7 +150,7 @@ const WorkdayAvatar = () => (
   >
     <InlineSvg
       src={staticFile("img/workday-logo.svg")}
-      alt="Workday"
+      alt={ui("Workday")}
       style={{
         width: "100%",
         height: "auto",
@@ -156,8 +159,11 @@ const WorkdayAvatar = () => (
     />
   </div>
 );
+};
 
-const WorkdayLogo = () => (
+const WorkdayLogo = () => {
+  const ui = useT();
+  return (
   <div
     style={{
       display: "flex",
@@ -169,7 +175,7 @@ const WorkdayLogo = () => (
   >
     <InlineSvg
       src={staticFile("img/workday-logo.svg")}
-      alt="Workday"
+      alt={ui("Workday")}
       style={{
         width: "100%",
         height: "auto",
@@ -179,6 +185,7 @@ const WorkdayLogo = () => (
     />
   </div>
 );
+};
 
 export interface WorkvivoHqChatProps {
   question?: string;
@@ -200,6 +207,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
   note = "AI can make mistakes. Review for accuracy.",
   history,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   // Fixed, not a slot: the agent's conversation is a locked beat of the film, so the same
   // task is asked, agreed, dated and confirmed on every run. See FIXED_COPY in videoCopy.ts.
@@ -350,7 +358,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
               willChange: "transform, opacity",
             }}
           >
-            {asked}
+            {ui(asked)}
           </div>
 
           {/* Thinking state right after the cut */}
@@ -363,8 +371,8 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                 marginBottom: thinkingOpacity > 0 ? 14 : 0,
               }}
             >
-              <div className="whqc-thinking">{thinkingFor}</div>
-              <div className="whqc-trace">{trace}</div>
+              <div className="whqc-thinking">{ui(thinkingFor)}</div>
+              <div className="whqc-trace">{ui(trace)}</div>
             </div>
           )}
 
@@ -390,7 +398,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                   />
                 </svg>
               </div>
-              <div className="whqc-agent-text">{chat.offer}</div>
+              <div className="whqc-agent-text">{ui(chat.offer)}</div>
             </div>
           )}
 
@@ -404,7 +412,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                 willChange: "transform, opacity",
               }}
             >
-              {chat.reply}
+              {ui(chat.reply)}
             </div>
           )}
 
@@ -421,7 +429,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                 }}
               >
                 <WorkdayAvatar />
-                <span>Perfect! ✅</span>
+                <span>{ui("Perfect! ✅")}</span>
               </div>
 
               {/* Piece 2: Paragraph text */}
@@ -434,7 +442,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                     willChange: "transform, opacity",
                   }}
                 >
-                  {chat.confirmation}
+                  {ui(chat.confirmation)}
                 </p>
               )}
 
@@ -450,13 +458,13 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                 >
                   <div className="whqc-card-info">
                     <div className="whqc-card-row">
-                      <strong>Request ID:</strong> #2026-02-20
+                      <strong>{ui("Request ID:")}</strong> #2026-02-20
                     </div>
                     <div className="whqc-card-row">
-                      <strong>Status:</strong> Submitted to Manager for Approval
+                      <strong>{ui("Status:")}</strong>{ui(" Submitted to Manager for Approval")}
                     </div>
                     <div className="whqc-card-row">
-                      <strong>Date Requested:</strong> Jan 15, 2026
+                      <strong>{ui("Date Requested:")}</strong>{ui(" Jan 15, 2026")}
                     </div>
                   </div>
                   <WorkdayLogo />
@@ -486,7 +494,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
                     <RegenerateIcon />
                   </span>
                   <span className="whqc-tool-btn" style={{ gap: 4 }}>
-                    <EditIcon /> Edit
+                    <EditIcon />{ui(" Edit")}
                   </span>
                   <span className="whqc-tool-btn" style={{ marginLeft: "auto" }}>
                     <MoreDots />
@@ -505,14 +513,14 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
               willChange: "transform, opacity",
             }}
           >
-            <div className="whqc-placeholder">{placeholder}</div>
+            <div className="whqc-placeholder">{ui(placeholder)}</div>
             <div className="whqc-tools">
               <span className="whqc-plus">
                 <Plus />
               </span>
               <span className="whqc-sources">
                 <Icon href="#i-ui-filter-posts" className="" width={12} height={12} />
-                {sources}
+                {ui(sources)}
               </span>
               <span className="whqc-send">
                 <Icon href="#i-ui-send" className="" width={12} height={12} />
@@ -527,7 +535,7 @@ export const WorkvivoHqChat: React.FC<WorkvivoHqChatProps> = ({
               willChange: "opacity",
             }}
           >
-            {note}
+            {ui(note)}
           </div>
           <div className="whqc-tail" />
         </div>

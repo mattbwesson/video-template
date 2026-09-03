@@ -32,6 +32,7 @@ interface WorkvivoRightColumnProps {
 }
 
 export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }) => {
+  const ui = useT();
   const { image, copy, theme } = useCustomization();
   const { sidePost, event, podcast, pages, weather } = copy.feed;
   // The slots hold Celsius; this is what the card should show. A US city reads in
@@ -68,10 +69,10 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
           {/* The degree signs and the H/L prefixes are drawn here, not stored in the
               slots — the numbers arrive bare so a stray symbol cannot wrap the card. */}
           <div className="wtemp">
-            {wx.temperature}
-            <sup>&deg;</sup>
+            {ui(wx.temperature)}
+            <sup>{ui("°")}</sup>
           </div>
-          <div className="wcity">{weather.city}</div>
+          <div className="wcity">{ui(weather.city)}</div>
         </div>
         <div className="wright">
           <div className="wcond">
@@ -87,11 +88,11 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
               height={25.71}
               fill="#ffffff"
             />
-            <span>{weather.condition}</span>
+            <span>{ui(weather.condition)}</span>
           </div>
           <div className="whl">
-            <span>H {wx.high}&deg;</span>
-            <span>L {wx.low}&deg;</span>
+            <span>H {ui(wx.high)}{ui("°")}</span>
+            <span>L {ui(wx.low)}{ui("°")}</span>
           </div>
         </div>
         <div className="wdots">
@@ -112,9 +113,9 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         <div className="chead">
           <div className="ch">
             <Icon href="#i-ui-posts" className="li dark" width="17.14" height="17.14" />
-            <span>Posts</span>
+            <span>{ui("Posts")}</span>
           </div>
-          <a className="viewall">View More</a>
+          <a className="viewall">{ui("View More")}</a>
         </div>
         <img data-vc-slot="side.post.0" className="pimg" src={image("side.post.0", staticFile("fillers/spotify.Bloomberg.11.27.17.jpg"))} alt="" />
         <div className="pbody">
@@ -128,18 +129,18 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
             />
             <div>
               <div className="pby">
-                <a>Arjun Sharma</a> <b>posted an article</b>
+                <a>{ui("Arjun Sharma")}</a> <b>{ui("posted an article")}</b>
               </div>
-              <div className="pago">1 day ago</div>
+              <div className="pago">{ui("1 day ago")}</div>
             </div>
           </div>
-          <div className="ptitle">{sidePost.headline}</div>
+          <div className="ptitle">{ui(sidePost.headline)}</div>
           <div className="ptext">
-            {sidePost.body}
+            {ui(sidePost.body)}
           </div>
         </div>
         <div className="pfoot">
-          <span>27 Comments</span>
+          <span>{ui("27 Comments")}</span>
           <div className="reacts">
             <div className="rx">
               <span className="rxe">&#127881;&#65039;</span>
@@ -164,9 +165,9 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         <div className="chead">
           <div className="ch">
             <Icon href="#i-ui-featured-apps" className="li dark" width="18.57" height="18.57" />
-            <span>Quick Links</span>
+            <span>{ui("Quick Links")}</span>
           </div>
-          <a className="viewall">View All</a>
+          <a className="viewall">{ui("View All")}</a>
         </div>
         {/* Each tile's mark is a swappable position — the same three slots the mobile
             home screen and the Spotlight tab draw, so a swap here lands on all three. */}
@@ -175,7 +176,7 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
             <SlotIcon slot="app.quicklink.0" size={62.86}>
               <Icon href="#i-vendor-workday" width="62.86" height="62.86" />
             </SlotIcon>
-            <span>{spotlightApps[0]}</span>
+            <span>{ui(spotlightApps[0])}</span>
           </div>
           <div className="qtile">
             <SlotIcon slot="app.quicklink.1" size={62.86}>
@@ -186,13 +187,13 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
                 style={{ borderRadius: "14.286px", overflow: "hidden" }}
               />
             </SlotIcon>
-            <span>{spotlightApps[1]}</span>
+            <span>{ui(spotlightApps[1])}</span>
           </div>
           <div className="qtile">
             <SlotIcon slot="app.quicklink.2" size={62.86}>
               <img src={staticFile("img/zoomicon.png")} width="62.86" height="62.86" alt="" />
             </SlotIcon>
-            <span>{spotlightApps[2]}</span>
+            <span>{ui(spotlightApps[2])}</span>
           </div>
         </div>
       </section>
@@ -201,9 +202,9 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         <div className="chead">
           <div className="ch">
             <Icon href="#i-ui-spaces" className="li dark" width="17.14" height="17.14" />
-            <span>Trending Spaces</span>
+            <span>{ui("Trending Spaces")}</span>
           </div>
-          <a className="viewall">View All</a>
+          <a className="viewall">{ui("View All")}</a>
         </div>
         <div data-vc-slot="side.space.0" className="rsimg">
           <img
@@ -211,7 +212,7 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
             style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
             alt=""
           />
-          <span className="rspill">Social</span>
+          <span className="rspill">{ui("Social")}</span>
           <div className="rsstar">
             <Icon href="#i-ui-favorite-star" width="20" height="20" />
           </div>
@@ -225,13 +226,13 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
             </div>
           </div>
           <div className="joined">
-            <span className="jck">&#10003;</span>Joined
+            <span className="jck">&#10003;</span>{ui("Joined")}
           </div>
-          <div className="ttitle">Run Club</div>
+          <div className="ttitle">{ui("Run Club")}</div>
           {/* A club, not a department — its own ratio. See memberCounts.ts. */}
-          <div className="tmem">{clubMembers(copy.companySize)}</div>
+          <div className="tmem">{ui(clubMembers(copy.companySize))}</div>
           <div className="tdesc">
-            For runners of every level. Share routes, training tips, race updates, and celebrate milestones together.
+            {ui("For runners of every level. Share routes, training tips, race updates, and celebrate milestones together.")}
           </div>
         </div>
         <div className="dots">
@@ -244,7 +245,7 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
       <section className="card" id="pod" data-vc-slot="feed.podcast">
         <div className="podhead">
           <Icon href="#i-ui-featured-podcasts-solid" width="18.57" height="18.57" />
-          <span>Featured Podcast</span>
+          <span>{ui("Featured Podcast")}</span>
         </div>
         {/* The show's artwork used to be a swappable photo here. It is the product's own
             podcast glyph now — a white tile with the mark knocked through it in the tenant
@@ -263,8 +264,8 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
           />
         </div>
         <div className="podcard">
-          <div className="podshow">{podcast.show}</div>
-          <div className="podep">{podcast.episode}</div>
+          <div className="podshow">{ui(podcast.show)}</div>
+          <div className="podep">{ui(podcast.episode)}</div>
         </div>
       </section>
 
@@ -272,9 +273,9 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         <div className="chead">
           <div className="ch">
             <Icon href="#i-ui-event-date-solid" className="li dark" width="18.57" height="18.57" />
-            <span>Events</span>
+            <span>{ui("Events")}</span>
           </div>
-          <a className="viewall">View All</a>
+          <a className="viewall">{ui("View All")}</a>
         </div>
         <div data-vc-slot="side.event.0" className="evimg">
           <img
@@ -284,10 +285,10 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
           />
         </div>
         <div className="evbody">
-          <div className="evtitle">{event.bannerTitle}</div>
+          <div className="evtitle">{ui(event.bannerTitle)}</div>
           <div className="evline">
             <Icon href="#i-ui-events-nav-rail" className="li" width="15.71" height="17.14" />
-            <span>10th July</span>
+            <span>{ui("10th July")}</span>
           </div>
           <div className="evline">
             <svg width="15.71" height="17.14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="li">
@@ -301,10 +302,10 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
               <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
               <circle cx="12" cy="10" r="3" />
             </svg>
-            <span>Headquarters &amp; Livestream</span>
+            <span>{ui("Headquarters & Livestream")}</span>
           </div>
           <div className="evdesc">
-            Join colleagues from across the organization for an evening of updates, recognition, networking, and....
+            {ui("Join colleagues from across the organization for an evening of updates, recognition, networking, and....")}
           </div>
         </div>
       </section>
@@ -313,18 +314,18 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
         <div className="chead">
           <div className="ch">
             <Icon href="#i-ui-pages" className="li dark" width="16.00" height="16.00" />
-            <span>Featured Pages</span>
+            <span>{ui("Featured Pages")}</span>
           </div>
-          <a className="viewall">View All</a>
+          <a className="viewall">{ui("View All")}</a>
         </div>
         <div className="mcard" style={{ margin: "4.286px" }}>
           <img data-vc-slot="side.page.0" src={image("side.page.0", staticFile("img/workvivo/pages_1.png"))} alt="" style={{ width: "100%", height: "138.571px", objectFit: "cover" }} />
           <div className="mbody">
-            <div className="mtitle">{pages[0].title}</div>
+            <div className="mtitle">{ui(pages[0].title)}</div>
             <div className="mmeta">
-              1 day ago &middot;{" "}
+              {ui("1 day ago ·")}{" "}
               <Icon href="#i-ui-spaces" className="li mspace" width="15.00" height="15.00" />
-              <span>IT</span>
+              <span>{ui("IT")}</span>
             </div>
           </div>
         </div>
@@ -333,3 +334,4 @@ export const WorkvivoRightColumn: React.FC<WorkvivoRightColumnProps> = ({ swap }
   );
 };
 import { clubMembers } from "../../customize/memberCounts";
+import { useT } from "../../customize/uiStrings";

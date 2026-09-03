@@ -7,6 +7,7 @@ import { WorkvivoSvgDefs } from "./WorkvivoIcons";
 import { WorkvivoTopbar } from "./WorkvivoTopbar";
 import { WorkvivoSeerRail } from "./WorkvivoSeerRail";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * The chrome every Seer screen shares: the device box, Workvivo's top bar, the collapsed
@@ -41,6 +42,7 @@ export const WorkvivoSeerChrome: React.FC<WorkvivoSeerChromeProps> = ({
   accentSoft = "#FDECE5",
   children,
 }) => {
+  const ui = useT();
   const { person } = useCustomization();
 
   return (
@@ -79,9 +81,9 @@ export const WorkvivoSeerChrome: React.FC<WorkvivoSeerChromeProps> = ({
                       height={28}
                       style={{ display: "block" }}
                     />
-                    Seer Insights
+                    {ui("Seer Insights")}
                   </div>
-                  <span className="wsc-manage">Manage Seer Insights</span>
+                  <span className="wsc-manage">{ui("Manage Seer Insights")}</span>
                 </div>
 
                 <div className="wsc-tabs">
@@ -90,7 +92,7 @@ export const WorkvivoSeerChrome: React.FC<WorkvivoSeerChromeProps> = ({
                       {/* Only on the active tab — an inert span on the other fourteen
                           would add a zero-width inline box to each for nothing. */}
                       {t === activeTab && <span className="wsc-tab-underline" />}
-                      {t}
+                      {ui(t)}
                     </span>
                   ))}
                 </div>

@@ -1,5 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
 
 /** The house grow-in, shared with AmplifyReachScene. */
 const GROW_EASE = Easing.bezier(0.16, 1, 0.3, 1);
@@ -46,6 +47,7 @@ export const BrandWordScene: React.FC<BrandWordSceneProps> = ({
   fontWeight = 700,
   scaleFrom = GROW_FROM,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
 
   const grow = interpolate(frame, [0, GROW_FRAMES], [scaleFrom, 1], {
@@ -76,7 +78,7 @@ export const BrandWordScene: React.FC<BrandWordSceneProps> = ({
             "0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 255, 255, 0.3)",
         }}
       >
-        {word}
+        {ui(word)}
       </div>
     </AbsoluteFill>
   );

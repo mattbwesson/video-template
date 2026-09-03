@@ -64,7 +64,9 @@ const ActionCard: React.FC<{
   progress: number;
   /** Which side it travels in from. */
   side: -1 | 1;
-}> = ({ action, progress, side }) => (
+}> = ({ action, progress, side }) => {
+  const ui = useT();
+  return (
   <div
     className="wjb-card"
     style={
@@ -84,15 +86,16 @@ const ActionCard: React.FC<{
     </span>
     <span className="wjb-card-text">
       <span className="wjb-card-title" style={{ display: "block" }}>
-        {action.title}
+        {ui(action.title)}
       </span>
       <span className="wjb-card-sub" style={{ display: "block" }}>
-        {action.sub}
+        {ui(action.sub)}
       </span>
     </span>
     <Grip />
   </div>
 );
+};
 
 export interface WorkvivoJourneyBuilderProps {
   /** The board's field and the phone banner's burn. Per-tenant brand slot. */
@@ -173,3 +176,4 @@ export const WorkvivoJourneyBuilder: React.FC<WorkvivoJourneyBuilderProps> = ({
   );
 };
 import { GlassRing } from "./GlassRing";
+import { useT } from "../../customize/uiStrings";

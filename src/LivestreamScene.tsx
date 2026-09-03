@@ -4,6 +4,7 @@ import { AbsoluteFill, Easing, Img, interpolate, Sequence, staticFile, useCurren
 import { MobileClick, WorkvivoLiveReplay, WorkvivoLivestream } from "./components/workvivo";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { FIXED_COPY } from "./customize/videoCopy";
+import { useT } from "./customize/uiStrings";
 
 /**
  * The desktop livestream player on the brand colour, revealed as the closing circular mask on
@@ -175,6 +176,7 @@ const Sparkle: React.FC<{ size: number }> = ({ size }) => (
 );
 
 export const LivestreamScene: React.FC = () => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy, theme } = useCustomization();
   const pills: Pill[] = PILLS.map((geometry, i) => ({
@@ -392,7 +394,7 @@ export const LivestreamScene: React.FC = () => {
                 }}
               >
                 {!pill.filled && <Sparkle size={pill.fontSize * 0.95} />}
-                {pill.label}
+                {ui(pill.label)}
               </div>
               </React.Fragment>
             );

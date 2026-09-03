@@ -90,6 +90,7 @@ const FACES: { src: string; slot: ImageSlotKey }[] = [
  * the reference exactly, and a shorter or longer title still lands on two lines.
  */
 const DocTitle: React.FC<{ text: string }> = ({ text }) => {
+  const ui = useT();
   const words = text.trim().split(/\s+/);
   const split = Math.ceil(words.length / 2);
   const head = words.slice(0, split).join(" ");
@@ -97,13 +98,13 @@ const DocTitle: React.FC<{ text: string }> = ({ text }) => {
   const boldFrom = Math.max(0, tail.length - 2);
   return (
     <div className="wsf-doc-title">
-      {head}
+      {ui(head)}
       {tail.length ? (
         <>
           <br />
-          {tail.slice(0, boldFrom).join(" ")}
-          {boldFrom ? " " : ""}
-          <b>{tail.slice(boldFrom).join(" ")}</b>
+          {ui(tail.slice(0, boldFrom).join(" "))}
+          {ui(boldFrom ? " " : "")}
+          <b>{ui(tail.slice(boldFrom).join(" "))}</b>
         </>
       ) : null}
     </div>
@@ -116,7 +117,9 @@ const Comment: React.FC<{
   text: string;
   likes: number;
   liked: boolean;
-}> = ({ avatarUrl, name, text, likes, liked }) => (
+}> = ({ avatarUrl, name, text, likes, liked }) => {
+  const ui = useT();
+  return (
   <div>
     <div className="wsf-comment">
       <img
@@ -126,24 +129,26 @@ const Comment: React.FC<{
         alt=""
       />
       <div className="wsf-bubble">
-        <div className="wsf-bubble-name">{name}</div>
-        <div className="wsf-bubble-text">{text}</div>
+        <div className="wsf-bubble-name">{ui(name)}</div>
+        <div className="wsf-bubble-text">{ui(text)}</div>
       </div>
     </div>
     <div className="wsf-comment-meta">
-      1 day ago
+      {ui("1 day ago")}
       <span className="wsf-comment-likes">
         <span style={{ color: liked ? "#FF5959" : "transparent", WebkitTextStroke: liked ? undefined : "1px #FF5959", fontSize: 13 }}>
           &#9829;
         </span>
         {likes}
       </span>
-      <span className="wsf-comment-reply">Reply</span>
+      <span className="wsf-comment-reply">{ui("Reply")}</span>
     </div>
   </div>
 );
+};
 
 export const WorkvivoSpaceFeed: React.FC = () => {
+  const ui = useT();
   const { copy, image, person } = useCustomization();
   // Fixed, not researched — see FIXED_COPY.voice. The photographs on this screen are
   // still per-customer; only the words are locked.
@@ -232,12 +237,12 @@ export const WorkvivoSpaceFeed: React.FC = () => {
 
                 <div className="wsf-titlerow">
                   <span className="wsf-caret wsf-caret-left" style={{ color: "#111827" }} />
-                  <div className="wsf-title">{voice.space.name}</div>
+                  <div className="wsf-title">{ui(voice.space.name)}</div>
                   <span className="wsf-admin">
-                    Admin
+                    {ui("Admin")}
                     <span className="wsf-caret" style={{ color: "#6103ED" }} />
                   </span>
-                  <span className="wsf-join">Join</span>
+                  <span className="wsf-join">{ui("Join")}</span>
                   <span className="wsf-iconbtn">
                     <Icon href="#i-ui-favorite-star" width={22} height={22} />
                   </span>
@@ -249,7 +254,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                 <div className="wsf-tabs">
                   {TABS.map((t) => (
                     <span className={t === "Feed" ? "wsf-tab wsf-on" : "wsf-tab"} key={t}>
-                      {t}
+                      {ui(t)}
                     </span>
                   ))}
                 </div>
@@ -261,20 +266,20 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                 <div className="wsf-left">
                   <div className="wsf-search">
                     <Icon href="#i-ui-explore" width={16} height={16} />
-                    Search Manager Insights Action
+                    {ui("Search Manager Insights Action")}
                   </div>
 
                   <div className="wsf-card">
-                    <div className="wsf-eyebrow">ABOUT</div>
+                    <div className="wsf-eyebrow">{ui("ABOUT")}</div>
                     <div className="wsf-chips">
-                      <span className="wsf-chip">Corporate Spaces</span>
+                      <span className="wsf-chip">{ui("Corporate Spaces")}</span>
                       <span className="wsf-chip">
                         <Icon href="#i-ui-spaces" width={12} height={12} />
-                        Human Resources
+                        {ui("Human Resources")}
                       </span>
                     </div>
-                    <div className="wsf-about">{voice.space.about}</div>
-                    <div className="wsf-members">{companyWideMembers(copy.companySize)}</div>
+                    <div className="wsf-about">{ui(voice.space.about)}</div>
+                    <div className="wsf-members">{ui(companyWideMembers(copy.companySize))}</div>
                     <div className="wsf-avrow">
                       {[0, 1, 2, 3, 4].map((i) => (
                         <img className="wsf-av" key={i} src={faceUrl(i)} style={faceFit} alt="" />
@@ -284,7 +289,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                   </div>
 
                   <div className="wsf-card">
-                    <div className="wsf-eyebrow">SPACE ADMINS</div>
+                    <div className="wsf-eyebrow">{ui("SPACE ADMINS")}</div>
                     <div className="wsf-avrow">
                       {[0, 1, 2, 3, 4, 5].map((i) => (
                         <img className="wsf-av" key={i} src={faceUrl(i)} style={faceFit} alt="" />
@@ -304,22 +309,22 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                     <div className="wsf-composer-top">
                       <img className="wsf-av" src={person.avatarUrl} style={person.avatarFit} alt="" />
                       <span className="wsf-placeholder">
-                        What&rsquo;s going on, {person.name.split(" ")[0]}?
+                        {ui("What’s going on, ")}{ui(person.name.split(" ")[0])}?
                       </span>
                     </div>
                     <div className="wsf-rule" />
                     <div className="wsf-actions">
                       <span className="wsf-action">
                         <Icon href="#i-ui-shout-out" width={24} height={24} />
-                        Give a Shout-out
+                        {ui("Give a Shout-out")}
                       </span>
                       <span className="wsf-action">
                         <Icon href="#i-ui-post-a-value-update" width={24} height={24} />
-                        Post a Value Update
+                        {ui("Post a Value Update")}
                       </span>
                       <span className="wsf-action">
                         <Icon href="#i-ui-ask-a-question" width={24} height={24} />
-                        Ask a Question
+                        {ui("Ask a Question")}
                       </span>
                     </div>
                   </div>
@@ -329,10 +334,10 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                       <img className="wsf-av" src={faceUrl(1)} style={faceFit} alt="" />
                       <div className="wsf-post-who">
                         <div className="wsf-post-name">
-                          <b>{voice.post.author}</b> posted a document.
+                          <b>{ui(voice.post.author)}</b>{ui(" posted a document.")}
                         </div>
                         <div className="wsf-post-meta">
-                          1 day ago
+                          {ui("1 day ago")}
                           <span className="wsf-dot" />
                           <Icon href="#i-ui-everyone" width={13} height={13} />
                         </div>
@@ -348,13 +353,13 @@ export const WorkvivoSpaceFeed: React.FC = () => {
 
                     <div className="wsf-post-space">
                       <Icon href="#i-ui-spaces" width={12} height={12} />
-                      {voice.post.space}
+                      {ui(voice.post.space)}
                     </div>
 
                     {/* pre-line, so the slot's own newline is the paragraph break the
                         reference draws with a <br />. */}
                     <div className="wsf-post-body" style={{ whiteSpace: "pre-line" }}>
-                      {voice.post.body}
+                      {ui(voice.post.body)}
                     </div>
 
                     <div className="wsf-doc">
@@ -365,11 +370,11 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                       />
                       <DocTitle text={voice.post.document} />
                     </div>
-                    <div className="wsf-doc-cap">{voice.post.document}</div>
+                    <div className="wsf-doc-cap">{ui(voice.post.document)}</div>
 
                     <div className="wsf-hr" />
 
-                    <div className="wsf-attach-label">Attachments(1)</div>
+                    <div className="wsf-attach-label">{ui("Attachments(1)")}</div>
                     <div className="wsf-attach">
                       <span className="wsf-attach-left">
                         <InlineSvg
@@ -379,22 +384,22 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                           alt=""
                           style={{ display: "block" }}
                         />
-                        PDF document
+                        {ui("PDF document")}
                       </span>
-                      <span>756 KB</span>
+                      <span>{ui("756 KB")}</span>
                     </div>
 
                     <div className="wsf-hr" />
 
                     <div className="wsf-counts">
                       <span className="wsf-counts-left">
-                        150 reactions
+                        {ui("150 reactions")}
                         <span className="wsf-dot" />
-                        0 comments
+                        {ui("0 comments")}
                       </span>
                       <span className="wsf-share">
                         <Icon href="#i-ui-send" width={20} height={20} />
-                        Share
+                        {ui("Share")}
                       </span>
                     </div>
 
@@ -404,7 +409,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                           className={i === 0 ? "wsf-react wsf-react-plain" : "wsf-react"}
                           key={emoji}
                         >
-                          {emoji}
+                          {ui(emoji)}
                           {n}
                         </span>
                       ))}
@@ -431,15 +436,15 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                       liked
                     />
 
-                    <div className="wsf-viewall">View all 18 comments</div>
+                    <div className="wsf-viewall">{ui("View all 18 comments")}</div>
 
                     <div className="wsf-newcomment">
                       <img className="wsf-av" src={person.avatarUrl} style={person.avatarFit} alt="" />
                       <span className="wsf-newcomment-field">
-                        Leave a comment...
+                        {ui("Leave a comment...")}
                         <span className="wsf-newcomment-acts">
                           <Icon href="#i-ui-add-image" width={22} height={22} />
-                          <span className="wsf-gif">GIF</span>
+                          <span className="wsf-gif">{ui("GIF")}</span>
                         </span>
                       </span>
                     </div>
@@ -453,9 +458,9 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                     <div className="wsf-featured-news-header">
                       <span className="wsf-featured-news-title">
                         <Icon href="#i-ui-featured-news" width={16} height={16} />
-                        Featured News
+                        {ui("Featured News")}
                       </span>
-                      <a href="#all" className="wsf-view-all">View All</a>
+                      <a href="#all" className="wsf-view-all">{ui("View All")}</a>
                     </div>
                     <div className="wsf-featured-news-img-wrap">
                       <img
@@ -464,16 +469,16 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                           "voice.featured.0",
                           staticFile("img/workvivo/right_col_featured.png"),
                         )}
-                        alt="Featured News"
+                        alt={ui("Featured News")}
                         className="wsf-featured-news-img"
                       />
                     </div>
                     <div className="wsf-featured-news-body">
                       <div className="wsf-featured-headline">
-                        {voice.featured.headline}
+                        {ui(voice.featured.headline)}
                       </div>
                       <div className="wsf-featured-meta">
-                        {voice.featured.author} &middot; 3 days ago &middot; New Hires
+                        {ui(voice.featured.author)}{ui(" · 3 days ago · New Hires")}
                       </div>
                       <div className="wsf-carousel-dots">
                         <span className="wsf-dot-active" />
@@ -492,23 +497,23 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                           "voice.event.0",
                           staticFile("img/workvivo/right_col_events.png"),
                         )}
-                        alt="Upcoming Events"
+                        alt={ui("Upcoming Events")}
                         className="wsf-events-img"
                       />
                     </div>
                     <div className="wsf-events-body">
-                      <div className="wsf-events-eyebrow">UPCOMING EVENTS</div>
+                      <div className="wsf-events-eyebrow">{ui("UPCOMING EVENTS")}</div>
                       <div className="wsf-event">
                         <div className="wsf-event-date">
-                          <div className="wsf-event-mon">JUN</div>
+                          <div className="wsf-event-mon">{ui("JUN")}</div>
                           <div className="wsf-event-day">19</div>
                         </div>
                         <div>
-                          <div className="wsf-event-title">{voice.event.title}</div>
+                          <div className="wsf-event-title">{ui(voice.event.title)}</div>
                           <div className="wsf-event-facts">
                             <span className="wsf-event-fact">
                               <Icon href="#i-ui-event-location" width={14} height={14} />
-                              {voice.event.location}
+                              {ui(voice.event.location)}
                             </span>
                             <span className="wsf-event-fact">
                               <Icon href="#i-ui-event-time" width={14} height={14} />
@@ -516,7 +521,7 @@ export const WorkvivoSpaceFeed: React.FC = () => {
                             </span>
                             <span className="wsf-event-fact">
                               <Icon href="#i-ui-everyone" width={14} height={14} />
-                              Global
+                              {ui("Global")}
                             </span>
                           </div>
                         </div>
@@ -534,3 +539,4 @@ export const WorkvivoSpaceFeed: React.FC = () => {
 };
 import { FIXED_COPY } from "../../customize/videoCopy";
 import { companyWideMembers } from "../../customize/memberCounts";
+import { useT } from "../../customize/uiStrings";

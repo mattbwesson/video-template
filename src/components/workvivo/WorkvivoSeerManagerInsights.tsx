@@ -19,6 +19,7 @@ import {
   Question,
   TrendUp,
 } from "./WorkvivoSeerManagerIcons";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Seer Insights — Engagement tab, manager view.
@@ -103,6 +104,7 @@ const chartY = (score: number) => {
 };
 
 const Timeline: React.FC<{ accent: string; progress?: number }> = ({ accent, progress = 1 }) => {
+  const ui = useT();
   const line = CHART.points.map((p, i) => `${chartX(i)},${chartY(p.score)}`).join(" ");
   const base = CHART.h - CHART.padB;
   const rawId = React.useId ? React.useId() : "timeline";
@@ -187,7 +189,7 @@ const Timeline: React.FC<{ accent: string; progress?: number }> = ({ accent, pro
           fontSize="8"
           fill="#9ca3af"
         >
-          {p.label}
+          {ui(p.label)}
         </text>
       ))}
     </svg>
@@ -279,14 +281,16 @@ export const Donut: React.FC<{ pct: number; progress?: number; size?: number }> 
  * instead of rebuilding it. It is the whole card including `.wsmi-card`, so a caller only
  * has to place it — and scale it, since the measurements here are the desktop page's.
  */
-export const SeerScoreCard: React.FC = () => (
+export const SeerScoreCard: React.FC = () => {
+  const ui = useT();
+  return (
   <div className="wsmi-card wsmi-score">
     <div className="wsmi-tile">
       <span>9.2</span>
     </div>
     <div className="wsmi-score-label">
       {SCORE_LINES.map((l) =>
-        l === "Engagement" ? <b key={l}>{l}</b> : <div key={l}>{l}</div>,
+        l === "Engagement" ? <b key={l}>{ui(l)}</b> : <div key={l}>{ui(l)}</div>,
       )}
     </div>
     <div className="wsmi-sents">
@@ -294,14 +298,15 @@ export const SeerScoreCard: React.FC = () => (
         <div className="wsmi-sent" key={name}>
           <span className={`wsmi-badge wsmi-badge-${tone}`}>
             <Face size={12} />
-            {pct}
+            {ui(pct)}
           </span>
-          <span className="wsmi-sent-name">{name}</span>
+          <span className="wsmi-sent-name">{ui(name)}</span>
         </div>
       ))}
     </div>
   </div>
 );
+};
 
 const RateCard: React.FC<{
   title: string;
@@ -309,22 +314,25 @@ const RateCard: React.FC<{
   rows: { name: string; val: string }[];
   progress?: number;
   style?: React.CSSProperties;
-}> = ({ title, pct, rows, progress = 1, style }) => (
+}> = ({ title, pct, rows, progress = 1, style }) => {
+  const ui = useT();
+  return (
   <div className="wsmi-card wsmi-donut" style={style}>
-    <div className="wsmi-card-title">{title}</div>
+    <div className="wsmi-card-title">{ui(title)}</div>
     <div className="wsmi-donut-body">
       <Donut pct={pct} progress={progress} />
       <div className="wsmi-donut-stats">
         {rows.map((r) => (
           <div className="wsmi-kv" key={r.name}>
-            <div className="wsmi-kv-name">{r.name}</div>
-            <div className="wsmi-kv-val">{r.val}</div>
+            <div className="wsmi-kv-name">{ui(r.name)}</div>
+            <div className="wsmi-kv-val">{ui(r.val)}</div>
           </div>
         ))}
       </div>
     </div>
   </div>
 );
+};
 
 export interface WorkvivoSeerManagerInsightsProps {
   activeTab?: string;
@@ -347,6 +355,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
   animated = true,
   frame: frameProp,
 }) => {
+  const ui = useT();
   const currentFrame = useCurrentFrame();
   const frame = animated ? (frameProp ?? currentFrame) : 100;
 
@@ -427,16 +436,16 @@ export const WorkvivoSeerManagerInsights: React.FC<
       >
         <div className="wsmi-filters">
           <span className="wsmi-pill wsmi-pill-on">
-            {round}
+            {ui(round)}
             <span className="wsmi-caret" />
           </span>
           <span className="wsmi-pill wsmi-pill-off">
-            {segment}
+            {ui(segment)}
             <span className="wsmi-caret" />
           </span>
         </div>
 
-        <div className="wsmi-sec wsmi-sec-overview">Overview</div>
+        <div className="wsmi-sec wsmi-sec-overview">{ui("Overview")}</div>
         <div className="wsmi-overview">
           <SeerScoreCard />
 
@@ -447,8 +456,8 @@ export const WorkvivoSeerManagerInsights: React.FC<
                   <Ico size={14} />
                 </span>
                 <span>
-                  <div className="wsmi-stat-name">{name}</div>
-                  <div className="wsmi-stat-val">{val}</div>
+                  <div className="wsmi-stat-name">{ui(name)}</div>
+                  <div className="wsmi-stat-val">{ui(val)}</div>
                 </span>
               </div>
             ))}
@@ -461,8 +470,8 @@ export const WorkvivoSeerManagerInsights: React.FC<
                   <Ico size={14} />
                 </span>
                 <span>
-                  <div className="wsmi-stat-name">{name}</div>
-                  <div className="wsmi-stat-val">{val}</div>
+                  <div className="wsmi-stat-name">{ui(name)}</div>
+                  <div className="wsmi-stat-val">{ui(val)}</div>
                 </span>
               </div>
             ))}
@@ -470,16 +479,16 @@ export const WorkvivoSeerManagerInsights: React.FC<
         </div>
 
         <div className="wsmi-sec wsmi-sec-question">
-          Engagement Question Asked
+          {ui("Engagement Question Asked")}
         </div>
         <div className="wsmi-card wsmi-question">
           <span className="wsmi-q-ico">
             <Question size={11} />
           </span>
-          <span className="wsmi-q-text">I enjoy the kind of work I do</span>
+          <span className="wsmi-q-text">{ui("I enjoy the kind of work I do")}</span>
         </div>
 
-        <div className="wsmi-sec wsmi-sec-metrics">Metrics</div>
+        <div className="wsmi-sec wsmi-sec-metrics">{ui("Metrics")}</div>
         <div className="wsmi-metrics">
           <div
             className="wsmi-card wsmi-chart"
@@ -490,7 +499,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
             }}
           >
             <div className="wsmi-chart-head">
-              <div className="wsmi-card-title">Engagement Score Timeline</div>
+              <div className="wsmi-card-title">{ui("Engagement Score Timeline")}</div>
               <span className="wsmi-chart-nav">
                 <span>
                   <ChevLeft size={7} />
@@ -506,7 +515,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
           </div>
 
           <RateCard
-            title="Response Rate"
+            title={ui("Response Rate")}
             pct={75}
             rows={[
               { name: "Responses", val: "10,395" },
@@ -520,7 +529,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
             }}
           />
           <RateCard
-            title="Completion Rate"
+            title={ui("Completion Rate")}
             pct={95}
             rows={[
               { name: "Completions", val: "9875" },

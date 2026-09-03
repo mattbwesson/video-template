@@ -1,5 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
 
 const GROW_EASE = Easing.bezier(0.16, 1, 0.3, 1);
 const WORD_DURATION = 10;
@@ -25,6 +26,7 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
   icon,
   iconWidth = 544,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const words = text.split(" ");
 
@@ -114,7 +116,7 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                 willChange: "transform, opacity",
               }}
             >
-              {word}
+              {ui(word)}
             </span>
           );
         })}

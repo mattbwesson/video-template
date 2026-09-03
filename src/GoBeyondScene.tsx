@@ -1,5 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
 
 /**
  * "Go beyond the numbers" — the sign-off the survey's iris opens onto.
@@ -101,6 +102,7 @@ export const GoBeyondScene: React.FC<GoBeyondSceneProps> = ({
   moveFrom = 12,
   exitFrom,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const leaving = exitFrom !== undefined && frame >= exitFrom;
   const exitY =
@@ -183,10 +185,10 @@ export const GoBeyondScene: React.FC<GoBeyondSceneProps> = ({
             // takes up its space.
             opacity: 0,
           }}>
-          {lead}
+          {ui(lead)}
           {tail.map((w) => (
             <span key={w} style={{ marginLeft: WORD_GAP }}>
-              {w}
+              {ui(w)}
             </span>
           ))}
         </span>
@@ -206,7 +208,7 @@ export const GoBeyondScene: React.FC<GoBeyondSceneProps> = ({
               whiteSpace: "nowrap",
               transform: `translateX(${-centreOnLead * 50}%)`,
             }}>
-            {lead}
+            {ui(lead)}
             <span
               style={{
                 position: "absolute",
@@ -218,7 +220,7 @@ export const GoBeyondScene: React.FC<GoBeyondSceneProps> = ({
               }}>
               {tail.map((w, i) => (
                 <span key={w} style={tailStyle(i)}>
-                  {w}
+                  {ui(w)}
                 </span>
               ))}
             </span>

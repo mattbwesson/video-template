@@ -13,6 +13,7 @@ import {
 import { useCustomization } from "./customize/CustomizationProvider";
 import { FIXED_COPY } from "./customize/videoCopy";
 import { WorkvivoSvgDefs } from "./components/workvivo/WorkvivoIcons";
+import { useT } from "./customize/uiStrings";
 
 /**
  * Reference geometry, as fractions of the frame so it holds at any render size.
@@ -54,6 +55,7 @@ export const AskBarScene: React.FC<AskBarSceneProps> = ({
   maskFrom = 0,
   maskTo = 2,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const { copy } = useCustomization();
@@ -230,7 +232,7 @@ export const AskBarScene: React.FC<AskBarSceneProps> = ({
             alignItems: "center",
           }}
         >
-          <span>{displayText}</span>
+          <span>{ui(displayText)}</span>
           {showCaret && (
             <span
               style={{

@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
 
 /**
  * "No matter where they are", on the dark purple field.
@@ -75,6 +76,7 @@ export const NoMatterScene: React.FC<NoMatterSceneProps> = ({
   fontSize = 113,
   fontWeight = 700,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
 
   // The line is laid out whole — tail included, invisible — so the container's centre is
@@ -175,14 +177,14 @@ export const NoMatterScene: React.FC<NoMatterSceneProps> = ({
             "No matter" on the frame, and letting that offset fall to zero is the move
             left — no measurement of the visible words needed. */}
         <div style={{ transform: `translateX(${(shift * tailWidth) / 2}px)` }}>
-          <span style={word("No", 0)}>No</span>
+          <span style={word("No", 0)}>{ui("No")}</span>
           {" "}
-          <span style={word("matter", 1)}>matter</span>
+          <span style={word("matter", 1)}>{ui("matter")}</span>
           {/* Only its paint is animated; it holds its space from the first frame. The
               leading space belongs to the tail, or the line would carry a trailing gap
               while "No matter" is alone on the frame. */}
           <span ref={tailRef} style={{ opacity: tail }}>
-            {" where they are"}
+            {ui(" where they are")}
           </span>
         </div>
       </div>

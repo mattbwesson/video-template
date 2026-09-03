@@ -7,6 +7,7 @@ import { WorkvivoHqSidebar } from "./WorkvivoHqSidebar";
 import "./WorkvivoHqSearchStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { FIXED_COPY } from "../../customize/videoCopy";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * The HQ Agent enterprise-search overlay — a full-screen modal over the app, with the
@@ -91,6 +92,7 @@ const STOP_WORDS = new Set([
  * light up two thirds of the line where the reference lights up two words.
  */
 const Highlighted: React.FC<{ text: string; terms: string }> = ({ text, terms }) => {
+  const ui = useT();
   const wanted = new Set(
     terms
       .toLowerCase()
@@ -121,7 +123,7 @@ const Highlighted: React.FC<{ text: string; terms: string }> = ({ text, terms })
   return (
     <>
       {runs.map((run, i) =>
-        run.hit ? <em key={i}>{run.text}</em> : <React.Fragment key={i}>{run.text}</React.Fragment>,
+        run.hit ? <em key={i}>{ui(run.text)}</em> : <React.Fragment key={i}>{ui(run.text)}</React.Fragment>,
       )}
     </>
   );
@@ -180,6 +182,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
   cursor = null,
   activeNav = "search",
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy, image } = useCustomization();
   const hq = copy.hq;
@@ -331,7 +334,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
         >
           <Icon href="#i-ui-explore" className="" width={16} height={16} />
           <span className="whq-query">
-            {asked}
+            {ui(asked)}
             <i className="whq-caret" />
           </span>
           <span className="whq-clear">
@@ -348,14 +351,14 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
         >
           {FILTERS.map((f) => (
             <span className="whq-chip" key={f}>
-              {f}
+              {ui(f)}
               <ChevronDown />
             </span>
           ))}
           <span className="whq-sort">
-            Sort By
+            {ui("Sort By")}
             <span className="whq-chip">
-              Most Relevant
+              {ui("Most Relevant")}
               <ChevronDown />
             </span>
           </span>
@@ -378,13 +381,13 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
                 <Img
                   className="whq-agent-ico"
                   src={staticFile("img/HQAgent_Black.png")}
-                  alt="HQ agent"
+                  alt={ui("HQ agent")}
                   style={{ height: 22, width: 63.9, display: "block" }}
                 />
-                <span className="whq-viewmore">View More</span>
+                <span className="whq-viewmore">{ui("View More")}</span>
               </div>
-              <div className="whq-agent-title">{hq.answer.title}</div>
-              <div className="whq-agent-body">{hq.answer.body}</div>
+              <div className="whq-agent-title">{ui(hq.answer.title)}</div>
+              <div className="whq-agent-body">{ui(hq.answer.body)}</div>
             </div>
 
             {/* ------------------------------------------------- indexed results */}
@@ -396,7 +399,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
               }}
             >
               <WorkvivoMark />
-              Workvivo
+              {ui("Workvivo")}
             </div>
 
             <article
@@ -418,26 +421,26 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
                   <Highlighted text={hq.results[0].title} terms={asked} />
                 </div>
                 <div className="whq-meta">
-                  <span>Added June 23rd, 2025 (1 year ago)</span>
+                  <span>{ui("Added June 23rd, 2025 (1 year ago)")}</span>
                   <span>•</span>
                   <span className="whq-space">
                     <Icon href="#i-ui-spaces" className="" width={11} height={11} />
-                    {hq.results[0].space}
+                    {ui(hq.results[0].space)}
                   </span>
                 </div>
-                <p className="whq-desc">{hq.results[0].description}</p>
+                <p className="whq-desc">{ui(hq.results[0].description)}</p>
 
-                <div className="whq-attach-label">1 Attachment</div>
+                <div className="whq-attach-label">{ui("1 Attachment")}</div>
                 <div className="whq-attach">
                   <InlineSvg className="whq-attach-ico" src={staticFile("img/file-pdf.svg")} alt="" />
                   <div className="whq-attach-info">
-                    <span className="whq-attach-name">{hq.attachment}</span>
-                    <span className="whq-attach-kind">PDF document</span>
+                    <span className="whq-attach-name">{ui(hq.attachment)}</span>
+                    <span className="whq-attach-kind">{ui("PDF document")}</span>
                   </div>
-                  <span className="whq-attach-size">6.3 MB</span>
+                  <span className="whq-attach-size">{ui("6.3 MB")}</span>
                 </div>
 
-                <span className="whq-tag">Document</span>
+                <span className="whq-tag">{ui("Document")}</span>
               </div>
             </article>
 
@@ -464,17 +467,17 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
                       src={image("search.face.0", staticFile("img/avatar-3.jpeg"))}
                       alt=""
                     />
-                    {hq.resultAuthor}
+                    {ui(hq.resultAuthor)}
                   </span>
                   <span>•</span>
-                  <span>Published May 23rd, 2026 (1 month ago)</span>
+                  <span>{ui("Published May 23rd, 2026 (1 month ago)")}</span>
                   <span>•</span>
                   <span className="whq-space">
                     <Icon href="#i-ui-spaces" className="" width={11} height={11} />
-                    {hq.results[1].space}
+                    {ui(hq.results[1].space)}
                   </span>
                 </div>
-                <p className="whq-desc">{hq.results[1].description}</p>
+                <p className="whq-desc">{ui(hq.results[1].description)}</p>
               </div>
             </article>
           </div>
@@ -488,7 +491,7 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
                 opacity: appsHeaderOpacity,
               }}
             >
-              Apps
+              {ui("Apps")}
             </div>
             {apps.map((a, i) => {
               // Animate in all apps at frame 26 (global 2343) with staggered entry
@@ -524,9 +527,9 @@ export const WorkvivoHqSearch: React.FC<WorkvivoHqSearchProps> = ({
                   }}
                 >
                   <span className="whq-app-mark">{a.mark}</span>
-                  {a.label}
+                  {ui(a.label)}
                   {a.state === "connect" ? (
-                    <span className="whq-connect">Connect</span>
+                    <span className="whq-connect">{ui("Connect")}</span>
                   ) : (
                     <span
                       className={a.state === "selected" ? "whq-radio whq-on" : "whq-radio"}

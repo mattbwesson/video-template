@@ -12,6 +12,7 @@ import "./WorkvivoPhonesSceneStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
 import { GlassRing } from "./GlassRing";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Two Workvivo phones on a purple field: Chat on the left, a video call on the right.
@@ -178,6 +179,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
   exitUpFrames = 18,
   exitUpDistance = 1200,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy, image } = useCustomization();
   const chat = copy.chat;
@@ -240,8 +242,8 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                   alt=""
                 />
                 <div className="wp-chat-id">
-                  <div className="wp-chat-t">{chat.channel}</div>
-                  <div className="wp-chat-s">{chat.channelMeta}</div>
+                  <div className="wp-chat-t">{ui(chat.channel)}</div>
+                  <div className="wp-chat-s">{ui(chat.channelMeta)}</div>
                 </div>
                 <div className="wp-chat-acts">
                   <SymbolSvg width="17" height="17" href="#i-zm-phone" />
@@ -250,9 +252,9 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
               </div>
 
               <div className="wp-thread">
-                <div className="wp-out">{chat.messages[0]}</div>
+                <div className="wp-out">{ui(chat.messages[0])}</div>
 
-                <div className="wp-sender">{chat.senders[0]}</div>
+                <div className="wp-sender">{ui(chat.senders[0])}</div>
 
                 <div className="wp-grid">
                   {OFFSITE.map((photo, i) => {
@@ -281,7 +283,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                     src={image("chat.face.1", staticFile("img/avatar-3.jpeg"))}
                     alt=""
                   />
-                  <div className="wp-in">{chat.messages[1]}</div>
+                  <div className="wp-in">{ui(chat.messages[1])}</div>
                 </div>
 
                 <div className="wp-reacts">
@@ -293,8 +295,8 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                   </span>
                 </div>
 
-                <div className="wp-out">{chat.messages[2]}</div>
-                <div className="wp-out">{chat.messages[3]}</div>
+                <div className="wp-out">{ui(chat.messages[2])}</div>
+                <div className="wp-out">{ui(chat.messages[3])}</div>
 
                 {/* Incoming message from Marley Williams animating in at global frame 2125 (local 25) */}
                 {frame >= messageInFrame && (
@@ -309,7 +311,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                     }}
                   >
                     <div className="wp-sender" style={{ marginLeft: 26 }}>
-                      {chat.senders[1]}
+                      {ui(chat.senders[1])}
                     </div>
                     <div className="wp-in-row">
                       <img
@@ -318,14 +320,14 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                         src={image("chat.face.2", staticFile("img/avatar-6.jpeg"))}
                         alt=""
                       />
-                      <div className="wp-in">{chat.messages[4]}</div>
+                      <div className="wp-in">{ui(chat.messages[4])}</div>
                     </div>
                   </div>
                 )}
               </div>
 
               <div className="wp-catchup">
-                <div className="wp-catchup-t">Catch up on what you missed</div>
+                <div className="wp-catchup-t">{ui("Catch up on what you missed")}</div>
                 <div className="wp-summarize">
                   <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
                     <defs>
@@ -343,7 +345,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                       fill="url(#wp-sparkle-grad)"
                     />
                   </svg>
-                  <span>Summarize</span>
+                  <span>{ui("Summarize")}</span>
                 </div>
               </div>
 
@@ -353,7 +355,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                   <i />
                 </span>
                 <div className="wp-field">
-                  <span>Send message</span>
+                  <span>{ui("Send message")}</span>
                   <SymbolSvg className="wp-mic" width="14" height="14" href="#i-zm-mic" />
                 </div>
                 <PaperPlane />
@@ -397,8 +399,8 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
               <div className="wp-call-top">
                 <SymbolSvg width="17" height="17" href="#i-zm-back" />
                 <SwitchCamera />
-                <div className="wp-call-title">{chat.caller} 00:05</div>
-                <div className="wp-leave">Leave</div>
+                <div className="wp-call-title">{ui(chat.caller)} 00:05</div>
+                <div className="wp-leave">{ui("Leave")}</div>
               </div>
 
               <div className="wp-pip">
@@ -422,7 +424,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                   <span className="wp-ctl-ico">
                     <VideoCam size={20} />
                   </span>
-                  <span>Turn Off</span>
+                  <span>{ui("Turn Off")}</span>
                 </div>
 
                 <div className="wp-ctl">
@@ -430,7 +432,7 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                     <SymbolSvg width="15" height="15" href="#i-zm-mic" />
                     <MuteSlash />
                   </span>
-                  <span>Unmute</span>
+                  <span>{ui("Unmute")}</span>
                 </div>
 
                 <div className="wp-ctl">
@@ -438,14 +440,14 @@ export const WorkvivoPhonesScene: React.FC<WorkvivoPhonesSceneProps> = ({
                     <Icon href="#i-ui-chat" width={17} height={17} />
                     <span className="wp-badge">1</span>
                   </span>
-                  <span>Chat</span>
+                  <span>{ui("Chat")}</span>
                 </div>
 
                 <div className="wp-ctl">
                   <span className="wp-ctl-ico">
                     <SymbolSvg width="19" height="19" href="#i-zm-ellipsis" />
                   </span>
-                  <span>More</span>
+                  <span>{ui("More")}</span>
                 </div>
               </div>
 

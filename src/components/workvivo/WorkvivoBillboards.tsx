@@ -2,6 +2,7 @@ import React from "react";
 import { staticFile } from "remotion";
 import type { SwapProgress } from "./WorkvivoHomeContainer";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { useT } from "../../customize/uiStrings";
 
 interface WorkvivoBillboardsProps {
   swap: SwapProgress;
@@ -25,6 +26,7 @@ interface WorkvivoBillboardsProps {
 const BILLBOARD_PITCH = 452.857;
 
 export const WorkvivoBillboards: React.FC<WorkvivoBillboardsProps> = ({ swap }) => {
+  const ui = useT();
   const { image, copy } = useCustomization();
   const bb = copy.feed.billboards;
   // Before the swap the first two cards are held in each other's slots; progress 1 releases
@@ -59,12 +61,12 @@ export const WorkvivoBillboards: React.FC<WorkvivoBillboardsProps> = ({ swap }) 
             height="18.57"
             alt=""
           />
-          <span>Billboards</span>
+          <span>{ui("Billboards")}</span>
         </div>
         <div className="bgrad" />
         <div className="btx">
-          <div className="bt">{bb[0].title}</div>
-          <div className="bs">{bb[0].blurb}</div>
+          <div className="bt">{ui(bb[0].title)}</div>
+          <div className="bs">{ui(bb[0].blurb)}</div>
         </div>
       </div>
       <div data-vc-slot="home.billboard.1"
@@ -82,8 +84,8 @@ export const WorkvivoBillboards: React.FC<WorkvivoBillboardsProps> = ({ swap }) 
         />
         <div className="bgrad" />
         <div className="btx">
-          <div className="bt">{bb[1].title}</div>
-          <div className="bs">{bb[1].blurb}</div>
+          <div className="bt">{ui(bb[1].title)}</div>
+          <div className="bs">{ui(bb[1].blurb)}</div>
         </div>
       </div>
       <div data-vc-slot="home.billboard.2"
@@ -99,8 +101,8 @@ export const WorkvivoBillboards: React.FC<WorkvivoBillboardsProps> = ({ swap }) 
         />
         <div className="bgrad" />
         <div className="btx">
-          <div className="bt">{bb[2].title}</div>
-          <div className="bs">{bb[2].blurb}</div>
+          <div className="bt">{ui(bb[2].title)}</div>
+          <div className="bs">{ui(bb[2].blurb)}</div>
         </div>
       </div>
     </div>

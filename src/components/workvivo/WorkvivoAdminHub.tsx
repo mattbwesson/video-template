@@ -6,6 +6,7 @@ import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import { WorkvivoTopbar } from "./WorkvivoTopbar";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo Admin Hub.
@@ -133,6 +134,7 @@ const PRODUCTS: Product[] = [
 ];
 
 export const WorkvivoAdminHub: React.FC = () => {
+  const ui = useT();
   const { person, logo, copy, image } = useCustomization();
 
   return (
@@ -186,22 +188,22 @@ export const WorkvivoAdminHub: React.FC = () => {
                   <div className="wah-headrow">
                     <div className="wah-title">
                       <Icon href="#i-ui-post-campaign" className="" width={30} height={30} />
-                      Admin Hub
+                      {ui("Admin Hub")}
                     </div>
-                    <span className="wah-fav">Manage Favourites</span>
+                    <span className="wah-fav">{ui("Manage Favourites")}</span>
                   </div>
 
                   <div className="wah-field">
                     <Icon href="#i-ui-explore" className="" width={15} height={15} />
-                    <span>Search admin</span>
+                    <span>{ui("Search admin")}</span>
                   </div>
 
-                  <div className="wah-sec">Quick Links</div>
+                  <div className="wah-sec">{ui("Quick Links")}</div>
                   <div className="wah-quick">
                     {QUICK_LINKS.map((q) => (
                       <span className="wah-quicklink" key={q}>
                         <Icon href="#i-ui-favorite-star" className="" width={17} height={17} />
-                        {q}
+                        {ui(q)}
                       </span>
                     ))}
                   </div>
@@ -211,7 +213,7 @@ export const WorkvivoAdminHub: React.FC = () => {
                 <div className="wah-lower">
                   <div className="wah-col-products">
                     <div className="wah-sec" style={{ marginBottom: 10 }}>
-                      Products
+                      {ui("Products")}
                     </div>
                     <div className="wah-products">
                       {PRODUCTS.map((p) => (
@@ -222,8 +224,8 @@ export const WorkvivoAdminHub: React.FC = () => {
                           ) : (
                             <MissingGlyph />
                           )}
-                          <div className="wah-product-title">{p.title}</div>
-                          <div className="wah-product-desc">{p.desc}</div>
+                          <div className="wah-product-title">{ui(p.title)}</div>
+                          <div className="wah-product-desc">{ui(p.desc)}</div>
                           <span className="wah-product-go">
                             <ChevronRight />
                           </span>
@@ -234,7 +236,7 @@ export const WorkvivoAdminHub: React.FC = () => {
 
                   <div className="wah-col-new">
                     <div className="wah-sec" style={{ marginBottom: 10 }}>
-                      What&apos;s New
+                      {ui("What's New")}
                     </div>
                     <div className="wah-new">
                       <img
@@ -246,14 +248,14 @@ export const WorkvivoAdminHub: React.FC = () => {
                       <div className="wah-new-wash" />
                       <div className="wah-new-lift" />
                       <img className="wah-new-logo" src={logo.onDark} alt="" />
-                      <div className="wah-new-title">{copy.feed.event.countdownName}</div>
+                      <div className="wah-new-title">{ui(copy.feed.event.countdownName)}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Clipped by the window, as in the reference — the page runs on. */}
                 <div className="wah-tools">
-                  <div className="wah-sec">Admin Tools</div>
+                  <div className="wah-sec">{ui("Admin Tools")}</div>
                 </div>
               </main>
             </div>
