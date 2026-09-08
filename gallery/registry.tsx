@@ -38,6 +38,8 @@ import { WorkvivoLiveReplay } from "../src/components/workvivo/WorkvivoLiveRepla
 import { WorkvivoLivestream } from "../src/components/workvivo/WorkvivoLivestream";
 import { WorkvivoCatchMeUp } from "../src/components/workvivo/WorkvivoCatchMeUp";
 import { WorkvivoPostComposer } from "../src/components/workvivo/WorkvivoPostComposer";
+import { WorkvivoAiCompanion } from "../src/components/workvivo/WorkvivoAiCompanion";
+import type { AiCompanionTool } from "../src/components/workvivo/WorkvivoAiCompanion";
 import { WorkvivoAiComposeSettings } from "../src/components/workvivo/WorkvivoAiComposeSettings";
 import { WorkvivoSpaces } from "../src/components/workvivo/WorkvivoSpaces";
 import { WorkvivoHqSearch } from "../src/components/workvivo/WorkvivoHqSearch";
@@ -663,6 +665,31 @@ export const ENTRIES: Entry[] = [
           activeSlide={Number(activeSlide)}
           slideProgress={Number(slideProgress)}
           isPlaying={false}
+        />
+      </Provided>
+    ),
+  },
+
+  {
+    id: "ai-companion",
+    name: "WorkvivoAiCompanion",
+    file: "src/components/workvivo/WorkvivoAiCompanion.tsx",
+    group: "Screens",
+    summary:
+      "The HQ agent on the phone — collapsed tool rail, the desktop composer at mobile scale, and the suggested prompts. Standalone: no provider, nothing on it is the tenant's.",
+    width: 393,
+    height: 852,
+    durationInFrames: 30,
+    poster: 0,
+    controls: [
+      { key: "activeTool", label: "Rail", kind: "select", options: ["compose", "search", "panel"], init: "compose" },
+      { key: "showMore", label: "Show more", kind: "toggle", init: true },
+    ],
+    Stage: ({ activeTool, showMore }) => (
+      <Provided background="#2F3033">
+        <WorkvivoAiCompanion
+          activeTool={activeTool as AiCompanionTool}
+          showMore={Boolean(showMore)}
         />
       </Provided>
     ),
