@@ -34,6 +34,13 @@ export type RenderEvent = {
    * from the server side afterwards.
    */
   detail?: {
+    /**
+     * Which template was being rendered.
+     *
+     * Worth recording because the templates differ in length by minutes, so a duration or
+     * a failure rate averaged across all of them says very little.
+     */
+    template?: string;
     errorName?: string;
     stack?: string;
     frame?: number;
@@ -80,7 +87,10 @@ export const reportRender = (ev: RenderEvent): void => {
     // to race it: the operator downloads the file and leaves. It cannot set headers
     // though, so it is only usable when the route is unguarded — locally.
     if (!passcode && typeof navigator !== "undefined" && navigator.sendBeacon) {
-      navigator.sendBeacon("/api/render-event", new Blob([body], { type: "application/json" }));
+      navigator.sendBeacon(
+        "/api/render-event",
+        new Blob([body], { type: "application/json" }),
+      );
       return;
     }
 

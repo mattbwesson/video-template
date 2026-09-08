@@ -12,16 +12,23 @@ import { expandCopyOverrides } from "../src/customize/copyPaths";
 import { repairSelfShoutOut } from "../src/customize/shoutOut";
 import { followValueRenames } from "../src/customize/valueEcho";
 import type { HeaderOverrides } from "../src/customize/headers";
-import {
-  DEFAULT_BRAND_HEX,
-  clampBrandAccentHex,
-  type Hex,
-} from "../src/customize/color";
+import { DEFAULT_BRAND_HEX, clampBrandAccentHex, type Hex } from "../src/customize/color";
 import type { Upload } from "./uploads";
 import type { SlotFraming } from "./framing";
 import type { ResearchState } from "./research";
+import { DEFAULT_TEMPLATE_ID, type TemplateId } from "./templates";
 
 export type WizardState = {
+  /**
+   * Which cut is being customised.
+   *
+   * Every other answer in this state is template-agnostic — a logo is a logo whichever
+   * film it lands in — so this is the one field that changes what gets rendered rather
+   * than what appears inside it. It affects nothing in `toInputProps` for that reason:
+   * the composition is chosen by the caller (see web/templates.ts), and the props are the
+   * same either way.
+   */
+  template: TemplateId;
   company: string;
   /**
    * Free text about the audience and the deal.
@@ -114,6 +121,7 @@ export type WizardState = {
 };
 
 export const INITIAL_STATE: WizardState = {
+  template: DEFAULT_TEMPLATE_ID,
   company: "",
   context: "",
   person: { name: "", title: "", photo: null },
@@ -140,11 +148,17 @@ export const INITIAL_STATE: WizardState = {
  * main character apart broke the back-links the first time precisely because each step
  * spelled its predecessor's name out itself.
  */
-export const STEPS = ["Company", "Character", "Brand", "Imagery"] as const;
+export const STEPS = ["Template", "Company", "Character", "Brand", "Imagery"] as const;
+
+/**
+ * The template step is always satisfied: the state lands on a default, so there is no
+ * such thing as not having chosen. It exists as a `*Ready` function anyway so the step
+ * list and the gate functions stay one-to-one and the rail can be driven from them.
+ */
+export const templateReady = (_s: WizardState): boolean => true;
 
 /** The company is the one thing every other answer hangs off, so it stands alone. */
-export const companyReady = (s: WizardState): boolean =>
-  s.company.trim().length >= 2;
+export const companyReady = (s: WizardState): boolean => s.company.trim().length >= 2;
 
 /** All three parts of the persona are required: the cut shows every one of them. */
 export const personReady = (s: WizardState): boolean =>
@@ -235,10 +249,9 @@ export const toInputProps = (s: WizardState): VideoInputProps => {
   // objects together: a spread would replace `person` wholesale, and an operator who
   // left the title blank would silently get the baseline's "CEO" back instead of the
   // researched one.
-  const researched = COPY.merge(
-    s.research.status === "done" ? s.research.copy : {},
-    { capLengths: true },
-  );
+  const researched = COPY.merge(s.research.status === "done" ? s.research.copy : {}, {
+    capLengths: true,
+  });
 
   const written = COPY.merge(copyPatch, { capLengths: true, base: researched });
 

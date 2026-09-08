@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
-import { CustomizedWorkvivo } from "../src/CustomizedWorkvivo";
-import { CUSTOMIZED_CUT_DURATION } from "../src/WorkvivoCut";
+import { templateById } from "./templates";
 import { resolveSlotSource, toInputProps, type WizardState } from "./wizardState";
 import { SwapOverlay } from "./SwapOverlay";
 import { EditPanel } from "./EditPanel";
@@ -18,12 +17,14 @@ import type { Upload } from "./uploads";
  * every component in it can be edited.
  *
  * The prototype stood a hand-animated slideshow in for the video. This is the actual
- * `CustomizedWorkvivo` composition running in `@remotion/player` on the same
- * `inputProps` a render would receive — so what the operator approves here is what comes
- * out the other end, rather than an impression of it.
+ * composition the operator chose on the first step, running in `@remotion/player` on the
+ * same `inputProps` a render would receive — so what the operator approves here is what
+ * comes out the other end, rather than an impression of it.
+ *
+ * Which composition that is comes from `templateById`, and the SAME entry is handed to
+ * the render button below. Naming the composition in one place and its duration in
+ * another is how a preview and a render come to disagree.
  */
-
-const FPS = 25;
 
 /** How long the fly-in runs before the player is revealed underneath it. */
 const ASSEMBLY_MS = 1500;
@@ -67,6 +68,13 @@ export const Reveal: React.FC<{
   const [frameAspect, setFrameAspect] = useState(0);
 
   const inputProps = useMemo(() => toInputProps(state), [state]);
+  /**
+   * The cut chosen on the first step.
+   *
+   * Resolved once here and threaded to the player, the footer readout and the render
+   * button, so all three are talking about the same film.
+   */
+  const template = useMemo(() => templateById(state.template), [state.template]);
   const flying = state.shots.slice(0, 14);
 
   /** What each position is showing right now: a pin if there is one, else the deal. */
@@ -78,9 +86,7 @@ export const Reveal: React.FC<{
   const currentImage = editing?.image
     ? (state.imageOverrides[editing.image] ?? dealt[editing.image] ?? "")
     : "";
-  const currentIcon = editing?.icon
-    ? (state.iconOverrides[editing.icon] ?? "")
-    : "";
+  const currentIcon = editing?.icon ? (state.iconOverrides[editing.icon] ?? "") : "";
   /**
    * The banner's live treatment, resolved the same way the composition resolves it.
    *
@@ -131,9 +137,7 @@ export const Reveal: React.FC<{
     // shape the cut actually uses rather than flashing a square and correcting itself.
     // The rect is the element's own box, which for a `cover`-fitted photo IS the frame.
     const slot = editable.image;
-    const el = slot
-      ? screen.current?.querySelector(`[${SLOT_ATTR}="${slot}"]`)
-      : null;
+    const el = slot ? screen.current?.querySelector(`[${SLOT_ATTR}="${slot}"]`) : null;
     const rect = el?.getBoundingClientRect();
     setFrameAspect(
       rect && rect.width > 1 && rect.height > 1 ? rect.width / rect.height : 0,
@@ -386,12 +390,12 @@ export const Reveal: React.FC<{
           <div className="vc-screen" ref={screen}>
             <Player
               ref={player}
-              component={CustomizedWorkvivo}
+              component={template.component}
               inputProps={inputProps}
-              durationInFrames={CUSTOMIZED_CUT_DURATION}
-              fps={FPS}
-              compositionWidth={1920}
-              compositionHeight={1080}
+              durationInFrames={template.durationInFrames}
+              fps={template.fps}
+              compositionWidth={template.width}
+              compositionHeight={template.height}
               style={{ width: "100%" }}
               controls
               // The cut opens on a hard scale-down and a mask close in the first 33
@@ -411,8 +415,9 @@ export const Reveal: React.FC<{
           </div>
           <div className="vc-pfoot">
             <span className="vc-mono">
-              {CUSTOMIZED_CUT_DURATION} frames ·{" "}
-              {(CUSTOMIZED_CUT_DURATION / FPS).toFixed(0)}s · 1920×1080
+              {template.label} · {template.durationInFrames} frames ·{" "}
+              {(template.durationInFrames / template.fps).toFixed(0)}s · {template.width}×
+              {template.height}
             </span>
             <span className="vc-mono vc-tip">
               {edits
@@ -439,10 +444,7 @@ export const Reveal: React.FC<{
               <RenderButton
                 inputProps={inputProps}
                 company={state.company}
-                durationInFrames={CUSTOMIZED_CUT_DURATION}
-                fps={FPS}
-                width={1920}
-                height={1080}
+                template={template}
               />
             </span>
           </div>

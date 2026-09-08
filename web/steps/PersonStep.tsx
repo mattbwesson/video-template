@@ -27,12 +27,12 @@ export const PersonStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step two <b>of four</b>
+        Step three <b>of five</b>
       </div>
       <h1>Who is the main character?</h1>
       <p className="vc-lede">
-        The person this video speaks to. Their headshot, name and title carry
-        the middle of the cut — they are the signed-in face on every screen.
+        The person this video speaks to. Their headshot, name and title carry the middle
+        of the cut — they are the signed-in face on every screen.
       </p>
 
       <div className="vc-field">
@@ -91,8 +91,8 @@ export const PersonStep: React.FC<{
           </div>
         </div>
         <p className="vc-subhint vc-below">
-          A square-ish crop with the face high in the frame works best — every
-          place it appears is a circle.
+          A square-ish crop with the face high in the frame works best — every place it
+          appears is a circle.
         </p>
       </div>
 

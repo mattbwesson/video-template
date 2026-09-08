@@ -2,6 +2,10 @@ import React from "react";
 import { Composition } from "remotion";
 import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
+import { Zoetest } from "./Zoetest";
+import { ZOETEST_CUT_DURATION } from "./ZoetestCut";
+import { ZoeTestSearch } from "./ZoeTestSearch";
+import { SEARCH_CUT_DURATION } from "./ZoeTestSearchCut";
 import { CustomizedWorkvivo } from "./CustomizedWorkvivo";
 import { WorkvivoSpacesScene } from "./WorkvivoSpacesScene";
 import { WorkvivoNewslettersScene } from "./WorkvivoNewslettersScene";
@@ -33,6 +37,13 @@ import {
 import { WorkvivoCustomerGridScene } from "./WorkvivoCustomerGridScene";
 import { WorkvivoSeerSurveyMobileScene } from "./WorkvivoSeerSurveyMobileScene";
 import { CUSTOMIZED_CUT_DURATION } from "./WorkvivoCut";
+import {
+  DEMO_DURATION,
+  DEMO_FPS,
+  DEMO_HEIGHT,
+  DEMO_WIDTH,
+  WorkvivoProductDemo,
+} from "./WorkvivoProductDemo";
 import { DEFAULT_INPUT_PROPS } from "./customize/videoCopy";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
 
@@ -90,6 +101,44 @@ export const RemotionRoot: React.FC = () => {
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
+      />
+      {/* The Search & Knowledge cut: frames 2236-2760 of the film, which is the pillar
+          card naming the three pillars plus the chapter it introduces. 524 frames, not
+          5300 — see the header of ZoeTestSearchCut.tsx for what was left out and why. */}
+      <Composition
+        id="Zoe-test-search"
+        component={ZoeTestSearch}
+        durationInFrames={SEARCH_CUT_DURATION}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* The comms cut, on its own timeline (ZoetestCut) so it can be retimed and
+          reordered without moving L2VirginAirline. The scene components are shared with
+          both other cuts — see the header of ZoetestCut.tsx.
+
+          Length comes from ZOETEST_CUT_DURATION rather than a literal, because the wizard
+          reads the same constant: a composition that is one length in the Studio and
+          another in an operator's render is a bug nobody notices until the file is out. */}
+      <Composition
+        id="Zoe-test-comms"
+        component={Zoetest}
+        durationInFrames={ZOETEST_CUT_DURATION}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* A 30-second product tour, assembled from the component library rather than cut
+          from the film — no reference footage underneath. Takes the same inputProps as
+          CustomizedWorkvivo, so it renders in a prospect's brand. */}
+      <Composition
+        id="WorkvivoProductDemo"
+        component={WorkvivoProductDemo}
+        durationInFrames={DEMO_DURATION}
+        fps={DEMO_FPS}
+        width={DEMO_WIDTH}
+        height={DEMO_HEIGHT}
+        defaultProps={DEFAULT_INPUT_PROPS}
       />
       {/* What the wizard renders. The same scenes and the same 5300 frames, driven by
           inputProps. defaultProps is the approved baseline, so opening it in the Studio

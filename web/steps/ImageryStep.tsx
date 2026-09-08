@@ -29,13 +29,13 @@ export const ImageryStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step four <b>of four</b>
+        Step five <b>of five</b>
       </div>
       <h1>Add your imagery.</h1>
       <p className="vc-lede">
-        Faces first — the opening shot is ten portraits at once. Then product
-        shots, the office, the team. Around {SUGGESTED_UPLOADS} is plenty; the cut
-        has more picture slots than that and reuses photos across scenes.
+        Faces first — the opening shot is ten portraits at once. Then product shots, the
+        office, the team. Around {SUGGESTED_UPLOADS} is plenty; the cut has more picture
+        slots than that and reuses photos across scenes.
       </p>
 
       <div className="vc-shots">
@@ -125,8 +125,8 @@ export const ImageryStep: React.FC<{
         </button>
         {waiting && (
           <span className="vc-hintline">
-            Waiting on the copywriting pass — building now would show the demo's
-            own words, not {state.company.trim() || "your company"}'s.
+            Waiting on the copywriting pass — building now would show the demo's own
+            words, not {state.company.trim() || "your company"}'s.
           </span>
         )}
       </div>

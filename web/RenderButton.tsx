@@ -9,6 +9,7 @@ import {
   type RenderProgress,
 } from "./browserRender";
 import type { VideoInputProps } from "../src/customize/videoCopy";
+import type { VideoTemplate } from "./templates";
 
 /**
  * "Render MP4" — the whole export, in the operator's own tab.
@@ -44,11 +45,10 @@ const remaining = (p: RenderProgress): string => {
 export const RenderButton: React.FC<{
   inputProps: VideoInputProps;
   company: string;
-  durationInFrames: number;
-  fps: number;
-  width: number;
-  height: number;
-}> = ({ inputProps, company, durationInFrames, fps, width, height }) => {
+  /** The cut being encoded — the same entry the preview player is running. */
+  template: VideoTemplate;
+}> = ({ inputProps, company, template }) => {
+  const { durationInFrames, fps, width, height } = template;
   const [state, setState] = useState<State>({ kind: "idle" });
   const handle = useRef<RenderHandle | null>(null);
   /** The last progress the renderer reported, for a failure to say where it died. */
@@ -76,7 +76,14 @@ export const RenderButton: React.FC<{
         company,
         outcome: "unsupported",
         reason: ready.blockers.join("; "),
-        detail: { width, height, fps, totalFrames: durationInFrames, ...browserFacts() },
+        detail: {
+          template: template.id,
+          width,
+          height,
+          fps,
+          totalFrames: durationInFrames,
+          ...browserFacts(),
+        },
       });
       setState({ kind: "unsupported", blockers: ready.blockers });
       return;
@@ -90,10 +97,7 @@ export const RenderButton: React.FC<{
 
     const job = startRender({
       inputProps,
-      durationInFrames,
-      fps,
-      width,
-      height,
+      template,
       onProgress: (progress) => {
         // Kept outside React state as well: the failure handler needs the last progress,
         // and reading it from state there would close over the value at render time.
@@ -169,7 +173,7 @@ export const RenderButton: React.FC<{
     } finally {
       handle.current = null;
     }
-  }, [inputProps, company, durationInFrames, fps, width, height]);
+  }, [inputProps, company, template, durationInFrames, fps, width, height]);
 
   if (state.kind === "rendering") {
     return (
@@ -192,7 +196,8 @@ export const RenderButton: React.FC<{
       <span className="vc-render vc-render-bad">
         <span>This browser cannot encode video.</span>
         <span className="vc-quietnote">
-          {state.blockers[0] ?? "WebCodecs is unavailable."} Try Chrome or Edge on desktop.
+          {state.blockers[0] ?? "WebCodecs is unavailable."} Try Chrome or Edge on
+          desktop.
         </span>
       </span>
     );

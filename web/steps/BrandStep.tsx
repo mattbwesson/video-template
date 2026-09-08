@@ -29,7 +29,11 @@ export const BrandStep: React.FC<{
     // after the operator picked their own does not flash a colour that did not move.
     if (!state.colorTouched && accepted.palette.length) {
       swatchRef.current?.animate(
-        [{ transform: "scale(1)" }, { transform: "scale(1.04)" }, { transform: "scale(1)" }],
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(1.04)" },
+          { transform: "scale(1)" },
+        ],
         { duration: 560, easing: "cubic-bezier(.2,.9,.3,1.2)" },
       );
     }
@@ -84,12 +88,12 @@ export const BrandStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step three <b>of four</b>
+        Step four <b>of five</b>
       </div>
       <h1>Bring your brand in.</h1>
       <p className="vc-lede">
-        Drop the logo and we will pull the colours straight out of it. Adjust if
-        we get it wrong.
+        Drop the logo and we will pull the colours straight out of it. Adjust if we get it
+        wrong.
       </p>
 
       <div className="vc-brandgrid">
@@ -144,8 +148,8 @@ export const BrandStep: React.FC<{
                 )}
               </div>
               <p className="vc-swatchnote">
-                Used on every dark header. If the made one has filled in a cut-out or
-                lost detail, drop your brand kit&rsquo;s reversed logo here.
+                Used on every dark header. If the made one has filled in a cut-out or lost
+                detail, drop your brand kit&rsquo;s reversed logo here.
               </p>
             </div>
           )}

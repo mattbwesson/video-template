@@ -78,13 +78,16 @@ export const BackFromScene: React.FC = () => {
   // "Back from time off?" sits centred (where it comes to rest).
   const centerOnBack = interpolate(moveProgress, [0, 1], [1, 0]);
 
-  // At local 32: text animates up (cubic-bezier(0.76, 0.08, 0.26, 0.84) 600ms / 15 frames: 32 to 47)
-  const textExitTranslateY = interpolate(frame, [32, 47], [0, -600], {
+  // At local 32: text animates up (cubic-bezier(0.76, 0.08, 0.26, 0.84) 320ms / 8 frames: 32 to 40).
+  // Same 600px of travel as before over half the time, so the line is gone by local 40
+  // instead of 47 — it clears the frame while the Catch Me Up phone is still rising rather
+  // than lingering over it.
+  const textExitTranslateY = interpolate(frame, [32, 40], [0, -600], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.bezier(0.76, 0.08, 0.26, 0.84),
   });
-  const textExitOpacity = interpolate(frame, [32, 47], [1, 0], {
+  const textExitOpacity = interpolate(frame, [32, 40], [1, 0], {
     extrapolateLeft: 'clamp',
     extrapolateRight: 'clamp',
     easing: Easing.bezier(0.76, 0.08, 0.26, 0.84),
@@ -201,8 +204,8 @@ export const BackFromScene: React.FC = () => {
         overflow: 'hidden',
       }}
     >
-      {/* Text "Back from time off?" */}
-      {frame < 48 && (
+      {/* Text "Back from time off?" — unmounted the frame after the exit lands at 40. */}
+      {frame < 41 && (
         <div
           style={{
             position: 'absolute',
