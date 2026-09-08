@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-03T17:20:18.293Z",
+  "generated": "2026-09-08T18:58:58.617Z",
   "model": "gpt-5.6-luna",
   "english": {
     "source": "docs/audio/english-vo.json",
@@ -8,7 +8,7 @@
   },
   "japanese": {
     "source": "docs/audio/japanese-voiceover.json",
-    "duration": 231.38999938964844
+    "duration": 233.39999389648438
   },
   "sentences": [
     {
@@ -17,109 +17,109 @@
       "englishStart": 0.64,
       "englishEnd": 2.88,
       "startToken": 0,
-      "endToken": 10,
+      "endToken": 8,
       "japaneseStart": 0,
-      "japaneseEnd": 2.44,
-      "japanese": "すべての従業員に拠点を"
+      "japaneseEnd": 2.06,
+      "japanese": "全ての社員に本社を。"
     },
     {
       "sentence": 1,
       "english": "Now they have one.",
       "englishStart": 3.6,
       "englishEnd": 5.02,
-      "startToken": 11,
-      "endToken": 16,
-      "japaneseStart": 2.44,
-      "japaneseEnd": 4.6,
-      "japanese": "それが今実現します"
+      "startToken": 9,
+      "endToken": 15,
+      "japaneseStart": 2.64,
+      "japaneseEnd": 4.44,
+      "japanese": "それが今実現します。"
     },
     {
       "sentence": 2,
       "english": "Welcome to Workvivo HQ, the AI native employee experience platform where comms, knowledge, action, and insight come together in one connected experience.",
       "englishStart": 5.76,
       "englishEnd": 15.3,
-      "startToken": 17,
-      "endToken": 82,
-      "japaneseStart": 5.06,
-      "japaneseEnd": 17.52,
-      "japanese": "WorkvivoHQへようこそコミュニケーションナレッジアクションインサイトそのすべてが一つにつながるAIネイティブの従業員エクスペリエンスプラットフォームです"
+      "startToken": 16,
+      "endToken": 81,
+      "japaneseStart": 5.04,
+      "japaneseEnd": 17.08,
+      "japanese": "WorkvivoHQへようこそ。コミュニケーション、ナレッジ、アクション、インサイトそのすべてが一つにつながるAIネイティブの社員エクスペリエンスプラットフォームです。"
     },
     {
       "sentence": 3,
       "english": "Create tailored experiences for every role, team, and location with personalized homepage experiences.",
       "englishStart": 17.22,
       "englishEnd": 23.16,
-      "startToken": 83,
-      "endToken": 113,
-      "japaneseStart": 17.52,
-      "japaneseEnd": 23.64,
-      "japanese": "パーソナライズされたホーム画面で役割チーム拠点ごとに最適な体験を届けます"
+      "startToken": 82,
+      "endToken": 112,
+      "japaneseStart": 18.26,
+      "japaneseEnd": 23.98,
+      "japanese": "パーソナライズされたホーム画面で、役割、チーム、拠点ごとに最適な体験を届けます。"
     },
     {
       "sentence": 4,
       "english": "Back from time off?",
       "englishStart": 24.36,
       "englishEnd": 25.2,
-      "startToken": 114,
-      "endToken": 119,
-      "japaneseStart": 23.9,
-      "japaneseEnd": 24.84,
-      "japanese": "休暇明けも大丈夫"
+      "startToken": 113,
+      "endToken": 118,
+      "japaneseStart": 24.64,
+      "japaneseEnd": 26.1,
+      "japanese": "休暇明けも大丈夫。"
     },
     {
       "sentence": 5,
       "english": "Catch up in an instant with personalized AI summaries.",
       "englishStart": 25.76,
       "englishEnd": 28.28,
-      "startToken": 120,
-      "endToken": 146,
-      "japaneseStart": 24.84,
-      "japaneseEnd": 29.72,
-      "japanese": "AIによるパーソナライズされた要約ですぐに状況をキャッチアップ"
+      "startToken": 119,
+      "endToken": 144,
+      "japaneseStart": 27.04,
+      "japaneseEnd": 30.84,
+      "japanese": "AIによるパーソナライズされた要約で、すぐ休暇をキャッチアップ。"
     },
     {
       "sentence": 6,
       "english": "Keep everyone informed, connected, and engaged through content that captures attention and drives engagement.",
       "englishStart": 29.06,
       "englishEnd": 35.28,
-      "startToken": 147,
-      "endToken": 179,
-      "japaneseStart": 29.72,
-      "japaneseEnd": 35.96,
-      "japanese": "思わず目を引くコンテンツで情報を届けつながりを生みエンゲージメントを高めます"
+      "startToken": 145,
+      "endToken": 177,
+      "japaneseStart": 31.96,
+      "japaneseEnd": 37.24,
+      "japanese": "思わず目を引くコンテンツで情報を届け、つながりを生み、エンゲージメントを高めます。"
     },
     {
       "sentence": 7,
       "english": "Celebrate success and recognize your best people with public shoutouts tied to company values.",
       "englishStart": 36.38,
       "englishEnd": 41.14,
-      "startToken": 180,
-      "endToken": 211,
-      "japaneseStart": 36.14,
-      "japaneseEnd": 42.48,
-      "japanese": "企業のバリューに紐づいた賞賛の投稿で成果を称え活躍する仲間を認め合う"
+      "startToken": 178,
+      "endToken": 210,
+      "japaneseStart": 38.32,
+      "japaneseEnd": 44.22,
+      "japanese": "企業のバリューに紐づいた賞賛の投稿で、成果を称え、活躍する仲間を認め合う。"
     },
     {
       "sentence": 8,
       "english": "Create, refine, and localize content in seconds with AI that actually knows your people, culture, and tone of voice.",
       "englishStart": 43.84,
       "englishEnd": 50.88,
-      "startToken": 212,
-      "endToken": 243,
-      "japaneseStart": 42.56,
-      "japaneseEnd": 49.6,
-      "japanese": "自社の人文化トーンを理解したAIがコンテンツの作成遂行ローカライズを数秒で"
+      "startToken": 211,
+      "endToken": 241,
+      "japaneseStart": 44.68,
+      "japaneseEnd": 52.04,
+      "japanese": "自社の人文化トーンを理解したAIが、コンテンツの作成、遂行、ローカライズを数秒で、"
     },
     {
       "sentence": 9,
       "english": "Connect leadership with your team in turn important moments into interactive experiences everyone can be part of.",
       "englishStart": 51.6,
       "englishEnd": 58.54,
-      "startToken": 244,
+      "startToken": 242,
       "endToken": 283,
-      "japaneseStart": 49.76,
-      "japaneseEnd": 57.07,
-      "japanese": "経営層と現場をリアルタイムにつなぎ大切な瞬間を誰もが参加できる双方向の体験に変えます"
+      "japaneseStart": 52.22,
+      "japaneseEnd": 60.26,
+      "japanese": "経営層と現場をリアルタイムメントにつなぎ、大切な瞬間を誰もが参加できる、双方向の体験に変えます。"
     },
     {
       "sentence": 10,
@@ -127,43 +127,43 @@
       "englishStart": 59.18,
       "englishEnd": 64.6,
       "startToken": 284,
-      "endToken": 317,
-      "japaneseStart": 57.37,
-      "japaneseEnd": 62.59,
-      "japanese": "コラボレーション対話つながりのための専用スペースでコミュニティをより強く"
+      "endToken": 318,
+      "japaneseStart": 60.56,
+      "japaneseEnd": 66.28,
+      "japanese": "コラボレーション、対話、つながりのための専用スペースで、コミュニティーをより強く、"
     },
     {
       "sentence": 11,
       "english": "Deliver personalized, timely AI-powered journeys that adapt to each employee, from onboarding to change rollouts.",
       "englishStart": 65.6,
       "englishEnd": 71.68,
-      "startToken": 318,
-      "endToken": 353,
-      "japaneseStart": 63.31,
-      "japaneseEnd": 70.61,
-      "japanese": "オンボーディングから変革の浸透まで一人一人に合わせて最適化されるAI活用のジャーニーを届けます"
+      "startToken": 319,
+      "endToken": 355,
+      "japaneseStart": 66.74,
+      "japaneseEnd": 73.82,
+      "japanese": "オンボーディングから変革の浸透まで、一人一人に合わせて最適化される、AI活用のジャーニーを届けます。"
     },
     {
       "sentence": 12,
       "english": "Amplify the reach of internal communications by displaying Workvivo content on screens across your organization.",
       "englishStart": 72.86,
       "englishEnd": 78.42,
-      "startToken": 354,
-      "endToken": 398,
-      "japaneseStart": 70.89,
-      "japaneseEnd": 77.55,
-      "japanese": "社内のあらゆるディスプレイにワークビボのコンテンツを表示し社内コミュニケーションが届く範囲を広げます"
+      "startToken": 356,
+      "endToken": 401,
+      "japaneseStart": 74.7,
+      "japaneseEnd": 81.14,
+      "japanese": "社内のあらゆるディスプレイに、ワークウィボのコンテンツを表示し、社内コミュニケーションが届く範囲を広げます。"
     },
     {
       "sentence": 13,
       "english": "Double-tap on the stories that matter most with newsletters.",
       "englishStart": 79.34,
       "englishEnd": 82.56,
-      "startToken": 399,
+      "startToken": 402,
       "endToken": 421,
-      "japaneseStart": 77.55,
-      "japaneseEnd": 82.43,
-      "japanese": "ニュースレターで一番届けたいストーリーをもう一度チャット"
+      "japaneseStart": 82.12,
+      "japaneseEnd": 85.4,
+      "japanese": "ニュースレターで、一番届けたいストーリーをもう一度。"
     },
     {
       "sentence": 14,
@@ -171,230 +171,230 @@
       "englishStart": 84,
       "englishEnd": 88.48,
       "startToken": 422,
-      "endToken": 456,
-      "japaneseStart": 83.27,
-      "japaneseEnd": 90.05,
-      "japanese": "音声ビデオ通話そしてAIによる会話の要約でコラボレーションはもっとスピーディーに"
+      "endToken": 458,
+      "japaneseStart": 86.32,
+      "japaneseEnd": 93.34,
+      "japanese": "チャット、音声ビデオ通話、そしてAIによる会話の要約で、コラボレーションはもっとスピーディーに。"
     },
     {
       "sentence": 15,
       "english": "Ask HQ anything and get instant answers from across your connected systems.",
       "englishStart": 90.96,
       "englishEnd": 95.14,
-      "startToken": 457,
-      "endToken": 484,
-      "japaneseStart": 90.05,
-      "japaneseEnd": 95.45,
-      "japanese": "HQに聞けば連携したシステム全体から必要な答えがすぐに見つかります"
+      "startToken": 459,
+      "endToken": 487,
+      "japaneseStart": 93.86,
+      "japaneseEnd": 98.54,
+      "japanese": "HQに聞けば、連携したシステム全体から必要な答えがすぐに見つかります。"
     },
     {
       "sentence": 16,
       "english": "Then go further and take action, all without leaving HQ.",
       "englishStart": 95.72,
       "englishEnd": 99.16,
-      "startToken": 485,
-      "endToken": 506,
-      "japaneseStart": 95.45,
-      "japaneseEnd": 100.31,
-      "japanese": "さらにそのまま次のアクションまでHQを離れる必要はありません"
+      "startToken": 488,
+      "endToken": 511,
+      "japaneseStart": 99.68,
+      "japaneseEnd": 104.12,
+      "japanese": "さらにそのまま次のアクションまで、HQを離れる必要はありません。"
     },
     {
       "sentence": 17,
       "english": "From ask to answer to job done.",
       "englishStart": 99.98,
       "englishEnd": 102.36,
-      "startToken": 507,
-      "endToken": 516,
-      "japaneseStart": 101.19,
-      "japaneseEnd": 104.07,
-      "japanese": "質問から回答へそして完了まで"
+      "startToken": 512,
+      "endToken": 521,
+      "japaneseStart": 105.06,
+      "japaneseEnd": 108.18,
+      "japanese": "質問から回答へ、そして完了まで。"
     },
     {
       "sentence": 18,
       "english": "One app with multiple context-aware experiences giving every employee access to the right tools, resources, and information, no matter where they are.",
       "englishStart": 102.94,
       "englishEnd": 112.16,
-      "startToken": 517,
-      "endToken": 558,
-      "japaneseStart": 104.07,
-      "japaneseEnd": 113.65,
-      "japanese": "一つのアプリに状況に応じた複数の体験をどこにいても必要なツールリソース情報にアクセスできます"
+      "startToken": 522,
+      "endToken": 563,
+      "japaneseStart": 109.2,
+      "japaneseEnd": 117.48,
+      "japanese": "一つのアプリに状況に応じた複数の体験を、どこにいても必要なツール、リソース、情報にアクセスできます。"
     },
     {
       "sentence": 19,
       "english": "Bring it to life with a library of ready-made widgets, from business tools and integrations, to news, culture, and employee resources.",
       "englishStart": 113,
       "englishEnd": 120.28,
-      "startToken": 559,
-      "endToken": 612,
-      "japaneseStart": 113.83,
-      "japaneseEnd": 124.93,
-      "japanese": "業務ツールや各種連携からニュースカルチャー従業員向けリソースまですぐに使えるウィジェットのライブラリで思い描いた形にもちろん"
+      "startToken": 564,
+      "endToken": 616,
+      "japaneseStart": 118.52,
+      "japaneseEnd": 129.32,
+      "japanese": "業務ツールや各種連携から、ニュース、カルチャー、社員向けリソースまで、すぐに使えるウィジェットのライブラリで思い描いた形に、もちろん"
     },
     {
       "sentence": 20,
       "english": "Or create your own with our AI Widget Builder.",
       "englishStart": 120.78,
       "englishEnd": 123.64,
-      "startToken": 613,
-      "endToken": 639,
-      "japaneseStart": 124.93,
-      "japaneseEnd": 128.57,
-      "japanese": "AIウィジェットビルダーで自分だけのウィジェットを作ることもできます"
+      "startToken": 617,
+      "endToken": 643,
+      "japaneseStart": 129.32,
+      "japaneseEnd": 132.9,
+      "japanese": "AIウィジェットビルダーで自分だけのウィジェットを作ることもできます。"
     },
     {
       "sentence": 21,
       "english": "Publish polished content in minutes with our AI-powered page creation.",
       "englishStart": 124.52,
       "englishEnd": 127.92,
-      "startToken": 640,
-      "endToken": 661,
-      "japaneseStart": 128.57,
-      "japaneseEnd": 133.95,
-      "japanese": "AIによるページ作成で洗練されたコンテンツを数分で公開"
+      "startToken": 644,
+      "endToken": 665,
+      "japaneseStart": 134.08,
+      "japaneseEnd": 138.14,
+      "japanese": "AIによるページ作成で、洗練されたコンテンツを数分で公開、"
     },
     {
       "sentence": 22,
       "english": "Turn scattered information into structured, searchable knowledge hubs.",
       "englishStart": 128.54,
       "englishEnd": 132.1,
-      "startToken": 662,
-      "endToken": 683,
-      "japaneseStart": 134.95,
-      "japaneseEnd": 139.53,
-      "japanese": "散在していた情報を整理された検索可能なナレッジハブへ"
+      "startToken": 666,
+      "endToken": 687,
+      "japaneseStart": 139.36,
+      "japaneseEnd": 144.18,
+      "japanese": "散在していた情報を整理された検索可能なナレッジハブへ、"
     },
     {
       "sentence": 23,
       "english": "See what's working, understand your people, and act on real data, not guesswork, with advanced analytics.",
       "englishStart": 134.9,
       "englishEnd": 142.18,
-      "startToken": 684,
-      "endToken": 737,
-      "japaneseStart": 139.63,
-      "japaneseEnd": 150.05,
-      "japanese": "高度な分析機能で何がうまくいっているかを可視化し従業員を理解し勘ではなく実際のデータにもとづいて動くきちんと回答が集まる"
+      "startToken": 688,
+      "endToken": 731,
+      "japaneseStart": 144.38,
+      "japaneseEnd": 152.9,
+      "japanese": "高度な分析機能で何がうまく言っているかを可視化し、社員を理解し、勘ではなく実際のデータにもとづいて動く、"
     },
     {
       "sentence": 24,
       "english": "Run engagement surveys that actually get answered and measure what matters most to your people.",
       "englishStart": 142.82,
       "englishEnd": 147.28,
-      "startToken": 738,
-      "endToken": 763,
-      "japaneseStart": 150.05,
-      "japaneseEnd": 154.99,
-      "japanese": "エンゲージメントサーベイで従業員にとって本当に大切なことを測定します"
+      "startToken": 732,
+      "endToken": 765,
+      "japaneseStart": 153.08,
+      "japaneseEnd": 158.9,
+      "japanese": "きちんと回答が集まるエンゲージメントサーベイで、社員にとって本当に大切なことを測定します。"
     },
     {
       "sentence": 25,
       "english": "Go beyond the numbers with AI-powered insights that uncover trends, reveal what's driving engagement, and highlight where to focus next.",
       "englishStart": 147.92,
       "englishEnd": 155.44,
-      "startToken": 764,
-      "endToken": 817,
-      "japaneseStart": 154.99,
-      "japaneseEnd": 166.07,
-      "japanese": "AIインサイトが数字の先にあるものを明らかに傾向を捉えエンゲージメントを動かす要因を可視化し次に注力すべきポイントを示します"
+      "startToken": 766,
+      "endToken": 819,
+      "japaneseStart": 159.96,
+      "japaneseEnd": 170,
+      "japanese": "AIインサイトが数字の先にあるものを明らかに、傾向を捉え、エンゲージメントを動かす要因を可視化し、次に注力すべきポイントを示します。"
     },
     {
       "sentence": 26,
       "english": "Give managers instant visibility into team sentiment so they can take action with confidence, wherever they are.",
       "englishStart": 155.9,
       "englishEnd": 162.08,
-      "startToken": 818,
-      "endToken": 847,
-      "japaneseStart": 167.21,
-      "japaneseEnd": 172.65,
-      "japanese": "マネージャーはチームの状態をすぐに把握でき自信を持って行動を起こせます"
+      "startToken": 820,
+      "endToken": 849,
+      "japaneseStart": 171.12,
+      "japaneseEnd": 175.86,
+      "japanese": "マネージャーはチームの状態をすぐに把握でき、自信を持って行動を起こせます。"
     },
     {
       "sentence": 27,
       "english": "From the moment employees share feedback to the moment they see meaningful change, it all happens here, in HQ.",
       "englishStart": 162.08,
       "englishEnd": 168.84,
-      "startToken": 848,
-      "endToken": 894,
-      "japaneseStart": 173.03,
-      "japaneseEnd": 183.25,
-      "japanese": "場所を問わず従業員がフィードバックを届けた瞬間から確かな変化を実感するそのときまでそのすべてがここHQで完結します"
+      "startToken": 850,
+      "endToken": 893,
+      "japaneseStart": 176.98,
+      "japaneseEnd": 186.5,
+      "japanese": "場所を問わず、社員がフィードバックを届けた瞬間から、確かな変化を実感するその時まで、そのすべてがここHQで完結します。"
     },
     {
       "sentence": 28,
       "english": "Let AI do the hard work of building your survey so you can jump straight into the results.",
       "englishStart": 169.66,
       "englishEnd": 174.58,
-      "startToken": 895,
-      "endToken": 921,
-      "japaneseStart": 184.05,
-      "japaneseEnd": 189.65,
-      "japanese": "サーベイ作成の手間はAIにお任せすぐに結果の確認から始められます"
+      "startToken": 894,
+      "endToken": 920,
+      "japaneseStart": 187.46,
+      "japaneseEnd": 193.28,
+      "japanese": "サーベイ作成の手間はAIにお任せ、すぐに結果の確認から始められます。"
     },
     {
       "sentence": 29,
       "english": "All your favorite tools, one experience layer, everything your people need, right inside HQ.",
       "englishStart": 175.72,
       "englishEnd": 181.02,
-      "startToken": 922,
-      "endToken": 959,
-      "japaneseStart": 189.99,
-      "japaneseEnd": 197.67,
-      "japanese": "使い慣れたツールのすべてを一つの体験レイヤーに従業員に必要なものはすべてHQの中に"
+      "startToken": 921,
+      "endToken": 957,
+      "japaneseStart": 193.58,
+      "japaneseEnd": 200.88,
+      "japanese": "使い慣れたツールのすべてを一つの体験レイヤーに、社員に必要なものはすべてHQの中に、"
     },
     {
       "sentence": 30,
       "english": "Manage your employee experience with confidence through powerful self-service admin tools and feature toggles.",
       "englishStart": 182,
       "englishEnd": 187.2,
-      "startToken": 960,
-      "endToken": 1004,
-      "japaneseStart": 197.87,
-      "japaneseEnd": 205.37,
-      "japanese": "強力なセルフサービス型の管理ツールと機能のオンオフ設定で従業員エクスペリエンスを安心して運用できます"
+      "startToken": 958,
+      "endToken": 1001,
+      "japaneseStart": 201.46,
+      "japaneseEnd": 208.76,
+      "japanese": "強力なセルフサービス型の管理ツールと機能のオンオフ設定で、社員エクスペリエンスを安心して運用できます。"
     },
     {
       "sentence": 31,
       "english": "Enable AI with confidence with granular controls, permissions, and governance built in.",
       "englishStart": 187.2,
       "englishEnd": 192.96,
-      "startToken": 1005,
-      "endToken": 1034,
-      "japaneseStart": 206.31,
-      "japaneseEnd": 213.11,
-      "japanese": "決め細かな制御権限設定ガバナンスを標準搭載安心してAIを活用できます"
+      "startToken": 1002,
+      "endToken": 1031,
+      "japaneseStart": 209.84,
+      "japaneseEnd": 216.5,
+      "japanese": "決め細かな制御、権限設定、ガバナンスを標準搭載、安心してAIを活用できます。"
     },
     {
       "sentence": 32,
       "english": "Powered by Zoom AI technology, enterprise-grade intelligence built into every experience.",
       "englishStart": 193.94,
       "englishEnd": 198.96,
-      "startToken": 1035,
-      "endToken": 1071,
-      "japaneseStart": 213.11,
-      "japaneseEnd": 221.05,
-      "japanese": "ZoomのAIテクノロジーを基盤にエンタープライズグレードのインテリジェンスをすべての体験に"
+      "startToken": 1032,
+      "endToken": 1068,
+      "japaneseStart": 217.76,
+      "japaneseEnd": 224.32,
+      "japanese": "ZoomのAIテクノロジーを基盤に、エンタープライズグレードのインテリジェンスをすべての体験に、"
     },
     {
       "sentence": 33,
       "english": "The employee experience platform your people actually use, trusted by the world's biggest brands.",
       "englishStart": 199.54,
       "englishEnd": 204.94,
-      "startToken": 1072,
-      "endToken": 1109,
-      "japaneseStart": 221.21,
-      "japaneseEnd": 228.69,
-      "japanese": "従業員が本当に使う従業員エクスペリエンスプラットフォーム世界を代表するブランドに選ばれています"
+      "startToken": 1069,
+      "endToken": 1102,
+      "japaneseStart": 224.54,
+      "japaneseEnd": 230.46,
+      "japanese": "社員が本当に使うエクスペリエンスプラットフォーム、世界を代表するブランドに選ばれています。"
     },
     {
       "sentence": 34,
       "english": "This is Workvivo HQ.",
       "englishStart": 206.72,
       "englishEnd": 208.66,
-      "startToken": 1110,
-      "endToken": 1116,
-      "japaneseStart": 229.23,
-      "japaneseEnd": 231.31,
-      "japanese": "これがWorkWithHQです"
+      "startToken": 1103,
+      "endToken": 1109,
+      "japaneseStart": 231.42,
+      "japaneseEnd": 233.38,
+      "japanese": "これがWorkvivoHQです。"
     }
   ]
 }
