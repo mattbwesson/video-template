@@ -14,6 +14,12 @@ import {
 } from "remotion";
 import { Video } from "@remotion/media";
 import { HeadquartersScene } from "./HeadquartersScene";
+import {
+  HqOpeningScene,
+  HQ_OPENING_DURATION,
+  HQ_OPENING_FROM,
+  HQ_OPENING_TO,
+} from "./HqOpeningScene";
 import { VirginWorkvivoHomeScene } from "./VirginWorkvivoHomeScene";
 import { BackFromScene } from "./BackFromScene";
 import { VirginWorkvivoDesktopScene } from "./VirginWorkvivoDesktopScene";
@@ -874,6 +880,10 @@ const BrandIntro: React.FC = () => {
  * audio source anywhere in the tree — so an encode built with `-an` renders a silent film
  * that looks completely correct, which is exactly the kind of bug that ships.
  *
+ * The Japanese cut is the exception, and it is the reason the `ownSoundtrack` prop exists:
+ * its narration is Japanese, so it silences this and plays a soundtrack built from the
+ * music stem and a re-timed Japanese read. See scripts/build-japanese-vo.mjs.
+ *
  * Both cover the WHOLE film now. The earlier 54-second trim existed because the
  * customised cut stopped at 1350; it can't be used any more, because the reference shows
  * through in roughly 1,400 frames of gaps between 1350 and 5299 — 4591-4983 alone is 392
@@ -887,7 +897,16 @@ export const REFERENCE_VIDEO = {
 export const WorkvivoCut: React.FC<{
   /** Which encode to lay underneath. Defaults to the full one, as the full cut needs. */
   reference?: keyof typeof REFERENCE_VIDEO;
-}> = ({ reference = "full" }) => {
+  /**
+   * Silence the reference's audio, for a cut that brings its own soundtrack.
+   *
+   * Defaults to false, so every existing caller — L2VirginAirline, the wizard's customised
+   * cut, the gallery — keeps the reference's own audio and is unchanged by this prop
+   * existing. Only the Japanese cut passes it, because that is the only cut with a
+   * soundtrack of its own to play instead; see src/Japanese.tsx.
+   */
+  ownSoundtrack?: boolean;
+}> = ({ reference = "full", ownSoundtrack = false }) => {
   const { durationInFrames } = useVideoConfig();
   const { theme } = useCustomization();
 
@@ -906,7 +925,8 @@ export const WorkvivoCut: React.FC<{
           wizard takes the re-encode, so the deployed image carries 45 MB rather than
           310 MB and is not slow to first frame on a cold cache.
 
-          Unmuted, deliberately: this element is the film's only sound. */}
+          Unmuted, deliberately: this element is the film's only sound — unless the caller
+          passes `ownSoundtrack`, which is what a translated cut does. */}
       <Sequence
         name="Reference video"
         from={1}
@@ -917,6 +937,7 @@ export const WorkvivoCut: React.FC<{
         }}>
         <Video
           src={staticFile(REFERENCE_VIDEO[reference])}
+          muted={ownSoundtrack}
           style={{
             width: "100%",
             height: "100%",
@@ -935,6 +956,16 @@ export const WorkvivoCut: React.FC<{
           use exclusive ends, and 33 + 106 = 139 is the exclusive end of the same range. */}
       <Sequence name="Headquarters Scene" from={33} durationInFrames={106}>
         <HeadquartersScene />
+      </Sequence>
+      {/* Part 2b: the HQ opening — the lockup and its tagline, then the capability fan.
+          This was reference footage showing through the gap between the Headquarters scene
+          and Workvivo Home; it is rebuilt so its copy is customisable like the rest of the
+          film and the fan is the component it always was. See src/HqOpeningScene.tsx. */}
+      <Sequence
+        name={`HQ Opening (${HQ_OPENING_FROM} - ${HQ_OPENING_TO})`}
+        from={HQ_OPENING_FROM}
+        durationInFrames={HQ_OPENING_DURATION}>
+        <HqOpeningScene />
       </Sequence>
       {/* Part 3: Workvivo Home (frames 417 to 600) */}
       <Sequence

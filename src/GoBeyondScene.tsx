@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
-import { useT } from "./customize/uiStrings";
+import { useT, useWordGap } from "./customize/uiStrings";
 
 /**
  * "Go beyond the numbers" — the sign-off the survey's iris opens onto.
@@ -28,7 +28,6 @@ import { useT } from "./customize/uiStrings";
  */
 
 /** Gap between words. The sizer has to use the same value to measure true. */
-const WORD_GAP = "0.20em";
 
 /** BackFromScene's type block, verbatim. */
 const LINE_FONT =
@@ -103,6 +102,7 @@ export const GoBeyondScene: React.FC<GoBeyondSceneProps> = ({
   exitFrom,
 }) => {
   const ui = useT();
+  const { gapEm: WORD_GAP } = useWordGap();
   const frame = useCurrentFrame();
   const leaving = exitFrom !== undefined && frame >= exitFrom;
   const exitY =

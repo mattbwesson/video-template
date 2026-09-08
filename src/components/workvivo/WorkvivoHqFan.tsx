@@ -1,4 +1,5 @@
 import React from "react";
+import { useT } from "../../customize/uiStrings";
 import { AbsoluteFill, Img, staticFile } from "remotion";
 import "./WorkvivoHqFanStyles.css";
 
@@ -215,11 +216,25 @@ const ICON: Record<string, IconSpot> = {
   rocket: { x: 1308, y: 518, ink: 80, frac: 0.566, cx: 0.498, cy: 0.486 },
   sparkle: { x: 1416, y: 512, ink: 105, frac: 0.878, cx: 0.504, cy: 0.502 },
 };
-const spot = ({ x, y, ink, frac, cx, cy }: IconSpot): React.CSSProperties => {
+const spot = ({ x, y, ink, frac, cx, cy }: IconSpot, opacity = 1): React.CSSProperties => {
   const box = ink / frac;
-  return { left: x - (cx - 0.5) * box, top: y - (cy - 0.5) * box, width: box, height: box };
+  return { left: x - (cx - 0.5) * box, top: y - (cy - 0.5) * box, width: box, height: box, opacity };
 };
-const place = ([x, y]: Pt): React.CSSProperties => ({ left: x, top: y });
+const place = ([x, y]: Pt, opacity = 1): React.CSSProperties => ({ left: x, top: y, opacity });
+
+/**
+ * What a wedge looks like with its fill off.
+ *
+ * The reference reveals the three panes one at a time — Communication arrives with the fan,
+ * Search fills at global 285-293, People at 306-313 — and drops the last two back to glass
+ * at 393-399. An unfilled pane is not hidden: the rim, the label and the icons stay, all
+ * much fainter, and the field reads almost straight through.
+ *
+ * These two fractions are fitted by whole-frame MAE against the reference, the same way
+ * every other number in this file was; see the header.
+ */
+const GLASS_FILL = 0.14;
+const GLASS_INK = 0.42;
 
 /** Specks in the halo's upper half: angle from the badge, distance beyond the ring, r, α. */
 const SPECKS: [number, number, number, number][] = [
@@ -232,10 +247,57 @@ const SPECKS: [number, number, number, number][] = [
 ];
 const bpt = (angle: number, r: number): Pt => [BX + r * Math.cos(rad(angle)), BY - r * Math.sin(rad(angle))];
 
-export const WorkvivoHqFan: React.FC = () => (
-  <AbsoluteFill className="hqf">
+export interface WorkvivoHqFanProps {
+  /**
+   * Per-pane fill, 0 = glass and 1 = filled. Defaults to all filled, which is the state
+   * the whole file was measured in and what every existing caller — the gallery entry, the
+   * `WorkvivoHqFan` composition — renders today.
+   */
+  fills?: Partial<Record<Key, number>>;
+  /**
+   * Draw the built-in field bitmap. Off for a caller that supplies its own background: the
+   * opening sequence animates the field across 29 keyframes, and the static one underneath
+   * would show as a hard rectangle of the wrong mesh.
+   */
+  field?: boolean;
+}
+
+export const WorkvivoHqFan: React.FC<WorkvivoHqFanProps> = ({ fills, field = true }) => {
+  /**
+   * The pane labels are the only words in this file, and they are product chrome — the
+   * three capabilities HQ is built around, not anything about a customer — so they go
+   * through `ui()` rather than the copy table.
+   *
+   * Each label is looked up WHOLE and the translation supplies its own line break, rather
+   * than looking up each line separately. Splitting first collides: the fan's "People"
+   * (as in People Intelligence) and the side nav's "People" are the same key and want
+   * different words — the nav's is already "メンバー", which is wrong here. Keying on the
+   * whole label makes each one unambiguous, and it lets a translation break where its own
+   * language wants to instead of where English did.
+   *
+   * The break is still a <br />, not white-space:pre-line: the exporter rewraps every text
+   * node in spans and a bare newline does not reliably survive that.
+   */
+  const t = useT();
+  const label = (s: string) =>
+    t(s)
+      .split("\n")
+      .map((line, i) => (
+        <React.Fragment key={i}>
+          {i > 0 && <br />}
+          {line}
+        </React.Fragment>
+      ));
+  const fill = (k: Key) => fills?.[k] ?? 1;
+  /** Fill alpha for a pane: full when filled, GLASS_FILL of it when not. */
+  const paneAlpha = (k: Key) => FILL_ALPHA * (GLASS_FILL + (1 - GLASS_FILL) * fill(k));
+  /** Label and icon opacity, on the same ramp. */
+  const ink = (k: Key) => GLASS_INK + (1 - GLASS_INK) * fill(k);
+
+  return (
+  <AbsoluteFill className="hqf" style={field ? undefined : { background: "transparent" }}>
     {/* The reference's own field. See the header and scripts/prep-fan-field.py. */}
-    <Img className="hqf-field" src={staticFile("img/hq-fan-field.png")} alt="" />
+    {field && <Img className="hqf-field" src={staticFile("img/hq-fan-field.png")} alt="" />}
 
     <svg className="hqf-svg" width={W} height={H} viewBox={`0 0 ${W} ${H}`} xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -245,16 +307,19 @@ export const WorkvivoHqFan: React.FC = () => (
           return (
             <React.Fragment key={w.key}>
               <linearGradient id={`hqf-w-${w.key}`} gradientUnits="userSpaceOnUse" x1={x1} y1={y1} x2={x2} y2={y2}>
-                <stop offset="0" stopColor={FILL_FROM} stopOpacity={FILL_ALPHA} />
-                <stop offset="1" stopColor={FILL_TO} stopOpacity={FILL_ALPHA} />
+                <stop offset="0" stopColor={FILL_FROM} stopOpacity={paneAlpha(w.key)} />
+                <stop offset="1" stopColor={FILL_TO} stopOpacity={paneAlpha(w.key)} />
               </linearGradient>
+              {/* The rim and the edge light dim with the pane too. Leaving them at full
+                  strength was the first attempt and it read wrong immediately: an unfilled
+                  pane became a bright empty outline, where the reference's is barely there. */}
               <linearGradient id={`hqf-edge-${w.key}`} gradientUnits="userSpaceOnUse" x1={ex1} y1={ey1} x2={ex2} y2={ey2}>
-                <stop offset="0" stopColor="#ffffff" stopOpacity={EDGE[w.key].dim} />
-                <stop offset="1" stopColor="#ffffff" stopOpacity={EDGE[w.key].bright} />
+                <stop offset="0" stopColor="#ffffff" stopOpacity={EDGE[w.key].dim * ink(w.key)} />
+                <stop offset="1" stopColor="#ffffff" stopOpacity={EDGE[w.key].bright * ink(w.key)} />
               </linearGradient>
               <linearGradient id={`hqf-rim-${w.key}`} gradientUnits="userSpaceOnUse" x1={ex1} y1={ey1} x2={ex2} y2={ey2}>
-                <stop offset="0" stopColor="#ffffff" stopOpacity="0.03" />
-                <stop offset="1" stopColor="#ffffff" stopOpacity="0.1" />
+                <stop offset="0" stopColor="#ffffff" stopOpacity={0.03 * ink(w.key)} />
+                <stop offset="1" stopColor="#ffffff" stopOpacity={0.1 * ink(w.key)} />
               </linearGradient>
               <clipPath id={`hqf-c-${w.key}`}>
                 <path d={wedgePath(w.from, w.to)} />
@@ -338,41 +403,42 @@ export const WorkvivoHqFan: React.FC = () => (
     {/* Glass PNGs with the purple overlay baked in by scripts/prep-fan-icons.py — a CSS
         tint would not survive the export. Three have no asset and are drawn: the heart,
         the document, the target, and the small chip beside the loupe. */}
-    <Img className="hqf-i" style={spot(ICON.chat)} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <Img className="hqf-i" style={spot(ICON.chat2)} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <svg className="hqf-i" style={spot(ICON.heart)} viewBox="0 0 64 64">
+    <Img className="hqf-i" style={spot(ICON.chat, ink("comm"))} src={staticFile("img/glass/fan/chat.png")} alt="" />
+    <Img className="hqf-i" style={spot(ICON.chat2, ink("comm"))} src={staticFile("img/glass/fan/chat.png")} alt="" />
+    <svg className="hqf-i" style={spot(ICON.heart, ink("comm"))} viewBox="0 0 64 64">
       <path d="M32 56S6 40.5 6 23.5C6 14.4 13.2 7 22.2 7c5.9 0 9.2 3 9.8 4.6C32.6 10 35.9 7 41.8 7 50.8 7 58 14.4 58 23.5 58 40.5 32 56 32 56Z" fill="#e9e2ff" />
     </svg>
 
-    <Img className="hqf-i" style={spot(ICON.mag)} src={staticFile("img/glass/fan/mag.png")} alt="" />
-    <svg className="hqf-i" style={spot(ICON.doc)} viewBox="0 0 56 56">
+    <Img className="hqf-i" style={spot(ICON.mag, ink("search"))} src={staticFile("img/glass/fan/mag.png")} alt="" />
+    <svg className="hqf-i" style={spot(ICON.doc, ink("search"))} viewBox="0 0 56 56">
       <rect x="12" y="6" width="32" height="44" rx="5" fill="rgba(190,170,255,0.3)" stroke="#dcd2ff" strokeWidth="2.5" />
       <path d="M20 18h16M20 27h16M20 36h10" stroke="#dcd2ff" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
-    <svg className="hqf-i" style={spot(ICON.chip)} viewBox="0 0 40 40">
+    <svg className="hqf-i" style={spot(ICON.chip, ink("search"))} viewBox="0 0 40 40">
       <rect x="4" y="4" width="32" height="32" rx="7" fill="rgba(190,170,255,0.3)" stroke="#dcd2ff" strokeWidth="2.5" />
       <circle cx="14" cy="20" r="2.6" fill="#f0eaff" /><circle cx="20" cy="20" r="2.6" fill="#f0eaff" /><circle cx="26" cy="20" r="2.6" fill="#f0eaff" />
     </svg>
 
-    <svg className="hqf-i" style={spot(ICON.target)} viewBox="0 0 40 40">
+    <svg className="hqf-i" style={spot(ICON.target, ink("people"))} viewBox="0 0 40 40">
       <circle cx="20" cy="20" r="16" fill="rgba(190,170,255,0.25)" stroke="#e6e0ff" strokeWidth="2.5" />
       <circle cx="20" cy="20" r="9.5" fill="none" stroke="#e6e0ff" strokeWidth="2.5" />
       <circle cx="20" cy="20" r="3.2" fill="#f4f0ff" />
     </svg>
-    <Img className="hqf-i" style={spot(ICON.rocket)} src={staticFile("img/glass/fan/rocket.png")} alt="" />
-    <Img className="hqf-i" style={spot(ICON.sparkle)} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
+    <Img className="hqf-i" style={spot(ICON.rocket, ink("people"))} src={staticFile("img/glass/fan/rocket.png")} alt="" />
+    <Img className="hqf-i" style={spot(ICON.sparkle, ink("people"))} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
 
-    <div className="hqf-label" style={place(LABEL.comm)}>
-      <div className="hqf-title">Communication<br />&amp; Engagement</div>
-      <div className="hqf-sub">Reach, engage, and<br />align every employee</div>
+    <div className="hqf-label" style={place(LABEL.comm, ink("comm"))}>
+      <div className="hqf-title">{label("Communication\n& Engagement")}</div>
+      <div className="hqf-sub">{label("Reach, engage, and\nalign every employee")}</div>
     </div>
-    <div className="hqf-label" style={place(LABEL.search)}>
-      <div className="hqf-title">Search &amp;<br />Knowledge</div>
-      <div className="hqf-sub">Find and access what<br />you need instantly</div>
+    <div className="hqf-label" style={place(LABEL.search, ink("search"))}>
+      <div className="hqf-title">{label("Search &\nKnowledge")}</div>
+      <div className="hqf-sub">{label("Find and access what\nyou need instantly")}</div>
     </div>
-    <div className="hqf-label" style={place(LABEL.people)}>
-      <div className="hqf-title">People<br />Intelligence</div>
-      <div className="hqf-sub">Turn signals into insight,<br />action, and results</div>
+    <div className="hqf-label" style={place(LABEL.people, ink("people"))}>
+      <div className="hqf-title">{label("People\nIntelligence")}</div>
+      <div className="hqf-sub">{label("Turn signals into insight,\naction, and results")}</div>
     </div>
   </AbsoluteFill>
-);
+  );
+};

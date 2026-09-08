@@ -28,6 +28,7 @@ renders as tofu, so the check at the bottom fails the build rather than letting 
 """
 
 import base64
+import glob
 import os
 import re
 import subprocess
@@ -35,7 +36,14 @@ import sys
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-COPY = os.path.join(ROOT, "src", "japanese", "japaneseCopy.ts")
+# EVERY Japanese source file, not just the copy table.
+#
+# This read japaneseCopy.ts alone until the UI-chrome translation landed in japaneseUi.ts —
+# at which point half the words on screen came from a file the subset had never seen. That
+# does not fail loudly: a character outside the subset renders as a tofu box, and only in
+# the composition, so it survives every check that is not a render of that exact frame.
+# Globbing the directory means a new file cannot reintroduce it.
+SOURCES = sorted(glob.glob(os.path.join(ROOT, "src", "japanese", "*.ts")))
 OUT = os.path.join(ROOT, "src", "japanese", "JapaneseFont.css")
 
 # The weights the shared stylesheets actually ask for: 600 (141 declarations), 500 (124),
@@ -47,14 +55,26 @@ WEIGHTS = ["400", "500", "600", "700"]
 # copy itself.
 EXTRA = "U+0020-007E,U+00B7,U+2018-201D,U+2026,U+3000-303F,U+FF01-FF60"
 
-UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/120 Safari/537.36"
+# A BARE "Mozilla/5.0" on purpose, and this is not cosmetic.
+#
+# Google serves the CSS by capability sniffing. To a modern Chrome UA it returns 124
+# @font-face rules, each a ~43 KB woff2 covering one unicode-range slice — which is the
+# right thing for a browser and useless here, because the first URL in that CSS is one
+# arbitrary slice of the alphabet, not the font. To a UA it cannot place it returns a
+# single face pointing at the complete 5.3 MB TTF, which is what this script subsets.
+#
+# Passing a realistic UA quietly turned a 550 KB stylesheet into a 5 KB one covering
+# almost no kanji. That is what the size guards below exist to catch.
+UA = "Mozilla/5.0"
 
 
 def characters() -> str:
-    """Every character the Japanese copy uses, read from the source of truth."""
-    src = open(COPY, encoding="utf8").read()
-    # String literals only — not the identifiers or the English prose in the comments.
-    lits = re.findall(r'"((?:[^"\\]|\\.)*)"', src)
+    """Every character the Japanese sources use, read from the sources themselves."""
+    lits = []
+    for path in SOURCES:
+        src = open(path, encoding="utf8").read()
+        # String literals only — not the identifiers or the English prose in the comments.
+        lits += re.findall(r'"((?:[^"\\]|\\.)*)"', src)
     return "".join(sorted(set("".join(lits))))
 
 
@@ -66,6 +86,12 @@ def fetch(weight: str, dest: str) -> None:
     )
     req = urllib.request.Request(css_url, headers={"User-Agent": UA})
     css = urllib.request.urlopen(req, timeout=60).read().decode("utf8")
+    faces = css.count("@font-face")
+    if faces != 1:
+        sys.exit(
+            f"  weight {weight}: Google returned {faces} @font-face rules, not 1 — it has "
+            f"served unicode-range-split woff2 instead of the whole font. Check UA above."
+        )
     url = re.search(r"https://fonts\.gstatic\.com[^)]+", css)
     if not url:
         sys.exit(f"  could not find a font URL for weight {weight}")
@@ -76,12 +102,21 @@ def main() -> None:
     chars = characters()
     txt = "/tmp/jp-subset-chars.txt"
     open(txt, "w", encoding="utf8").write(chars)
-    print(f"  {len(chars)} unique characters in japaneseCopy.ts")
+    print(f"  {len(chars)} unique characters across {len(SOURCES)} Japanese source files:")
+    for path in SOURCES:
+        print(f"    {os.path.relpath(path, ROOT)}")
 
     faces = []
     for w in WEIGHTS:
         src, woff = f"/tmp/noto-{w}.ttf", f"/tmp/noto-{w}.woff2"
-        if not os.path.exists(src):
+        # Re-fetch a cached file that is too small to be the real thing. A full Noto Sans
+        # JP weight is ~5 MB; a truncated download, or this script's own woff2 output
+        # copied over the cache, sits in the tens of KB. Reusing one produces a subset
+        # with most of the glyphs missing, a 5 KB stylesheet instead of 550 KB, and a
+        # composition that renders tofu — none of which fails anything.
+        if not os.path.exists(src) or os.path.getsize(src) < 2_000_000:
+            if os.path.exists(src):
+                print(f"  w{w}: cached source is only {os.path.getsize(src) // 1024} KB — re-fetching")
             fetch(w, src)
         subprocess.run(
             [
@@ -101,14 +136,22 @@ def main() -> None:
         )
 
     header = (
-        "/* Noto Sans JP, subset to the characters japaneseCopy.ts actually uses.\n"
+        "/* Noto Sans JP, subset to the characters src/japanese/*.ts actually use.\n"
         "   GENERATED — do not edit. Run scripts/prep-japanese-font.py after changing the\n"
         "   translation, or new characters render as tofu.\n\n"
         "   Embedded rather than fetched because loading it over the network cost ~480\n"
         "   requests per render and failed outright behind a TLS-intercepting proxy — taking\n"
         "   the English cut down with it, since Root.tsx imports the Japanese module. */\n"
     )
-    open(OUT, "w", encoding="utf8").write(header + "\n".join(faces) + "\n")
+    out = header + "\n".join(faces) + "\n"
+    # A correct build is ~100 KB a weight. Anything far under that means the subsetter was
+    # fed a bad source, and writing it would replace a working font with tofu.
+    if len(out) < 200_000:
+        sys.exit(
+            f"  refusing to write a {len(out) // 1024} KB stylesheet — four weights of this "
+            f"subset should be ~550 KB. Check the sources in /tmp."
+        )
+    open(OUT, "w", encoding="utf8").write(out)
     print(f"  wrote {os.path.relpath(OUT, ROOT)} ({os.path.getsize(OUT) // 1024} KB)")
 
 

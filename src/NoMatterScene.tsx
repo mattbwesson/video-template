@@ -1,6 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
-import { useT } from "./customize/uiStrings";
+import { useT, useWordGap } from "./customize/uiStrings";
 
 /**
  * "No matter where they are", on the dark purple field.
@@ -77,6 +77,7 @@ export const NoMatterScene: React.FC<NoMatterSceneProps> = ({
   fontWeight = 700,
 }) => {
   const ui = useT();
+  const { sep } = useWordGap();
   const frame = useCurrentFrame();
 
   // The line is laid out whole — tail included, invisible — so the container's centre is
@@ -178,7 +179,9 @@ export const NoMatterScene: React.FC<NoMatterSceneProps> = ({
             left — no measurement of the visible words needed. */}
         <div style={{ transform: `translateX(${(shift * tailWidth) / 2}px)` }}>
           <span style={word("No", 0)}>{ui("No")}</span>
-          {" "}
+          {/* The separator is the locale's, not a literal: Japanese has no inter-word
+              space, and どこに いても is a space inside one word. */}
+          {sep}
           <span style={word("matter", 1)}>{ui("matter")}</span>
           {/* Only its paint is animated; it holds its space from the first frame. The
               leading space belongs to the tail, or the line would carry a trailing gap

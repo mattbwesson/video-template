@@ -21,6 +21,18 @@ import React, { createContext, useCallback, useContext } from "react";
  */
 export type UiStrings = {
   exact: Readonly<Record<string, string>>;
+  /**
+   * How words are separated when a scene lays several out on one line.
+   *
+   * The kinetic scenes split a sentence into slots so each can animate on its own, and
+   * put a gap between them — correct for English, where the slots are words, and wrong
+   * for Japanese, where they are clause fragments that must butt together: 休暇 and 明け
+   * are one word and a 0.20em gap inside it is a typo the animation happens to draw.
+   *
+   * Locale typography, not copy, which is why it rides with the strings rather than
+   * being a prop threaded through ten scenes. Defaults reproduce the English exactly.
+   */
+  wordGap?: { sep: string; gapEm: string };
   /** Tried in order after `exact` misses; `$1` etc. refer to capture groups. */
   patterns?: ReadonlyArray<readonly [RegExp, string]>;
 };
@@ -41,10 +53,28 @@ type Text = string | number | null | undefined;
  * through, so it can wrap any JSX child without changing what React would have done
  * with a number, a null, or an undefined.
  */
-export const useT = (): (<T extends Text>(s: T) => T) => {
+const DEFAULT_WORD_GAP = { sep: " ", gapEm: "0.20em" } as const;
+
+/**
+ * The inter-word separator and margin for scenes that lay slots out on one line.
+ * Identity for English — `" "` and `0.20em` are the values those scenes hardcoded.
+ */
+export const useWordGap = (): { sep: string; gapEm: string } =>
+  useContext(UiContext)?.wordGap ?? DEFAULT_WORD_GAP;
+
+/**
+ * Translate one string. Identity when no provider is mounted.
+ *
+ * `ctx` disambiguates a key that means two things. "Back" is the survey's back button
+ * (戻る) and the first word of the "Back from time off?" card, and one flat dictionary
+ * cannot serve both — the card came out 戻る休暇明け？. `ui("Back", "timeoff")` looks up
+ * `timeoff/Back` first and falls back to the bare key, so a context only has to be given
+ * where there is a clash.
+ */
+export const useT = (): (<T extends Text>(s: T, ctx?: string) => T) => {
   const strings = useContext(UiContext);
   return useCallback(
-    <T extends Text>(s: T): T => {
+    <T extends Text>(s: T, ctx?: string): T => {
       if (!strings || typeof s !== "string") return s;
       // Same-line spaces around a JSX text node are part of it, so they arrive here.
       // Look up the trimmed core and hand the spaces back, so keys stay clean.
@@ -55,6 +85,8 @@ export const useT = (): (<T extends Text>(s: T) => T) => {
       // matches a dictionary entry written on one.
       const core = raw.replace(/\s+/g, " ");
       const put = (v: string) => (before + v + after) as T;
+      const scoped = ctx ? strings.exact[`${ctx}/${core}`] : undefined;
+      if (scoped !== undefined) return put(scoped);
       const hit = strings.exact[core];
       if (hit !== undefined) return put(hit);
       for (const [re, out] of strings.patterns ?? []) {

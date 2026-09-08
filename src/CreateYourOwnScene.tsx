@@ -28,7 +28,11 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
 }) => {
   const ui = useT();
   const frame = useCurrentFrame();
-  const words = text.split(" ");
+  // Translate BEFORE splitting. Splitting first hands ui() "Create", "your", "own" one at
+  // a time, so a dictionary keyed on the whole phrase never matches and the card stays
+  // English — the same fault the feedback article's body had. Japanese has no spaces, so
+  // it comes back as a single unit and animates as one.
+  const words = ui(text).split(" ").filter(Boolean);
 
   const sparkleStart = (words.length - 1) * WORD_STAGGER + 2;
   const sparkleOpacity = interpolate(
@@ -116,7 +120,7 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
                 willChange: "transform, opacity",
               }}
             >
-              {ui(word)}
+              {word}
             </span>
           );
         })}

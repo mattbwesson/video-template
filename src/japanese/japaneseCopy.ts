@@ -139,7 +139,7 @@ const PATCH = {
     surveys: [
       { title: "四半期サーベイ" },
       { title: "AI活用サーベイ" },
-      { title: "称賛に関する調査" },
+      { title: "称賛に関するサーベイ" },
     ],
     sidePost: {
       headline: "ひとつの職場、ひとつの体験。",
@@ -263,7 +263,7 @@ const PATCH = {
         "今年の年次社員サミットのページへようこそ。アジェンダ、移動に関する案内、登壇者情報、" +
         "よくある質問、ライブ配信の詳細、当日の資料まで、開催前に必要な情報をまとめています。",
       survey: {
-        title: "社員サミット 移動に関する調査",
+        title: "社員サミット 移動サーベイ",
         meta: "6問・記名式",
       },
       post: {
@@ -304,7 +304,7 @@ const PATCH = {
         "オンボーディング概要",
         "はじめの一歩",
         "私たちの価値観",
-        "オンボーディング調査",
+        "オンボーディングサーベイ",
       ],
     },
     wall: [
@@ -356,7 +356,10 @@ const PATCH = {
       },
     ],
     article: {
-      title: "Spotify for Artists: In Focus",
+      // The product name stays in Latin — Spotify does not localise it either — with a
+      // Japanese descriptor so the card does not read as untranslated. Same treatment the
+      // feed headline above gives it. 31 characters against the slot's 40.
+      title: "Spotify for Artists：In Focus 特集",
       author: "小林 恵",
     },
     event: { title: "グローバル全社ミーティング" },

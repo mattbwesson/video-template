@@ -1,5 +1,11 @@
 import React from "react";
-import { AbsoluteFill } from "remotion";
+import { AbsoluteFill, staticFile } from "remotion";
+/**
+ * `Audio` from @remotion/media, not from remotion, for the same reason `Video` comes from
+ * there in WorkvivoCut: the plain one is an HTML media element, and @remotion/web-renderer
+ * refuses those outright — using it here would break the wizard's in-browser export.
+ */
+import { Audio } from "@remotion/media";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
 import { WorkvivoCut } from "./WorkvivoCut";
 import { JAPANESE_INPUT } from "./japanese/japaneseCopy";
@@ -40,6 +46,28 @@ import "./japanese/JapaneseType.css";
  */
 
 /**
+ * SOUND — the third thing that differs, after words and type.
+ *
+ * The English cut has no audio of its own: the reference video underneath it carries the
+ * whole soundtrack, narration and music together. That is no use here, because the
+ * narration in it is English — so this cut silences the reference (`ownSoundtrack`) and
+ * plays a mix built for it instead.
+ *
+ * The mix is a build artefact rather than something assembled at render time. The supplied
+ * Japanese read is 231.4s against a 212s film, and every line has to sit under the picture
+ * the English line it translates was cut to, so each sentence is placed against its English
+ * counterpart and sped up only as much as its slot needs — mean 1.09x, and nine of the 35
+ * untouched. scripts/build-japanese-vo.mjs does that; scripts/verify-japanese-vo.mjs
+ * transcribes the result to confirm the lines land where they were meant to, which they do
+ * to a median of 0.18s.
+ *
+ * Expressing it here instead would mean 35 <Audio> elements with per-element playbackRate:
+ * Remotion can say that, but it would be re-decided on every render and could not be
+ * checked against the audio it actually produced. The film's soundtrack is fixed, and a
+ * file is the honest representation of a fixed thing.
+ */
+
+/**
  * The font is embedded, not fetched — see src/japanese/JapaneseFont.css and the script that
  * generates it. The first version called `@remotion/google-fonts`' `loadFont`, which cost
  * ~480 requests per render and died with a bare `NetworkError` behind a TLS-intercepting
@@ -56,7 +84,8 @@ export const Japanese: React.FC = () => (
       {/* AbsoluteFill rather than a plain div: WorkvivoCut's own root is one, and a
           statically-sized wrapper would give it a zero-height parent to lay out inside. */}
       <AbsoluteFill className="jp">
-        <WorkvivoCut />
+        <Audio src={staticFile("audio/japanese-soundtrack.mp3")} />
+        <WorkvivoCut ownSoundtrack />
       </AbsoluteFill>
     </UiStringsProvider>
   </CustomizationProvider>

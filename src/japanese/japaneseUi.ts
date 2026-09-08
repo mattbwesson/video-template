@@ -18,6 +18,36 @@ const exact: Record<string, string> = {
   "Chat": "チャット", "Spaces": "スペース", "Admin": "管理", "EXPLORE": "探す",
   "News": "ニュース", "Events": "イベント", "Pages": "ページ", "Podcasts": "ポッドキャスト",
   "Survey & Forms": "アンケート・フォーム", "Surveys & Forms": "アンケート・フォーム",
+  /**
+   * The HQ capability fan, global 268-416, and the tagline under the lockup at 139-262.
+   *
+   * The KEY is the label with its newline collapsed to a space, because that is what
+   * `useT` looks up — it normalises whitespace so a label split across source lines still
+   * matches one dictionary entry. The VALUE keeps its "\n", which is what sets the
+   * Japanese break; the English break is not the Japanese one. The box is 480px wide at 40px for a title and 23px for a subtitle, so a
+   * title line has room for twelve characters and a subtitle for twenty; every line below
+   * is inside that.
+   */
+  "Communication & Engagement": "コミュニケーション\nとエンゲージメント",
+  "Reach, engage, and align every employee": "情報を届け、共感を生み、\n組織を一つに",
+  "Search & Knowledge": "検索と\nナレッジ",
+  "Find and access what you need instantly": "必要な情報に\nすぐにたどり着く",
+  "People Intelligence": "ピープル\nインテリジェンス",
+  "Turn signals into insight, action, and results": "シグナルを洞察に変え、\n行動と成果へ",
+  // 19 ems against the English line's 21 at the same size, so it sits slightly narrower
+  // than the English and needs no size adjustment of its own.
+  "The AI-native employee experience platform": "AIネイティブの従業員体験プラットフォーム",
+  "Tools": "ツール",
+  // The Catch Me Up story pills and the content-type list, global 689 and 886.
+  "Anonymous": "匿名", "Shout-outs": "シャウトアウト", "Value updates": "価値観の投稿",
+  "GIFs": "GIF",
+  /**
+   * The 104px headline beside the phone, global ~534-600. Three lines, and they have to
+   * STAY three short lines: the block sits in about 620px beside the phone with
+   * `whiteSpace: "pre"`, so it does not wrap and a long line runs off the frame. Six
+   * characters a line is the most that fits at this size.
+   */
+  "Personalized Homepage Experiences": "一人ひとりに\n最適化された\nホーム画面",
   "Surveys": "アンケート", "Newsletters": "ニュースレター", "Journeys": "ジャーニー",
   "CONNECT": "つながる", "Connect": "つながる", "People": "メンバー", "Teams": "チーム",
   "Org Chart": "組織図", "RESOURCES": "リソース", "Resources": "リソース", "Apps": "アプリ",
@@ -259,7 +289,10 @@ const exact: Record<string, string> = {
   // features and demo the product's own flows), so they are not in the customer copy
   // table and reach the screen through ui() like everything else.
   "Every employee deserves a headquarters.": "すべての社員に、本社を。",
-  "Now": "今、", "they": "それが", "have": "ここに", "one.": "ある。",
+  // Four reveal cards, one word each. The VO says それが今実現します。 at 3.6s; these are
+  // that sentence cut on its own joints, with the fourth card empty rather than splitting
+  // 実現します across two.
+  "Now": "それが、", "they": "今", "have": "実現します。", "one.": "",
   "Personalized": "一人ひとりに合わせた", "Homepage": "ホームページ", "Experiences": "体験",
   "Smart Chapters": "スマートチャプター", "Summarize with AI": "AIで要約",
   "Your Voice Matters": "あなたの声が力になる",
@@ -291,11 +324,27 @@ const exact: Record<string, string> = {
   "Your day off request for February 20th has been successfully submitted to your manager for approval. You'll be notified once it's approved.": "2月20日の休暇申請を上長に送信しました。承認されると通知が届きます。",
   "Brainstorm Meeting": "ブレスト会議", "Write a short paragraph about today": "今日について短い文章を書いて",
   "Product sync": "プロダクト定例", "What meetings do I have today?": "今日の会議は？", "Customer Presentation": "顧客向けプレゼン",
-  // "Back" is also the survey button (戻る, above); the beat is re-cut around that.
-  "from": "、", "time": "休暇", "off?": "明け？",
-  "Amplify": "広げる", "Reach": "届ける", "Ask": "聞く", "Answer": "答える", "Job Done": "完了",
+  /**
+   * "Back from time off?" — four slots that animate in sequence: `Back` sits alone,
+   * then the rest track out from behind it. The Japanese is 休暇明け？, which is two
+   * slots' worth, so the last two are empty and the gap between the first two is zero
+   * (see `wordGap` below). "Back" cannot be used as the key — it is the survey's back
+   * button (戻る, above) — so the beat is carried by the three slots that remain.
+   * The VO says 休暇明けも大丈夫 at 24.6s, directly under this card.
+   *
+   * Scoped keys: "Back" alone is the survey's back button (戻る), and the flat lookup gave
+   * this card 戻る休暇明け？. The scene passes ctx "timeoff", so these win here only.
+   */
+  "timeoff/Back": "休暇", "timeoff/from": "明け？", "timeoff/time": "", "timeoff/off?": "",
+  "Amplify": "広げる", "Reach": "届ける",
+  // The VO reads 質問から回答へ、そして完了まで。 under these three cards; the nouns match it
+  // and read better as single words than the verbs 聞く/答える did.
+  "Ask": "質問", "Answer": "回答", "Job Done": "完了",
   "Create your own": "自分でつくる", "AI Widget Builder": "AIウィジェットビルダー",
-  "Go beyond": "その先へ", "the": "数字を", "numbers": "超えて",
+  // lead + two tail slots. Was その先へ 数字を 超えて — English clause order, and the
+  // particle を stranded before a verb that reads as a second predicate. The VO says
+  // 数字の先にあるものを明らかに at 147.9s, under this card.
+  "Go beyond": "数字の", "the": "先へ。", "numbers": "",
   "How can I help you?": "何をお手伝いしましょうか？", "Key Business Results": "主要な事業成果",
 
   // ── Stragglers from the frame sweep ───────────────────────────────────────────
@@ -309,10 +358,12 @@ const exact: Record<string, string> = {
   "Strongly Agree": "強くそう思う", "Strongly Disagree": "全くそう思わない",
 
   // ── Scenes ────────────────────────────────────────────────────────────────────
-  "No": "どこに", "matter": "いても", "where they are": "つながる",
+  "No": "どこに", "matter": "いても", "where they are": "つながる",  // sep is "" — see wordGap
 };
 
 const patterns: ReadonlyArray<readonly [RegExp, string]> = [
+  [/^(\d+) Questions?$/, "設問$1問"],
+  [/^(\d+) steps? remaining$/, "残り$1ステップ"],
   [/^(\d[\d,]*) [Cc]omments?$/, "コメント$1件"],
   [/^(\d[\d,]*) reactions?$/, "リアクション$1件"],
   [/^(\d[\d,]*) Members$/, "メンバー$1人"],
@@ -339,4 +390,11 @@ const patterns: ReadonlyArray<readonly [RegExp, string]> = [
   [/^(\d+) (Jan|Feb|Mar|Apr|May|Jun) 2026$/, "2026年$2$1日"],
 ];
 
-export const JAPANESE_UI: UiStrings = { exact, patterns };
+/**
+ * Japanese sets no space between slots and no margin either. The kinetic scenes split a
+ * sentence so each fragment can animate; in English those fragments are words and want a
+ * gap, in Japanese they are parts of one word and must touch.
+ */
+const wordGap = { sep: "", gapEm: "0" } as const;
+
+export const JAPANESE_UI: UiStrings = { exact, patterns, wordGap };
