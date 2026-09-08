@@ -100,6 +100,21 @@ def score(path: str):
     return rows, total
 
 
+def band(fill: float) -> str:
+    """
+    A word, not a percentage.
+
+    The calibration's median per-line error is 0.38s, which at these window sizes is 5-8
+    percentage points. Printing 88% next to 85% invites a reader to treat a difference the
+    model cannot resolve as a finding. Three bands is the most this measurement supports.
+    """
+    if fill <= FILL:
+        return "room"
+    if fill <= 1.0:
+        return "snug"
+    return "over"
+
+
 def main() -> None:
     args = sys.argv[1:]
     # --json is how scripts/predict-vo-fit.mjs gets the per-beat durations. It runs the
@@ -111,18 +126,21 @@ def main() -> None:
         print(json.dumps(rows, ensure_ascii=False))
         return
     rows, total = score(args[0])
-    print(f"{'beat':>4} {'start':>7} {'window':>7} {'budget':>7} {'mora':>5} {'speech':>7} {'fill':>6}")
+    print(f"{'beat':>4} {'start':>7} {'window':>7} {'budget':>7} {'mora':>5} {'speech':>7}  fit")
     for r in rows:
-        flag = "" if r["fill"] <= FILL else ("  tight" if r["fill"] <= 1.0 else "  OVER")
         print(
             f"{r['beat']:>4} {r['start']:>6.1f}s {r['window']:>6.1f}s {r['budget']:>7} "
-            f"{r['mora']:>5} {r['seconds']:>6.1f}s {r['fill']:>5.0%}{flag}"
+            f"{r['mora']:>5} {r['seconds']:>6.1f}s  {band(r['fill'])}"
         )
-    over = [r["beat"] for r in rows if r["fill"] > 1.0]
-    tight = [r["beat"] for r in rows if FILL < r["fill"] <= 1.0]
-    print(f"\n  needs compression: {over or 'none'}")
-    print(f"  fits but no breath: {tight or 'none'}")
+    over = [r["beat"] for r in rows if band(r["fill"]) == "over"]
+    snug = [r["beat"] for r in rows if band(r["fill"]) == "snug"]
+    print(f"\n  over its window: {over or 'none'}")
+    print(f"  inside its window, under the 85% target: {snug or 'none'}")
     print(f"  {total} mora = {total / RATE:.1f}s of speech in a 212s film")
+    # What a beat's band costs is not decided here: the placement is solved across the whole
+    # track, so a beat marked "over" next to one with slack is placed early rather than sped
+    # up. node scripts/predict-vo-fit.mjs is the one that answers that.
+    print("  run scripts/predict-vo-fit.mjs for what these actually cost in tempo")
 
 
 if __name__ == "__main__":
