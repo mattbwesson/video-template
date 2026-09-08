@@ -13,10 +13,11 @@ that varies most between a line like `エンゲージメントサーベイ` and 
 
 Measured against the actual read, per line:
 
-    mora/sec   8.48   cv 0.139   median error 0.38s   worst 1.44s
-    chars/sec  7.56   cv 0.162   median error 0.61s   worst 1.75s
+    mora/sec   8.52   cv 0.131   median error 0.38s   worst 1.54s
+    chars/sec  7.04   cv 0.160   median error 0.41s   worst 1.75s
 
-The mora model is 59% more accurate per line. The rate below is that calibration.
+The mora model is 22% tighter per line. Re-measure it after every recording with
+scripts/calibrate-mora-rate.py — the rate is a property of the voice, not the language.
 
 HOW THE RATE WAS CALIBRATED, AND THE MISTAKE WORTH NOT REPEATING
 
@@ -46,8 +47,8 @@ from mora import mora  # noqa: E402
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ALIGNMENT = os.path.join(ROOT, "docs", "audio", "vo-alignment.json")
 
-# Mora per second, from the read in public/audio/japanes-voiceover-2.mp3. See above.
-RATE = 8.48
+# Mora per second, from the v3 read in public/audio/japanese-voiceover-3.mp3. See above.
+RATE = 8.52
 
 # Fraction of the window a line should occupy, leaving the rest as breath.
 FILL = 0.85

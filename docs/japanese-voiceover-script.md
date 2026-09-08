@@ -1,15 +1,42 @@
-# Japanese voiceover script — v3, timed to the cut
+# Japanese voiceover script — v3, recorded and in the cut
 
-Record **[docs/audio/japanese-vo-v3.txt](audio/japanese-vo-v3.txt)**. This document explains
-it. The script itself is a plain text file, one beat a line, so that everything below can be
-regenerated from it rather than transcribed:
+**This is the script that was recorded** (`public/audio/japanese-voiceover-3.mp3`, 223.1s)
+and the film's soundtrack is built from it. The script itself is a plain text file, one beat
+a line — [docs/audio/japanese-vo-v3.txt](audio/japanese-vo-v3.txt) — so every table below is
+generated from it rather than transcribed:
 
 ```bash
-python3 scripts/check-vo-doc.py && python3 scripts/score-vo-script.py docs/audio/japanese-vo-v3.txt && node scripts/predict-vo-fit.mjs docs/audio/japanese-vo-v3.txt
+python3 scripts/check-vo-doc.py && python3 scripts/score-vo-script.py docs/audio/japanese-vo-v3.txt
 ```
 
 `check-vo-doc.py` fails if any row of the script table or any cell of the change log has
 drifted from the script file. Edit the `.txt`, re-run it, and it will tell you what to fix.
+
+## How the recorded read turned out
+
+Measured off the built soundtrack by transcribing it back (`verify-japanese-vo.mjs`), not
+read off the plan that made it:
+
+| | v1 read | v3 read |
+|---|---|---|
+| length against a 212s film | 231.4s | 223.1s |
+| sentences left at 1.000x | 14 of 35 | **23 of 35** |
+| worst tempo | 1.238x | **1.014x** |
+| median drift from the English line it replaces | 0.18s | **0.14s** |
+| worst drift | 0.88s | 0.67s |
+
+Nothing in the film is compressed audibly — 1.014x is the worst any line is stretched, where
+v1 had lines at 1.24x. Two changes to the build got it there, both described in
+`scripts/build-japanese-vo.mjs`:
+
+- **Over-long pauses are trimmed before any speech is sped up.** The read carries 19.9s of
+  silence *inside* its sentences against the English narration's 15.6s, and it only overruns
+  the film by 11.1s. Compressing speech to absorb an overrun that is mostly silence is the
+  wrong trade, so pauses are now capped at 1.00s — the longest the English narration ever
+  pauses mid-sentence — and cut from their middle so the edit lands in room tone.
+- **The tempo/sync weight was re-swept for this read.** It was tuned against v1, which had
+  no slack anywhere; this read has some, and the old value was spending none of it. Moving a
+  line half a second is cheaper than rushing it.
 
 ## What v2 got wrong, since v2 is still in the repo
 
@@ -72,27 +99,27 @@ problem — see the next section.
 | 1 | 0.6s | 5.1s | 24 | 2.8s | room | すべての社員に、本社を。それが、いま実現します。 |
 | 2 | 5.8s | 11.5s | 78 | 9.2s | room | Workvivo HQ へようこそ。コミュニケーション、ナレッジ、アクション、インサイト。そのすべてが一つにつながる、AIネイティブの社員エクスペリエンスプラットフォームです。 |
 | 3 | 17.2s | 7.1s | 45 | 5.3s | room | パーソナライズされたホーム画面で、役割・チーム・拠点ごとに最適な体験を届けます。 |
-| 4 | 24.4s | 4.7s | 34 | 4.0s | snug | 休暇明けも、パーソナライズされたAI要約ですぐにキャッチアップ。 |
-| 5 | 29.1s | 7.3s | 43 | 5.1s | room | 思わず目を引くコンテンツで、情報を届け、つながりを生み、エンゲージメントを高めます。 |
+| 4 | 24.4s | 4.7s | 34 | 4.0s | room | 休暇明けも、パーソナライズされたAI要約ですぐにキャッチアップ。 |
+| 5 | 29.1s | 7.3s | 43 | 5.0s | room | 思わず目を引くコンテンツで、情報を届け、つながりを生み、エンゲージメントを高めます。 |
 | 6 | 36.4s | 7.5s | 45 | 5.3s | room | 企業のバリューに紐づいた称賛の投稿で、成果をたたえ、活躍する仲間を認め合う。 |
-| 7 | 43.8s | 7.8s | 48 | 5.7s | room | 自社の人・文化・トーンを理解したAIが、コンテンツの作成・推敲・ローカライズを数秒で。 |
+| 7 | 43.8s | 7.8s | 48 | 5.6s | room | 自社の人・文化・トーンを理解したAIが、コンテンツの作成・推敲・ローカライズを数秒で。 |
 | 8 | 51.6s | 7.6s | 53 | 6.2s | room | 経営層と現場をリアルタイムにつなぎ、大切な瞬間を、誰もが参加できる双方向の体験に。 |
-| 9 | 59.2s | 6.4s | 37 | 4.4s | room | コラボレーション、対話、つながりのための専用スペースで、コミュニティをより強く。 |
-| 10 | 65.6s | 7.3s | 54 | 6.4s | snug | オンボーディングから変革の浸透まで。一人ひとりに最適化された、AI活用のジャーニーを届けます。 |
+| 9 | 59.2s | 6.4s | 37 | 4.3s | room | コラボレーション、対話、つながりのための専用スペースで、コミュニティをより強く。 |
+| 10 | 65.6s | 7.3s | 54 | 6.3s | snug | オンボーディングから変革の浸透まで。一人ひとりに最適化された、AI活用のジャーニーを届けます。 |
 | 11 | 72.9s | 6.5s | 40 | 4.7s | room | 社内のディスプレイに Workvivo を表示し、コミュニケーションの届く範囲を広げます。 |
 | 12 | 79.3s | 4.7s | 27 | 3.2s | room | ニュースレターで、いちばん届けたいストーリーを、もう一度。 |
 | 13 | 84.0s | 7.0s | 46 | 5.4s | room | チャット、音声・ビデオ通話、AIによる会話の要約で、コラボレーションはもっとスピーディーに。 |
 | 14 | 91.0s | 9.0s | 67 | 7.9s | snug | HQ に聞けば、連携したシステム全体から答えがすぐに見つかります。次のアクションまで、HQ を離れる必要はありません。 |
-| 15 | 100.0s | 3.0s | 20 | 2.4s | room | 質問から、回答へ。そして、完了まで。 |
+| 15 | 100.0s | 3.0s | 20 | 2.3s | room | 質問から、回答へ。そして、完了まで。 |
 | 16 | 102.9s | 10.1s | 58 | 6.8s | room | 一つのアプリに、状況に応じた複数の体験を。どこにいても、必要なツール、リソース、情報にアクセスできます。 |
 | 17 | 113.0s | 7.8s | 53 | 6.2s | room | 業務ツールや各種連携から、ニュース、カルチャー、社員向けリソースまで。すぐに使えるウィジェットで思いのままに。 |
 | 18 | 120.8s | 3.7s | 23 | 2.7s | room | AI ウィジェットビルダーで、自分だけの一つを。 |
-| 19 | 124.5s | 10.4s | 71 | 8.4s | room | AI によるページ作成で、洗練されたコンテンツを数分で公開。散在していた情報を、整理された検索可能なナレッジハブへ。 |
+| 19 | 124.5s | 10.4s | 71 | 8.3s | room | AI によるページ作成で、洗練されたコンテンツを数分で公開。散在していた情報を、整理された検索可能なナレッジハブへ。 |
 | 20 | 134.9s | 7.9s | 55 | 6.5s | room | 高度な分析機能で、何がうまくいっているかを可視化し、社員を理解し、勘ではなく実際のデータで動く。 |
 | 21 | 142.8s | 5.1s | 40 | 4.7s | snug | きちんと回答が集まるサーベイで、社員にとって大切なことを測定します。 |
-| 22 | 147.9s | 8.0s | 60 | 7.1s | snug | AI インサイトが、数字の先を明らかに。傾向をとらえ、エンゲージメントを動かす要因と、次の一手を示します。 |
+| 22 | 147.9s | 8.0s | 60 | 7.0s | snug | AI インサイトが、数字の先を明らかに。傾向をとらえ、エンゲージメントを動かす要因と、次の一手を示します。 |
 | 23 | 155.9s | 6.2s | 40 | 4.7s | room | マネージャーはチームの状態をすぐに把握でき、自信を持って行動を起こせます。 |
-| 24 | 162.1s | 7.6s | 54 | 6.4s | room | 場所を問わず。フィードバックが届いた瞬間から、変化を実感するまで。すべてが、ここ HQ で完結します。 |
+| 24 | 162.1s | 7.6s | 54 | 6.3s | room | 場所を問わず。フィードバックが届いた瞬間から、変化を実感するまで。すべてが、ここ HQ で完結します。 |
 | 25 | 169.7s | 6.1s | 41 | 4.8s | room | サーベイ作成の手間は AI におまかせ。すぐに結果の確認から始められます。 |
 | 26 | 175.7s | 6.3s | 44 | 5.2s | room | 使い慣れたツールのすべてを、一つの体験レイヤーに。必要なものは、すべて HQ に。 |
 | 27 | 182.0s | 5.2s | 45 | 5.3s | over | セルフサービス型の管理と機能のオン/オフで、社員エクスペリエンスを安心して運用。 |
@@ -104,31 +131,38 @@ problem — see the next section.
 **Do not read to the clock.** Read naturally; the pipeline places each line on its anchor.
 The budgets exist so that placement never needs to compress.
 
-## What a `snug` or `over` beat actually costs
+## What a `snug` or `over` beat actually costs, and how the model did
 
 A per-beat budget is the right unit for writing — it tells you which sentence is too long —
 but it is pessimistic about what happens next, because `scripts/build-japanese-vo.mjs` does
 not place lines one at a time. It solves the whole track, so a long line next to a short one
-is placed early rather than sped up. Running the real solver over these predicted durations
-(`node scripts/predict-vo-fit.mjs`):
+is placed early rather than sped up. Beat 27 is the only beat longer than its own window,
+and `node scripts/predict-vo-fit.mjs` put it at 1.014x for that reason; it cost 1.003x in the
+finished build.
+
+Predicted against the three drafts, at the recalibrated 8.52 mora/sec:
 
 | | v1 | v2 | v3 |
 |---|---|---|---|
-| beats left at 1.00x | 21 of 31 | 31 of 31 | 30 of 31 |
-| beats above 1.02x | 9 | 0 | **0** |
-| worst tempo | 1.162x | 1.000x | **1.016x** |
-| worst drift from anchor | 0.61s | 0.00s | 0.06s |
+| beats left at 1.00x | 22 of 31 | 31 of 31 | 30 of 31 |
+| beats above 1.02x | 8 | 0 | **0** |
+| worst predicted tempo | 1.159x | 1.000x | **1.014x** |
 
-Beat 27 is the one beat longer than its own window, and it costs 1.016x — it is placed 0.06s
-early, into beat 26's slack. That is not a finding; it is the solver doing what it is for.
-v1's problem was three beats at 1.12–1.16x, which is audible. Nothing in v3 is.
+**How accurate that turned out to be.** Comparing each beat's predicted speech duration
+against what the reader actually took, measured off the recording:
 
-**Do not treat the absolute seconds as load-bearing yet.** The 8.48 rate is calibrated
-against the v1 read. If v3 is generated rather than performed by the same voice, the new
-voice's base rate can differ by a common factor, which would shift every prediction in this
-document together. The *comparison* between drafts survives that, since all three go through
-one model — but the per-beat seconds are provisional until `verify-japanese-vo.mjs` has run
-against the new recording and the rate has been recalibrated on it.
+    median error 0.36s, worst 1.54s across 31 beats
+
+which is what the calibration promised (cv 0.131). The model is good enough to rank beats and
+to catch a line that will not fit; it is not good enough to resolve 88% from 85%, which is
+why the `Fit` column is banded.
+
+**The errors are not random, and one tempting fix does not work.** The beats it
+underestimates are the comma-heavy lists — beats 5, 13 and 20 all ran ~1s long, because the
+reader takes a micro-pause at each `、` that is too short to count as a pause but is not free.
+Fitting a per-comma term to that looks justified at three commas (+0.84s mean error) and then
+falls apart at four (−0.11s); adding it makes the median error **worse**, 0.43s against 0.36s.
+Thirty-one beats is not enough data to fit a second parameter, so there isn't one.
 
 ## A register decision that needs a human, not a trim
 
@@ -196,16 +230,38 @@ already shows.
   uses `従業員エクスペリエンス`, that is a human decision, not this document's.
 - Beat 31 is 15 mora into a 5.3s window. It is the closing line and should breathe.
 
-## After recording
+## Re-running this after a new recording
 
-1. Drop the file in `public/audio/` and point `scripts/transcribe-vo.mjs` at it.
-2. Re-run the alignment, then `node scripts/build-japanese-vo.mjs`.
-3. `node scripts/verify-japanese-vo.mjs` transcribes the built soundtrack and reports where
-   each line actually landed.
-4. **Recalibrate `RATE` in `scripts/score-vo-script.py` against the new read**, by the same
-   speech-only method documented there. Expect to do this rather than hope you can skip it:
-   8.48 comes from the v1 voice, and a different voice moves every prediction in this
-   document by a common factor. Until that has been done once, the per-beat seconds here are
-   provisional and only the comparison between drafts is sound.
-5. Re-run `python3 scripts/prep-japanese-font.py` only if the on-screen copy changed. The
-   voiceover does not affect the font subset.
+Done for v3; this is the order for next time.
+
+```bash
+cp public/audio/<new>.mp3 public/audio/japanese-voiceover.mp3
+node scripts/transcribe-vo.mjs japanese
+node scripts/repair-transcript-holes.mjs           # Whisper silently dropped 5.6s once
+node scripts/align-japanese-vo.mjs
+python3 scripts/calibrate-mora-rate.py             # then set RATE in score-vo-script.py
+node scripts/build-japanese-vo.mjs
+node scripts/transcribe-vo.mjs japanese-paced && node scripts/verify-japanese-vo.mjs
+python3 scripts/check-vo-doc.py
+```
+
+Three of those are easy to skip and expensive to have skipped:
+
+- **`repair-transcript-holes.mjs`.** Whisper dropped 5.64s of speech from the v2 read, so the
+  built soundtrack was missing a whole line while nothing in the pipeline failed. v3 came
+  back clean (0 gaps over 2.5s), but that is a fact about this file, not a guarantee.
+- **`calibrate-mora-rate.py`.** The rate is a property of the voice. v3 measured 8.52 against
+  v1's 8.48, so the two reads happen to be near-identical — that is luck, not a rule, and a
+  different voice shifts every number in this document by a common factor.
+- **The `SYNC_VS_TEMPO` sweep in `build-japanese-vo.mjs`.** Its right value depends on how
+  much slack the read leaves. The value tuned for v1 left v3 compressing two lines to 1.086x
+  while holding a sync error it had no need to protect.
+
+`align-japanese-vo.mjs` calls the model and is not deterministic. On the first v3 run it put
+a clause boundary one phrase early, splitting `コミュニティーをより強く` off from its own
+sentence, which would have forced 1.29x on the following line; a second run placed it
+correctly. The `x` column it prints is the check — anything much above 1.1 there is worth a
+second look before building on it.
+
+Re-run `python3 scripts/prep-japanese-font.py` only if the on-screen copy changed. The
+voiceover does not affect the font subset.

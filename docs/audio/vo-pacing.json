@@ -1,29 +1,35 @@
 {
-  "generated": "2026-09-08T18:59:20.657Z",
+  "generated": "2026-09-08T21:58:29.921Z",
   "settings": {
     "TEMPO_MAX": 1.25,
     "GAP": 0.1,
-    "SYNC_VS_TEMPO": 20,
+    "SYNC_VS_TEMPO": 320,
     "FILM": 212
   },
   "measured": {
-    "pacedLufs": -16.5,
-    "mixLufs": -19.7,
-    "voGain": -3.8,
+    "pacedLufs": -16.4,
+    "mixLufs": -19.8,
+    "voGain": -3.9,
     "musicGainDb": -14.7
   },
   "sentences": [
     {
       "sentence": 0,
       "english": "Every employee deserves a headquarters.",
-      "japanese": "全ての社員に本社を。",
+      "japanese": "すべての社員に本社を、",
       "anchor": 0.64,
       "start": 0.64,
       "offset": 0,
       "tempo": 1,
       "sourceStart": 0,
-      "sourceEnd": 2.06,
-      "played": 2.06
+      "sourceEnd": 1.98,
+      "runs": [
+        {
+          "start": 0,
+          "end": 1.98
+        }
+      ],
+      "played": 1.98
     },
     {
       "sentence": 1,
@@ -33,69 +39,133 @@
       "start": 3.6,
       "offset": 0,
       "tempo": 1,
-      "sourceStart": 2.64,
-      "sourceEnd": 4.44,
-      "played": 1.8
+      "sourceStart": 2.4,
+      "sourceEnd": 4.04,
+      "runs": [
+        {
+          "start": 2.4,
+          "end": 4.04
+        }
+      ],
+      "played": 1.64
     },
     {
       "sentence": 2,
       "english": "Welcome to Workvivo HQ, the AI native employee experience platform where comms, knowledge, action, and insight come together in one connected experience.",
-      "japanese": "WorkvivoHQへようこそ。コミュニケーション、ナレッジ、アクション、インサイトそのすべてが一つにつながるAIネイティブの社員エクスペリエンスプラットフォームです。",
+      "japanese": "WorkvivoHQへようこそ。コミュニケーション、ナレッジ、アクション、インサイト、そのすべてが一つにつながるAIネイティブの社員エクスペリエンスプラットフォームです。",
       "anchor": 5.76,
-      "start": 5.678,
-      "offset": -0.082,
-      "tempo": 1.0448,
-      "sourceStart": 5.04,
-      "sourceEnd": 17.08,
-      "played": 11.523
+      "start": 5.497,
+      "offset": -0.263,
+      "tempo": 1.0096,
+      "sourceStart": 4.74,
+      "sourceEnd": 16.74,
+      "runs": [
+        {
+          "start": 4.74,
+          "end": 7.1
+        },
+        {
+          "start": 7.1,
+          "end": 9.05
+        },
+        {
+          "start": 9.05,
+          "end": 10.11
+        },
+        {
+          "start": 10.11,
+          "end": 10.87
+        },
+        {
+          "start": 10.87,
+          "end": 16.74
+        }
+      ],
+      "played": 11.886
     },
     {
       "sentence": 3,
       "english": "Create tailored experiences for every role, team, and location with personalized homepage experiences.",
       "japanese": "パーソナライズされたホーム画面で、役割、チーム、拠点ごとに最適な体験を届けます。",
       "anchor": 17.22,
-      "start": 17.302,
-      "offset": 0.082,
+      "start": 17.483,
+      "offset": 0.263,
       "tempo": 1,
-      "sourceStart": 18.26,
-      "sourceEnd": 23.98,
-      "played": 5.72
+      "sourceStart": 17.58,
+      "sourceEnd": 23.48,
+      "runs": [
+        {
+          "start": 17.58,
+          "end": 20.21
+        },
+        {
+          "start": 20.21,
+          "end": 20.74
+        },
+        {
+          "start": 20.74,
+          "end": 23.48
+        }
+      ],
+      "played": 5.9
     },
     {
       "sentence": 4,
       "english": "Back from time off?",
-      "japanese": "休暇明けも大丈夫。",
+      "japanese": "休暇明けも",
       "anchor": 24.36,
-      "start": 24.133,
-      "offset": -0.227,
-      "tempo": 1.0159,
-      "sourceStart": 24.64,
-      "sourceEnd": 26.1,
-      "played": 1.437
+      "start": 24.36,
+      "offset": 0,
+      "tempo": 1,
+      "sourceStart": 24.24,
+      "sourceEnd": 24.96,
+      "runs": [
+        {
+          "start": 24.24,
+          "end": 24.96
+        }
+      ],
+      "played": 0.72
     },
     {
       "sentence": 5,
       "english": "Catch up in an instant with personalized AI summaries.",
-      "japanese": "AIによるパーソナライズされた要約で、すぐ休暇をキャッチアップ。",
+      "japanese": "パーソナライズされたAI要約ですぐにキャッチアップ。",
       "anchor": 25.76,
-      "start": 25.671,
-      "offset": -0.089,
-      "tempo": 1.054,
-      "sourceStart": 27.04,
-      "sourceEnd": 30.84,
-      "played": 3.605
+      "start": 25.76,
+      "offset": 0,
+      "tempo": 1,
+      "sourceStart": 24.96,
+      "sourceEnd": 28,
+      "runs": [
+        {
+          "start": 24.96,
+          "end": 28
+        }
+      ],
+      "played": 3.04
     },
     {
       "sentence": 6,
       "english": "Keep everyone informed, connected, and engaged through content that captures attention and drives engagement.",
       "japanese": "思わず目を引くコンテンツで情報を届け、つながりを生み、エンゲージメントを高めます。",
       "anchor": 29.06,
-      "start": 29.376,
-      "offset": 0.316,
+      "start": 29.06,
+      "offset": 0,
       "tempo": 1,
-      "sourceStart": 31.96,
-      "sourceEnd": 37.24,
-      "played": 5.28
+      "sourceStart": 28.92,
+      "sourceEnd": 35.68,
+      "runs": [
+        {
+          "start": 28.92,
+          "end": 33.14
+        },
+        {
+          "start": 33.14,
+          "end": 35.68
+        }
+      ],
+      "played": 6.76
     },
     {
       "sentence": 7,
@@ -105,321 +175,571 @@
       "start": 36.38,
       "offset": 0,
       "tempo": 1,
-      "sourceStart": 38.32,
-      "sourceEnd": 44.22,
-      "played": 5.9
+      "sourceStart": 35.94,
+      "sourceEnd": 41.72,
+      "runs": [
+        {
+          "start": 35.94,
+          "end": 41.72
+        }
+      ],
+      "played": 5.78
     },
     {
       "sentence": 8,
       "english": "Create, refine, and localize content in seconds with AI that actually knows your people, culture, and tone of voice.",
-      "japanese": "自社の人文化トーンを理解したAIが、コンテンツの作成、遂行、ローカライズを数秒で、",
+      "japanese": "自社の人文化トーンを理解したAIがコンテンツの作成、遂行、ローカライズを数秒で、",
       "anchor": 43.84,
       "start": 43.84,
       "offset": 0,
       "tempo": 1,
-      "sourceStart": 44.68,
-      "sourceEnd": 52.04,
-      "played": 7.36
+      "sourceStart": 42.7,
+      "sourceEnd": 49.68,
+      "runs": [
+        {
+          "start": 42.7,
+          "end": 46.74
+        },
+        {
+          "start": 46.74,
+          "end": 47.39
+        },
+        {
+          "start": 47.39,
+          "end": 49.68
+        }
+      ],
+      "played": 6.98
     },
     {
       "sentence": 9,
       "english": "Connect leadership with your team in turn important moments into interactive experiences everyone can be part of.",
-      "japanese": "経営層と現場をリアルタイムメントにつなぎ、大切な瞬間を誰もが参加できる、双方向の体験に変えます。",
+      "japanese": "経営層と現場をリアルタイムにつなぎ、大切な瞬間を誰もが参加できる双方向の体験に、",
       "anchor": 51.6,
-      "start": 51.484,
-      "offset": -0.116,
-      "tempo": 1.0426,
-      "sourceStart": 52.22,
-      "sourceEnd": 60.26,
-      "played": 7.711
+      "start": 51.6,
+      "offset": 0,
+      "tempo": 1,
+      "sourceStart": 50.34,
+      "sourceEnd": 56.64,
+      "runs": [
+        {
+          "start": 50.34,
+          "end": 52.69
+        },
+        {
+          "start": 52.69,
+          "end": 56.64
+        }
+      ],
+      "played": 6.3
     },
     {
       "sentence": 10,
       "english": "Build stronger communities with dedicated spaces for collaboration, conversation, and connection.",
       "japanese": "コラボレーション、対話、つながりのための専用スペースで、コミュニティーをより強く、",
       "anchor": 59.18,
-      "start": 59.296,
-      "offset": 0.116,
+      "start": 59.18,
+      "offset": 0,
       "tempo": 1,
-      "sourceStart": 60.56,
-      "sourceEnd": 66.28,
-      "played": 5.72
+      "sourceStart": 57.62,
+      "sourceEnd": 63.72,
+      "runs": [
+        {
+          "start": 57.62,
+          "end": 59.01
+        },
+        {
+          "start": 59.01,
+          "end": 59.5
+        },
+        {
+          "start": 59.5,
+          "end": 63.72
+        }
+      ],
+      "played": 6.1
     },
     {
       "sentence": 11,
       "english": "Deliver personalized, timely AI-powered journeys that adapt to each employee, from onboarding to change rollouts.",
-      "japanese": "オンボーディングから変革の浸透まで、一人一人に合わせて最適化される、AI活用のジャーニーを届けます。",
+      "japanese": "オンボーディングから変革の浸透まで、一人一人に最適化されたAI活用のジャーニーを届けます。",
       "anchor": 65.6,
       "start": 65.6,
       "offset": 0,
       "tempo": 1,
-      "sourceStart": 66.74,
-      "sourceEnd": 73.82,
-      "played": 7.08
+      "sourceStart": 64.42,
+      "sourceEnd": 71.24,
+      "runs": [
+        {
+          "start": 64.42,
+          "end": 66.76
+        },
+        {
+          "start": 66.76,
+          "end": 71.24
+        }
+      ],
+      "played": 6.82
     },
     {
       "sentence": 12,
       "english": "Amplify the reach of internal communications by displaying Workvivo content on screens across your organization.",
-      "japanese": "社内のあらゆるディスプレイに、ワークウィボのコンテンツを表示し、社内コミュニケーションが届く範囲を広げます。",
+      "japanese": "社内のディスプレイにワークビブを表示し、コミュニケーションの届く範囲を広げます。",
       "anchor": 72.86,
-      "start": 72.845,
-      "offset": -0.015,
-      "tempo": 1.0047,
-      "sourceStart": 74.7,
-      "sourceEnd": 81.14,
-      "played": 6.41
+      "start": 72.86,
+      "offset": 0,
+      "tempo": 1,
+      "sourceStart": 72,
+      "sourceEnd": 76.68,
+      "runs": [
+        {
+          "start": 72,
+          "end": 76.68
+        }
+      ],
+      "played": 4.68
     },
     {
       "sentence": 13,
       "english": "Double-tap on the stories that matter most with newsletters.",
-      "japanese": "ニュースレターで、一番届けたいストーリーをもう一度。",
+      "japanese": "ニュースレターで一番届けたいストーリーをもう一度。",
       "anchor": 79.34,
-      "start": 79.355,
-      "offset": 0.015,
+      "start": 79.34,
+      "offset": 0,
       "tempo": 1,
-      "sourceStart": 82.12,
-      "sourceEnd": 85.4,
-      "played": 3.28
+      "sourceStart": 77.88,
+      "sourceEnd": 80.94,
+      "runs": [
+        {
+          "start": 77.88,
+          "end": 80.94
+        }
+      ],
+      "played": 3.06
     },
     {
       "sentence": 14,
       "english": "Collaborate faster with chat, voice, and video calls and AI-powered conversation summaries.",
-      "japanese": "チャット、音声ビデオ通話、そしてAIによる会話の要約で、コラボレーションはもっとスピーディーに。",
+      "japanese": "チャット、音声、ビデオツーはAIによる会話の要約で、コラボレーションはもっとスピーディーに。",
       "anchor": 84,
-      "start": 83.942,
-      "offset": -0.058,
-      "tempo": 1.0194,
-      "sourceStart": 86.32,
-      "sourceEnd": 93.34,
-      "played": 6.886
+      "start": 83.492,
+      "offset": -0.508,
+      "tempo": 1.0121,
+      "sourceStart": 82.42,
+      "sourceEnd": 90.24,
+      "runs": [
+        {
+          "start": 82.42,
+          "end": 83.69
+        },
+        {
+          "start": 83.69,
+          "end": 90.24
+        }
+      ],
+      "played": 7.727
     },
     {
       "sentence": 15,
       "english": "Ask HQ anything and get instant answers from across your connected systems.",
-      "japanese": "HQに聞けば、連携したシステム全体から必要な答えがすぐに見つかります。",
+      "japanese": "HQに聞けば連携したシステム全体から答えがすぐに見つかります。",
       "anchor": 90.96,
-      "start": 90.928,
-      "offset": -0.032,
-      "tempo": 1.02,
-      "sourceStart": 93.86,
-      "sourceEnd": 98.54,
-      "played": 4.588
+      "start": 91.319,
+      "offset": 0.359,
+      "tempo": 1.002,
+      "sourceStart": 90.54,
+      "sourceEnd": 95,
+      "runs": [
+        {
+          "start": 90.54,
+          "end": 95
+        }
+      ],
+      "played": 4.451
     },
     {
       "sentence": 16,
       "english": "Then go further and take action, all without leaving HQ.",
-      "japanese": "さらにそのまま次のアクションまで、HQを離れる必要はありません。",
+      "japanese": "次のアクションまでHQを離れる必要はありません。",
       "anchor": 95.72,
-      "start": 95.617,
-      "offset": -0.103,
-      "tempo": 1.0395,
-      "sourceStart": 99.68,
-      "sourceEnd": 104.12,
-      "played": 4.271
+      "start": 95.87,
+      "offset": 0.15,
+      "tempo": 1,
+      "sourceStart": 96.26,
+      "sourceEnd": 99.34,
+      "runs": [
+        {
+          "start": 96.26,
+          "end": 99.34
+        }
+      ],
+      "played": 3.08
     },
     {
       "sentence": 17,
       "english": "From ask to answer to job done.",
       "japanese": "質問から回答へ、そして完了まで。",
       "anchor": 99.98,
-      "start": 99.988,
-      "offset": 0.008,
-      "tempo": 1.0273,
-      "sourceStart": 105.06,
-      "sourceEnd": 108.18,
-      "played": 3.037
+      "start": 99.813,
+      "offset": -0.167,
+      "tempo": 1.0016,
+      "sourceStart": 100.44,
+      "sourceEnd": 103.64,
+      "runs": [
+        {
+          "start": 100.44,
+          "end": 103.64
+        }
+      ],
+      "played": 3.195
     },
     {
       "sentence": 18,
       "english": "One app with multiple context-aware experiences giving every employee access to the right tools, resources, and information, no matter where they are.",
       "japanese": "一つのアプリに状況に応じた複数の体験を、どこにいても必要なツール、リソース、情報にアクセスできます。",
       "anchor": 102.94,
-      "start": 103.125,
-      "offset": 0.185,
+      "start": 103.107,
+      "offset": 0.167,
       "tempo": 1,
-      "sourceStart": 109.2,
-      "sourceEnd": 117.48,
-      "played": 8.28
+      "sourceStart": 105.02,
+      "sourceEnd": 113.98,
+      "runs": [
+        {
+          "start": 105.02,
+          "end": 108.79
+        },
+        {
+          "start": 108.79,
+          "end": 111.25
+        },
+        {
+          "start": 111.25,
+          "end": 112.1
+        },
+        {
+          "start": 112.1,
+          "end": 113.98
+        }
+      ],
+      "played": 8.96
     },
     {
       "sentence": 19,
       "english": "Bring it to life with a library of ready-made widgets, from business tools and integrations, to news, culture, and employee resources.",
-      "japanese": "業務ツールや各種連携から、ニュース、カルチャー、社員向けリソースまで、すぐに使えるウィジェットのライブラリで思い描いた形に、もちろん",
+      "japanese": "業務ツールや各種連携からニュース、カルチャー、社員向けリソースまで。すぐに使えるウィジェットで思いのままに。",
       "anchor": 113,
-      "start": 112.325,
-      "offset": -0.675,
-      "tempo": 1.2377,
-      "sourceStart": 118.52,
-      "sourceEnd": 129.32,
-      "played": 8.726
+      "start": 112.481,
+      "offset": -0.519,
+      "tempo": 1.0139,
+      "sourceStart": 114.88,
+      "sourceEnd": 124.02,
+      "runs": [
+        {
+          "start": 114.88,
+          "end": 117.86
+        },
+        {
+          "start": 117.86,
+          "end": 120.44
+        },
+        {
+          "start": 120.74,
+          "end": 124.02
+        }
+      ],
+      "played": 8.719
     },
     {
       "sentence": 20,
       "english": "Or create your own with our AI Widget Builder.",
-      "japanese": "AIウィジェットビルダーで自分だけのウィジェットを作ることもできます。",
+      "japanese": "AIウィジェットビルダーで自分だけの一つを。",
       "anchor": 120.78,
-      "start": 121.151,
-      "offset": 0.371,
-      "tempo": 1.0493,
-      "sourceStart": 129.32,
-      "sourceEnd": 132.9,
-      "played": 3.412
+      "start": 121.299,
+      "offset": 0.519,
+      "tempo": 1,
+      "sourceStart": 124.56,
+      "sourceEnd": 127.5,
+      "runs": [
+        {
+          "start": 124.56,
+          "end": 127.5
+        }
+      ],
+      "played": 2.94
     },
     {
       "sentence": 21,
       "english": "Publish polished content in minutes with our AI-powered page creation.",
-      "japanese": "AIによるページ作成で、洗練されたコンテンツを数分で公開、",
+      "japanese": "AIによるページ作成で洗練されたコンテンツを数分で公開。",
       "anchor": 124.52,
-      "start": 124.663,
-      "offset": 0.143,
-      "tempo": 1.0308,
-      "sourceStart": 134.08,
-      "sourceEnd": 138.14,
-      "played": 3.939
+      "start": 124.413,
+      "offset": -0.107,
+      "tempo": 1.0013,
+      "sourceStart": 128.34,
+      "sourceEnd": 132.48,
+      "runs": [
+        {
+          "start": 128.34,
+          "end": 132.48
+        }
+      ],
+      "played": 4.134
     },
     {
       "sentence": 22,
       "english": "Turn scattered information into structured, searchable knowledge hubs.",
-      "japanese": "散在していた情報を整理された検索可能なナレッジハブへ、",
+      "japanese": "散在していた情報を整理された検索、可能なナレッジハブへ。",
       "anchor": 128.54,
-      "start": 128.701,
-      "offset": 0.161,
+      "start": 128.647,
+      "offset": 0.107,
       "tempo": 1,
-      "sourceStart": 139.36,
-      "sourceEnd": 144.18,
-      "played": 4.82
+      "sourceStart": 133.8,
+      "sourceEnd": 138.9,
+      "runs": [
+        {
+          "start": 133.8,
+          "end": 136.7
+        },
+        {
+          "start": 136.7,
+          "end": 138.9
+        }
+      ],
+      "played": 5.1
     },
     {
       "sentence": 23,
       "english": "See what's working, understand your people, and act on real data, not guesswork, with advanced analytics.",
-      "japanese": "高度な分析機能で何がうまく言っているかを可視化し、社員を理解し、勘ではなく実際のデータにもとづいて動く、",
+      "japanese": "高度な分析機能で何がうまくいっているかを可視化し、社員を理解し、勘ではなく実際のデータで動く。",
       "anchor": 134.9,
-      "start": 134.651,
-      "offset": -0.249,
-      "tempo": 1.0894,
-      "sourceStart": 144.38,
-      "sourceEnd": 152.9,
-      "played": 7.821
+      "start": 134.818,
+      "offset": -0.082,
+      "tempo": 1.002,
+      "sourceStart": 139.14,
+      "sourceEnd": 147.14,
+      "runs": [
+        {
+          "start": 139.14,
+          "end": 147.14
+        }
+      ],
+      "played": 7.984
     },
     {
       "sentence": 24,
       "english": "Run engagement surveys that actually get answered and measure what matters most to your people.",
-      "japanese": "きちんと回答が集まるエンゲージメントサーベイで、社員にとって本当に大切なことを測定します。",
+      "japanese": "きちんと回答が集まるサーベイで、社員にとって大切なことを測定します。",
       "anchor": 142.82,
-      "start": 142.572,
-      "offset": -0.248,
-      "tempo": 1.1162,
-      "sourceStart": 153.08,
-      "sourceEnd": 158.9,
-      "played": 5.214
+      "start": 142.902,
+      "offset": 0.082,
+      "tempo": 1,
+      "sourceStart": 147.76,
+      "sourceEnd": 152.32,
+      "runs": [
+        {
+          "start": 147.76,
+          "end": 152.32
+        }
+      ],
+      "played": 4.56
     },
     {
       "sentence": 25,
       "english": "Go beyond the numbers with AI-powered insights that uncover trends, reveal what's driving engagement, and highlight where to focus next.",
-      "japanese": "AIインサイトが数字の先にあるものを明らかに、傾向を捉え、エンゲージメントを動かす要因を可視化し、次に注力すべきポイントを示します。",
+      "japanese": "AIインサイトが数字の先を明らかに。傾向を捉えエンゲージメントを動かす要因と次の一手を示します。",
       "anchor": 147.92,
-      "start": 147.886,
-      "offset": -0.034,
-      "tempo": 1.1888,
-      "sourceStart": 159.96,
-      "sourceEnd": 170,
-      "played": 8.446
+      "start": 147.65,
+      "offset": -0.27,
+      "tempo": 1.007,
+      "sourceStart": 153.58,
+      "sourceEnd": 162.06,
+      "runs": [
+        {
+          "start": 153.58,
+          "end": 157.37
+        },
+        {
+          "start": 157.37,
+          "end": 162.06
+        }
+      ],
+      "played": 8.421
     },
     {
       "sentence": 26,
       "english": "Give managers instant visibility into team sentiment so they can take action with confidence, wherever they are.",
       "japanese": "マネージャーはチームの状態をすぐに把握でき、自信を持って行動を起こせます。",
       "anchor": 155.9,
-      "start": 156.432,
-      "offset": 0.532,
+      "start": 156.17,
+      "offset": 0.27,
       "tempo": 1,
-      "sourceStart": 171.12,
-      "sourceEnd": 175.86,
-      "played": 4.74
+      "sourceStart": 163.62,
+      "sourceEnd": 168.92,
+      "runs": [
+        {
+          "start": 163.62,
+          "end": 166.5
+        },
+        {
+          "start": 166.5,
+          "end": 168.92
+        }
+      ],
+      "played": 5.3
     },
     {
       "sentence": 27,
       "english": "From the moment employees share feedback to the moment they see meaningful change, it all happens here, in HQ.",
-      "japanese": "場所を問わず、社員がフィードバックを届けた瞬間から、確かな変化を実感するその時まで、そのすべてがここHQで完結します。",
+      "japanese": "場所を問わず、フィードバックが届いた瞬間から変化を実感するまで。すべてがここHQで完結します。",
       "anchor": 162.08,
-      "start": 161.599,
-      "offset": -0.481,
-      "tempo": 1.1679,
-      "sourceStart": 176.98,
-      "sourceEnd": 186.5,
-      "played": 8.151
+      "start": 161.988,
+      "offset": -0.092,
+      "tempo": 1.0021,
+      "sourceStart": 169.54,
+      "sourceEnd": 177.64,
+      "runs": [
+        {
+          "start": 169.54,
+          "end": 170.57
+        },
+        {
+          "start": 170.57,
+          "end": 174.42
+        },
+        {
+          "start": 174.84,
+          "end": 177.64
+        }
+      ],
+      "played": 7.664
     },
     {
       "sentence": 28,
       "english": "Let AI do the hard work of building your survey so you can jump straight into the results.",
-      "japanese": "サーベイ作成の手間はAIにお任せ、すぐに結果の確認から始められます。",
+      "japanese": "サーベイ作成の手間はAIにお任せ。すぐに結果の確認から始められます。",
       "anchor": 169.66,
-      "start": 169.85,
-      "offset": 0.19,
-      "tempo": 1.0735,
-      "sourceStart": 187.46,
-      "sourceEnd": 193.28,
-      "played": 5.421
+      "start": 169.752,
+      "offset": 0.092,
+      "tempo": 1,
+      "sourceStart": 178.8,
+      "sourceEnd": 184.18,
+      "runs": [
+        {
+          "start": 178.8,
+          "end": 181.9
+        },
+        {
+          "start": 181.9,
+          "end": 184.18
+        }
+      ],
+      "played": 5.38
     },
     {
       "sentence": 29,
       "english": "All your favorite tools, one experience layer, everything your people need, right inside HQ.",
-      "japanese": "使い慣れたツールのすべてを一つの体験レイヤーに、社員に必要なものはすべてHQの中に、",
+      "japanese": "使い慣れたツールのすべてを一つの体験レイヤーに。必要なものは全てHQに。",
       "anchor": 175.72,
-      "start": 175.372,
-      "offset": -0.348,
-      "tempo": 1.1705,
-      "sourceStart": 193.58,
-      "sourceEnd": 200.88,
-      "played": 6.237
+      "start": 175.574,
+      "offset": -0.146,
+      "tempo": 1.0028,
+      "sourceStart": 185.38,
+      "sourceEnd": 191.66,
+      "runs": [
+        {
+          "start": 185.38,
+          "end": 191.66
+        }
+      ],
+      "played": 6.262
     },
     {
       "sentence": 30,
       "english": "Manage your employee experience with confidence through powerful self-service admin tools and feature toggles.",
-      "japanese": "強力なセルフサービス型の管理ツールと機能のオンオフ設定で、社員エクスペリエンスを安心して運用できます。",
+      "japanese": "セルフサービス型の管理と機能のオンオフで、社員エクスペリエンスを安心して運用。",
       "anchor": 182,
-      "start": 181.709,
-      "offset": -0.291,
-      "tempo": 1.2261,
-      "sourceStart": 201.46,
-      "sourceEnd": 208.76,
-      "played": 5.954
+      "start": 181.937,
+      "offset": -0.063,
+      "tempo": 1.0034,
+      "sourceStart": 192.8,
+      "sourceEnd": 198.12,
+      "runs": [
+        {
+          "start": 192.8,
+          "end": 198.12
+        }
+      ],
+      "played": 5.302
     },
     {
       "sentence": 31,
       "english": "Enable AI with confidence with granular controls, permissions, and governance built in.",
-      "japanese": "決め細かな制御、権限設定、ガバナンスを標準搭載、安心してAIを活用できます。",
+      "japanese": "きめ細かな制御権限設定、ガバナンスを標準搭載。安心してAIを活用できます。",
       "anchor": 187.2,
-      "start": 187.762,
-      "offset": 0.562,
-      "tempo": 1.1012,
-      "sourceStart": 209.84,
-      "sourceEnd": 216.5,
-      "played": 6.048
+      "start": 187.339,
+      "offset": 0.139,
+      "tempo": 1.0014,
+      "sourceStart": 199.38,
+      "sourceEnd": 206.02,
+      "runs": [
+        {
+          "start": 199.38,
+          "end": 201.77
+        },
+        {
+          "start": 201.77,
+          "end": 203.82
+        },
+        {
+          "start": 203.88,
+          "end": 206.02
+        }
+      ],
+      "played": 6.571
     },
     {
       "sentence": 32,
       "english": "Powered by Zoom AI technology, enterprise-grade intelligence built into every experience.",
-      "japanese": "ZoomのAIテクノロジーを基盤に、エンタープライズグレードのインテリジェンスをすべての体験に、",
+      "japanese": "ZoomのAIを基盤に、エンタープライズグレードの知能をすべての体験に。",
       "anchor": 193.94,
-      "start": 193.91,
-      "offset": -0.03,
-      "tempo": 1.1066,
-      "sourceStart": 217.76,
-      "sourceEnd": 224.32,
-      "played": 5.928
+      "start": 194.01,
+      "offset": 0.07,
+      "tempo": 1,
+      "sourceStart": 207.52,
+      "sourceEnd": 212.26,
+      "runs": [
+        {
+          "start": 207.52,
+          "end": 209.38
+        },
+        {
+          "start": 209.38,
+          "end": 212.26
+        }
+      ],
+      "played": 4.74
     },
     {
       "sentence": 33,
       "english": "The employee experience platform your people actually use, trusted by the world's biggest brands.",
-      "japanese": "社員が本当に使うエクスペリエンスプラットフォーム、世界を代表するブランドに選ばれています。",
+      "japanese": "社員が本当に使うエクスペリエンスプラットフォーム。世界を代表するブランドに選ばれています。",
       "anchor": 199.54,
-      "start": 199.938,
-      "offset": 0.398,
+      "start": 199.54,
+      "offset": 0,
       "tempo": 1,
-      "sourceStart": 224.54,
-      "sourceEnd": 230.46,
-      "played": 5.92
+      "sourceStart": 213.6,
+      "sourceEnd": 220.02,
+      "runs": [
+        {
+          "start": 213.6,
+          "end": 216.86
+        },
+        {
+          "start": 217.1,
+          "end": 220.02
+        }
+      ],
+      "played": 6.18
     },
     {
       "sentence": 34,
@@ -429,9 +749,15 @@
       "start": 206.72,
       "offset": 0,
       "tempo": 1,
-      "sourceStart": 231.42,
-      "sourceEnd": 233.38,
-      "played": 1.96
+      "sourceStart": 220.82,
+      "sourceEnd": 223.02,
+      "runs": [
+        {
+          "start": 220.82,
+          "end": 223.02
+        }
+      ],
+      "played": 2.2
     }
   ]
 }

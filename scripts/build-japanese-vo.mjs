@@ -58,17 +58,93 @@ const TEMPO_MAX = 1.25;
 const GAP = 0.1;
 
 /**
- * How much a second of sync error is worth against a unit of tempo. Swept over 2..80: the
- * curve is flat from 2 to 20 and then sync degrades quickly, so 20 is the last value that
- * costs nothing. It buys mean tempo 1.090 with every line inside 0.87s of its anchor.
+ * The weight on tempo in the cost, against a second of sync error squared. Raising it makes
+ * the solver move a line rather than compress it.
+ *
+ * THIS VALUE DEPENDS ON THE READ, WHICH IS WHY THE SWEEP IS WORTH RE-RUNNING
+ *
+ * It was 20, swept against the v1 read: that read was 231.4s into a 212s film, so there was
+ * no slack anywhere, sync degraded immediately past 20, and the choice was between rushed
+ * lines and late ones. The v3 read is 223.1s and trims to ~222s, which leaves room — and at
+ * 20 the solver was spending none of it, holding sync to 0.23s while compressing two lines
+ * to 1.086x.
+ *
+ * Re-swept against this read, 20 to 4000: tempo falls fast to about 320 and then flattens,
+ * while sync degrades slowly throughout.
+ *
+ *      20   mean 1.010   max 1.086   worst sync 0.23s
+ *     160   mean 1.003   max 1.025   worst sync 0.47s
+ *     320   mean 1.002   max 1.014   worst sync 0.52s     <- here
+ *     640   mean 1.001   max 1.007   worst sync 0.55s
+ *
+ * 320 is the knee. It makes every line effectively untouched — 1.014x is not audible on any
+ * material — for a worst-case drift of 0.52s, a third of the 1.5s tolerance in
+ * verify-japanese-vo.mjs. The drift never accumulates: it appears as a crowded line starting
+ * early and the next starting late by the same amount.
+ *
+ * Re-run the sweep after a new recording rather than trusting this number.
  */
-const SYNC_VS_TEMPO = 20;
+const SYNC_VS_TEMPO = 320;
+
+/**
+ * The longest pause allowed INSIDE a sentence, and the reason the number is 1.00.
+ *
+ * It is measured off the English narration, not chosen: across the 28 mid-sentence pauses in
+ * the reference read, the longest is 1.00s and the median is 0.52s. The Japanese read pauses
+ * longer — median 0.66s, longest 1.42s, 19.9s of internal silence in total against the
+ * English 15.6s.
+ *
+ * That difference is worth almost the entire problem. The read is 223.1s and the film is
+ * 212s, so it overruns by 11.1s — and there is 19.9s of silence sitting inside it. Speeding
+ * the speech up to absorb an overrun that is mostly silence is the wrong trade: it makes the
+ * performance worse to preserve pauses that are already longer than the ones the film was
+ * cut to. So the pauses give first, capped at the longest the English ever takes, and only
+ * what is left over is paid for in tempo.
+ *
+ * A pause is trimmed from its middle — each side keeps half the retained silence — so every
+ * cut lands in room tone rather than against a consonant.
+ */
+const PAUSE_MAX = 1.0;
+
+/** Below this, a gap is the space between words rather than a pause between phrases. */
+const PAUSE_MIN = 0.35;
 
 const alignment = JSON.parse(fs.readFileSync(path.join(DIR, "vo-alignment.json"), "utf8"));
 const S = alignment.sentences;
 const N = S.length;
-const dur = S.map((s) => s.japaneseEnd - s.japaneseStart);
 const anchor = S.map((s) => s.englishStart);
+
+const WORDS = JSON.parse(fs.readFileSync(path.join(DIR, "japanese-voiceover.json"), "utf8")).words;
+
+/**
+ * A sentence as the spans of source audio that will actually be used, with its over-long
+ * internal pauses cut out of the middle.
+ *
+ * Returns one span for a sentence that never pauses, which is byte-for-byte what this
+ * script did before pause trimming existed.
+ */
+const runsFor = (s) => {
+  const inside = WORDS.filter((w) => w.start >= s.japaneseStart - 1e-6 && w.end <= s.japaneseEnd + 1e-6);
+  const cuts = [];
+  for (let i = 0; i + 1 < inside.length; i++) {
+    const gap = inside[i + 1].start - inside[i].end;
+    if (gap > PAUSE_MIN) cuts.push({ at: inside[i].end, gap, keep: Math.min(gap, PAUSE_MAX) });
+  }
+  const runs = [];
+  let from = s.japaneseStart;
+  for (const c of cuts) {
+    runs.push({ start: from, end: c.at + c.keep / 2 });
+    from = c.at + c.gap - c.keep / 2;
+  }
+  runs.push({ start: from, end: s.japaneseEnd });
+  return runs;
+};
+
+const runs = S.map(runsFor);
+const dur = runs.map((rs) => rs.reduce((a, r) => a + (r.end - r.start), 0));
+
+const trimmed = S.reduce((a, s, i) => a + (s.japaneseEnd - s.japaneseStart) - dur[i], 0);
+console.log(`  trimmed ${trimmed.toFixed(1)}s of over-long internal pauses (cap ${PAUSE_MAX}s)`);
 
 const { start, tempo } = place({
   anchor,
@@ -88,6 +164,7 @@ const plan = S.map((s, i) => ({
   tempo: Number(tempo[i].toFixed(4)),
   sourceStart: s.japaneseStart,
   sourceEnd: s.japaneseEnd,
+  runs: runs[i].map((r) => ({ start: Number(r.start.toFixed(3)), end: Number(r.end.toFixed(3)) })),
   played: Number((dur[i] / tempo[i]).toFixed(3)),
 }));
 
@@ -138,30 +215,38 @@ const bus = new Float32Array(total);
 let worstLength = 0;
 
 for (const p of plan) {
-  const raw = `/tmp/jp-chunk-${p.sentence}.raw`;
-  // One sentence, one chain, nothing shared: trim it, reset its clock, change its speed.
-  // Where it lands is decided below, in samples, not by a filter.
-  execFileSync(
-    "ffmpeg",
-    ["-y", "-v", "error", "-i", SRC,
-     "-af", `atrim=start=${p.sourceStart}:end=${p.sourceEnd},asetpts=N/SR/TB,atempo=${p.tempo.toFixed(6)}`,
-     "-f", "s16le", "-acodec", "pcm_s16le", "-ac", "1", "-ar", String(RATE), raw],
-    { stdio: ["ignore", "inherit", "inherit"] },
-  );
-  const buf = fs.readFileSync(raw);
-  const n = buf.length >> 1;
-  worstLength = Math.max(worstLength, Math.abs(n / RATE - p.played));
+  // Each RUN of a sentence is cut and placed on its own, so the pauses between them come
+  // out at the length the plan asked for rather than the length the reader took. A sentence
+  // with no over-long pause has exactly one run, which is what this did before.
+  let played = 0;
+  for (const [r, run] of p.runs.entries()) {
+    const raw = `/tmp/jp-chunk-${p.sentence}-${r}.raw`;
+    // One run, one chain, nothing shared: trim it, reset its clock, change its speed.
+    // Where it lands is decided below, in samples, not by a filter.
+    execFileSync(
+      "ffmpeg",
+      ["-y", "-v", "error", "-i", SRC,
+       "-af", `atrim=start=${run.start}:end=${run.end},asetpts=N/SR/TB,atempo=${p.tempo.toFixed(6)}`,
+       "-f", "s16le", "-acodec", "pcm_s16le", "-ac", "1", "-ar", String(RATE), raw],
+      { stdio: ["ignore", "inherit", "inherit"] },
+    );
+    const buf = fs.readFileSync(raw);
+    const n = buf.length >> 1;
 
-  const at = Math.round(p.start * RATE);
-  for (let i = 0; i < n && at + i < total; i++) {
-    // 15ms fades on each edge. Not cosmetic: a sentence boundary often falls mid-breath
-    // rather than in silence, and an instantaneous edge there is an audible click.
-    let g = 1;
-    if (i < FADE) g = i / FADE;
-    else if (i > n - FADE) g = Math.max(0, (n - i) / FADE);
-    bus[at + i] += (buf.readInt16LE(i << 1) / 32768) * g;
+    const at = Math.round((p.start + played) * RATE);
+    for (let i = 0; i < n && at + i < total; i++) {
+      // 15ms fades on each edge. Not cosmetic: a run boundary falls in the middle of a
+      // pause, which is room tone rather than digital silence, and an instantaneous edge
+      // there is an audible click.
+      let g = 1;
+      if (i < FADE) g = i / FADE;
+      else if (i > n - FADE) g = Math.max(0, (n - i) / FADE);
+      bus[at + i] += (buf.readInt16LE(i << 1) / 32768) * g;
+    }
+    played += n / RATE;
+    fs.unlinkSync(raw);
   }
-  fs.unlinkSync(raw);
+  worstLength = Math.max(worstLength, Math.abs(played - p.played));
 }
 console.log(`  assembled ${plan.length} chunks; worst length error ${(worstLength * 1000).toFixed(1)} ms`);
 
