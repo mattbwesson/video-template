@@ -85,13 +85,13 @@ const exact: Record<string, string> = {
   "Date": "日付", "Created By": "作成者", "Space": "スペース", "Team": "チーム", "All": "すべて",
   "ABOUT": "概要", "SPACE ADMINS": "スペース管理者", "Ask a Question": "質問する",
   "Give a Shout-out": "シャウトアウトを送る", "Give a Shout-Out": "シャウトアウトを送る",
-  "Post a Value Update": "価値観の投稿", "Select Value": "価値観を選択", "Organization Value": "組織の価値観",
+  "Post a Value Update": "価値観を投稿", "Select Value": "価値観を選択", "Organization Value": "組織の価値観",
   "Normal Text": "標準テキスト", "Translations": "翻訳", "Attachment": "添付", "Poll": "投票",
   "Campaign": "キャンペーン", "Tag": "タグ", "GIF": "GIF", "Go Live": "ライブ配信",
   "Catch Me Up": "キャッチアップ", "Catch up on what you missed": "見逃した情報をチェック",
   "Here's what you missed": "見逃した情報はこちら", "A breakdown of this weeks plans": "今週の予定のまとめ",
-  "Turn Off": "オフ", "Unmute": "ミュート解除", "Leave": "退出", "End Stream": "配信を終了",
-  "watching, started streaming": "人が視聴中・配信開始", "Search Connect": "つながりを検索",
+  "Turn Off": "オフにする", "Unmute": "ミュート解除", "Leave": "退出", "End Stream": "配信を終了",
+  "watching, started streaming": "人が視聴中・配信中", "Search Connect": "つながりを検索",
   "Search Manager Insights Action": "マネージャーインサイトのアクションを検索",
   "Content Search": "コンテンツ検索", "People Directory": "メンバー一覧", "steps completed": "ステップ完了",
 
@@ -122,7 +122,7 @@ const exact: Record<string, string> = {
   "For runners of every level. Share routes, training tips, race updates, and celebrate milestones together.":
     "レベルを問わず走る仲間のためのスペース。コース、練習のコツ、大会情報を共有し、節目を一緒に祝いましょう。",
   "Join colleagues from across the organization for an evening of updates, recognition, networking, and....":
-    "全社の仲間と集まり、最新情報や表彰、交流を楽しむ夕べにご参加ください…",
+    "全社の仲間が集まり、最新情報や表彰、交流を楽しむ夜。ぜひご参加ください…",
 
   // ── Mobile ────────────────────────────────────────────────────────────────────
   "Benefits Hub": "福利厚生", "Employee Handbook": "社員ハンドブック", "IT Support": "ITサポート",
@@ -139,14 +139,14 @@ const exact: Record<string, string> = {
 
   // ── Widget store / list ───────────────────────────────────────────────────────
   "Widget Store": "ウィジェットストア", "Widget Categories": "ウィジェットのカテゴリ", "Browse by category": "カテゴリから探す",
-  "Start with a category—or jump straight to search.": "カテゴリから、または検索から直接お探しください。",
+  "Start with a category—or jump straight to search.": "カテゴリから探す。検索でもすぐに。",
   "Curated widgets for comms, culture, and everyday work—organized the way people actually browse.":
     "社内コミュニケーション、文化、日々の業務のためのウィジェットを、実際の使われ方に沿って整理しました。",
   "Discover": "見つける", "Productivity": "生産性", "Stay Informed": "最新情報", "Media": "メディア",
   "Technical": "テクニカル", "See all widgets": "すべてのウィジェット", "View Widgets": "ウィジェットを見る",
   "Shortcuts, apps, docs, and journeys.": "ショートカット、アプリ、ドキュメント、ジャーニー。",
   "Podcasts, video, and embeds.": "ポッドキャスト、動画、埋め込み。", "News, events, announcements, and more.": "ニュース、イベント、お知らせなど。",
-  "Spaces and people in motion.": "スペースとメンバーの動き。", "Skills and serialized learning.": "スキルと連載型の学習。",
+  "Spaces and people in motion.": "スペースとメンバーの動き。", "Skills and serialized learning.": "スキルと段階的な学習。",
   "Time off, weather, live data.": "休暇、天気、ライブデータ。", "Make your landing page feel alive.": "ランディングページに動きを。",
   "Time Off": "休暇", "Billboards": "ビルボード",
   "Access your most important resources and tools instantly with customizable shortcuts.": "よく使うリソースやツールに、カスタマイズできるショートカットからすぐにアクセス。",
