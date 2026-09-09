@@ -20,6 +20,16 @@ import {
   TrendUp,
 } from "./WorkvivoSeerManagerIcons";
 import { useT } from "../../customize/uiStrings";
+import { useCustomization } from "../../customize/CustomizationProvider";
+import {
+  SURVEY_COMPLETION_RATE,
+  SURVEY_RESPONSE_RATE,
+  countText,
+  surveyAudience,
+  surveyCompletions,
+  surveyResponses,
+  type CompanySize,
+} from "../../customize/memberCounts";
 
 /**
  * Seer Insights — Engagement tab, manager view.
@@ -55,14 +65,18 @@ const SENTIMENTS = [
  * The six stats, in the order the capture fills them: down each column, not across.
  * `grid-auto-flow: column` in the stylesheet is what turns this order into that layout.
  */
-const STATS = [
-  { Ico: Pulse, tone: "red", name: "Survey Status", val: "Inactive" },
-  { Ico: TrendUp, tone: "orange", name: "Score Change", val: "+2" },
-  { Ico: Camera, tone: "orange", name: "Survey Duration", val: "2 Weeks" },
-  { Ico: Link, tone: "orange", name: "Completed Rounds", val: "2" },
-  { Ico: Hourglass, tone: "orange", name: "Frequency", val: "Monthly" },
-  { Ico: People, tone: "orange", name: "Participants", val: "13,860" },
-] as const;
+const statsFor = (size: CompanySize) =>
+  [
+    { Ico: Pulse, tone: "red", name: "Survey Status", val: "Inactive" },
+    { Ico: TrendUp, tone: "orange", name: "Score Change", val: "+2" },
+    { Ico: Camera, tone: "orange", name: "Survey Duration", val: "2 Weeks" },
+    { Ico: Link, tone: "orange", name: "Completed Rounds", val: "2" },
+    { Ico: Hourglass, tone: "orange", name: "Frequency", val: "Monthly" },
+    // The one headcount in this row, and the same figure the Response Rate card is "out
+    // of" below it. Everything else here is a status, a cadence or a delta, and stays
+    // fixed — see the note on surveyAudience in memberCounts.ts.
+    { Ico: People, tone: "orange", name: "Participants", val: countText(surveyAudience(size)) },
+  ] as const;
 
 const DATES = [
   { Ico: CalendarPrev, name: "Previous Survey", val: "2026-05-15" },
@@ -356,6 +370,8 @@ export const WorkvivoSeerManagerInsights: React.FC<
   frame: frameProp,
 }) => {
   const ui = useT();
+  const { copy } = useCustomization();
+  const size = copy.companySize;
   const currentFrame = useCurrentFrame();
   const frame = animated ? (frameProp ?? currentFrame) : 100;
 
@@ -450,7 +466,7 @@ export const WorkvivoSeerManagerInsights: React.FC<
           <SeerScoreCard />
 
           <div className="wsmi-card wsmi-stats">
-            {STATS.map(({ Ico, tone, name, val }) => (
+            {statsFor(size).map(({ Ico, tone, name, val }) => (
               <div className="wsmi-stat" key={name}>
                 <span className={`wsmi-ico wsmi-ico-${tone}`}>
                   <Ico size={14} />
@@ -516,10 +532,10 @@ export const WorkvivoSeerManagerInsights: React.FC<
 
           <RateCard
             title={ui("Response Rate")}
-            pct={75}
+            pct={SURVEY_RESPONSE_RATE * 100}
             rows={[
-              { name: "Responses", val: "10,395" },
-              { name: "Out of", val: "13,860 Audience" },
+              { name: "Responses", val: countText(surveyResponses(size)) },
+              { name: "Out of", val: `${countText(surveyAudience(size))} Audience` },
             ]}
             progress={donut1Progress}
             style={{
@@ -530,10 +546,12 @@ export const WorkvivoSeerManagerInsights: React.FC<
           />
           <RateCard
             title={ui("Completion Rate")}
-            pct={95}
+            pct={SURVEY_COMPLETION_RATE * 100}
             rows={[
-              { name: "Completions", val: "9875" },
-              { name: "Out of", val: "10,395 Audience" },
+              // No thousands separator on this one row, which is the capture's own
+              // inconsistency rather than an oversight here; see countText.
+              { name: "Completions", val: countText(surveyCompletions(size), false) },
+              { name: "Out of", val: `${countText(surveyResponses(size))} Audience` },
             ]}
             progress={donut2Progress}
             style={{

@@ -117,9 +117,12 @@ The film's thread: every employee deserves one place that feels like a headquart
  * another batch's fields — the Spaces run quotes `feed.spaces`, the billboard quotes
  * `composed.values` — are in the SECOND round and are shown what the first round wrote.
  *
- * `companyName` is in no batch: it is the operator's own input and is stamped over the
- * result afterwards, so asking for it would only invite a search result to rename their
- * customer.
+ * `companyName` is in no batch, and is the ONLY group that should not be: it is the
+ * operator's own input and is stamped over the result afterwards, so asking for it would
+ * only invite a search result to rename their customer. `unbatchedCopyKeys()` excludes it
+ * by name for exactly that reason. Anything else missing from the list below is a bug —
+ * `companySize` sat outside it for a while and every customer's video shipped at the
+ * baseline band as a result.
  */
 type Batch = { name: string; keys: string[] };
 
@@ -149,8 +152,19 @@ type Batch = { name: string; keys: string[] };
  */
 const ROUND_ONE: Batch[] = [
   {
-    name: "the feed and the catch-up stories",
-    keys: ["feed", "stories", "catchup"],
+    // `companySize` rides here rather than standing alone, and the reason is not ordering:
+    // round one runs its batches in PARALLEL, so no batch is written before any other and
+    // "first in this array" buys nothing. It is coherence. The band is a judgement about
+    // the company as an employer, every member count in the film is derived from it
+    // (memberCounts.ts), and this batch is the bulk of the film's readable text — so the
+    // one call that states the headcount band also writes the copy most able to contradict
+    // it. One field on an existing call, and no extra round-trip.
+    name: "the feed, the catch-up stories and the headcount band",
+    // `feed` stays first in this array: `schemaName` and the log label are both built from
+    // keys[0], and a call named batch:companySize would be a confusing name for the one
+    // that writes most of the film. Order has no effect on the prompt — buildFieldLines
+    // walks COPY.guides, where companySize is declared first and so is asked first anyway.
+    keys: ["feed", "stories", "catchup", "companySize"],
   },
   {
     // Alone, and deliberately: `spaces` and `signage` both wait on it, it is four fields,
@@ -166,8 +180,12 @@ const ROUND_ONE: Batch[] = [
     keys: ["quote", "person", "livestream"],
   },
   {
-    name: "the article page and Employee Insights",
-    keys: ["article", "seer"],
+    // `surveyBuilder` rides with `seer` on purpose: both are this company asking its own
+    // people something, and a model that writes them in one call will not produce two
+    // versions of the same question. `article` carries the page builder's typed request
+    // as well as the page it produces — see the note on `article.prompt`.
+    name: "the article page, Employee Insights and the survey builder",
+    keys: ["article", "seer", "surveyBuilder"],
   },
   {
     name: "Chat and the HQ Agent",
@@ -188,10 +206,11 @@ const ROUND_TWO: Batch[] = [
     name: "Billboards",
     keys: ["signage"],
   },
-  {
-    name: "the feedback article",
-    keys: ["voice"],
-  },
+  // No "the feedback article" batch. `voice` moved into FIXED_COPY when that beat was
+  // locked, so a batch keyed on it produced an empty schema — `additionalProperties:false`
+  // with no properties — and spent a model call every run writing nothing.
+  // `unbatchedCopyKeys()` cannot catch this: it checks that every group has a batch, not
+  // that every batch has a group.
 ];
 
 const BATCHES = [...ROUND_ONE, ...ROUND_TWO];

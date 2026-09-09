@@ -407,7 +407,11 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
               {MEMBER_FACES.map((src) => (
                 <img key={src} className="wsp-av" src={staticFile(`img/${src}`)} alt="" />
               ))}
-              <div className="wsp-avmore">12k+</div>
+              {/* Derived from the count above it, not the "12k+" the capture had — that
+                  read "12k+" beside "333 Members" for a small employer. See memberOverflow. */}
+              <div className="wsp-avmore">
+                {ui(memberOverflow(copy.companySize, SPACE_PAGE_INDEX, MEMBER_FACES.length))}
+              </div>
             </div>
           </div>
         </section>
@@ -648,5 +652,5 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
     </div>
   );
 };
-import { spaceMembers, SPACE_PAGE_INDEX } from "../../customize/memberCounts";
+import { SPACE_PAGE_INDEX, memberOverflow, spaceMembers } from "../../customize/memberCounts";
 import { useT } from "../../customize/uiStrings";

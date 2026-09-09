@@ -73,8 +73,11 @@ const tidy = (n: number): number => Math.round(n);
  * wherever it appears — the directory, the Trending cards on the homepage, the Spotlight
  * tab and the Space page all read the same entry.
  */
+const spaceCount = (size: CompanySize, index: number): number =>
+  tidy(MEMBER_CAP[size] * HEADROOM * SHAPE[index % SHAPE.length]);
+
 export const spaceMembers = (size: CompanySize, index: number): string =>
-  format(tidy(MEMBER_CAP[size] * HEADROOM * SHAPE[index % SHAPE.length]));
+  format(spaceCount(size, index));
 
 /**
  * A space that everyone is in — the survey space at global 4066-4253.
@@ -82,8 +85,11 @@ export const spaceMembers = (size: CompanySize, index: number): string =>
  * The one place the count should read as "the whole company", so it sits at the cap
  * rather than under the shape. Still never above it.
  */
+const companyWideCount = (size: CompanySize): number =>
+  tidy(MEMBER_CAP[size] * 0.9863);
+
 export const companyWideMembers = (size: CompanySize): string =>
-  format(tidy(MEMBER_CAP[size] * 0.9863));
+  format(companyWideCount(size));
 
 /**
  * A small interest group — the Run Club on the homepage, and its like.
@@ -95,6 +101,79 @@ export const companyWideMembers = (size: CompanySize): string =>
  */
 export const clubMembers = (size: CompanySize): string =>
   format(tidy(MEMBER_CAP[size] * HEADROOM * 0.02307));
+
+/**
+ * The engagement survey behind the Seer dashboard at global 3758-3903: who it went to, how
+ * many answered, and how many finished.
+ *
+ * WHY THESE ARE DERIVED WHEN THE REST OF THAT SCREEN IS NOT
+ * The `seer` group's own note in videoCopy.ts says every number on those screens is fixed
+ * on purpose. That rule is about a MODEL inventing plausible-looking figures, and it still
+ * holds — scores, the NPS split, the heatmap and the timeline are all still fixed. These
+ * three are different in kind: they are HEADCOUNTS, and a headcount that does not follow
+ * `companySize` is the exact failure this file exists to prevent. Left hard-coded, an
+ * employer of under 800 people got a dashboard reporting a survey audience of 13,860.
+ *
+ * NOT THE WHOLE COMPANY
+ * The audience is a share of it, not all of it: the screen is a manager's view with a
+ * Segments control on it, and the survey's own space elsewhere in the film carries the
+ * whole company. The share is the captured screen's own 13,860 against the large band's
+ * 50,000 cap — the band those screens were captured at — so the large band renders exactly
+ * what the reference does and only the bands that were previously unreachable move.
+ *
+ * The two RATES are the source, not a fourth and fifth number: the cards print 75% and 95%
+ * beside these rows, and deriving each row from the rate above it is what stops the two
+ * from ever disagreeing. Rounding can move a row by half a person and nothing else.
+ */
+const SURVEY_SHARE = 0.2772;
+export const SURVEY_RESPONSE_RATE = 0.75;
+export const SURVEY_COMPLETION_RATE = 0.95;
+
+export const surveyAudience = (size: CompanySize): number =>
+  tidy(MEMBER_CAP[size] * SURVEY_SHARE);
+export const surveyResponses = (size: CompanySize): number =>
+  tidy(surveyAudience(size) * SURVEY_RESPONSE_RATE);
+export const surveyCompletions = (size: CompanySize): number =>
+  tidy(surveyResponses(size) * SURVEY_COMPLETION_RATE);
+
+/**
+ * A bare count, no "Members" after it.
+ *
+ * `separator` is not decoration. The captured dashboard prints its audience and response
+ * figures with thousands separators and its completions figure without one — "10,395" next
+ * to "9875" — and that is the product's own inconsistency, reproduced rather than tidied,
+ * because tidying it would put the one band the screen was captured at out of step with the
+ * reference for no gain.
+ */
+export const countText = (n: number, separator = true): string =>
+  separator ? n.toLocaleString("en-US") : String(n);
+
+/**
+ * The "+N" chip at the end of an avatar row, derived from the count the row sits under.
+ *
+ * It was the string "12k+", hard-coded on the Space page. That number is the APPROVED
+ * BASELINE's own count for that space — BASELINE[4] is 12,655 — so it was right when the
+ * screen was captured and has been wrong ever since the counts started being derived: at
+ * the large band that space holds 20,812 people and the chip still said twelve thousand.
+ * At the small band it said "12k+" next to "333 Members", which is not a stale number, it
+ * is a contradiction on screen. Nobody saw it because every video shipped at "large" until
+ * `companySize` was given to the model.
+ *
+ * The rule is read off that same artwork: 12,655 members behind five faces is 12,650, and
+ * the chip reads the thousands, floored. Below a thousand there is no artwork to copy, so
+ * it shows what it actually means — the people the row is not showing.
+ */
+export const memberOverflow = (
+  size: CompanySize,
+  index: number,
+  facesShown: number,
+): string => {
+  // From the same arithmetic the count above it uses, not by parsing that count back out
+  // of its own formatted string: "20,812 Members" only reparses while the separator stays
+  // a comma, and the two would drift apart silently the day it does not.
+  const rest = Math.max(0, spaceCount(size, index) - facesShown);
+  return rest >= 1000 ? `${Math.floor(rest / 1000)}k+` : `${rest}+`;
+};
 
 /**
  * Which SHAPE position each recurring space uses.
