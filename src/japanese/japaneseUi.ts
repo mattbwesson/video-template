@@ -17,7 +17,7 @@ const exact: Record<string, string> = {
   "Home": "ホーム", "My Company": "会社情報", "Communications": "コミュニケーション",
   "Chat": "チャット", "Spaces": "スペース", "Admin": "管理", "EXPLORE": "探す",
   "News": "ニュース", "Events": "イベント", "Pages": "ページ", "Podcasts": "ポッドキャスト",
-  "Survey & Forms": "アンケート・フォーム", "Surveys & Forms": "アンケート・フォーム",
+  "Survey & Forms": "サーベイ・フォーム", "Surveys & Forms": "サーベイ・フォーム",
   /**
    * The HQ capability fan, global 268-416, and the tagline under the lockup at 139-262.
    *
@@ -28,7 +28,7 @@ const exact: Record<string, string> = {
    * title line has room for twelve characters and a subtitle for twenty; every line below
    * is inside that.
    */
-  "Communication & Engagement": "コミュニケーション\nとエンゲージメント",
+  "Communication & Engagement": "コミュニケーションと\nエンゲージメント",
   "Reach, engage, and align every employee": "情報を届け、共感を生み、\n組織を一つに",
   "Search & Knowledge": "検索と\nナレッジ",
   "Find and access what you need instantly": "必要な情報に\nすぐにたどり着く",
@@ -48,7 +48,7 @@ const exact: Record<string, string> = {
    * characters a line is the most that fits at this size.
    */
   "Personalized Homepage Experiences": "一人ひとりに\n最適化された\nホーム画面",
-  "Surveys": "アンケート", "Newsletters": "ニュースレター", "Journeys": "ジャーニー",
+  "Surveys": "サーベイ", "Newsletters": "ニュースレター", "Journeys": "ジャーニー",
   "CONNECT": "つながる", "Connect": "つながる", "People": "メンバー", "Teams": "チーム",
   "Org Chart": "組織図", "RESOURCES": "リソース", "Resources": "リソース", "Apps": "アプリ",
   "Docs": "ドキュメント", "Gallery": "ギャラリー", "Search": "検索", "Inbox": "受信箱",
@@ -64,13 +64,13 @@ const exact: Record<string, string> = {
   "Upcoming Events": "今後のイベント", "UPCOMING EVENTS": "今後のイベント", "Headquarters & Livestream": "本社・ライブ配信",
   "Members": "メンバー", "Joined": "参加済み", "✓ Joined": "✓ 参加済み", "Join": "参加",
   "Request to Join": "参加をリクエスト", "New": "新着", "Corporate": "全社", "Social": "ソーシャル",
-  "Global": "全社", "Everyone": "全員", "Posts": "投稿", "Post": "投稿", "Share": "共有", "Reply": "返信",
+  "Global": "グローバル", "Everyone": "全員", "Posts": "投稿", "Post": "投稿", "Share": "共有", "Reply": "返信",
   "Comments": "コメント", "All Comments": "すべてのコメント", "reactions": "リアクション",
   "Leave a comment": "コメントを入力", "Leave a comment...": "コメントを入力…", "Leave a comment…": "コメントを入力…",
   "Write a message": "メッセージを入力", "Send message": "送信", "Start New Chat": "新しいチャット",
   "Summarise Content": "コンテンツを要約", "Summarize": "要約", "AI Summary": "AI要約",
   "Team Updates": "チームの最新情報", "Expand": "展開", "Open": "開く", "Open Fullscreen": "全画面で開く",
-  "Start Survey": "アンケートに回答", "Start": "開始", "Countdown": "カウントダウン",
+  "Start Survey": "サーベイに回答", "Start": "開始", "Countdown": "カウントダウン",
   "Days": "日", "Hours": "時間", "Minutes": "分", "Just now": "たった今",
   "posted a document.": "がドキュメントを投稿しました", "posted an article": "が記事を投稿しました",
   "posted a Shout-out.": "がシャウトアウトを投稿しました", "is celebrating a work anniversary.": "が勤続記念日を迎えました",
@@ -105,7 +105,7 @@ const exact: Record<string, string> = {
   "June 10th, 2026": "2026年6月10日", "June 14th, 2026": "2026年6月14日", "June 15th, 2026": "2026年6月15日",
   "June 10, 2026 12.00AM": "2026年6月10日 0:00", "June 11, 2026 11.00AM": "2026年6月11日 11:00",
   "June 12, 2026 10.00AM": "2026年6月12日 10:00", "June 17, 2026 10:00AM": "2026年6月17日 10:00",
-  "Jan 15, 2026": "2026年1月15日", "Latency:2.0s": "遅延: 2.0秒", "30fps": "30fps",
+  "Jan 15, 2026": "2026年1月15日", "Latency:2.0s": "遅延：2.0秒", "30fps": "30fps",
 
   // ── People hardcoded in the chrome (names from the copy where they overlap) ──
   "Megan Wilson · 3 days ago ·": "小林 恵 · 3日前 ·", "Arjun Sharma": "高橋 亮",
@@ -139,7 +139,7 @@ const exact: Record<string, string> = {
 
   // ── Widget store / list ───────────────────────────────────────────────────────
   "Widget Store": "ウィジェットストア", "Widget Categories": "ウィジェットのカテゴリ", "Browse by category": "カテゴリから探す",
-  "Start with a category—or jump straight to search.": "カテゴリから探す。検索でもすぐに。",
+  "Start with a category—or jump straight to search.": "カテゴリから探す。検索からでもすぐに見つかります。",
   "Curated widgets for comms, culture, and everyday work—organized the way people actually browse.":
     "社内コミュニケーション、文化、日々の業務のためのウィジェットを、実際の使われ方に沿って整理しました。",
   "Discover": "見つける", "Productivity": "生産性", "Stay Informed": "最新情報", "Media": "メディア",
@@ -189,7 +189,7 @@ const exact: Record<string, string> = {
   "Products": "プロダクト", "Analytics": "分析", "Campaigns": "キャンペーン", "Workvivo TV": "Workvivo TV", "Awards": "表彰",
   "What's New": "新機能",
   "Bring company news and updates to every screen across your workplace.": "会社のニュースと最新情報を職場のあらゆる画面へ。",
-  "Capture feedback, understand sentiment, make informed decisions.": "フィードバックを集め、雰囲気を把握し、根拠ある判断を。",
+  "Capture feedback, understand sentiment, make informed decisions.": "フィードバックを集め、社員の意識を把握し、根拠ある判断を。",
   "Celebrate achievements and recognize great work across your organization.": "成果を称え、組織全体の優れた働きを認め合う。",
   "Create engaging newsletters that keep everyone informed and connected.": "全員に情報が届き、つながりを保つニュースレターを。",
   "Guide employees through personalized key workplace moments.": "職場の大切な節目を、一人ひとりに合わせて案内。",
@@ -211,9 +211,9 @@ const exact: Record<string, string> = {
   "Share Values": "価値観を共有", "Share your companies values": "会社の価値観を共有", "Enroll to a Space": "スペースに登録",
   "Automatically add to a space": "スペースに自動で追加", "Share an Article": "記事を共有", "Share and existing article": "既存の記事を共有",
   "Share a Page": "ページを共有", "Share existing page": "既存のページを共有", "Share a Link": "リンクを共有", "Share any URL": "任意のURLを共有",
-  "Share a Survey": "アンケートを共有", "Share an existing survey": "既存のアンケートを共有", "Assign a Badge": "バッジを付与",
+  "Share a Survey": "サーベイを共有", "Share an existing survey": "既存のサーベイを共有", "Assign a Badge": "バッジを付与",
   "Reward with a badge": "バッジで称える", "A message has been shared with you": "メッセージが共有されました",
-  "A page has been shared with you": "ページが共有されました", "A survey has been shared with you": "アンケートが共有されました",
+  "A page has been shared with you": "ページが共有されました", "A survey has been shared with you": "サーベイが共有されました",
   "An article has been shared with you": "記事が共有されました", "You have been enrolled in a space": "スペースに登録されました",
   "View your companies values": "会社の価値観を見る",
 
@@ -221,7 +221,7 @@ const exact: Record<string, string> = {
   "Seer Insights": "Seer インサイト", "Manage Seer Insights": "Seer インサイトを管理", "Seer AI": "Seer AI",
   "Engagement": "エンゲージメント", "Drivers": "ドライバー", "Driver": "ドライバー", "Values": "価値観", "Value": "価値観",
   "Radar": "レーダー", "Segment": "セグメント", "NPS Category": "NPSカテゴリ", "Topic": "トピック", "Prescriptive": "提案",
-  "Starred": "スター付き", "Popular Topics": "注目のトピック", "Summary": "サマリー", "Sentiment": "感情",
+  "Starred": "スター付き", "Popular Topics": "注目のトピック", "Summary": "サマリー", "Sentiment": "社員意識",
   "Very Positive": "とても良い", "Positive": "良い", "Negative": "悪い", "Very Negative": "とても悪い",
   "Export CSV": "CSVを書き出す", "Overview": "概要", "Metrics": "指標", "Score": "スコア", "Score Change": "スコアの変化",
   "Company Score": "全社スコア", "Completion Rate": "完了率", "Response Rate": "回答率", "Responses": "回答", "Completions": "完了",
@@ -230,14 +230,14 @@ const exact: Record<string, string> = {
   "Engagement Score Timeline": "エンゲージメントスコアの推移", "Engagement Question Asked": "エンゲージメント設問",
   "Promoters": "推奨者", "Passives": "中立者", "Detractors": "批判者", "Team’s Engagement Score": "チームのエンゲージメントスコア",
   "Manager Insights": "マネージャーインサイト", "Manager Overview": "マネージャー概要", "Managers": "マネージャー",
-  "Direct Reports": "直属の部下", "Total Reports": "部下の総数", "Individual Contributor": "個人貢献者",
+  "Direct Reports": "直属の部下", "Total Reports": "部下の総数", "Individual Contributor": "一般社員",
   "Welcome to Your Manager Insights": "マネージャーインサイトへようこそ",
   "Here, you can see how your team is feeling and what they think. This dashboard helps you spot any issues, understand team opinions, and take steps to make things better.":
     "チームの状態や意見をここで確認できます。このダッシュボードで課題に気づき、チームの声を理解し、改善への一歩を踏み出しましょう。",
   "Wellbeing": "ウェルビーイング", "My Job": "仕事内容", "Culture and Values": "文化と価値観", "Career Development": "キャリア開発",
   "Compensation and Benefits": "報酬と福利厚生", "Senior Leadership": "経営層", "Reward and Recognition": "評価と称賛",
   "Empowerm...": "裁量…", "Team Collaboration": "チームの協働", "Work Environment": "職場環境", "Employee Satisfaction": "従業員満足度",
-  "Workplace Atmosphere": "職場の雰囲気", "Competitive Environment": "競争環境", "Employee Morale": "従業員の士気",
+  "Workplace Atmosphere": "職場の雰囲気", "Competitive Environment": "競争環境", "Employee Morale": "社員の士気",
   "Performance Recognition": "成果への評価", "Coworker Relationships": "同僚との関係", "Workplace Communication": "職場の情報共有",
   "Team Dynamics": "チームの力学",
   "I am provided with the necessary tools and resources I need to do my job": "業務に必要なツールやリソースが十分に提供されている",
@@ -254,7 +254,7 @@ const exact: Record<string, string> = {
   "We haven't had a team meeting in a while.": "しばらくチームで集まる機会がありません。",
   "Agree": "そう思う", "Neutral": "どちらでもない",
   "Disagree": "そう思わない", "Add Comment": "コメントを追加", "Survey Completed": "回答が完了しました",
-  "Thanks for taking the time to complete our survey. Your feedback is important to us.": "アンケートへのご回答ありがとうございました。皆さんの声を大切にします。",
+  "Thanks for taking the time to complete our survey. Your feedback is important to us.": "サーベイへのご回答ありがとうございました。皆さんの声を大切にします。",
 
   // ── Analytics ─────────────────────────────────────────────────────────────────
   "Analytics & Reporting": "分析とレポート", "Snapshot": "スナップショット", "Activation": "アクティベーション",
@@ -296,11 +296,11 @@ const exact: Record<string, string> = {
   "Personalized": "一人ひとりに合わせた", "Homepage": "ホームページ", "Experiences": "体験",
   "Smart Chapters": "スマートチャプター", "Summarize with AI": "AIで要約",
   "Your Voice Matters": "あなたの声が力になる",
-  "A dedicated space to explore, discuss, and act on Employee Insights.": "従業員インサイトを探り、話し合い、行動につなげるためのスペース。",
+  "A dedicated space to explore, discuss, and act on Employee Insights.": "社員インサイトを探り、話し合い、行動につなげるためのスペース。",
   "Lee Johnson": "斎藤 健", "Rachel Lopez": "三浦 恵子", "Jay Lee": "小川 拓也", "Megan Wilson": "小林 恵",
   "Manager Insights Action Hub": "マネージャーインサイト アクションハブ",
   "We're sharing our latest insights and updates on the actions being taken based on the feedback we've received last week. This document highlights key themes, opportunities, and the steps we're taking to continue improving the employee experience. Thank you to everyone who continues to share their perspectives! Your feedback helps guide meaningful change and shape the future of our organization 👏":
-    "先週いただいたフィードバックをもとに進めている取り組みと、最新のインサイトを共有します。この資料では、主なテーマ、改善の機会、そして従業員体験をさらに良くするためのステップをまとめました。声を寄せ続けてくださる皆さんに感謝します。皆さんのフィードバックが、意味のある変化と組織の未来を形づくります 👏",
+    "先週いただいたフィードバックをもとに進めている取り組みと、最新のインサイトを共有します。この資料では、主なテーマ、改善の機会、そして社員エクスペリエンスをさらに良くするためのステップをまとめました。声を寄せ続けてくださる皆さんに感謝します。皆さんのフィードバックが、意味のある変化と組織の未来を形づくります 👏",
   "The Complete Guide to our HR System": "人事システム 活用ガイド",
   "Thanks for sharing!": "共有ありがとうございます！", "Was waiting for this one": "これを待っていました",
   "A New Hire's Guide to Success": "新入社員のための活躍ガイド",
@@ -353,7 +353,7 @@ const exact: Record<string, string> = {
   "People Ops": "ピープルオペレーション", "Product Design": "プロダクトデザイン",
   "2 Weeks": "2週間", "Inactive": "未実施", "Monthly": "毎月", "Not Started": "未開始",
   "AI can make mistakes. Review for accuracy.": "AIは間違えることがあります。内容を確認してください。",
-  "All sources": "すべてのソース", "Thinking for 3s": "3秒間考え中", "Next": "次へ", "Submit": "送信",
+  "All sources": "すべてのソース", "Thinking for 3s": "思考中", "Next": "次へ", "Submit": "送信",
   "Communication": "コミュニケーション", "Score: Engagement": "スコア：エンゲージメント",
   "Strongly Agree": "強くそう思う", "Strongly Disagree": "全くそう思わない",
 
@@ -370,6 +370,10 @@ const exact: Record<string, string> = {
    */
   "nomatter/No": "どこに", "nomatter/matter": "いても", "nomatter/where": "つながる",
   "nomatter/they": "", "nomatter/are": "",
+  // Journey status on the phone card, and the HQ chat's own progress line. Both reach the
+  // screen from a prop default rather than a JSX literal, which is why the first sweep of
+  // the frames missed them — scripts/check-ui-strings.mjs found them by walking call sites.
+  "Started": "開始済み", "Searching.": "検索中…",
 
   // ══ Pages, surveys and the admin hub — the five sequences added after the first
   //    translation pass (global 2760, 3109, 4253, 4585, 5166) ═══════════════════════
@@ -383,7 +387,7 @@ const exact: Record<string, string> = {
   "Help me write": "書くのを手伝う", "Help Me Write": "書くのを手伝う",
   // Rendered as two spans on one row: "Workvivo AI" + " " + "is generating..." — so the
   // particle has to live on the second half or the line reads without one.
-  "Workvivo AI": "Workvivo AI", "is generating...": "が生成中...",
+  "Workvivo AI": "Workvivo AI", "is generating...": "が生成中…",
   "Stop": "停止",
 
   // ── Survey builder: the add-question list, the action bar, the AI modal ───────
@@ -398,11 +402,11 @@ const exact: Record<string, string> = {
   // 167px — it was measured from the shortest ENGLISH label — and eleven characters
   // overflow it on both sides. The verb is the part the pill can afford to lose.
   "Create a fun survey": "楽しいサーベイ",
-  "Gauge employee sentiment": "社員の心情を測る", "Gauge Employee Sentiment": "社員の心情を測る",
+  "Gauge employee sentiment": "社員の意識を測る", "Gauge Employee Sentiment": "社員の意識を測る",
   "Plan future improvements": "今後の改善を計画する", "Plan Future Improvements": "今後の改善を計画する",
   "Gather insights on trends": "傾向のインサイトを集める",
   "View more": "もっと見る", "Redo Survey": "サーベイをやり直す", "Enter description": "説明を入力",
-  "Company-Wide Employee Sentiment Survey": "全社 社員意識サーベイ",
+  "Company-Wide Employee Sentiment Survey": "全社員意識サーベイ",
   "Welcome & Purpose": "ごあいさつと目的",
   "How would you rate your overall job satisfaction?": "総合的な仕事の満足度をどう評価しますか？",
   "How do you currently feel about working at this company?": "いまこの会社で働くことについて、どう感じていますか？",
@@ -430,7 +434,14 @@ const exact: Record<string, string> = {
 
 };
 
-const patterns: ReadonlyArray<readonly [RegExp, string]> = [
+/** English month abbreviation to its number, for the date rules below. */
+const MONTH: Record<string, string> = {
+  Jan: "1", Feb: "2", Mar: "3", Apr: "4", May: "5", Jun: "6",
+  Jul: "7", Aug: "8", Sep: "9", Oct: "10", Nov: "11", Dec: "12",
+};
+
+type Pattern = readonly [RegExp, string | ((...groups: string[]) => string)];
+const patterns: ReadonlyArray<Pattern> = [
   [/^(\d+) Questions?$/, "設問$1問"],
   [/^(\d+) steps? remaining$/, "残り$1ステップ"],
   [/^(\d[\d,]*) [Cc]omments?$/, "コメント$1件"],
@@ -455,8 +466,18 @@ const patterns: ReadonlyArray<readonly [RegExp, string]> = [
   [/^Day (\d+)$/, "$1日目"],
   [/^(\d[\d,]*) Audience$/, "対象者$1人"],
   [/^(\d+) Columns$/, "$1カラム"],
-  [/^Apr (\d+), 2026$/, "2026年4月$1日"],
-  [/^(\d+) (Jan|Feb|Mar|Apr|May|Jun) 2026$/, "2026年$2$1日"],
+  /**
+   * Dates, in the two shapes the film uses: "Apr 1, 2026" on the analytics screens and
+   * "15 Jan 2026" on the manager-insights axis.
+   *
+   * FUNCTIONS, NOT `$2`, AND THIS IS THE WHOLE REASON THE FUNCTION FORM EXISTS.
+   * These were `[/^(\d+) (Jan|Feb|Mar|Apr|May|Jun) 2026$/, "2026年$2$1日"]`, which
+   * substitutes the ENGLISH month straight through: "15 Jan 2026" rendered 2026年Jan15日.
+   * A sibling rule dodged it by hardcoding Apr — which is why only April looked right, and
+   * why the other five months of the second shape matched nothing at all and stayed English.
+   */
+  [/^([A-Z][a-z]{2}) (\d+), 2026$/, (_m, mon, day) => `2026年${MONTH[mon] ?? mon}月${day}日`],
+  [/^(\d+) ([A-Z][a-z]{2}) 2026$/, (_m, day, mon) => `2026年${MONTH[mon] ?? mon}月${day}日`],
 ];
 
 /**

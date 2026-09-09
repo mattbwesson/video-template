@@ -125,13 +125,25 @@ def read(path: str) -> str:
 
 
 def japanese_pairs() -> list[tuple[str, str]]:
-    """Every exact key/value in japaneseUi.ts, in source order."""
+    """
+    Every exact key/value in japaneseUi.ts, in source order, with concatenations JOINED.
+
+    The long article bodies are written as `"…" + "…" + "…"` across several lines so they
+    stay readable in the source. An earlier version of this matched only the first segment,
+    so the export showed the two longest passages in the film cut off mid-sentence and a
+    reviewer reasonably read that as the translation being truncated on screen. It is not —
+    but a reviewer cannot know that from the export, which is the export's fault.
+    """
     src = read("src/japanese/japaneseUi.ts")
     body = src[src.index("const exact") : src.index("const patterns")]
     body = re.sub(r"//.*$", "", body, flags=re.M)
-    # Values may be a concatenation across lines; take the first segment for display and
-    # note the rest, rather than silently showing a fragment as if it were the whole string.
-    return re.findall(r'"((?:[^"\\]|\\.)*)"\s*:\s*\n?\s*"((?:[^"\\]|\\.)*)"', body)
+    out = []
+    for m in re.finditer(
+        r'"((?:[^"\\]|\\.)*)"\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', body
+    ):
+        segments = re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(2))
+        out.append((m.group(1), "".join(segments)))
+    return out
 
 
 def unescape(s: str) -> str:
@@ -152,29 +164,37 @@ def sources() -> dict[str, str]:
 
 def frame_ranges() -> dict[str, list[tuple[int, int]]]:
     """
-    Where each scene component is on the timeline, from WorkvivoCut's own Sequence names.
+    Where each scene component sits on the timeline, from WorkvivoCut's own Sequences.
 
-    The names carry the range because they are what the Studio's timeline shows, so they are
-    kept correct by anyone working on the cut — which makes them a better source for this
-    than anything this script could re-derive.
+    TWO CONVENTIONS, AND MISSING ONE OF THEM IS NOT HARMLESS. Most sequences write the range
+    into the name — `name="HQ Search (2317 - 2392)"` — but some give `from` and
+    `durationInFrames` and leave the name plain. Reading only the first put
+    HeadquartersScene, which is `from={33} durationInFrames={106}`, at no range at all; it
+    then inherited 1813-1978 from a file that merely NAMES it in a comment, and the export
+    said the film's opening headline plays two-thirds of the way through.
     """
     cut = read("src/WorkvivoCut.tsx")
     out: dict[str, list[tuple[int, int]]] = {}
     for block in re.split(r"<Sequence", cut)[1:]:
-        head = block[:400]
-        m = re.search(r"\((\d+) - (\d+)\)", head)
-        if not m:
+        head = block[:600]
+        named = re.search(r"\((\d+) - (\d+)\)", head)
+        frm = re.search(r"from=\{(\d+)\}", head)
+        dur = re.search(r"durationInFrames=\{(\d+)\}", head)
+        if named:
+            span = (int(named.group(1)), int(named.group(2)))
+        elif frm and dur:
+            span = (int(frm.group(1)), int(frm.group(1)) + int(dur.group(1)))
+        else:
             continue
-        span = (int(m.group(1)), int(m.group(2)))
-        for comp in set(re.findall(r"<([A-Z][A-Za-z0-9]+)", block[: block.find("</Sequence>") if "</Sequence>" in block else 4000])):
+        body = block[: block.find("</Sequence>")] if "</Sequence>" in block else block[:4000]
+        for comp in set(re.findall(r"<([A-Z][A-Za-z0-9]+)", body)):
             out.setdefault(comp, []).append(span)
-    # The scenes added later export their own bounds instead of writing them in the name.
     for name, src in sources().items():
         fm = re.search(r"export const [A-Z_]*FROM = (\d+);", src)
         to = re.search(r"export const [A-Z_]*TO = (\d+);", src)
         if fm and to:
             out.setdefault(name, []).append((int(fm.group(1)), int(to.group(1))))
-    return out
+    return {k: sorted(set(v)) for k, v in out.items()}
 
 
 def tc(frame: int) -> str:
@@ -235,18 +255,48 @@ def main() -> None:
     srcs = sources()
     ranges = frame_ranges()
 
-    # Which file renders each string. A string in several files is listed under each, because
-    # a reviewer checking a screen wants everything on that screen.
-    where: dict[str, list[tuple[str, str]]] = {}
+    # Which file renders each string, from scripts/ui-string-sites.mjs — the TypeScript
+    # call sites, not a text search. See that file for what the text search got wrong.
+    sites = json.loads(
+        subprocess.run(
+            ["node", "scripts/ui-string-sites.mjs"], cwd=ROOT,
+            capture_output=True, text=True, check=True,
+        ).stdout
+    )
+    by_key: dict[str, list[dict]] = {}
+    for r in sites:
+        by_key.setdefault(("" if not r["ctx"] else r["ctx"] + "/") + r["key"], []).append(r)
+    # A scoped entry also answers for the bare key, so record where each scope is used.
+    scopes = {r["ctx"] for r in sites if r["ctx"]}
+    scoped_keys = {k for k in by_key if "/" in k and k.split("/", 1)[0] in scopes}
+
+    where: dict[str, list[tuple[str, str, str]]] = {}
     homeless: list[tuple[str, str]] = []
     for en, ja in pairs:
-        core = en.split("/", 1)[1] if "/" in en and " " not in en.split("/", 1)[0] else en
-        lit = '"' + core + '"'
-        hits = [n for n, c in srcs.items() if lit in c and n not in NOT_A_SCREEN]
+        hits = by_key.get(en, [])
+        note = ""
+        # A flat key that a scope overrides somewhere: say so, or the two entries look like
+        # a contradiction. This is what made 戻る / 休暇 read as one broken card.
+        overrides = sorted({k.split("/", 1)[0] for k in scoped_keys if k.split("/", 1)[1] == en})
+        if overrides:
+            note = f"overridden on {', '.join(overrides)}"
         if not hits:
-            homeless.append((en, ja))
-        for n in hits:
-            where.setdefault(n, []).append((en, ja))
+            # No resolvable call site. Most of these arrive through a copy slot, where the
+            # value is data rather than a literal the checker can follow. Fall back to
+            # finding the English in a rendering file — and SAY it is a guess, because that
+            # search is what produced the wrong attributions this export had before.
+            guesses = [
+                n for n, c in srcs.items()
+                if n not in NOT_A_SCREEN and n in SCREENS and ('"' + en + '"') in c
+            ]
+            if not guesses:
+                homeless.append((en, ja))
+                continue
+            for n in guesses:
+                where.setdefault(n, []).append((en, ja, (note + "; " if note else "") + "location inferred"))
+            continue
+        for r in hits:
+            where.setdefault(r["file"], []).append((en, ja, note))
 
     def inherited(name: str) -> list[tuple[int, int]]:
         """
@@ -260,7 +310,7 @@ def main() -> None:
             return ranges[name]
         out = []
         for other, text in srcs.items():
-            if other != name and re.search(rf"\b{name}\b", text) and ranges.get(other):
+            if other != name and f"<{name}" in text and ranges.get(other):
                 out += ranges[other]
         return sorted(set(out))
 
@@ -304,7 +354,13 @@ def main() -> None:
         "- **Register.** It is a product film: confident, not stiff, and not casual. "
         "です・ます throughout except on the kinetic type, which is deliberately clipped.\n"
         "- **Word order.** Some kinetic scenes split a sentence across slots that animate "
-        "separately; those are marked, and the fragments only read correctly in order.\n"
+        "separately. Those rows are fragments, and a **Reads as** line under the table "
+        "shows what they build — judge the sentence, not the fragments.\n"
+        "\nTwo notes in the third column:\n\n"
+        "- *location inferred* — the screen is a best guess from where the English appears, "
+        "not a resolved call site. The Japanese is right; the grouping might not be.\n"
+        "- *overridden on X* — this word means something else on screen X, which has its own "
+        "entry prefixed `X/`. The two are not in conflict.\n"
     )
     lines.append(f"\n{len(pairs)} strings across {len(order)} screens.\n")
 
@@ -323,15 +379,22 @@ def main() -> None:
             desc = "_(no description yet)_"
         lines.append(f"\n### {name}{span}\n")
         lines.append(f"{desc}\n\n")
-        lines.append("| English | Japanese |\n|---|---|\n")
+        lines.append("| English | Japanese | |\n|---|---|---|\n")
         seen = set()
-        for en, ja in rows:
+        for en, ja, note in rows:
             if en in seen:
                 continue
             seen.add(en)
             e = unescape(en).replace("|", "\\|").replace("\n", " ")
-            j = unescape(ja).replace("|", "\\|").replace("\n", " ")
-            lines.append(f"| {e} | {j} |\n")
+            j = unescape(ja).replace("|", "\\|").replace("\n", "<br>")
+            lines.append(f"| {e} | {j} | {note} |\n")
+
+        # A kinetic scene splits one sentence across slots that animate separately, so the
+        # rows above are fragments and only mean anything in order. Show what they build.
+        for scope in sorted({k.split("/", 1)[0] for k, _, _ in rows if "/" in k}):
+            parts = [unescape(j) for k, j, _ in rows if k.startswith(scope + "/")]
+            if len(parts) > 1:
+                lines.append(f"\nReads as **{''.join(parts)}**\n")
 
     if homeless:
         lines.append("\n### Not traceable to one screen\n")

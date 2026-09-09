@@ -33,8 +33,18 @@ export type UiStrings = {
    * being a prop threaded through ten scenes. Defaults reproduce the English exactly.
    */
   wordGap?: { sep: string; gapEm: string };
-  /** Tried in order after `exact` misses; `$1` etc. refer to capture groups. */
-  patterns?: ReadonlyArray<readonly [RegExp, string]>;
+  /**
+   * Tried in order after `exact` misses; `$1` etc. refer to capture groups.
+   *
+   * A replacement may be a FUNCTION instead, receiving the capture groups. A plain `$n`
+   * substitutes the English text verbatim, which is right for a number and wrong for
+   * anything that has to be translated on the way through: `"$1年$2月"` against
+   * `/(\d+) (Jan|Feb)/` renders 2026年Jan月. Anything that maps a word rather than copying
+   * it needs the function form.
+   */
+  patterns?: ReadonlyArray<
+    readonly [RegExp, string | ((...groups: string[]) => string)]
+  >;
 };
 
 const UiContext = createContext<UiStrings | null>(null);
@@ -90,7 +100,9 @@ export const useT = (): (<T extends Text>(s: T, ctx?: string) => T) => {
       const hit = strings.exact[core];
       if (hit !== undefined) return put(hit);
       for (const [re, out] of strings.patterns ?? []) {
-        if (re.test(core)) return put(core.replace(re, out));
+        if (re.test(core)) {
+          return put(typeof out === "string" ? core.replace(re, out) : core.replace(re, out));
+        }
       }
       return s;
     },
