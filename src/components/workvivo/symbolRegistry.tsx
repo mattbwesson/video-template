@@ -114,12 +114,29 @@ export const SymbolSvg: React.FC<
   }
   const { fill, ...rest } = def.attrs;
   const inner = paint ? def.inner.split(paintFrom).join(paint) : def.inner;
+  /*
+   * The size goes in CSS as well as on the attributes.
+   *
+   * Chromium lays an `<svg width={86} height={86}>` out at 86 square from the attributes
+   * alone. The export's layout engine reads the box from CSS, and an absolutely-positioned
+   * glyph with no CSS size came out as nothing at all — the Add Page button's plus was
+   * simply missing from every exported MP4 while the same component's toolbar glyphs, which
+   * sit in normal flow, rendered fine. Stating it twice costs nothing and removes the
+   * dependency on which of the two a given renderer happens to read.
+   *
+   * `svgProps.style` still comes last, so a caller can override either value.
+   */
+  const boxed =
+    typeof svgProps.width === "number" && typeof svgProps.height === "number"
+      ? { width: svgProps.width, height: svgProps.height }
+      : {};
   return (
     <svg
       viewBox={def.viewBox}
       {...(fill ? { fill } : {})}
       {...rest}
       {...svgProps}
+      style={{ ...boxed, ...svgProps.style }}
       dangerouslySetInnerHTML={{ __html: inner }}
     />
   );

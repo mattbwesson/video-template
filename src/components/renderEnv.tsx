@@ -1,5 +1,5 @@
 import React from "react";
-import { getRemotionEnvironment } from "remotion";
+import { useRemotionEnvironment } from "remotion";
 import { CameraMotionBlur } from "@remotion/motion-blur";
 
 /**
@@ -18,9 +18,16 @@ import { CameraMotionBlur } from "@remotion/motion-blur";
  * which run real Chromium and composite everything correctly. Gating on `isRendering`
  * would throw the effect away in the CLI render too, which is the one output that can
  * have it.
+ *
+ * THE HOOK, NEVER `getRemotionEnvironment()`. That function hardcodes
+ * `isClientSideRendering: false` — read its source, the field is a literal. The flag only
+ * ever becomes true through `RemotionEnvironmentContext`, which @remotion/web-renderer
+ * provides around the composition, and only the hook reads that context. Gating on the
+ * function compiles, typechecks, and silently never fires: a first pass at these fixes did
+ * exactly that and the exported MP4 came back byte-identical.
  */
 export const useIsClientSideRender = (): boolean =>
-  getRemotionEnvironment().isClientSideRendering;
+  useRemotionEnvironment().isClientSideRendering;
 
 /**
  * `<CameraMotionBlur>` everywhere it works, and a sharp pass-through in the export.
@@ -41,7 +48,8 @@ export const MotionBlur: React.FC<{
   samples: number;
   children: React.ReactNode;
 }> = ({ shutterAngle, samples, children }) => {
-  if (getRemotionEnvironment().isClientSideRendering) return <>{children}</>;
+  const clientSide = useIsClientSideRender();
+  if (clientSide) return <>{children}</>;
   return (
     <CameraMotionBlur shutterAngle={shutterAngle} samples={samples}>
       {children}

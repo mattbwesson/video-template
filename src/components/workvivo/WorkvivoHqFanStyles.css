@@ -36,13 +36,23 @@
   width: 480px;
 }
 
+/* `color` is repeated here and on .hqf-sub rather than inherited from .hqf-label.
+   Both labels exported as a DARK ghost of themselves — visible as a shadow on the lit
+   wedge, invisible on the dim ones — i.e. the fill resolved to something near black rather
+   than to the white on the parent. Inheritance is the thing the export's style resolution
+   cannot be relied on for; the same reasoning is why SymbolSvg substitutes `paint` into a
+   symbol's own paths instead of setting `color` on the root.
+
+   The text-shadow goes with it. It is what MADE the dark ghost legible, and it is not on
+   any supported list — the reference's own labels sit on a soft wedge and read fine
+   without it. */
 .hqf-title {
   font-size: 40px;
   font-weight: 700;
   /* 46px baseline pitch, measured. */
   line-height: 46px;
   letter-spacing: -0.012em;
-  text-shadow: 0 2px 18px rgba(10, 4, 40, 0.4);
+  color: #ffffff;
 }
 
 .hqf-sub {

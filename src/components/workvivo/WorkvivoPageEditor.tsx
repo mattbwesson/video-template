@@ -146,7 +146,8 @@ export const Spark: React.FC<{ size?: number; color?: string; style?: React.CSSP
   color = "#6610f2",
   style,
 }) => (
-  <svg viewBox="0 0 24 24" width={size} height={size} style={style} xmlns="http://www.w3.org/2000/svg">
+  /* Size in CSS as well as on the attributes — see the note in symbolRegistry.tsx. */
+  <svg viewBox="0 0 24 24" width={size} height={size} style={{ width: size, height: size, ...style }} xmlns="http://www.w3.org/2000/svg">
     <path d="M12 1.6l2.35 6.35a3 3 0 0 0 1.78 1.78L22.4 12l-6.27 2.27a3 3 0 0 0-1.78 1.78L12 22.4l-2.35-6.35a3 3 0 0 0-1.78-1.78L1.6 12l6.27-2.27a3 3 0 0 0 1.78-1.78z" fill={color} />
     <path d="M19.6 2.2l.86 2.32.86-2.32.86 2.32-.86-2.32z" fill={color} opacity="0.9" />
     <circle cx="20.4" cy="4.2" r="1.5" fill={color} />
