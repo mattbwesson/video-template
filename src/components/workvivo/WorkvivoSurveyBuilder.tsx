@@ -103,17 +103,21 @@ export const WorkvivoQuestionActionBar: React.FC<{ style?: React.CSSProperties }
         <div className="wsb-toggle-knob" />
       </div>
       <div className="wsb-bar-rule" />
+      {/* The two glyphs sit in a positioned <span>, not as positioned svgs: the export
+          serialises an inline svg's own style into the image it draws, and an inline
+          `left:-21px; top:1px` on the root moved both out of their viewport — Duplicate and
+          Delete exported with no icon. See splitPlacement in symbolRegistry.tsx. */}
       <div className="wsb-bar-action" style={{ left: 212, color: PURPLE }}>
-        <svg viewBox="0 0 16 16" width="15" height="15" style={{ position: "absolute", left: -21, top: 1 }}>
+        <span style={{ position: "absolute", left: -21, top: 1, width: 15, height: 15, display: "block" }}><svg viewBox="0 0 16 16" width="15" height="15" style={{ display: "block" }}>
           <rect x="2" y="2" width="9" height="9" rx="1.8" fill="none" stroke={PURPLE} strokeWidth="1.4" />
           <path d="M5.4 13.6h6.4a1.8 1.8 0 0 0 1.8-1.8V5.4" fill="none" stroke={PURPLE} strokeWidth="1.4" strokeLinecap="round" />
-        </svg>
+        </svg></span>
         {t("Duplicate")}
       </div>
       <div className="wsb-bar-action" style={{ left: 319, color: "#d23f3f" }}>
-        <svg viewBox="0 0 16 16" width="15" height="15" style={{ position: "absolute", left: -21, top: 1 }}>
+        <span style={{ position: "absolute", left: -21, top: 1, width: 15, height: 15, display: "block" }}><svg viewBox="0 0 16 16" width="15" height="15" style={{ display: "block" }}>
           <path d="M2.6 4.2h10.8M6.4 4.2V2.9h3.2v1.3M4.2 4.2l.7 8.6a1.2 1.2 0 0 0 1.2 1.1h3.8a1.2 1.2 0 0 0 1.2-1.1l.7-8.6" fill="none" stroke="#d23f3f" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
-        </svg>
+        </svg></span>
         {t("Delete")}
       </div>
     </div>

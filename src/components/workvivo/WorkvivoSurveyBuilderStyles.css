@@ -30,6 +30,15 @@
 }
 
 .wsb-card {
+  /* The text colour is declared HERE, on the root of a piece that the film mounts on its
+     own, and not left to `.wsb` above it. SurveyBuilderScene mounts the modal, the palette
+     and the action bar directly — none of them has a `.wsb` ancestor in the cut — so every
+     heading inside them inherited from nothing inside the component. Chromium resolves that
+     to its default and the text looked right in the Player and the CLI render; the wizard's
+     in-browser export does not, and drew those headings at about 8% — measured 238/255 on
+     white against 25 once this line was added. Colour on each root is enough: inheritance
+     from a parent inside the component survives the export, the missing ancestor did not. */
+  color: #16162c;
   position: absolute;
   background: #ffffff;
   border-radius: 14px;

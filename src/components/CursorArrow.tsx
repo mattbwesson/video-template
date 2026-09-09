@@ -36,21 +36,24 @@ export const CursorArrow: React.FC<{
   className?: string;
   style?: React.CSSProperties;
 }> = ({ color = "white", fill, className, style }) => (
-  <svg
-    viewBox={`0 0 ${ART_W} ${ART_H}`}
-    width={ART_W}
-    height={ART_H}
+  /* The caller's placement lives on this wrapper, and the svg inside fills it. Putting
+     `position:absolute; left; top` on the svg root itself is what cut the pointer off in
+     the export: the renderer serialises the root's inline style into the image it draws,
+     and the offset moves the artwork out of its own viewport. The wrapper is a box the
+     renderer walks normally. Its height is derived from the caller's width so the export,
+     whose layout engine does not infer it from the viewBox, still gets a real box. */
+  <div
     className={className}
-    /* A REAL height in CSS, derived from the width the caller sets.
-       Call sites give a width only and let Chromium derive the height from the viewBox
-       aspect. The export's layout engine is not Chromium's and does not do that, so the
-       pointer exported cropped. Attributes alone did not fix it — measured, the frame came
-       back byte-identical — because the box comes from CSS. This computes the height that
-       the aspect ratio implies and states it. `...style` still comes last, so a caller that
-       sets its own height keeps winning. */
     style={{ display: "block", ...aspectHeight(style), ...style }}
     aria-hidden
   >
-    <path d={CURSOR_PATH} fill={fill ?? (color === "white" ? "#ffffff" : "#000000")} />
-  </svg>
+    <svg
+      viewBox={`0 0 ${ART_W} ${ART_H}`}
+      width="100%"
+      height="100%"
+      style={{ display: "block" }}
+    >
+      <path d={CURSOR_PATH} fill={fill ?? (color === "white" ? "#ffffff" : "#000000")} />
+    </svg>
+  </div>
 );

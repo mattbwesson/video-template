@@ -72,6 +72,30 @@ export const registerSymbolJsx = (element: React.ReactElement): void => {
 };
 
 /**
+ * The declarations the export must not see on an <svg> root, lifted onto a wrapper.
+ * See the note in SymbolSvg. Exported so the other inline-SVG components share one list.
+ */
+const PLACEMENT_KEYS = [
+  "position", "left", "top", "right", "bottom", "inset", "opacity", "transform",
+  "transformOrigin", "zIndex", "margin", "marginLeft", "marginRight", "marginTop", "marginBottom",
+] as const;
+export const splitPlacement = (
+  style: React.CSSProperties | undefined,
+): { wrapperStyle: React.CSSProperties | null; svgStyle: React.CSSProperties } => {
+  if (!style) return { wrapperStyle: null, svgStyle: {} };
+  const wrapper: Record<string, unknown> = {};
+  const rest: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(style)) {
+    if ((PLACEMENT_KEYS as readonly string[]).includes(k)) wrapper[k] = v;
+    else rest[k] = v;
+  }
+  return {
+    wrapperStyle: Object.keys(wrapper).length ? (wrapper as React.CSSProperties) : null,
+    svgStyle: { display: "block", ...(rest as React.CSSProperties) },
+  };
+};
+
+/**
  * An `<svg>` with the referenced symbol's content inlined — the export-safe replacement
  * for `<svg><use href="#id"/></svg>`. Accepts the same props the raw element did, so a
  * call site converts by renaming the tag and nothing else.
@@ -130,14 +154,32 @@ export const SymbolSvg: React.FC<
     typeof svgProps.width === "number" && typeof svgProps.height === "number"
       ? { width: svgProps.width, height: svgProps.height }
       : {};
-  return (
+  /*
+   * POSITIONING AND OPACITY NEVER GO ON THE <svg> ITSELF.
+   *
+   * The export draws an inline <svg> by serialising it — inline `style` attribute and all —
+   * into a standalone SVG image and drawing that into the element's box. It resets
+   * `transform` and the margins on the root first, and nothing else. So `position:absolute;
+   * left:69px; top:107px` on the root is carried into an 86x86 image, where it offsets the
+   * root clean out of its own viewport: the Add Page button's plus exported as nothing at
+   * all. Measured directly — the same path with the same style attribute yields 0 ink
+   * pixels, and 1820 without it. Inline `opacity` is worse in a quieter way: it is baked
+   * into the image AND applied again by the renderer, so an icon at 0.35 draws at 0.12.
+   *
+   * So a style that positions or fades is split: those declarations go on a wrapper the
+   * renderer walks like any other box, and the svg keeps only its size. A call site whose
+   * style is just a size (or nothing) renders the bare svg exactly as before.
+   */
+  const { wrapperStyle, svgStyle } = splitPlacement(svgProps.style);
+  const svg = (
     <svg
       viewBox={def.viewBox}
       {...(fill ? { fill } : {})}
       {...rest}
       {...svgProps}
-      style={{ ...boxed, ...svgProps.style }}
+      style={{ ...boxed, ...svgStyle }}
       dangerouslySetInnerHTML={{ __html: inner }}
     />
   );
+  return wrapperStyle ? <span style={{ display: "block", ...boxed, ...wrapperStyle }}>{svg}</span> : svg;
 };

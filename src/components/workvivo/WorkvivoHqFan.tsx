@@ -411,27 +411,41 @@ export const WorkvivoHqFan: React.FC<WorkvivoHqFanProps> = ({ fills, field = tru
     {/* Glass PNGs with the purple overlay baked in by scripts/prep-fan-icons.py — a CSS
         tint would not survive the export. Three have no asset and are drawn: the heart,
         the document, the target, and the small chip beside the loupe. */}
+    {/* The four drawn icons are a positioned <div> around an svg that fills it, not a
+        positioned svg. The export serialises an inline svg's own style attribute into the
+        image it draws, so `left/top` on the root moved the glyph out of its viewport and
+        `opacity` on the root was applied twice — once baked in, once by the renderer — which
+        is why the unlit icons came out at a third of their intended strength. The <Img>
+        icons are untouched: an <img> is drawn as a replaced element and never serialised. */}
     <Img className="hqf-i" style={spot(ICON.chat, ink("comm"))} src={staticFile("img/glass/fan/chat.png")} alt="" />
     <Img className="hqf-i" style={spot(ICON.chat2, ink("comm"))} src={staticFile("img/glass/fan/chat.png")} alt="" />
-    <svg className="hqf-i" style={spot(ICON.heart, ink("comm"))} viewBox="0 0 64 64">
+    <div className="hqf-i" style={spot(ICON.heart, ink("comm"))}>
+      <svg viewBox="0 0 64 64" style={{ display: "block", width: "100%", height: "100%" }}>
       <path d="M32 56S6 40.5 6 23.5C6 14.4 13.2 7 22.2 7c5.9 0 9.2 3 9.8 4.6C32.6 10 35.9 7 41.8 7 50.8 7 58 14.4 58 23.5 58 40.5 32 56 32 56Z" fill="#e9e2ff" />
     </svg>
+    </div>
 
     <Img className="hqf-i" style={spot(ICON.mag, ink("search"))} src={staticFile("img/glass/fan/mag.png")} alt="" />
-    <svg className="hqf-i" style={spot(ICON.doc, ink("search"))} viewBox="0 0 56 56">
+    <div className="hqf-i" style={spot(ICON.doc, ink("search"))}>
+      <svg viewBox="0 0 56 56" style={{ display: "block", width: "100%", height: "100%" }}>
       <rect x="12" y="6" width="32" height="44" rx="5" fill="rgba(190,170,255,0.3)" stroke="#dcd2ff" strokeWidth="2.5" />
       <path d="M20 18h16M20 27h16M20 36h10" stroke="#dcd2ff" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
-    <svg className="hqf-i" style={spot(ICON.chip, ink("search"))} viewBox="0 0 40 40">
+    </div>
+    <div className="hqf-i" style={spot(ICON.chip, ink("search"))}>
+      <svg viewBox="0 0 40 40" style={{ display: "block", width: "100%", height: "100%" }}>
       <rect x="4" y="4" width="32" height="32" rx="7" fill="rgba(190,170,255,0.3)" stroke="#dcd2ff" strokeWidth="2.5" />
       <circle cx="14" cy="20" r="2.6" fill="#f0eaff" /><circle cx="20" cy="20" r="2.6" fill="#f0eaff" /><circle cx="26" cy="20" r="2.6" fill="#f0eaff" />
     </svg>
+    </div>
 
-    <svg className="hqf-i" style={spot(ICON.target, ink("people"))} viewBox="0 0 40 40">
+    <div className="hqf-i" style={spot(ICON.target, ink("people"))}>
+      <svg viewBox="0 0 40 40" style={{ display: "block", width: "100%", height: "100%" }}>
       <circle cx="20" cy="20" r="16" fill="rgba(190,170,255,0.25)" stroke="#e6e0ff" strokeWidth="2.5" />
       <circle cx="20" cy="20" r="9.5" fill="none" stroke="#e6e0ff" strokeWidth="2.5" />
       <circle cx="20" cy="20" r="3.2" fill="#f4f0ff" />
     </svg>
+    </div>
     <Img className="hqf-i" style={spot(ICON.rocket, ink("people"))} src={staticFile("img/glass/fan/rocket.png")} alt="" />
     <Img className="hqf-i" style={spot(ICON.sparkle, ink("people"))} src={staticFile("img/glass/fan/sparkle.png")} alt="" />
 
