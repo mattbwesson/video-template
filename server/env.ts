@@ -141,6 +141,29 @@ export const llmConfig = (): LlmConfig => ({
 export const passcodeGuard = (): string => str("PASSCODE", "");
 
 /**
+ * The bearer token for `GET /api/companies`, the machine-readable customer list.
+ *
+ * DELIBERATELY NOT `PASSCODE`, for three reasons that all point the same way:
+ *
+ *  1. Different audience. `PASSCODE` is typed by a person into the wizard, so it is short
+ *     by design — the deployed one is six digits. That is fine for a thing a human types
+ *     and wrong for a credential sitting in an agent's config, where nobody types it and
+ *     length costs nothing. This one should be 32+ random characters.
+ *  2. Different blast radius. `PASSCODE` opens the wizard; this opens a list of every
+ *     customer the tool has been run for. Sharing one secret between them means the agent
+ *     integration also holds the keys to the wizard, and revoking either revokes both.
+ *  3. Different rotation. An agent's token gets rotated when the integration changes; a
+ *     passcode gets rotated when a person leaves. Neither should force the other.
+ *
+ * Empty means the endpoint is OFF, not open — see the guard in companiesRoute.ts. That is
+ * the opposite of `passcodeGuard`'s default and the difference is deliberate: an unset
+ * passcode means "this deployment does not want a gate", while an unset token here can
+ * only mean the endpoint was never configured, and answering with customer names in that
+ * case would be the worst possible reading of the operator's intent.
+ */
+export const companiesApiToken = (): string => str("COMPANIES_API_TOKEN", "");
+
+/**
  * Where the analytics log lives, and what a token costs.
  *
  * The prices are CONFIGURATION, not constants, and they default to zero on purpose. A

@@ -16,6 +16,7 @@ import { fileURLToPath } from "node:url";
 import sirv from "sirv";
 import { analyticsPage } from "./analyticsPage";
 import { handleAssets } from "./assetsRoute";
+import { handleCompanies } from "./companiesRoute";
 import { handleAnalytics, handleRenderEvent } from "./analyticsRoute";
 import { handleResearch } from "./researchRoute";
 import { handleSession } from "./sessionRoute";
@@ -140,6 +141,12 @@ const server = http.createServer(async (req, res) => {
     // wizard's index.html — left to fall through, /analytics would serve the wizard.
     if (url === "/analytics" || url === "/analytics/") {
       analyticsPage(res);
+      return;
+    }
+    // The customer list for the Salesforce agent. Its own bearer token, and OFF unless
+    // that token is set — see server/companiesRoute.ts.
+    if (url === "/api/companies" || url.startsWith("/api/companies?")) {
+      handleCompanies(req, res);
       return;
     }
     if (url === "/api/assets" || url.startsWith("/api/assets?")) {
