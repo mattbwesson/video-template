@@ -12,8 +12,14 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { Video } from "@remotion/media";
+import { Audio } from "@remotion/media";
 import { HeadquartersScene } from "./HeadquartersScene";
+import { HqFanBeatScene, HQ_FAN_BEATS } from "./HqFanBeatScene";
+import { SurveyBuilderScene, SURVEY_DURATION, SURVEY_FROM, SURVEY_TO } from "./SurveyBuilderScene";
+import { PageBuilderScene, PAGE_DURATION, PAGE_FROM, PAGE_TO } from "./PageBuilderScene";
+import { AdminCategoriesScene, ADMIN_DURATION, ADMIN_FROM, ADMIN_TO } from "./AdminCategoriesScene";
+import { SignOffScene, SIGNOFF_DURATION, SIGNOFF_FROM, SIGNOFF_TO } from "./SignOffScene";
+import { NoMatterScene, NO_MATTER_DURATION, NO_MATTER_FROM, NO_MATTER_TO } from "./NoMatterScene";
 import {
   HqOpeningScene,
   HQ_OPENING_DURATION,
@@ -869,44 +875,53 @@ const BrandIntro: React.FC = () => {
 };
 
 /**
- * The original L2 edit, in two encodes of the same 212 seconds.
+ * The film's soundtrack — and, since every frame is now drawn, the ONLY thing left of the
+ * original L2 edit in this tree.
  *
- * The master is 12 Mbps — 310 MB — which is right for the Studio and impossible to
- * deploy. `wizard` is the same running time at CRF 24, 45 MB, which is what the container
- * ships (see .dockerignore).
+ * THE REFERENCE VIDEO IS GONE FROM THE COMPOSITION
+ * It used to lie under everything, showing through the stretches no scene had been built
+ * over. Those stretches are all built now. That was checked rather than assumed: the whole
+ * 5300 frames were rendered with the reference replaced by saturated magenta, and exactly
+ * two frames came back with any magenta in them at all — 2268 and 2269, where the ask
+ * bar's mask opens. The fan beat was extended to cover them (see HQ_FAN_BEATS.askBar), and
+ * the probe then came back clean. Nothing else in the film was ever showing it.
  *
- * It keeps its AUDIO TRACK, and that is not incidental: the reference is where the film's
- * entire soundtrack comes from. The `<Video>` below is unmuted, and there is no other
- * audio source anywhere in the tree — so an encode built with `-an` renders a silent film
- * that looks completely correct, which is exactly the kind of bug that ships.
+ * What the video was still carrying was its audio track: it was unmuted, and there was no
+ * other sound anywhere in the tree. So the track is extracted to its own file and played
+ * here, and 45 MB of H.264 stops being a render dependency:
  *
- * The Japanese cut is the exception, and it is the reason the `ownSoundtrack` prop exists:
- * its narration is Japanese, so it silences this and plays a soundtrack built from the
- * music stem and a re-timed Japanese read. See scripts/build-japanese-vo.mjs.
+ *     ffmpeg -i "public/img/L2 Video(Virgin Airline).mp4" -vn -c:a copy \
+ *       -movflags +faststart public/audio/l2-soundtrack.m4a
  *
- * Both cover the WHOLE film now. The earlier 54-second trim existed because the
- * customised cut stopped at 1350; it can't be used any more, because the reference shows
- * through in roughly 1,400 frames of gaps between 1350 and 5299 — 4591-4983 alone is 392
- * of them — and a short file would render those black.
+ * A stream COPY, not a re-encode: the track is the master's own AAC, bit for bit, so
+ * the film's sound is unchanged and the wizard's in-browser export decodes exactly the
+ * codec it always decoded. 5 MB, against the 45 MB of H.264 it was arriving inside.
+ *
+ * `from={1}` is kept from the video element it replaces: the reference was laid down from
+ * global frame 1, so its audio started one frame — 40ms — into the composition, and the
+ * whole film's sound is cut against that.
+ *
+ * `Audio` from @remotion/media rather than from remotion, for the reason src/Japanese.tsx
+ * states about its own soundtrack: @remotion/web-renderer, which the wizard's in-browser
+ * export runs on, refuses plain HTML media elements.
+ *
+ * The two encodes of the edit are still in the repo — every scene's measurements were read
+ * off them and the prep scripts still read them — they are just no longer loaded at render
+ * time. Both are excluded from the image; see .dockerignore.
  */
-export const REFERENCE_VIDEO = {
-  full: "img/L2 Video(Virgin Airline).mp4",
-  wizard: "img/l2-reference-212s.mp4",
-} as const;
+const SOUNDTRACK = "audio/l2-soundtrack.m4a";
 
 export const WorkvivoCut: React.FC<{
-  /** Which encode to lay underneath. Defaults to the full one, as the full cut needs. */
-  reference?: keyof typeof REFERENCE_VIDEO;
   /**
-   * Silence the reference's audio, for a cut that brings its own soundtrack.
+   * Silence the film's own soundtrack, for a cut that brings one of its own.
    *
    * Defaults to false, so every existing caller — L2VirginAirline, the wizard's customised
-   * cut, the gallery — keeps the reference's own audio and is unchanged by this prop
-   * existing. Only the Japanese cut passes it, because that is the only cut with a
-   * soundtrack of its own to play instead; see src/Japanese.tsx.
+   * cut, the gallery — keeps the film's sound and is unchanged by this prop existing. Only
+   * the Japanese cut passes it, because that is the only cut with a soundtrack of its own
+   * to play instead; see src/Japanese.tsx.
    */
   ownSoundtrack?: boolean;
-}> = ({ reference = "full", ownSoundtrack = false }) => {
+}> = ({ ownSoundtrack = false }) => {
   const { durationInFrames } = useVideoConfig();
   const { theme } = useCustomization();
 
@@ -915,36 +930,13 @@ export const WorkvivoCut: React.FC<{
     // Workvivo stylesheet. Those files cannot take props, and each still carries the
     // baseline green as its `var()` fallback so it renders correctly on its own.
     <AbsoluteFill style={{ backgroundColor: "#000", ...theme.vars }}>
-      {/* The original L2 edit, underneath everything. It is NOT customisable and it is
-          not meant to be: what still shows through are the stretches no scene has been
-          rebuilt over — 137-417, 2236-2268, 2760-2823, 3109-3264, 3326-3388, 3903-4066,
-          4253-4397, 4591-4983 and the 5166 tail — and those are generic Workvivo product
-          footage, which belongs in every customer's video unchanged.
-
-          Which encode is laid down is the caller's choice — see REFERENCE_VIDEO. The
-          wizard takes the re-encode, so the deployed image carries 45 MB rather than
-          310 MB and is not slow to first frame on a cold cache.
-
-          Unmuted, deliberately: this element is the film's only sound — unless the caller
-          passes `ownSoundtrack`, which is what a translated cut does. */}
-      <Sequence
-        name="Reference video"
-        from={1}
-        durationInFrames={durationInFrames}
-        style={{
-          scale: 0.712,
-          translate: "-1px 0px"
-        }}>
-        <Video
-          src={staticFile(REFERENCE_VIDEO[reference])}
-          muted={ownSoundtrack}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-          }}
-        />
-      </Sequence>
+      {/* The film's sound. Nothing is drawn here — see the note on SOUNDTRACK above for
+          why there is no longer a video under this tree, and why this still starts on 1. */}
+      {!ownSoundtrack && (
+        <Sequence name="Soundtrack" from={1} durationInFrames={durationInFrames}>
+          <Audio src={staticFile(SOUNDTRACK)} />
+        </Sequence>
+      )}
       {/* Part 1: Brand logo with Circular Mask (frames 0 to 33) */}
       <Sequence name="Brand Intro" from={0} durationInFrames={33}>
         <BrandIntro />
@@ -1144,6 +1136,14 @@ export const WorkvivoCut: React.FC<{
           />
         </AbsoluteFill>
       </Sequence>
+      {/* The fan returns: it drops in high, settles and pushes in, then Search & Knowledge
+          lights at 2252. Was reference footage; see src/HqFanBeatScene.tsx. */}
+      <Sequence
+        name={`HQ Fan beat (${HQ_FAN_BEATS.askBar.from} - ${HQ_FAN_BEATS.askBar.to})`}
+        from={HQ_FAN_BEATS.askBar.from}
+        durationInFrames={HQ_FAN_BEATS.askBar.to - HQ_FAN_BEATS.askBar.from}>
+        <HqFanBeatScene beat={HQ_FAN_BEATS.askBar} />
+      </Sequence>
       {/* At 2268, circular mask scales up revealing the ask bar (full page by 2270),
           with the ask bar scaling up alongside the mask over the background. */}
       <Sequence name="Ask bar (2268 - 2317)" from={2268} durationInFrames={49}>
@@ -1195,6 +1195,15 @@ export const WorkvivoCut: React.FC<{
         from={2565}
         durationInFrames={2760 - 2565}>
         <MobileIrisOpen />
+      </Sequence>
+      {/* The line between the phone and the widget store: one word up big, the rest
+          arriving as it settles. Was reference footage, so the sentence was burnt in and
+          the Japanese cut said it in English. See src/NoMatterScene.tsx. */}
+      <Sequence
+        name={`No matter where they are (${NO_MATTER_FROM} - ${NO_MATTER_TO})`}
+        from={NO_MATTER_FROM}
+        durationInFrames={NO_MATTER_DURATION}>
+        <NoMatterScene />
       </Sequence>
       {/* Hard cut at 2823 onto the brand field carrying the three category cards alone,
           growing in one at a time; the row then settles into the modal while the modal
@@ -1262,6 +1271,22 @@ export const WorkvivoCut: React.FC<{
         from={3264}
         durationInFrames={62}>
         <WorkvivoArticleScene background="#010320" />
+      </Sequence>
+      {/* Workvivo Pages: Add Page, the editor and "Help me write", then the block-type
+          field around a generating prompt. Was reference footage; see
+          src/PageBuilderScene.tsx. */}
+      <Sequence
+        name={`Page builder (${PAGE_FROM} - ${PAGE_TO})`}
+        from={PAGE_FROM}
+        durationInFrames={PAGE_DURATION}>
+        <PageBuilderScene />
+      </Sequence>
+      {/* The same beat again, this time putting People Intelligence forward at 3342. */}
+      <Sequence
+        name={`HQ Fan beat (${HQ_FAN_BEATS.analytics.from} - ${HQ_FAN_BEATS.analytics.to})`}
+        from={HQ_FAN_BEATS.analytics.from}
+        durationInFrames={HQ_FAN_BEATS.analytics.to - HQ_FAN_BEATS.analytics.from}>
+        <HqFanBeatScene beat={HQ_FAN_BEATS.analytics} />
       </Sequence>
       {/* At 3388, hard cut to #010320 background and animate up WorkvivoAnalytics.
           At 3430, camera pans to bar charts.
@@ -1404,6 +1429,15 @@ export const WorkvivoCut: React.FC<{
         durationInFrames={4554 - 4459}>
         <WorkvivoIntegrationsListScene background={theme.brand} entranceDuration={95} />
       </Sequence>
+      {/* Surveys & Forms: the AI modal opens, a suggestion is picked, the survey is
+          generated, then the card shrinks aside as the palette slides in. Was reference
+          footage; see src/SurveyBuilderScene.tsx. */}
+      <Sequence
+        name={`Survey builder (${SURVEY_FROM} - ${SURVEY_TO})`}
+        from={SURVEY_FROM}
+        durationInFrames={SURVEY_DURATION}>
+        <SurveyBuilderScene />
+      </Sequence>
       {/* At 4397, WorkvivoIntegrationsMarketplace enters. At 4459 (local 62), animates down out of frame on top. */}
       <Sequence
         name="Workvivo Integrations Marketplace (4397 - 4480)"
@@ -1411,12 +1445,23 @@ export const WorkvivoCut: React.FC<{
         durationInFrames={4480 - 4397}>
         <WorkvivoIntegrationsMarketplaceScene background={theme.brand} exitStartFrame={62} exitDuration={18} />
       </Sequence>
-      {/* At 4553, WorkvivoAdminHub animates up on #000021 background. Sequence ends at 4591. */}
+      {/* At 4553, WorkvivoAdminHub animates up on #000021 background. From 4584 it drops
+          back out of frame, and the first admin category card is already popping in over
+          it — which is why the categories sequence is declared AFTER this one: it starts
+          on 4585 with a transparent background and has to sit on top. */}
       <Sequence
         name="Workvivo Admin Hub (4553 - 4591)"
         from={4553}
         durationInFrames={4591 - 4553}>
-        <WorkvivoAdminHubScene background="#000021" entranceDuration={24} />
+        <WorkvivoAdminHubScene background="#000021" entranceDuration={24} exitFrom={4584 - 4553} />
+      </Sequence>
+      {/* Admin categories, the permission toggle, Granular Controls, the Zoom sign-off and
+          the AI pills. Was reference footage; see src/AdminCategoriesScene.tsx. */}
+      <Sequence
+        name={`Admin categories (${ADMIN_FROM} - ${ADMIN_TO})`}
+        from={ADMIN_FROM}
+        durationInFrames={ADMIN_DURATION}>
+        <AdminCategoriesScene />
       </Sequence>
       {/* At 4983, hard cut to the customer logo wall, lit with the tenant colour, ending
           at 5166. No `brand` prop: the scene takes it from the theme, and passing a
@@ -1426,6 +1471,16 @@ export const WorkvivoCut: React.FC<{
         from={4983}
         durationInFrames={5166 - 4983}>
         <WorkvivoCustomerGridScene />
+      </Sequence>
+      {/* The sign-off: the lockup on the mesh field, dissolving into the tagline and held
+          to the last frame. Was reference footage — the last of it in the film — so the
+          closing shot carried Workvivo's own lockup and an English line whatever the rest
+          of the cut had been customised to. See src/SignOffScene.tsx. */}
+      <Sequence
+        name={`Sign-off (${SIGNOFF_FROM} - ${SIGNOFF_TO})`}
+        from={SIGNOFF_FROM}
+        durationInFrames={SIGNOFF_DURATION}>
+        <SignOffScene />
       </Sequence>
     </AbsoluteFill>
   );
