@@ -4,6 +4,7 @@ import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
 import { Japanese } from "./Japanese";
 import { WorkvivoHqFan } from "./components/workvivo/WorkvivoHqFan";
+import { WorkvivoSurveyBuilder } from "./components/workvivo/WorkvivoSurveyBuilder";
 import { CustomizedWorkvivo } from "./CustomizedWorkvivo";
 import { WorkvivoSpacesScene } from "./WorkvivoSpacesScene";
 import { WorkvivoNewslettersScene } from "./WorkvivoNewslettersScene";
@@ -121,6 +122,16 @@ export const RemotionRoot: React.FC = () => {
       <Composition
         id="WorkvivoHqFan"
         component={WorkvivoHqFan}
+        durationInFrames={VIRGIN_FPS * 5}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* Still frame: the Surveys & Forms builder — the AI generate modal, the Add
+          Question palette and the per-question action bar. */}
+      <Composition
+        id="WorkvivoSurveyBuilder"
+        component={WorkvivoSurveyBuilder}
         durationInFrames={VIRGIN_FPS * 5}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}

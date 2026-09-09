@@ -1,0 +1,271 @@
+/* Workvivo Surveys & Forms builder — the AI generate modal, the Add Question palette and
+   the per-question action bar.
+   Prefixed `wsb-` per docs/PORTING-HTML-REFS.md.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   Measured off the reference at 1920x1080 (global frame 4392), which is the beat's
+   settled state. The three panels sit at:
+
+     Add Question   x 378..757  y 167..816     380 x 650
+     Action bar     x 378..757  y 865..926     380 x  62
+     AI modal       x 816..1556 y 135..954     741 x 820
+
+   Everything below is relative to those, so the whole screen is laid out once at the
+   size it finally rests at and the scene only ever scales it. That is not a convenience:
+   the modal plays this beat at 1.563x and settles to 1.0x, and the title's ink width
+   scales by 0.6449 against the modal's own 0.6396 — the same number within 1%, which is
+   what says it is ONE layout being scaled rather than two layouts being swapped.
+
+   No element-type selectors anywhere in this file. The exporter wraps every text node in
+   a <span> and every word in another, so `.wsb-row div {…}` would match those injected
+   wrappers and relayout the copy. Style the classes directly. */
+
+.wsb {
+  position: absolute;
+  inset: 0;
+  background: #010320;
+  overflow: hidden;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  color: #16162c;
+}
+
+.wsb-card {
+  position: absolute;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+/* ── Add Question palette ─────────────────────────────────────────────────────── */
+
+.wsb-aq-title {
+  position: absolute;
+  left: 26px;
+  top: 21px;
+  /* Sized by WIDTH against the reference, not by eye: the ink of "Add Question" is 112px
+     there and was 120 at 19px. Width is the only safe measure across two different faces —
+     the reference sets in Workvivo's own font and this sets in InterX, so the size here is
+     doing double duty as a metric correction. Ink HEIGHT cannot be used: "Add Question" has
+     a descender and "Short Text" does not, so the two are not comparable. */
+  font-size: 17.7px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.wsb-row {
+  position: absolute;
+  left: 20px;
+  width: 341px;
+  height: 46px;
+  box-sizing: border-box;
+  border: 1px solid #e7e7ef;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+/* Absolutely placed inside the row so the icon and the label cannot reflow each other. */
+.wsb-row-icon {
+  position: absolute;
+  left: 14px;
+  top: 13px;
+  width: 20px;
+  height: 20px;
+}
+
+.wsb-row-label {
+  position: absolute;
+  left: 49px;
+  top: 12px;
+  font-size: 13.7px;
+  font-weight: 500;
+  line-height: 20px;
+  color: #21213a;
+}
+
+/* ── Action bar ───────────────────────────────────────────────────────────────── */
+
+.wsb-bar-required {
+  position: absolute;
+  left: 36px;
+  top: 22px;
+  font-size: 13.75px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+.wsb-toggle {
+  position: absolute;
+  left: 100px;
+  top: 18px;
+  width: 43px;
+  height: 25px;
+  border-radius: 13px;
+  background: #5a12d6;
+}
+
+.wsb-toggle-knob {
+  position: absolute;
+  left: 22px;
+  top: 3px;
+  width: 19px;
+  height: 19px;
+  border-radius: 10px;
+  background: #ffffff;
+}
+
+.wsb-bar-rule {
+  position: absolute;
+  left: 167px;
+  top: 16px;
+  width: 1px;
+  height: 30px;
+  background: #e7e7ef;
+}
+
+.wsb-bar-action {
+  position: absolute;
+  top: 22px;
+  font-size: 13.75px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+/* ── AI modal ─────────────────────────────────────────────────────────────────── */
+
+.wsb-modal-title {
+  position: absolute;
+  left: 25px;
+  top: 27px;
+  font-size: 17.4px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
+.wsb-close {
+  position: absolute;
+  left: 697px;
+  top: 28px;
+  width: 16px;
+  height: 16px;
+}
+
+.wsb-field {
+  position: absolute;
+  left: 25px;
+  width: 691px;
+  box-sizing: border-box;
+  border: 1px solid #dcdce6;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.wsb-field-text {
+  position: absolute;
+  left: 13px;
+  top: 11px;
+  font-size: 15px;
+  line-height: 20px;
+  color: #21213a;
+}
+
+.wsb-field-placeholder {
+  position: absolute;
+  left: 13px;
+  top: 11px;
+  font-size: 15px;
+  line-height: 20px;
+  color: #9a9ab0;
+}
+
+.wsb-pill {
+  position: absolute;
+  height: 38px;
+  box-sizing: border-box;
+  border: 1px solid #b9a3ee;
+  border-radius: 19px;
+  color: #5a12d6;
+  font-size: 15px;
+  font-weight: 500;
+  text-align: center;
+  /* line-height rather than flex centring: the exporter's span wrapping makes a flex
+     child's baseline unreliable, and a single line box is exact. */
+  line-height: 36px;
+}
+
+.wsb-pill-on {
+  background: #6610f2;
+  border-color: #6610f2;
+  color: #ffffff;
+}
+
+.wsb-h2 {
+  position: absolute;
+  left: 25px;
+  font-size: 17.2px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.wsb-body {
+  position: absolute;
+  left: 25px;
+  width: 680px;
+  font-size: 15px;
+  line-height: 21.5px;
+  color: #4c4c68;
+}
+
+.wsb-badge {
+  position: absolute;
+  left: 25px;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  background: #ede4fd;
+  color: #5a12d6;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 24px;
+  text-align: center;
+}
+
+.wsb-item {
+  position: absolute;
+  left: 63px;
+  font-size: 15.1px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.wsb-scale {
+  position: absolute;
+  width: 51px;
+  height: 52px;
+  box-sizing: border-box;
+  border: 1px solid #dcdce6;
+  border-radius: 7px;
+  font-size: 15px;
+  line-height: 50px;
+  text-align: center;
+  color: #21213a;
+}
+
+ /* Anchored to the card's bottom-right, and sized by its label rather than fixed.
+    Measured: collapsed the card is 366.6 design-units tall and the button's ink ends 25.6
+    from the bottom and 26.3 from the right; expanded the same insets hold. Its width is
+    not constant either — 93 for "Submit" against 134 for "Redo Survey" — so a fixed width
+    would have stretched the collapsed one by 40%. */
+.wsb-cta {
+  position: absolute;
+  right: 25px;
+  bottom: 25px;
+  height: 41px;
+  padding: 0 22px;
+  border-radius: 21px;
+  background: #6610f2;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 41px;
+  text-align: center;
+}

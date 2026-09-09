@@ -1,0 +1,238 @@
+/* Workvivo Pages — the Add Page button, the page editor, the AI prompt bar and the
+   block-type cards that fly past it.
+   Prefixed `wpe-` per docs/PORTING-HTML-REFS.md.
+
+   ── Where these numbers come from ────────────────────────────────────────────────
+   Measured off the reference at 1920x1080 across global 3109-3263:
+
+     Add Page button   x 596..1323  y 390..689     728 x 300, settled by 3119
+     Editor card       x 465..1498  top 107        1034 wide, runs past the frame's foot
+     Toolbar row       y 193..210   x 569..1394    24 controls, each measured
+     Add Icon row      y 243..258   x 595..802
+     "Untitled"        y 283..309   x 597..735
+
+   The glows are box-shadows, not radial-gradients: the exporter paints no
+   radial-gradient at all (docs/browser-render-best-practices.md), and every one of these
+   surfaces is lit by one.
+
+   No element-type selectors in this file — the exporter wraps every text node in spans. */
+
+.wpe {
+  position: absolute;
+  inset: 0;
+  background: #010320;
+  overflow: hidden;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  color: #16162c;
+}
+
+/* ── Add Page ─────────────────────────────────────────────────────────────────── */
+
+.wpe-addpage {
+  position: absolute;
+  box-sizing: border-box;
+  background: #fbfbfd;
+  border-radius: 30px;
+  /* Violet on the left, cyan on the right, as the reference lights it. */
+  /* Measured against the reference frame: 70px outside the card it reads (2,4,34) either
+     side, where the first pass gave (21,8,69) — twice as bright and far too wide. */
+  box-shadow:
+    -18px 0 54px 2px rgba(124, 32, 245, 0.55),
+    18px 0 54px 2px rgba(96, 165, 250, 0.38),
+    0 0 22px 2px rgba(190, 160, 255, 0.30);
+}
+
+/* Placed from the card's left edge, not centred with padding. The reference starts the
+   "A" at card-relative 229; centring put it at 258. */
+.wpe-addpage-row {
+  position: absolute;
+  left: 229px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 76px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: #16162c;
+}
+
+.wpe-addpage-plus {
+  position: absolute;
+  left: 69px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 86px;
+  height: 86px;
+  color: #8b8b9e;
+}
+
+/* ── Editor card ──────────────────────────────────────────────────────────────── */
+
+.wpe-editor {
+  position: absolute;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  /* Fitted to the reference's own falloff, sampled at 8/25/50/90px out from each edge:
+     it reaches the background (1,3,31) by 90px, where the first pass was still at (18,7,66)
+     there and only faded by 150. The right side is also greener than the left — (55,76,114)
+     against (44,5,116) at 8px out — so the two sides are not one colour at two positions. */
+  box-shadow:
+    -22px 0 70px -4px rgba(124, 18, 245, 0.62),
+    22px 0 70px -4px rgba(96, 200, 252, 0.62);
+}
+
+.wpe-tool {
+  position: absolute;
+  top: 86px;
+  color: #4a4a60;
+}
+
+.wpe-tool-text {
+  position: absolute;
+  top: 87px;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 17px;
+  color: #2c2c40;
+  white-space: nowrap;
+}
+
+.wpe-rule {
+  position: absolute;
+  top: 80px;
+  width: 1px;
+  height: 30px;
+  background: #e4e4ee;
+}
+
+.wpe-meta {
+  position: absolute;
+  top: 133px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+  color: #6a6a80;
+  white-space: nowrap;
+}
+
+.wpe-untitled {
+  position: absolute;
+  left: 132px;
+  top: 168px;
+  font-size: 38px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #6f6f86;
+}
+
+/* ── Help me write ────────────────────────────────────────────────────────────── */
+
+/* Sized by WIDTH against the reference: its sparkle-plus-label ink spans 375px and this
+   spanned 321 at 34px, so everything here is 1.17x what the first pass had. */
+.wpe-help {
+  position: absolute;
+  box-sizing: border-box;
+  height: 86px;
+  padding: 0 40px 0 91px;
+  border-radius: 43px;
+  background: #ffffff;
+  color: #6610f2;
+  font-size: 40px;
+  font-weight: 600;
+  line-height: 86px;
+  white-space: nowrap;
+  box-shadow: 0 6px 34px rgba(10, 4, 40, 0.35);
+}
+
+.wpe-help-spark {
+  position: absolute;
+  left: 30px;
+  top: 22px;
+  width: 42px;
+  height: 42px;
+}
+
+/* ── The AI prompt bar ────────────────────────────────────────────────────────── */
+
+.wpe-prompt {
+  position: absolute;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 14px;
+  overflow: visible;
+  /* Read up the middle from the bar's top edge on 3237: (56,44,120) ten pixels out,
+     (19,20,65) at forty, gone by eighty. */
+  box-shadow: 0 0 60px 6px rgba(130, 105, 255, 0.55);
+}
+
+/* 30px Inter Medium: cap-top on row 40 at x 96, read off reference frame 3249. */
+.wpe-prompt-text {
+  position: absolute;
+  left: 96px;
+  top: 32px;
+  font-size: 30px;
+  line-height: 38px;
+  font-weight: 500;
+  color: #0a0a12;
+  white-space: nowrap;
+}
+
+.wpe-prompt-status {
+  position: absolute;
+  left: 35px;
+  top: 137px;
+  font-size: 27px;
+  line-height: 34px;
+  font-weight: 400;
+  color: #8a8c92;
+  white-space: nowrap;
+}
+.wpe-prompt-status-who {
+  color: #5c5e62;
+}
+
+.wpe-prompt-stop,
+.wpe-prompt-submit {
+  position: absolute;
+  box-sizing: border-box;
+  right: 22px;
+  top: 126px;
+  height: 52px;
+  padding: 0 24px;
+  border-radius: 26px;
+  border: 1px solid #dcdce6;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 50px;
+  color: #5b21d6;
+  white-space: nowrap;
+}
+
+.wpe-block {
+  position: absolute;
+  box-sizing: border-box;
+  background: #f9f9fc;
+  border-radius: 9px;
+  /* Sampled round the Embed card on 3237: the field lifts to (58,49,97) at the card's
+     edge and is back to itself 18px out — a short lavender glow, not a drop shadow. */
+  box-shadow: 0 0 16px 2px rgba(150, 120, 255, 0.5);
+  white-space: nowrap;
+}
+
+.wpe-block-icon {
+  position: absolute;
+  left: 15%;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6610f2;
+}
+
+.wpe-block-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 500;
+  color: #1c1c30;
+}

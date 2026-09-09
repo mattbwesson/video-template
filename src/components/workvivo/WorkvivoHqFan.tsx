@@ -234,7 +234,15 @@ const place = ([x, y]: Pt, opacity = 1): React.CSSProperties => ({ left: x, top:
  * every other number in this file was; see the header.
  */
 const GLASS_FILL = 0.14;
-const GLASS_INK = 0.42;
+/**
+ * 0.20, solved rather than chosen. An unlit label's peak whiteness in the reference is
+ * 69-76 out of 255, measured at three places across both beats the fan appears in; undoing
+ * the composite over the field puts the ink at 0.20. The first value here was 0.42, which
+ * rendered those labels at 122 — comfortably readable where the reference's are ghosts. It
+ * survived a whole-frame MAE check because three faint labels are a small share of a 1920
+ * x 1080 frame, which is exactly the kind of thing an average hides.
+ */
+const GLASS_INK = 0.2;
 
 /** Specks in the halo's upper half: angle from the badge, distance beyond the ring, r, α. */
 const SPECKS: [number, number, number, number][] = [

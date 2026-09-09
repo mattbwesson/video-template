@@ -16,12 +16,22 @@ export interface WorkvivoAdminHubSceneProps {
   background?: string;
   /** Duration of upward entrance animation in frames. Default 24. */
   entranceDuration?: number;
+  /**
+   * Local frame on which the hub starts dropping back out of frame. Its top edge is at
+   * 128 settled and then, measured off the reference, 165, 379, 702, 875, 973, 1043 and
+   * gone — fast through the middle, easing as it leaves. Omit to hold.
+   */
+  exitFrom?: number;
 }
+
+/** Top edge offset per frame from `exitFrom`, off the reference at 4584-4588. */
+const EXIT_DROP = [37, 251, 574, 747, 845, 915, 960, 1000];
 
 export const WorkvivoAdminHubScene: React.FC<WorkvivoAdminHubSceneProps> = ({
   scale,
   background = "#000021",
   entranceDuration = 24,
+  exitFrom,
 }) => {
   const frame = useCurrentFrame();
   const { theme } = useCustomization();
@@ -36,6 +46,10 @@ export const WorkvivoAdminHubScene: React.FC<WorkvivoAdminHubSceneProps> = ({
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",
   });
+  const exitY =
+    exitFrom !== undefined && frame >= exitFrom
+      ? EXIT_DROP[Math.min(EXIT_DROP.length - 1, frame - exitFrom)]
+      : 0;
 
   return (
     <AbsoluteFill
@@ -60,7 +74,7 @@ export const WorkvivoAdminHubScene: React.FC<WorkvivoAdminHubSceneProps> = ({
             borderRadius: 16,
             boxShadow: "0 25px 80px rgba(0, 0, 0, 0.45)",
             ["--wv-glass-radius" as string]: "16px",
-            transform: `translateY(${entranceY}px) scale(${z})`,
+            transform: `translateY(${entranceY + exitY}px) scale(${z})`,
             transformOrigin: "center top",
             willChange: "transform",
           } as React.CSSProperties

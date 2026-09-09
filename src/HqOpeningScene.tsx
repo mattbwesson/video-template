@@ -49,7 +49,7 @@ export const HQ_OPENING_DURATION = HQ_OPENING_TO - HQ_OPENING_FROM;
  * not a different centre — both are kept as measured rather than averaged into one.
  */
 const LOCKUP_CX = 962;
-const TAGLINE_CX = 960.5;
+const TAGLINE_CX = 958.5;
 
 /** Lockup width in px, by global frame. The scale that drives the entire card. */
 const LOCKUP_W: [number, number][] = [
@@ -102,11 +102,24 @@ const TAGLINE_RATIO = 1.801;
 const TAGLINE_FONT = "InterX, sans-serif";
 const TAGLINE_WEIGHT = 600;
 /**
- * How many pixels of this line one em buys, for the weight below. Font size is derived from
- * the card's width through this, so the tagline cannot drift out of proportion with the
- * lockup; there is one scale in this scene, not two.
+ * How many pixels of this line one em buys, at the tracking below. Font size is derived
+ * from the card's width through this, so the tagline cannot drift out of proportion with
+ * the lockup; there is one scale in this scene, not two.
+ *
+ * TWO NUMBERS, BECAUSE WIDTH ALONE DOES NOT IDENTIFY A SETTING
+ * These were 21.47 and +0.005em, fitted to the reference's line WIDTH alone, and that fit
+ * cannot separate a size that is too small from tracking that is too loose — the two land
+ * on the same total. Measured at 226 the width was right to 0.4% and the type was 4.6%
+ * short: 63 rows of ink against the reference's 66, and 9.5% less lit area, which goes as
+ * the square of the size and not at all with tracking. Size up by that root, tracking down
+ * to hold the width, and all three agree.
+ *
+ * src/SignOffScene.tsx sets the same sentence at the end of the film and lands on 20.66
+ * with -0.0177em, measured the same way at its own smaller size. The two were fitted
+ * independently and they agree to within a percent, which is the check on both.
  */
-const TAGLINE_WIDTH_PER_EM = 21.47;
+const TAGLINE_WIDTH_PER_EM = 20.55;
+const TAGLINE_TRACKING = "-0.0203em";
 
 /**
  * Where the type's INK sits relative to the box it is placed in, as a fraction of an em.
@@ -118,7 +131,7 @@ const TAGLINE_WIDTH_PER_EM = 21.47;
  * directly put the tagline 8px low at every frame.
  */
 const TAGLINE_INK_DX = 0.047;
-const TAGLINE_INK_DY = 0.109;
+const TAGLINE_INK_DY = 0.0797;
 
 /**
  * The lockup-to-fan cut: the same rotational match cut the film already uses at global 792,
@@ -232,7 +245,7 @@ export const HqOpeningScene: React.FC = () => {
           fontFamily: TAGLINE_FONT,
           fontWeight: TAGLINE_WEIGHT,
           color: "#ffffff",
-          letterSpacing: "0.005em",
+          letterSpacing: TAGLINE_TRACKING,
           whiteSpace: "nowrap",
           textAlign: "center",
         }}>

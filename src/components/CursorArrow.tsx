@@ -23,15 +23,17 @@ const CURSOR_PATH =
 
 export const CursorArrow: React.FC<{
   color?: "white" | "black";
+  /** Any CSS colour; wins over `color`. The page builder's pointer is Workvivo purple. */
+  fill?: string;
   className?: string;
   style?: React.CSSProperties;
-}> = ({ color = "white", className, style }) => (
+}> = ({ color = "white", fill, className, style }) => (
   <svg
     viewBox="0 0 938.07 1041.37"
     className={className}
     style={{ display: "block", ...style }}
     aria-hidden
   >
-    <path d={CURSOR_PATH} fill={color === "white" ? "#ffffff" : "#000000"} />
+    <path d={CURSOR_PATH} fill={fill ?? (color === "white" ? "#ffffff" : "#000000")} />
   </svg>
 );

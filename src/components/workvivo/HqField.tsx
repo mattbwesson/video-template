@@ -19,17 +19,52 @@ import { AbsoluteFill, Img, interpolate, staticFile } from "remotion";
  * whole background by up to 20/255 on a single frame, ten times a second.
  */
 
-/** Global frames the keyframes were cut at — must match scripts/prep-hq-field.py. */
-export const FIELD_FIRST = 139;
-export const FIELD_LAST = 416;
-export const FIELD_STEP = 10;
+/**
+ * Global frames the keyframes were cut at. MUST match RANGES in scripts/prep-hq-field.py —
+ * a key listed here with no file behind it renders as a broken image, and a file the list
+ * does not know about is simply never shown.
+ *
+ * One entry per stretch the background is drawn under. They are kept separate rather than
+ * merged into one long range because the film cuts away in between: interpolating across
+ * the gap would cross-fade between two backgrounds that never meet on screen.
+ */
+export const FIELD_RANGES: ReadonlyArray<readonly [number, number, number]> = [
+  [139, 416, 10],
+  // Last frame, not the exclusive end: the frame after each beat is a hard cut to a
+  // different scene, and keying it drags that scene's background into this one.
+  [2236, 2267, 8],
+  [3326, 3387, 8],
+  // The sign-off. 5299 rather than 5300 for the same reason the two above stop where they
+  // do: the composition is 5300 frames long, so 5299 is the last frame it ever shows.
+  [5166, 5299, 10],
+];
 
-const keyFrames = (() => {
+/**
+ * The range a frame belongs to, and for a frame outside all of them, the NEAREST one.
+ *
+ * Nearest rather than the first: a beat may be drawn a frame or two past the last frame
+ * that was keyed — the fan holds under the ask bar's opening mask at 2268-2269, which is
+ * deliberately not keyed because those reference frames have the mask burnt into them —
+ * and falling back to FIELD_RANGES[0] would swap the background for the HQ opening's.
+ * Clamping to the nearest range holds the field where it was instead.
+ */
+const rangeFor = (g: number) => {
+  const hit = FIELD_RANGES.find(([a, b]) => g >= a && g <= b);
+  if (hit) return hit;
+  return FIELD_RANGES.reduce((best, r) =>
+    Math.min(Math.abs(g - r[0]), Math.abs(g - r[1])) <
+    Math.min(Math.abs(g - best[0]), Math.abs(g - best[1]))
+      ? r
+      : best,
+  );
+};
+
+const keysFor = ([first, last, step]: readonly [number, number, number]) => {
   const out: number[] = [];
-  for (let g = FIELD_FIRST; g <= FIELD_LAST; g += FIELD_STEP) out.push(g);
-  if (out[out.length - 1] !== FIELD_LAST) out.push(FIELD_LAST);
+  for (let g = first; g <= last; g += step) out.push(g);
+  if (out[out.length - 1] !== last) out.push(last);
   return out;
-})();
+};
 
 const src = (g: number) => staticFile(`img/hq-field/f${String(g).padStart(3, "0")}.png`);
 
@@ -45,7 +80,9 @@ const fill: React.CSSProperties = {
 };
 
 export const HqField: React.FC<{ globalFrame: number }> = ({ globalFrame }) => {
-  const g = Math.max(FIELD_FIRST, Math.min(FIELD_LAST, globalFrame));
+  const range = rangeFor(globalFrame);
+  const keyFrames = keysFor(range);
+  const g = Math.max(range[0], Math.min(range[1], globalFrame));
   let i = 0;
   while (i < keyFrames.length - 2 && keyFrames[i + 1] <= g) i++;
   const a = keyFrames[i];
