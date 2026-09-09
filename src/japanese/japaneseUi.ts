@@ -36,7 +36,7 @@ const exact: Record<string, string> = {
   "Turn signals into insight, action, and results": "シグナルを洞察に変え、\n行動と成果へ",
   // 19 ems against the English line's 21 at the same size, so it sits slightly narrower
   // than the English and needs no size adjustment of its own.
-  "The AI-native employee experience platform": "AIネイティブの従業員体験プラットフォーム",
+  "The AI-native employee experience platform": "AIネイティブの社員エクスペリエンスプラットフォーム",
   "Tools": "ツール",
   // The Catch Me Up story pills and the content-type list, global 689 and 886.
   "Anonymous": "匿名", "Shout-outs": "シャウトアウト", "Value updates": "価値観の投稿",
@@ -358,7 +358,76 @@ const exact: Record<string, string> = {
   "Strongly Agree": "強くそう思う", "Strongly Disagree": "全くそう思わない",
 
   // ── Scenes ────────────────────────────────────────────────────────────────────
-  "No": "どこに", "matter": "いても", "where they are": "つながる",  // sep is "" — see wordGap
+  /**
+   * "No matter where they are" — five slots, because the reference brings the words up
+   * one at a time and the last three do not share a fade. The Japanese is どこにいても
+   * つながる, which is three slots' worth, so the last two are empty, the same shape as
+   * the "Go beyond" and "Back from time off?" cards above. The gap between the slots is
+   * zero (see `wordGap` below), so the three that carry text read as one line.
+   *
+   * Scoped: "No" and "are" alone are ordinary UI words elsewhere in the film, and a flat
+   * entry for them would rewrite every one of those. The scene passes ctx "nomatter".
+   */
+  "nomatter/No": "どこに", "nomatter/matter": "いても", "nomatter/where": "つながる",
+  "nomatter/they": "", "nomatter/are": "",
+
+  // ══ Pages, surveys and the admin hub — the five sequences added after the first
+  //    translation pass (global 2760, 3109, 4253, 4585, 5166) ═══════════════════════
+
+  // ── Zoom Docs-style page editor, and the block types that fly past the prompt ──
+  "Add Page": "ページを追加", "Add Icon": "アイコンを追加", "Add Cover Image": "カバー画像を追加",
+  "Untitled": "無題", "Normal": "標準", "English": "英語",
+  "Heading 1": "見出し1", "Heading 2": "見出し2", "Heading 3": "見出し3",
+  "List": "リスト", "Embed": "埋め込み", "Table": "表", "Callout": "コールアウト",
+  // The pill on the editor, and the same words as a category tile in the admin fan.
+  "Help me write": "書くのを手伝う", "Help Me Write": "書くのを手伝う",
+  // Rendered as two spans on one row: "Workvivo AI" + " " + "is generating..." — so the
+  // particle has to live on the second half or the line reads without one.
+  "Workvivo AI": "Workvivo AI", "is generating...": "が生成中...",
+  "Stop": "停止",
+
+  // ── Survey builder: the add-question list, the action bar, the AI modal ───────
+  "Add Question": "質問を追加", "Required": "必須", "Duplicate": "複製", "Delete": "削除",
+  "Short Text": "短文", "Paragraph": "長文", "Multiple Choice": "選択式",
+  "Checkbox": "チェックボックス", "Number Line": "数値スケール", "File Upload": "ファイルアップロード",
+  "Date and Time": "日付と時刻", "Dropdown": "ドロップダウン", "Contact Field": "連絡先フィールド",
+  "Create a Survey or Form with Workvivo AI": "Workvivo AI でサーベイやフォームを作成",
+  // The four suggestion pills. Title case in the admin fan, sentence case here; both
+  // shapes are on screen in the film, so both are keys.
+  // 7 characters, not 楽しいサーベイをつくる: this pill's box is the narrowest of the four at
+  // 167px — it was measured from the shortest ENGLISH label — and eleven characters
+  // overflow it on both sides. The verb is the part the pill can afford to lose.
+  "Create a fun survey": "楽しいサーベイ",
+  "Gauge employee sentiment": "社員の心情を測る", "Gauge Employee Sentiment": "社員の心情を測る",
+  "Plan future improvements": "今後の改善を計画する", "Plan Future Improvements": "今後の改善を計画する",
+  "Gather insights on trends": "傾向のインサイトを集める",
+  "View more": "もっと見る", "Redo Survey": "サーベイをやり直す", "Enter description": "説明を入力",
+  "Company-Wide Employee Sentiment Survey": "全社 社員意識サーベイ",
+  "Welcome & Purpose": "ごあいさつと目的",
+  "How would you rate your overall job satisfaction?": "総合的な仕事の満足度をどう評価しますか？",
+  "How do you currently feel about working at this company?": "いまこの会社で働くことについて、どう感じていますか？",
+  "This survey is designed to gauge the overall sentiment of our employees across the company. Your honest feedback helps leadership make informed decisions to improve our workplace culture, processes, and overall employee experience. All responses are anonymous and greatly appreciated.":
+    "このサーベイは、全社の社員がいま何を感じているかを把握するためのものです。皆さんの率直なフィードバックは、職場の文化・プロセス・社員エクスペリエンスを改善するための経営判断に役立てられます。回答はすべて匿名です。ご協力に心より感謝します。",
+
+  // ── Admin hub: the settings nav, and the category tiles on the fan ────────────
+  "Platform": "プラットフォーム", "Features": "機能", "Themes": "テーマ", "Theming": "テーマ設定", "Localization": "ローカライズ",
+  "Timezone": "タイムゾーン", "Provisioning": "プロビジョニング", "Permissions": "権限",
+  // Same words the VO reads at 187.2s — きめ細かな制御、権限設定、ガバナンスを標準搭載。
+  "Granular Controls": "きめ細かな制御",
+  "API Keys & JWT Settings": "APIキーとJWT設定", "App Integrations": "アプリ連携",
+  "Authentication Settings": "認証設定", "Profile Banner Settings": "プロフィールバナー設定",
+  "Space Approvals": "スペースの承認", "Space Content Promotion": "スペースコンテンツの掲載",
+  "Video Subtitle Translations": "動画字幕の翻訳", "Webhook Settings": "Webhook設定",
+  "Zoom Configurations": "Zoom 設定",
+  "People Manager": "ピープルマネージャー", "Team Manager": "チームマネージャー",
+  "Powered by": "提供",
+  "AI Compose": "AIで作成", "Book Time Off": "休暇を申請", "Build eNPS Surveys": "eNPSサーベイを作成",
+  "Create a Form": "フォームを作成",
+  "Create a Survey": "サーベイを作成", "Gather Insights": "インサイトを集める",
+  "Localize Content": "コンテンツをローカライズ", "Measure Engagement": "エンゲージメントを測定",
+  "Monitor Performance": "パフォーマンスを把握", "Personalize Your Experience": "体験をパーソナライズ",
+  "Spot Trends": "傾向をとらえる",
+
 };
 
 const patterns: ReadonlyArray<readonly [RegExp, string]> = [

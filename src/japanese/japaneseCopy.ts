@@ -425,7 +425,18 @@ const PATCH = {
     resultAuthor: "山本 加奈",
   },
 
+  // The one line the model writes in the survey modal; the generated survey below it is
+  // Workvivo's own fixed example. WorkvivoSurveyBuilder reads this slot directly.
+  surveyBuilder: {
+    prompt: "社員がいまどう感じているかを確かめるサーベイを作成します。",
+  },
+
   article: {
+    // Typed into the AI bar at 3163-3213, then the article below appears. PageBuilderScene
+    // translates it BEFORE slicing it for the typing animation, so this whole line is what
+    // gets typed — and it has to name the same subject as `title` two lines down, because
+    // the viewer watches the request go in and this article come out fourteen frames later.
+    prompt: "チームの生産性を高めるページを作成して",
     title: "チームの生産性",
     language: "日本語",
     lead:
