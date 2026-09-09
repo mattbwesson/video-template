@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill, getRemotionEnvironment, interpolate, useCurrentFrame } from "remotion";
-import { CameraMotionBlur } from "@remotion/motion-blur";
+import { MotionBlur, useIsClientSideRender } from "./components/renderEnv";
 import { CursorArrow } from "./components/CursorArrow";
 import {
   ADD_PAGE,
@@ -185,11 +185,17 @@ const CURSOR_FROM = 3211;
  * three quarters of a frame's travel, hence 270.
  */
 const BLUR_SHUTTER = 270;
+/**
+ * ...and it is only owed when there IS a blur. The wizard's in-browser export cannot
+ * composite `plus-lighter`, so <MotionBlur> passes the subtree straight through there — no
+ * sub-frame samples, therefore nothing to centre, and paying the lead anyway would render
+ * the whole field two thirds of a frame early in exactly the one output that is sharp.
+ */
 const BLUR_LEAD = 1 - BLUR_SHUTTER / 720;
 
 /** The block cards bursting out along their rays, and the prompt bar scaling over them. */
 const FieldAndPrompt: React.FC = () => {
-  const g = useCurrentFrame() + PAGE_FROM - BLUR_LEAD;
+  const g = useCurrentFrame() + PAGE_FROM - (useIsClientSideRender() ? 0 : BLUR_LEAD);
   const sb = series(3163, BAR_SCALE, g);
   const out = series(3171, CARD_OUT, g);
   const sz = series(3171, CARD_SIZE, g);
@@ -269,9 +275,9 @@ export const PageBuilderScene: React.FC = () => {
           takes its positions from this component's `g` would be identical in every sample
           and blur nothing. Twenty-four copies is fine in a render; the Studio gets three. */}
       {g >= 3163 && (
-        <CameraMotionBlur shutterAngle={BLUR_SHUTTER} samples={getRemotionEnvironment().isRendering ? 24 : 3}>
+        <MotionBlur shutterAngle={BLUR_SHUTTER} samples={getRemotionEnvironment().isRendering ? 24 : 3}>
           <FieldAndPrompt />
-        </CameraMotionBlur>
+        </MotionBlur>
       )}
       {g >= CURSOR_FROM && g <= 3233 && (
         <CursorArrow

@@ -68,10 +68,47 @@ const rgb = (c: number[]) => `rgb(${c[0]},${c[1]},${c[2]})`;
  * by `s`. Reads off the reference along a line out from the centre, so it reproduces the
  * reference's falloff rather than a guessed one.
  */
-const radial = (cx: number, cy: number, stops: number[][], s = 1) =>
-  `radial-gradient(circle at ${cx}px ${cy}px, ${stops
-    .map((st) => `${rgb(st.slice(1))} ${(st[0] * s).toFixed(1)}px`)
-    .join(", ")})`;
+/**
+ * The measured profile as an SVG gradient, NOT a CSS one.
+ *
+ * These were `background: radial-gradient(circle at …)`, which is correct in the Player,
+ * the Studio and the CLI render and paints NOTHING in the wizard's in-browser export —
+ * measured on 4.0.496, and the reason the toggle's bloom, the purple field, the Zoom glow
+ * and the pill field were all simply absent from an exported MP4 while a linear gradient in
+ * the same probe painted fine (docs/browser-render-best-practices.md §5).
+ *
+ * An SVG `<radialGradient>` does paint there — the HQ badge's own halo is one and survives
+ * the same export — so the profile is handed to that instead. Same stops, same centre, same
+ * radii; `spreadMethod` defaults to `pad`, which is what a CSS radial gradient does beyond
+ * its last stop, so the frame's corners keep the last colour exactly as before.
+ *
+ * `id` has to be unique per mounted instance: two of these are on screen together on 4743,
+ * and a duplicate id would have the second one paint with the first one's stops.
+ */
+const RadialWash: React.FC<{
+  id: string;
+  cx: number;
+  cy: number;
+  stops: number[][];
+  s?: number;
+  opacity?: number;
+}> = ({ id, cx, cy, stops, s = 1, opacity }) => {
+  const max = stops[stops.length - 1][0] * s;
+  return (
+    <AbsoluteFill style={opacity === undefined ? undefined : { opacity }}>
+      <svg width={1920} height={1080} viewBox="0 0 1920 1080" style={{ display: "block" }}>
+        <defs>
+          <radialGradient id={id} gradientUnits="userSpaceOnUse" cx={cx} cy={cy} r={max}>
+            {stops.map((st, i) => (
+              <stop key={i} offset={(st[0] * s) / max} stopColor={rgb(st.slice(1))} />
+            ))}
+          </radialGradient>
+        </defs>
+        <rect width={1920} height={1080} fill={`url(#${id})`} />
+      </svg>
+    </AbsoluteFill>
+  );
+};
 
 /* ────────────────────────────────────────────────────────────────────────────────────────
    Carousel
@@ -402,10 +439,10 @@ export const AdminCategoriesScene: React.FC = () => {
             {/* The bloom. Sampled across the beat the corner stays (1,3,32) until 4743 —
                 this is a glow around the toggle, not a fill behind it. */}
             {g >= 4715 && g < 4743 && (
-              <AbsoluteFill style={{ background: radial(TOGGLE_CX, TOGGLE_CY, BLOOM), opacity: series(4715, BLOOM_UP, g) }} />
+              <RadialWash id="ac-bloom" cx={TOGGLE_CX} cy={TOGGLE_CY} stops={BLOOM} opacity={series(4715, BLOOM_UP, g)} />
             )}
             {/* The purple field takes the frame on 4743 with the toggle still shrinking on it. */}
-            {g === 4743 && <AbsoluteFill style={{ background: radial(960, 540, FIELD) }} />}
+            {g === 4743 && <RadialWash id="ac-field-toggle" cx={960} cy={540} stops={FIELD} />}
             <div
               style={{
                 position: "absolute",
@@ -443,7 +480,8 @@ export const AdminCategoriesScene: React.FC = () => {
 
       {/* ── Granular Controls ───────────────────────────────────────────────── */}
       {g >= 4744 && g <= 4847 && (
-        <AbsoluteFill style={{ background: radial(960, 540, FIELD) }}>
+        <AbsoluteFill>
+        <RadialWash id="ac-field" cx={960} cy={540} stops={FIELD} />
           {PLATES.map((p, i) => {
             const top = plateTop(p, g);
             if (top >= OFF) return null;
@@ -518,7 +556,7 @@ export const AdminCategoriesScene: React.FC = () => {
               backgroundColor: "#010320",
               clipPath: g < 4848 ? `circle(${r}px at 960px 540px)` : undefined,
             }}>
-            <AbsoluteFill style={{ background: radial(960, 540, GLOW, glowS), opacity: glowUp }} />
+            <RadialWash id="ac-glow" cx={960} cy={540} stops={GLOW} s={glowS} opacity={glowUp} />
 
             {/* Sparkle and wordmark */}
             {g >= 4841 && g <= 4892 && (() => {

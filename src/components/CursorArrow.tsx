@@ -30,6 +30,14 @@ export const CursorArrow: React.FC<{
 }> = ({ color = "white", fill, className, style }) => (
   <svg
     viewBox="0 0 938.07 1041.37"
+    /* An intrinsic size on the root, not just a viewBox. Call sites set the real width in
+       CSS and Chromium derives the height from the aspect ratio, but the export's layout
+       engine is not Chromium's and does not — a viewBox-only root has no intrinsic size
+       there, and the pointer comes out cropped or missing entirely
+       (docs/browser-render-best-practices.md §3). These two numbers ARE the viewBox, so
+       the CSS width still wins everywhere and nothing moves. */
+    width="938.07"
+    height="1041.37"
     className={className}
     style={{ display: "block", ...style }}
     aria-hidden
