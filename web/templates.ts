@@ -50,9 +50,15 @@ export type VideoTemplate = {
   id: string;
   /** Operator-facing name. The only place either cut is named for a human. */
   label: string;
-  /** One line under the label: what this cut is. */
+  /**
+   * One line under the name: what is IN this chapter.
+   *
+   * Contents rather than description — "Home feed, livestream, spaces, journeys and
+   * newsletters", not "a shortened cut of the film". The first step asks an operator to
+   * turn chapters off, and the only thing that helps them decide is knowing what they lose.
+   */
   blurb: string;
-  /** The longer note on the card. Two sentences at most — it is a chooser, not a manual. */
+  /** The longer list, behind "What is in it". Still a chooser, not a manual. */
   detail: string;
   component: React.FC<Partial<VideoInputProps>>;
   durationInFrames: number;
@@ -80,9 +86,9 @@ export const TEMPLATES: readonly Pillar[] = [
     id: "zoe-test-comms",
     pillar: "Communication & Engagement",
     label: "Communications & Engagement Focus",
-    blurb: "A shortened cut of the L2 Virgin Airline film.",
+    blurb: "Home feed, livestream, spaces, journeys and newsletters.",
     detail:
-      "About half of the full 212-second film: the home feed and desktop, the livestream, spaces, the space page, journeys and newsletters, then the customer wall and the workvivo HQ endcard.",
+      "The home feed and desktop, the livestream, spaces and the space page, journeys, the signage, and the newsletters.",
     component: customizedCombined(["zoe-test-comms"]),
     durationInFrames: combinedDuration(["zoe-test-comms"]),
     fps: FPS,
@@ -93,9 +99,9 @@ export const TEMPLATES: readonly Pillar[] = [
     id: "zoe-test-search",
     pillar: "Search & Knowledge",
     label: "Search & Knowledge Focus",
-    blurb: "A shorter cut of the same film, on Search & Knowledge.",
+    blurb: "Ask HQ, the HQ Agent and the mobile answer.",
     detail:
-      "The film's own opening, then the pillar card, Ask HQ, the HQ Agent and the mobile answer, then its ending. The two joins are a dissolve and a dip through the brand colour.",
+      "The pillar card, the Ask bar, HQ Search and the HQ Agent answering, then the answer opening out onto mobile.",
     component: customizedCombined(["zoe-test-search"]),
     durationInFrames: combinedDuration(["zoe-test-search"]),
     fps: FPS,
@@ -106,9 +112,9 @@ export const TEMPLATES: readonly Pillar[] = [
     id: "zoe-test-people",
     pillar: "People Intelligence",
     label: "People Intelligence Focus",
-    blurb: "A shorter cut of the same film, on People Intelligence.",
+    blurb: "Analytics, the Seer run and the survey on mobile.",
     detail:
-      "The film's own opening, then the pillar card, Analytics and the Seer run — manager insights, the rater, comments and the survey on mobile — the space feed, integrations and Admin Hub, then its ending.",
+      "The pillar card, Analytics, and the Seer run — manager insights, the rater, comments and the survey on mobile — then the space feed, the AI survey builder, integrations, the Admin Hub and the governance run.",
     component: customizedCombined(["zoe-test-people"]),
     durationInFrames: combinedDuration(["zoe-test-people"]),
     fps: FPS,

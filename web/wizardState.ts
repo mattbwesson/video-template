@@ -16,15 +16,20 @@ import { DEFAULT_BRAND_HEX, clampBrandAccentHex, type Hex } from "../src/customi
 import type { Upload } from "./uploads";
 import type { SlotFraming } from "./framing";
 import type { ResearchState } from "./research";
-import { DEFAULT_TEMPLATE_ID, type TemplateId } from "./templates";
+import { type TemplateId } from "./templates";
+import { PILLAR_IDS } from "../src/cuts/plan";
 
 export type WizardState = {
   /**
-   * Which of the film's three pillars the video is made of.
+   * Which of the film's three chapters the video keeps.
+   *
+   * ALL THREE to begin with, and the first step is a set of things to turn off rather than
+   * a set to pick from. The film is a finished edit that covers all three; an operator who
+   * reads the first screen and presses Continue should get that film, not the shortest one
+   * of them. See web/steps/TemplateStep.tsx.
    *
    * One or more, in any order — `templateForPillars` imposes the film's own order and
-   * resolves the set to a single cut: one pillar plays its own approved film, several play
-   * a combined one with a single intro at the front and a single ending at the back.
+   * resolves the set to a single cut with one intro at the front and one ending at the back.
    *
    * Every other answer in this state is cut-agnostic — a logo is a logo whichever film it
    * lands in — so this is the one field that changes what gets rendered rather than what
@@ -128,7 +133,7 @@ export type WizardState = {
 };
 
 export const INITIAL_STATE: WizardState = {
-  pillars: [DEFAULT_TEMPLATE_ID],
+  pillars: [...PILLAR_IDS],
   company: "",
   context: "",
   person: { name: "", title: "", photo: null },
