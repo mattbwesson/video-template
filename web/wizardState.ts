@@ -20,15 +20,22 @@ import { DEFAULT_TEMPLATE_ID, type TemplateId } from "./templates";
 
 export type WizardState = {
   /**
-   * Which cut is being customised.
+   * Which of the film's three pillars the video is made of.
    *
-   * Every other answer in this state is template-agnostic — a logo is a logo whichever
-   * film it lands in — so this is the one field that changes what gets rendered rather
-   * than what appears inside it. It affects nothing in `toInputProps` for that reason:
-   * the composition is chosen by the caller (see web/templates.ts), and the props are the
-   * same either way.
+   * One or more, in any order — `templateForPillars` imposes the film's own order and
+   * resolves the set to a single cut: one pillar plays its own approved film, several play
+   * a combined one with a single intro at the front and a single ending at the back.
+   *
+   * Every other answer in this state is cut-agnostic — a logo is a logo whichever film it
+   * lands in — so this is the one field that changes what gets rendered rather than what
+   * appears inside it. It affects nothing in `toInputProps` for that reason: the
+   * composition is chosen by the caller (see web/templates.ts), and the props are the same
+   * either way.
+   *
+   * Never empty in practice; the first step's Continue is gated on it. The resolver falls
+   * back to the default cut rather than trusting that.
    */
-  template: TemplateId;
+  pillars: TemplateId[];
   company: string;
   /**
    * Free text about the audience and the deal.
@@ -121,7 +128,7 @@ export type WizardState = {
 };
 
 export const INITIAL_STATE: WizardState = {
-  template: DEFAULT_TEMPLATE_ID,
+  pillars: [DEFAULT_TEMPLATE_ID],
   company: "",
   context: "",
   person: { name: "", title: "", photo: null },
@@ -148,14 +155,17 @@ export const INITIAL_STATE: WizardState = {
  * main character apart broke the back-links the first time precisely because each step
  * spelled its predecessor's name out itself.
  */
-export const STEPS = ["Template", "Company", "Character", "Brand", "Imagery"] as const;
+export const STEPS = ["Pillars", "Company", "Character", "Brand", "Imagery"] as const;
 
 /**
- * The template step is always satisfied: the state lands on a default, so there is no
- * such thing as not having chosen. It exists as a `*Ready` function anyway so the step
- * list and the gate functions stay one-to-one and the rail can be driven from them.
+ * The first step needs at least one pillar.
+ *
+ * It used to be a formality — a single-choice step landing on a default cannot be
+ * unanswered — and it is a real gate now that the step is a multi-select, because clearing
+ * every box IS a reachable state and a video of an intro cutting straight to an endcard is
+ * not something anyone means to ask for.
  */
-export const templateReady = (_s: WizardState): boolean => true;
+export const pillarsReady = (s: WizardState): boolean => s.pillars.length > 0;
 
 /** The company is the one thing every other answer hangs off, so it stands alone. */
 export const companyReady = (s: WizardState): boolean => s.company.trim().length >= 2;

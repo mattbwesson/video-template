@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
-import { templateById } from "./templates";
+import { templateForPillars } from "./templates";
 import { resolveSlotSource, toInputProps, type WizardState } from "./wizardState";
 import { SwapOverlay } from "./SwapOverlay";
 import { EditPanel } from "./EditPanel";
@@ -21,8 +21,8 @@ import type { Upload } from "./uploads";
  * same `inputProps` a render would receive — so what the operator approves here is what
  * comes out the other end, rather than an impression of it.
  *
- * Which composition that is comes from `templateById`, and the SAME entry is handed to
- * the render button below. Naming the composition in one place and its duration in
+ * Which composition that is comes from `templateForPillars`, and the SAME entry is handed
+ * to the render button below. Naming the composition in one place and its duration in
  * another is how a preview and a render come to disagree.
  */
 
@@ -69,12 +69,13 @@ export const Reveal: React.FC<{
 
   const inputProps = useMemo(() => toInputProps(state), [state]);
   /**
-   * The cut chosen on the first step.
+   * The cut the pillars chosen on the first step add up to.
    *
    * Resolved once here and threaded to the player, the footer readout and the render
-   * button, so all three are talking about the same film.
+   * button, so all three are talking about the same film. One pillar resolves to its own
+   * approved composition, several to a combined one — see `templateForPillars`.
    */
-  const template = useMemo(() => templateById(state.template), [state.template]);
+  const template = useMemo(() => templateForPillars(state.pillars), [state.pillars]);
   const flying = state.shots.slice(0, 14);
 
   /** What each position is showing right now: a pin if there is one, else the deal. */

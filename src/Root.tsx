@@ -8,6 +8,8 @@ import { ZoeTestSearch } from "./ZoeTestSearch";
 import { SEARCH_CUT_DURATION } from "./ZoeTestSearchCut";
 import { ZoeTestPeople } from "./ZoeTestPeople";
 import { PEOPLE_CUT_DURATION } from "./ZoeTestPeopleCut";
+import { ZoeTestAllPillars } from "./ZoeTestAllPillars";
+import { combinedDuration, PILLAR_IDS } from "./cuts/plan";
 import { Japanese } from "./Japanese";
 import { WorkvivoHqFan } from "./components/workvivo/WorkvivoHqFan";
 import { WorkvivoSurveyBuilder } from "./components/workvivo/WorkvivoSurveyBuilder";
@@ -155,6 +157,21 @@ export const RemotionRoot: React.FC = () => {
         id="Zoe-test-comms"
         component={Zoetest}
         durationInFrames={ZOETEST_CUT_DURATION}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* All three chapters between one intro and one ending — the wizard's multi-pillar
+          output, here so it can be scrubbed in the Studio.
+
+          Assembled by CombinedCut from the same windows the three cuts above are, with the
+          chapter list as an argument rather than a constant. Length comes from the same
+          `planFor` the wizard reads, so the Studio and an operator's render cannot be
+          different lengths. See src/cuts/plan.ts for the windows and the joins. */}
+      <Composition
+        id="Zoe-test-all-pillars"
+        component={ZoeTestAllPillars}
+        durationInFrames={combinedDuration(PILLAR_IDS)}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}

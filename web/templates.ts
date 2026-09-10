@@ -2,9 +2,11 @@ import type React from "react";
 import { CustomizedZoetest } from "../src/CustomizedZoetest";
 import { CustomizedZoeTestSearch } from "../src/CustomizedZoeTestSearch";
 import { CustomizedZoeTestPeople } from "../src/CustomizedZoeTestPeople";
+import { customizedCombined } from "../src/CustomizedCombined";
 import { ZOETEST_CUT_DURATION } from "../src/ZoetestCut";
 import { SEARCH_CUT_DURATION } from "../src/ZoeTestSearchCut";
 import { PEOPLE_CUT_DURATION } from "../src/ZoeTestPeopleCut";
+import { combinedDuration, orderPillars } from "../src/cuts/plan";
 import type { VideoInputProps } from "../src/customize/videoCopy";
 
 /**
@@ -40,12 +42,16 @@ export type TemplateId = "zoe-test-comms" | "zoe-test-search" | "zoe-test-people
 
 export type VideoTemplate = {
   /**
-   * Stable key. Persisted in wizard state, handed to the renderer as the composition id
-   * and recorded against every render event — so it is deliberately NOT renamed when the
-   * operator-facing `label` changes, and it does not have to match the Studio composition
-   * it derives from.
+   * Stable key. Handed to the renderer as the composition id and recorded against every
+   * render event — so it is deliberately NOT renamed when the operator-facing `label`
+   * changes, and it does not have to match the Studio composition it derives from.
+   *
+   * A `string` rather than a `TemplateId` since the wizard started combining pillars: a
+   * multi-pillar cut has no single-pillar id, and its key is the pillars it is made of
+   * (`combo:zoe-test-comms+zoe-test-people`). That shape is deliberate — an analytics row
+   * for a combined render says which chapters were in it without a lookup.
    */
-  id: TemplateId;
+  id: string;
   /** Operator-facing name. The only place either cut is named for a human. */
   label: string;
   /** One line under the label: what this cut is. */
@@ -59,13 +65,24 @@ export type VideoTemplate = {
   height: number;
 };
 
+/**
+ * One pillar as the chooser presents it.
+ *
+ * The first step is a multi-select over these rather than a single pick over the templates
+ * below, which is the same list seen from the other end: a pillar IS a template when it is
+ * the only one ticked. `pillar` is the short name — the words the film's own wheel puts on
+ * screen — used wherever several of them have to be named in one line.
+ */
+export type Pillar = VideoTemplate & { pillar: string };
+
 const FPS = 25;
 const WIDTH = 1920;
 const HEIGHT = 1080;
 
-export const TEMPLATES: readonly VideoTemplate[] = [
+export const TEMPLATES: readonly Pillar[] = [
   {
     id: "zoe-test-comms",
+    pillar: "Communication & Engagement",
     label: "Communications & Engagement Focus",
     blurb: "A shortened cut of the L2 Virgin Airline film.",
     detail:
@@ -78,6 +95,7 @@ export const TEMPLATES: readonly VideoTemplate[] = [
   },
   {
     id: "zoe-test-search",
+    pillar: "Search & Knowledge",
     label: "Search & Knowledge Focus",
     blurb: "A shorter cut of the same film, on Search & Knowledge.",
     detail:
@@ -90,6 +108,7 @@ export const TEMPLATES: readonly VideoTemplate[] = [
   },
   {
     id: "zoe-test-people",
+    pillar: "People Intelligence",
     label: "People Intelligence Focus",
     blurb: "A shorter cut of the same film, on People Intelligence.",
     detail:
@@ -112,6 +131,53 @@ export const DEFAULT_TEMPLATE_ID: TemplateId = "zoe-test-comms";
  * `TemplateId` that has been removed from the table since a project was started should
  * produce the default film rather than a crash three minutes into an encode.
  */
-export const templateById = (id: TemplateId): VideoTemplate =>
+export const templateById = (id: TemplateId): Pillar =>
   TEMPLATES.find((t) => t.id === id) ??
-  (TEMPLATES.find((t) => t.id === DEFAULT_TEMPLATE_ID) as VideoTemplate);
+  (TEMPLATES.find((t) => t.id === DEFAULT_TEMPLATE_ID) as Pillar);
+
+/** "A, B and C" — the one place several pillars are named in a single line. */
+const andList = (parts: readonly string[]): string =>
+  parts.length <= 1
+    ? (parts[0] ?? "")
+    : `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}`;
+
+/**
+ * The one cut a selection of pillars produces.
+ *
+ * This is the seam the multi-select hangs off, and everything downstream — the `<Player>`,
+ * the footer readout, the render button, the analytics row — takes the entry it returns
+ * and asks no further questions. That is the point: a preview playing one film while the
+ * render encodes another is the failure this shape exists to make impossible.
+ *
+ * ONE pillar returns its own approved cut rather than a one-chapter combined one.
+ * `Zoe-test-comms`, `Zoe-test-search` and `Zoe-test-people` are signed off frame by frame,
+ * and `CombinedCut` would re-derive each of them from the same windows to within a handful
+ * of frames. "Within a handful" is not "identical", and there is nothing to gain by
+ * re-deriving a film that already exists — so a single tick plays the film it has always
+ * played. Only combinations, which had no cut before, go through `CombinedCut`.
+ *
+ * An empty selection falls back to the default single cut. The wizard will not send one —
+ * Continue is gated on at least one pillar — but this is also on the render path, and the
+ * fallback keeps a stale saved selection from producing a video with no chapters in it.
+ */
+export const templateForPillars = (picked: readonly TemplateId[]): VideoTemplate => {
+  const chosen = orderPillars(picked).map(templateById);
+
+  if (chosen.length <= 1) return chosen[0] ?? templateById(DEFAULT_TEMPLATE_ID);
+
+  const ids = chosen.map((t) => t.id) as TemplateId[];
+  return {
+    id: `combo:${ids.join("+")}`,
+    label: andList(chosen.map((t) => t.pillar)),
+    blurb: `The film's opening, ${chosen.length} chapters, and its ending — as one video.`,
+    detail:
+      "One intro and one ending, whichever chapters are in between. The chapters play in " +
+      "the film's own order, and the joins where two of them are already consecutive in " +
+      "the film are left alone rather than dissolved.",
+    component: customizedCombined(ids),
+    durationInFrames: combinedDuration(ids),
+    fps: FPS,
+    width: WIDTH,
+    height: HEIGHT,
+  };
+};
