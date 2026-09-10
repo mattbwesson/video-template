@@ -11,6 +11,7 @@ import {
 import { WorkvivoSeerRateCard } from "./WorkvivoSeerRateCard";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import "./WorkvivoSeerManagerMobileStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Seer Insights — Manager Insights, phone.
@@ -130,6 +131,7 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
   scrollY = 0,
   donutProgress = 1,
 }) => {
+  const ui = useT();
   const { person } = useCustomization();
 
   return (
@@ -149,7 +151,7 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
           <span className="wsmm-back">
             <ChevLeft size={20} />
           </span>
-          <div className="wsmm-title">Manager Insights</div>
+          <div className="wsmm-title">{ui("Manager Insights")}</div>
           <span className="wsmm-headpad" />
         </div>
       </div>
@@ -162,15 +164,15 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
         <div className="wsmm-tabs">
           {TABS.map((t) => (
             <span className={t === activeTab ? "wsmm-tab wsmm-on" : "wsmm-tab"} key={t}>
-              {t}
+              {ui(t)}
             </span>
           ))}
         </div>
 
         <div className="wsmm-segrow">
           <div className="wsmm-seg">
-            <span className="wsmm-segbtn wsmm-on">Total Reports</span>
-            <span className="wsmm-segbtn">Direct Reports</span>
+            <span className="wsmm-segbtn wsmm-on">{ui("Total Reports")}</span>
+            <span className="wsmm-segbtn">{ui("Direct Reports")}</span>
           </div>
           <span className="wsmm-filter">
             <span className="wsmm-filter-ico">
@@ -185,22 +187,20 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
             <span className="wsmm-note-ico">
               <InfoMark />
             </span>
-            <div className="wsmm-note-title">Welcome to Your Manager Insights</div>
+            <div className="wsmm-note-title">{ui("Welcome to Your Manager Insights")}</div>
           </div>
           <div className="wsmm-note-body">
-            Here, you can see how your team is feeling and what they think. This dashboard
-            helps you spot any issues, understand team opinions, and take steps to make
-            things better.
+            {ui("Here, you can see how your team is feeling and what they think. This dashboard\n            helps you spot any issues, understand team opinions, and take steps to make\n            things better.")}
           </div>
         </div>
 
-        <div className="wsmm-sec">Manager Overview</div>
+        <div className="wsmm-sec">{ui("Manager Overview")}</div>
 
         <div className="wsmm-card wsmm-person">
           <Img className="wsmm-av" src={person.avatarUrl} style={person.avatarFit} alt="" />
           <div>
-            <div className="wsmm-person-name">{person.name}</div>
-            <div className="wsmm-person-role">{person.title}</div>
+            <div className="wsmm-person-name">{ui(person.name)}</div>
+            <div className="wsmm-person-role">{ui(person.title)}</div>
           </div>
         </div>
 
@@ -210,10 +210,10 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
               <span className="wsmm-tile-num">9.2</span>
             </div>
             <div className="wsmm-score-body">
-              <div className="wsmm-score-title">Team&rsquo;s Engagement Score</div>
+              <div className="wsmm-score-title">{ui("Team’s Engagement Score")}</div>
               <div className="wsmm-score-foot">
                 <span className="wsmm-pill">9.1</span>
-                <span className="wsmm-score-note">Company Score</span>
+                <span className="wsmm-score-note">{ui("Company Score")}</span>
               </div>
             </div>
           </div>
@@ -221,7 +221,7 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
             {SENTIMENTS.map(({ pct, tone, Face }) => (
               <span className={`wsmm-sent wsmm-sent-${tone}`} key={pct}>
                 <Face size={20} />
-                {pct}
+                {ui(pct)}
               </span>
             ))}
           </div>
@@ -231,24 +231,24 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
           <WorkvivoSeerRateCard large responses="12/16" progress={donutProgress} />
         </div>
 
-        <div className="wsmm-sec">Direct Reports</div>
+        <div className="wsmm-sec">{ui("Direct Reports")}</div>
 
         <div className="wsmm-reports">
           <div className="wsmm-seg">
-            <span className="wsmm-segbtn">Managers</span>
-            <span className="wsmm-segbtn wsmm-on">Individual Contributor</span>
+            <span className="wsmm-segbtn">{ui("Managers")}</span>
+            <span className="wsmm-segbtn wsmm-on">{ui("Individual Contributor")}</span>
           </div>
           {REPORTS.map(({ name, role, score, tone, avatar }) => (
             <div className="wsmm-rrow" key={name}>
               <Img className="wsmm-rav" src={staticFile(`img/${avatar}`)} alt="" />
               <div className="wsmm-rwho">
-                <div className="wsmm-rname">{name}</div>
-                <div className="wsmm-rrole">{role}</div>
+                <div className="wsmm-rname">{ui(name)}</div>
+                <div className="wsmm-rrole">{ui(role)}</div>
               </div>
               <span
                 className={tone === "amber" ? "wsmm-rscore wsmm-rscore-amber" : "wsmm-rscore"}
               >
-                {score}
+                {ui(score)}
               </span>
             </div>
           ))}
@@ -259,19 +259,19 @@ export const WorkvivoSeerManagerMobile: React.FC<WorkvivoSeerManagerMobileProps>
       <div className="wsmm-nav">
         <div className="wsmm-navitem">
           <Icon href="#i-ui-home-nav-rail" width={25} height={25} />
-          <span className="wsmm-navlabel">Home</span>
+          <span className="wsmm-navlabel">{ui("Home")}</span>
         </div>
         <div className="wsmm-navitem">
           <Icon href="#i-ui-chat" width={25} height={25} />
-          <span className="wsmm-navlabel">Chat</span>
+          <span className="wsmm-navlabel">{ui("Chat")}</span>
         </div>
         <div className="wsmm-navitem">
           <Icon href="#i-ui-notifications" width={25} height={25} />
-          <span className="wsmm-navlabel">Inbox</span>
+          <span className="wsmm-navlabel">{ui("Inbox")}</span>
         </div>
         <div className="wsmm-navitem wsmm-on">
           <MoreLines />
-          <span className="wsmm-navlabel">More</span>
+          <span className="wsmm-navlabel">{ui("More")}</span>
         </div>
       </div>
     </div>

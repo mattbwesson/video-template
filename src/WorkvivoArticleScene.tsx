@@ -1,6 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
 import { ARTICLE_W, WorkvivoArticle } from "./components/workvivo/WorkvivoArticle";
+import { RadialWash } from "./components/RadialWash";
 
 /** The deep navy field the page floats on. */
 const BACKDROP = "#010320";
@@ -143,13 +144,24 @@ export const WorkvivoArticleScene: React.FC<WorkvivoArticleSceneProps> = ({
           width: 700,
           height: 460,
           borderRadius: "50%",
-          background:
-            "radial-gradient(closest-side, rgba(139,74,255,0.85) 0%, rgba(96,32,205,0.42) 42%, rgba(60,12,140,0) 100%)",
           filter: "blur(58px)",
           opacity: bloomOpacity,
           pointerEvents: "none",
         }}
-      />
+      >
+        {/* `closest-side` at the centre of a 700x460 box: rx 350, ry 230. An SVG gradient
+            rather than CSS so the wizard's in-browser export paints it — see RadialWash. */}
+        <RadialWash
+          id="wa-bloom"
+          width={700}
+          height={460}
+          cx={350}
+          cy={230}
+          rx={350}
+          ry={230}
+          stops={[[0, "rgba(139,74,255,0.85)"], [0.42, "rgba(96,32,205,0.42)"], [1, "rgba(60,12,140,0)"]]}
+        />
+      </div>
 
       <div
         style={{

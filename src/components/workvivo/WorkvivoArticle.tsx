@@ -3,6 +3,7 @@ import { staticFile } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoArticleStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * A single Workvivo article — banner with the title and language picker, the AI summary
@@ -66,6 +67,7 @@ export const WorkvivoArticle: React.FC<WorkvivoArticleProps> = ({
   paragraphStyle,
   figureStyle,
 }) => {
+  const ui = useT();
   const { copy, image } = useCustomization();
   const article = copy.article;
   const bannerSrc = banner
@@ -88,9 +90,9 @@ export const WorkvivoArticle: React.FC<WorkvivoArticleProps> = ({
     <div className="wa-banner">
       <img data-vc-slot={banner ? undefined : "article.banner.0"} src={bannerSrc} alt="" />
       <div className="wa-banner-scrim" />
-      <div className="wa-title" style={titleStyle}>{title ?? article.title}</div>
+      <div className="wa-title" style={titleStyle}>{ui(title ?? article.title)}</div>
       <div className="wa-lang">
-        {language ?? article.language}
+        {ui(language ?? article.language)}
         <ChevronDown />
       </div>
     </div>
@@ -100,40 +102,40 @@ export const WorkvivoArticle: React.FC<WorkvivoArticleProps> = ({
         <span className="wa-ai-mark">
           <Icon href="#i-ui-askvivo" className="" width={13} height={13} />
         </span>
-        <span className="wa-ai-label">AI Summary</span>
-        <span className="wa-ai-open">Open</span>
+        <span className="wa-ai-label">{ui("AI Summary")}</span>
+        <span className="wa-ai-open">{ui("Open")}</span>
       </div>
 
       <div className="wa-prose">
         {body ? (
           body.map((para, i) => (
             <p key={para.slice(0, 32)} style={paragraphStyle ? paragraphStyle(i) : undefined}>
-              {para}
+              {ui(para)}
             </p>
           ))
         ) : (
           <>
-            <p style={paragraphStyle ? paragraphStyle(0) : undefined}>{article.lead}</p>
+            <p style={paragraphStyle ? paragraphStyle(0) : undefined}>{ui(article.lead)}</p>
 
             <h3 className="wa-heading" style={paragraphStyle ? paragraphStyle(1) : undefined}>
-              {article.heading}
+              {ui(article.heading)}
             </h3>
 
             <ul className="wa-list" style={paragraphStyle ? paragraphStyle(2) : undefined}>
               {article.points.map((point) => (
                 <li className="wa-list-item" key={point.label}>
                   <span className="wa-bullet" />
-                  <strong>{point.label}:</strong> {point.body}
+                  <strong>{ui(point.label)}:</strong> {ui(point.body)}
                 </li>
               ))}
             </ul>
 
             <div className="wa-quote" style={paragraphStyle ? paragraphStyle(3) : undefined}>
-              <div className="wa-quote-text">&ldquo;{article.quote}&rdquo;</div>
-              <div className="wa-quote-author"><span className="wa-dash">&mdash;</span>{article.quoteAuthor}</div>
+              <div className="wa-quote-text">{ui("“")}{ui(article.quote)}{ui("”")}</div>
+              <div className="wa-quote-author"><span className="wa-dash">{ui("—")}</span>{ui(article.quoteAuthor)}</div>
             </div>
 
-            <p style={paragraphStyle ? paragraphStyle(4) : undefined}>{article.closing}</p>
+            <p style={paragraphStyle ? paragraphStyle(4) : undefined}>{ui(article.closing)}</p>
           </>
         )}
       </div>

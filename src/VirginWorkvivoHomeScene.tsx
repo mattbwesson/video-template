@@ -13,6 +13,7 @@ import { invertEase } from "./match-cut";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { FIXED_COPY } from "./customize/videoCopy";
 import { GlassRing } from "./components/workvivo/GlassRing";
+import { useT } from "./customize/uiStrings";
 
 // --- card swap timing --------------------------------------------------------
 // Every card swap in this scene is two objects trading places, and they all share one
@@ -96,6 +97,7 @@ export interface VirginWorkvivoHomeSceneProps {
 export const VirginWorkvivoHomeScene: React.FC<VirginWorkvivoHomeSceneProps> = ({
   mobileScrollTop: mobileScrollTopOverride,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { width, height } = useVideoConfig();
   const { copy } = useCustomization();
@@ -303,7 +305,7 @@ export const VirginWorkvivoHomeScene: React.FC<VirginWorkvivoHomeSceneProps> = (
           >
             {/* Joined rather than three <div>s so the block keeps one line box and the
                 HEADLINE_LINE_HEIGHT above stays the only thing setting the leading. */}
-            {FIXED_COPY.homeHeadlineLines.join("\n")}
+            {ui(FIXED_COPY.homeHeadlineLines.join("\n"))}
           </div>
 
           <div

@@ -14,6 +14,7 @@ import "./WorkvivoPostComposerStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { SlotIcon } from "../../customize/SlotIcon";
 import { ICON_HIT_ATTR, type IconSlotKey } from "../../customize/icons";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Native port of public/refs/workvivo-post-composer.html — the seed card, composer modal,
@@ -107,12 +108,15 @@ const AddTile: React.FC<{ bg: string; color: string; label: string; children: Re
   color,
   label,
   children,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div className="pc-tile">
     <span className="pc-disc" style={{ background: bg, color }}>{children}</span>
-    <span>{label}</span>
+    <span>{ui(label)}</span>
   </div>
 );
+};
 
 /**
  * The four rows of the Select Value overlay — artwork only.
@@ -147,6 +151,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
   valueChecked = true,
   composerShownAt = null,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { person, image, copy } = useCustomization();
@@ -226,7 +231,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
         <img className="pc-av" src={person.avatarUrl} style={person.avatarFit} alt="" />
         <div className="pc-aud">
           <SymbolSvg width="20" height="20" href="#pc-i-ui-everyone" />
-          <span>Everyone</span>
+          <span>{ui("Everyone")}</span>
           <span className="pc-caret" />
         </div>
         <span className="pc-close"><i /><i /></span>
@@ -239,7 +244,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
           transform: `scale(${0.92 + 0.08 * fmtT}) translateY(${(1 - fmtT) * -8}px)`,
         }}
       >
-        <div className="pc-style"><span>Normal Text</span><span className="pc-caret" /></div>
+        <div className="pc-style"><span>{ui("Normal Text")}</span><span className="pc-caret" /></div>
         <span className="pc-divider" />
         <span className="pc-fb pc-b pc-on">B</span>
         <span className="pc-fb pc-i">I</span>
@@ -260,11 +265,11 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
             one string. `splitAroundName` falls back to putting the whole body before the
             name if a rewritten post does not contain it, which loses the animation but
             never loses the text. */}
-        {before}
+        {ui(before)}
         <b style={{ opacity: nameOpacity, transform: `scale(${nameScale})`, color: nameColor }}>
-          {copy.composed.recipient}
+          {ui(copy.composed.recipient)}
         </b>
-        {after}
+        {ui(after)}
       </div>
 
       {/* ONE attachment, not two. The post being written here lands on the activity feed a
@@ -316,7 +321,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
           className="pc-post"
           style={{ opacity: postOpacity, transform: `scale(${postScale})`, boxShadow: postShadow }}
         >
-          Post
+          {ui("Post")}
         </button>
       </div>
     </div>
@@ -326,7 +331,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
     <div>
       <div className="pc-ahead">
         <span className="pc-back"><i /><i /><i /></span>
-        <h2>Add</h2>
+        <h2>{ui("Add")}</h2>
         <span className="pc-close"><i /><i /></span>
       </div>
       <div className="pc-agrid">
@@ -375,18 +380,18 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
         <div className="pc-seed">
           <div className="pc-seedtop">
             <img className="pc-seedav" src={person.avatarUrl} style={person.avatarFit} alt="" />
-            <span className="pc-seedph">What&rsquo;s going on, {person.firstName}?</span>
-            <button className="pc-golive">Go Live <i /></button>
+            <span className="pc-seedph">{ui("What’s going on, ")}{ui(person.firstName)}?</span>
+            <button className="pc-golive">{ui("Go Live ")}<i /></button>
           </div>
           <div className="pc-seedacts">
             <button className="pc-sact">
-              <SymbolSvg width="19" height="19" href="#pc-i-ui-shout-out" />Give a Shout-Out
+              <SymbolSvg width="19" height="19" href="#pc-i-ui-shout-out" />{ui("Give a Shout-Out")}
             </button>
             <button className="pc-sact">
-              <SymbolSvg width="19" height="19" href="#pc-i-ui-post-a-value-update" />Post a Value Update
+              <SymbolSvg width="19" height="19" href="#pc-i-ui-post-a-value-update" />{ui("Post a Value Update")}
             </button>
             <button className="pc-sact">
-              <SymbolSvg width="19" height="19" href="#pc-i-ui-ask-a-question" />Ask a Question
+              <SymbolSvg width="19" height="19" href="#pc-i-ui-ask-a-question" />{ui("Ask a Question")}
             </button>
           </div>
         </div>
@@ -398,7 +403,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
         <div className="pc-scrim">
           <div className="pc-vmodal">
             <div className="pc-vhead">
-              Select Value
+              {ui("Select Value")}
               <span className="pc-g-x"><i /><i /></span>
             </div>
             {VALUE_ROWS.map((row, i) => (
@@ -415,8 +420,8 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
                   </SlotIcon>
                 </span>
                 <span className="pc-vtx">
-                  <b>{copy.composed.values[i]}</b>
-                  <span>Organization Value</span>
+                  <b>{ui(copy.composed.values[i])}</b>
+                  <span>{ui("Organization Value")}</span>
                 </span>
                 {/* Ticked on the row the post is tagged with, and only once the pointer
                     has actually pressed it — see `valueChecked`. */}
@@ -433,7 +438,7 @@ export const WorkvivoPostComposer: React.FC<WorkvivoPostComposerProps> = ({
                 </span>
               </div>
             ))}
-            <div className="pc-vfoot"><button className="pc-ok">OK</button></div>
+            <div className="pc-vfoot"><button className="pc-ok">{ui("OK")}</button></div>
           </div>
         </div>
       )}

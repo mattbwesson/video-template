@@ -19,7 +19,7 @@ import { HqChatScene } from "./HqChatScene";
 import { BrandWordScene } from "./BrandWordScene";
 import { WorkvivoCustomerGridScene } from "./WorkvivoCustomerGridScene";
 import { useCustomization } from "./customize/CustomizationProvider";
-import { REFERENCE_VIDEO } from "./WorkvivoCut";
+import { REFERENCE_VIDEO } from "./referenceVideo";
 
 /**
  * The Search & Knowledge cut — the `Zoe-test-search` composition.

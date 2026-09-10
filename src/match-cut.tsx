@@ -114,7 +114,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { CameraMotionBlur } from "@remotion/motion-blur";
+import { MotionBlur } from "./components/renderEnv";
 
 type Point = { x: number; y: number }; // normalized 0..1 of the frame
 type EaseFn = (t: number) => number;
@@ -865,10 +865,13 @@ const RotationalMatchCut: React.FC<MatchCutAnyProps> = (props) => {
       : Math.min(renderSamples, previewCap ?? DEFAULT_PREVIEW_SHUTTER_SAMPLES);
 
   if (inTransition && samples > 1) {
+    // <MotionBlur>, not <CameraMotionBlur> directly: the latter sums its samples with
+    // `plus-lighter`, which the wizard's in-browser export cannot composite, and the whole
+    // spinning card exports at ~65% opacity. See src/components/renderEnv.tsx.
     return (
-      <CameraMotionBlur shutterAngle={shutterAngle} samples={samples}>
+      <MotionBlur shutterAngle={shutterAngle} samples={samples}>
         <RotationalSubScene {...props} side={beforeCut ? "outgoing" : "incoming"} blurred />
-      </CameraMotionBlur>
+      </MotionBlur>
     );
   }
 

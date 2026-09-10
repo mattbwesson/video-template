@@ -9,6 +9,7 @@ import {
 import { ZoomCallSvgDefs } from "./components/workvivo/ZoomCallIcons";
 import { MobileClick } from "./components/workvivo";
 import { useCustomization } from "./customize/CustomizationProvider";
+import { useT } from "./customize/uiStrings";
 
 /** Same curve the rest of the cut's transitions use. */
 const SCENE_EASE = Easing.bezier(0.16, 1, 0.3, 1);
@@ -107,6 +108,7 @@ export const CatchUpRevealScene: React.FC<CatchUpRevealSceneProps> = ({
   morphDuration = 18,
   clickFrame,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy } = useCustomization();
   const { width, height } = useVideoConfig();
@@ -225,7 +227,7 @@ export const CatchUpRevealScene: React.FC<CatchUpRevealSceneProps> = ({
               whiteSpace: "nowrap",
             }}
           >
-            Catch up on what you missed
+            {ui("Catch up on what you missed")}
           </span>
         </div>
 
@@ -255,7 +257,7 @@ export const CatchUpRevealScene: React.FC<CatchUpRevealSceneProps> = ({
                 transform: `translateX(${(1 - headIn) * -cpad * 0.7}px)`,
               }}
             >
-              AI Summary
+              {ui("AI Summary")}
             </span>
           </div>
 
@@ -269,7 +271,7 @@ export const CatchUpRevealScene: React.FC<CatchUpRevealSceneProps> = ({
               transform: `translateY(${(1 - subIn) * ch * 0.02}px)`,
             }}
           >
-            A breakdown of this weeks plans
+            {ui("A breakdown of this weeks plans")}
           </div>
 
           <div
@@ -286,7 +288,7 @@ export const CatchUpRevealScene: React.FC<CatchUpRevealSceneProps> = ({
             // editable rather than hanging off a picture in a neighbouring shot.
             data-vc-slot="chat.summary"
           >
-            {copy.chat.summary}
+            {ui(copy.chat.summary)}
           </div>
         </div>
 
@@ -390,7 +392,7 @@ export const CatchUpRevealScene: React.FC<CatchUpRevealSceneProps> = ({
                   overflow: "hidden",
                 }}
               >
-                Summarize
+                {ui("Summarize")}
               </span>
             )}
           </span>

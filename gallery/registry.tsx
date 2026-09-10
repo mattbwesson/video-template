@@ -47,6 +47,9 @@ import { WorkvivoHqChat } from "../src/components/workvivo/WorkvivoHqChat";
 import { WorkvivoArticle } from "../src/components/workvivo/WorkvivoArticle";
 import { WorkvivoWidgetList } from "../src/components/workvivo/WorkvivoWidgetList";
 import { WorkvivoAdminHub } from "../src/components/workvivo/WorkvivoAdminHub";
+import { WorkvivoHqFan } from "../src/components/workvivo/WorkvivoHqFan";
+import { WorkvivoSurveyBuilder } from "../src/components/workvivo/WorkvivoSurveyBuilder";
+import { WorkvivoPageEditorScreen } from "../src/components/workvivo/WorkvivoPageEditor";
 import { WorkvivoJourneyBuilder } from "../src/components/workvivo/WorkvivoJourneyBuilder";
 import { WorkvivoJourneyPhone } from "../src/components/workvivo/WorkvivoJourneyPhone";
 import { WorkvivoNewsletters } from "../src/components/workvivo/WorkvivoNewsletters";
@@ -1130,6 +1133,52 @@ export const ENTRIES: Entry[] = [
         </AbsoluteFill>
       </Provided>
     ),
+  },
+
+  {
+    id: "hq-fan",
+    name: "WorkvivoHqFan",
+    file: "src/components/workvivo/WorkvivoHqFan.tsx",
+    group: "Screens",
+    summary:
+      "The HQ capability fan — three glass wedges radiating from the HQ mark, each with its own icon cluster and label. Drawn as one inline `<svg>` because the CSS version (conic/radial gradients, a pseudo-element ring) renders in the Player and exports as a flat rectangle. Geometry derives from `CX`/`CY`/`R_IN`/`R_OUT` at the top of the file.",
+    width: 1920,
+    height: 1080,
+    durationInFrames: 1,
+    poster: 0,
+    Stage: () => <WorkvivoHqFan />,
+  },
+
+  {
+    id: "survey-builder",
+    name: "WorkvivoSurveyBuilder",
+    file: "src/components/workvivo/WorkvivoSurveyBuilder.tsx",
+    group: "Screens",
+    summary:
+      "Surveys & Forms — the 'Create a Survey or Form with Workvivo AI' modal beside the Add Question palette and the per-question action bar. Laid out once at the size the film's beat settles to; the modal is one layout that SCALES (its title's ink narrows by 0.6449 against the card's 0.6396), so collapsed and expanded differ only in the card's height and whether the generated body is shown. The ten question-type glyphs are drawn here — the Workvivo icon library carries navigation and post actions and owns none of them.",
+    width: 1920,
+    height: 1080,
+    durationInFrames: 1,
+    poster: 0,
+    Stage: () => (
+      <Provided>
+        <WorkvivoSurveyBuilder />
+      </Provided>
+    ),
+  },
+
+  {
+    id: "page-editor",
+    name: "WorkvivoPageEditor",
+    file: "src/components/workvivo/WorkvivoPageEditor.tsx",
+    group: "Screens",
+    summary:
+      "Workvivo Pages — the page editor with its Zoom Docs toolbar and the 'Help me write' pill. Eighteen of the toolbar glyphs are Zoom's own art from the zoom-ui library, copied in by scripts/prep-docs-icons.py and registered into the shared symbol registry. The block-type glyphs the same library has NO MATCH for — Heading 1/2/3, Embed, Callout, Table — are drawn and listed in BLOCK_GAPS rather than passed off as Zoom's.",
+    width: 1920,
+    height: 1080,
+    durationInFrames: 1,
+    poster: 0,
+    Stage: () => <WorkvivoPageEditorScreen />,
   },
 
   // ---------------------------------------------------------------- overlays

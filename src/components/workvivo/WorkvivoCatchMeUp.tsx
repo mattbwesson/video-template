@@ -8,6 +8,8 @@ import { useCustomization } from '../../customize/CustomizationProvider';
 import type { Customization } from '../../customize/CustomizationProvider';
 import type { ImageSlotKey } from '../../customize/imagery';
 import { GlassRing } from "./GlassRing";
+import { RadialWash, farthestCorner, type WashStop } from "../RadialWash";
+import { useT } from "../../customize/uiStrings";
 
 export interface StorySlideData {
   title: string;
@@ -17,7 +19,21 @@ export interface StorySlideData {
   tags?: string[];
   paragraphs: string[];
   bgStyle?: React.CSSProperties;
+  /**
+   * Radial washes over `bgStyle`, in fractions of the stage, first-listed on top — what
+   * these were as CSS `radial-gradient(circle at x% y%, …)` layers, which the wizard's
+   * in-browser export does not paint. Each is a `farthest-corner` circle (see RadialWash).
+   */
+  washes?: { cx: number; cy: number; stops: WashStop[] }[];
 }
+
+/**
+ * The stage's box in composition px: the 393-wide phone less its 16.5px bezel each side,
+ * and the height left under the story's status bar and segments. Measured off the mounted
+ * component (gallery, `.wcmu-stage`), because `.wcmu-stage` is `flex: 1` and the CSS does
+ * not state it; the circles' farthest-corner radii need the real box.
+ */
+const STAGE = { w: 360, h: 699.5 };
 
 /**
  * The four story cards, as a function of the customisation rather than a constant.
@@ -45,11 +61,11 @@ const catchMeUpSlides = ({ image, theme, copy }: Customization): StorySlideData[
     tags: ['12 Questions', 'Anonymous'],
     paragraphs: [copy.stories[1].body],
 
-    bgStyle: {
-      background: '#FFFFFF',
-      backgroundImage:
-        `radial-gradient(circle at 85% 65%, ${theme.alpha(0.4)} 0%, ${theme.alpha(0.08)} 45%, transparent 65%), radial-gradient(circle at 15% 25%, ${theme.alpha(0.25)} 0%, transparent 45%)`,
-    },
+    bgStyle: { background: '#FFFFFF' },
+    washes: [
+      { cx: 0.85, cy: 0.65, stops: [[0, theme.alpha(0.4)], [0.45, theme.alpha(0.08)], [0.65, 'transparent']] },
+      { cx: 0.15, cy: 0.25, stops: [[0, theme.alpha(0.25)], [0.45, 'transparent']] },
+    ],
   },
   {
     title: copy.stories[2].title,
@@ -58,11 +74,11 @@ const catchMeUpSlides = ({ image, theme, copy }: Customization): StorySlideData[
     tags: ['1 step remaining'],
     paragraphs: [copy.stories[2].body],
 
-    bgStyle: {
-      background: '#FFFFFF',
-      backgroundImage:
-        `radial-gradient(circle at 80% 70%, ${theme.alpha(0.35)} 0%, ${theme.alpha(0.06)} 45%, transparent 65%), radial-gradient(circle at 20% 30%, ${theme.alpha(0.2)} 0%, transparent 40%)`,
-    },
+    bgStyle: { background: '#FFFFFF' },
+    washes: [
+      { cx: 0.8, cy: 0.7, stops: [[0, theme.alpha(0.35)], [0.45, theme.alpha(0.06)], [0.65, 'transparent']] },
+      { cx: 0.2, cy: 0.3, stops: [[0, theme.alpha(0.2)], [0.4, 'transparent']] },
+    ],
   },
   {
     title: copy.stories[3].title,
@@ -167,6 +183,7 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
   onPrevSlide,
   onTogglePlay,
 }) => {
+  const ui = useT();
   const customization = useCustomization();
   const { person, logo, copy, image } = customization;
   const slides = catchMeUpSlides(customization);
@@ -180,18 +197,18 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
         src={slideData.image}
         alt=""
       />
-      <h1 className="wcmu-title">{slideData.title}</h1>
+      <h1 className="wcmu-title">{ui(slideData.title)}</h1>
       {slideData.tags && slideData.tags.length > 0 && (
         <div className="wcmu-tags">
           {slideData.tags.map((tag, tIdx) => (
             <span key={tIdx} className="wcmu-tag">
-              {tag}
+              {ui(tag)}
             </span>
           ))}
         </div>
       )}
       {slideData.paragraphs.map((p, pIdx) => (
-        <p key={pIdx} className="wcmu-para">{p}</p>
+        <p key={pIdx} className="wcmu-para">{ui(p)}</p>
       ))}
     </div>
   );
@@ -224,8 +241,8 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
             </div>
           </div>
           <div className="wcmu-htabs">
-            <a href="#" className="wcmu-on">Feed</a>
-            <a href="#">Spotlight</a>
+            <a href="#" className="wcmu-on">{ui("Feed")}</a>
+            <a href="#">{ui("Spotlight")}</a>
           </div>
         </div>
 
@@ -239,13 +256,13 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                     src={staticFile("img/hq-logo.svg")}
                     width="34"
                     height="20"
-                    alt="HQ"
+                    alt={ui("HQ")}
                     style={{ display: "block" }}
                   />
                 </span>
                 <span className="wcmu-t">
-                  <b>Catch Me Up</b>
-                  <span>Here's what you missed</span>
+                  <b>{ui("Catch Me Up")}</b>
+                  <span>{ui("Here's what you missed")}</span>
                 </span>
                 <span className="wcmu-chev" />
               </button>
@@ -269,9 +286,9 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                   alt=""
                   />
                 <div className="wcmu-b">
-                  <h3>{copy.catchup[0].title}</h3>
-                  <div className="wcmu-m"><SymbolSvg width="16" height="16" href="#wcmu-everyone" /><span>Global</span></div>
-                  <div className="wcmu-p">Published 1 day ago</div>
+                  <h3>{ui(copy.catchup[0].title)}</h3>
+                  <div className="wcmu-m"><SymbolSvg width="16" height="16" href="#wcmu-everyone" /><span>{ui("Global")}</span></div>
+                  <div className="wcmu-p">{ui("Published 1 day ago")}</div>
                 </div>
               </div>
               <div className="wcmu-fcard">
@@ -282,9 +299,9 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                   alt=""
                   />
                 <div className="wcmu-b">
-                  <h3>{copy.catchup[1].title}</h3>
-                  <div className="wcmu-m"><SymbolSvg width="16" height="16" href="#wcmu-everyone" /><span>Global</span></div>
-                  <div className="wcmu-p">Published 2 days ago</div>
+                  <h3>{ui(copy.catchup[1].title)}</h3>
+                  <div className="wcmu-m"><SymbolSvg width="16" height="16" href="#wcmu-everyone" /><span>{ui("Global")}</span></div>
+                  <div className="wcmu-p">{ui("Published 2 days ago")}</div>
                 </div>
               </div>
             </div>
@@ -303,11 +320,11 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                     src={staticFile("img/hq-logo.svg")}
                     width="18"
                     height="11"
-                    alt="HQ"
+                    alt={ui("HQ")}
                     style={{ display: "block" }}
                   />
                 </span>
-                <span className="wcmu-lbl">Catch Me Up</span>
+                <span className="wcmu-lbl">{ui("Catch Me Up")}</span>
                 <button className="wcmu-ctl" id="playbtn" type="button" onClick={onTogglePlay}>
                   {isPlaying ? (
                     /* An inline <svg> triangle, not the CSS border trick. A zero-size
@@ -374,6 +391,19 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                 overflow: 'hidden',
               }}
             >
+              {/* Bottom layer first, so the first-listed wash ends up on top as CSS had it. */}
+              {[...(currentSlide.washes ?? [])].reverse().map((w, i) => (
+                <RadialWash
+                  key={i}
+                  id={`cmu-wash-${currentSlide.slot}-${i}`}
+                  width={STAGE.w}
+                  height={STAGE.h}
+                  cx={w.cx * STAGE.w}
+                  cy={w.cy * STAGE.h}
+                  rx={farthestCorner(w.cx * STAGE.w, w.cy * STAGE.h, STAGE.w, STAGE.h)}
+                  stops={w.stops}
+                />
+              ))}
               <div className="wcmu-tapzone wcmu-l" id="prev" onClick={onPrevSlide} />
               <div className="wcmu-tapzone wcmu-r" id="next" onClick={onNextSlide} />
               <div

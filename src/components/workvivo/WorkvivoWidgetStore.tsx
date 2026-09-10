@@ -2,6 +2,7 @@ import React from "react";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
 import "./WorkvivoWidgetStoreStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo Widget Store — the category browser modal, on the tenant brand field.
@@ -96,19 +97,24 @@ const PEACH = "#fbe3c4";
 const PINK = "#f8dbe8";
 const BLUE = "#d6e4f8";
 
-const ViewWidgets: React.FC = () => (
+const ViewWidgets: React.FC = () => {
+  const ui = useT();
+  return (
   <span className="wws-link">
-    <span>View Widgets</span>
+    <span>{ui("View Widgets")}</span>
     <ArrowRight />
   </span>
 );
+};
 
 export const WorkvivoWidgetStore: React.FC<WorkvivoWidgetStoreProps> = ({
   brand = "#d40000",
   active = "Discover",
   cardStyle,
   className,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div
     className={"wws-stage" + (className ? ` ${className}` : "")}
     style={{ "--wws-brand": brand } as React.CSSProperties}>
@@ -117,14 +123,14 @@ export const WorkvivoWidgetStore: React.FC<WorkvivoWidgetStoreProps> = ({
     <div className="wws-modal">
       {/* ---------- category rail ---------- */}
       <aside className="wws-side">
-        <div className="wws-brand">Widget Store</div>
+        <div className="wws-brand">{ui("Widget Store")}</div>
         <div className="wws-rule" />
         <div className="wws-side-body">
-          <div className="wws-caption">Widget Categories</div>
+          <div className="wws-caption">{ui("Widget Categories")}</div>
           <nav className="wws-nav">
             {CATEGORIES.map((c) => (
               <div key={c} className={"wws-nav-item" + (c === active ? " is-on" : "")}>
-                {c}
+                {ui(c)}
               </div>
             ))}
           </nav>
@@ -134,25 +140,24 @@ export const WorkvivoWidgetStore: React.FC<WorkvivoWidgetStoreProps> = ({
       {/* ---------- main pane ---------- */}
       <section className="wws-main">
         <div className="wws-head">
-          <h1 className="wws-h1">Discover</h1>
+          <h1 className="wws-h1">{ui("Discover")}</h1>
           <span className="wws-close">
             <CloseX />
           </span>
         </div>
-        <div className="wws-sub">Start with a category—or jump straight to search.</div>
+        <div className="wws-sub">{ui("Start with a category—or jump straight to search.")}</div>
 
         <div className="wws-search">
           <Icon href="#i-ui-explore" width={16} height={16} />
-          <span>Search</span>
+          <span>{ui("Search")}</span>
         </div>
 
         <div className="wws-hero">
           <div className="wws-hero-copy">
-            <div className="wws-eyebrow">New</div>
-            <div className="wws-hero-t">Make your landing page feel alive.</div>
+            <div className="wws-eyebrow">{ui("New")}</div>
+            <div className="wws-hero-t">{ui("Make your landing page feel alive.")}</div>
             <div className="wws-hero-b">
-              Curated widgets for comms, culture, and everyday work—organized the way
-              people actually browse.
+              {ui("Curated widgets for comms, culture, and everyday work—organized the way\n              people actually browse.")}
             </div>
           </div>
 
@@ -186,8 +191,8 @@ export const WorkvivoWidgetStore: React.FC<WorkvivoWidgetStoreProps> = ({
         </div>
 
         <div className="wws-browse">
-          <h2 className="wws-h2">Browse by category</h2>
-          <span className="wws-link">See all widgets</span>
+          <h2 className="wws-h2">{ui("Browse by category")}</h2>
+          <span className="wws-link">{ui("See all widgets")}</span>
         </div>
 
         <div className="wws-grid">
@@ -196,9 +201,9 @@ export const WorkvivoWidgetStore: React.FC<WorkvivoWidgetStoreProps> = ({
               key={c.title}
               className="wws-card"
               style={{ background: c.tint, ...cardStyle?.(i) }}>
-              <div className="wws-card-cat">Category</div>
-              <div className="wws-card-t">{c.title}</div>
-              <div className="wws-card-s">{c.sub}</div>
+              <div className="wws-card-cat">{ui("Category")}</div>
+              <div className="wws-card-t">{ui(c.title)}</div>
+              <div className="wws-card-s">{ui(c.sub)}</div>
               <ViewWidgets />
             </div>
           ))}
@@ -207,3 +212,4 @@ export const WorkvivoWidgetStore: React.FC<WorkvivoWidgetStoreProps> = ({
     </div>
   </div>
 );
+};

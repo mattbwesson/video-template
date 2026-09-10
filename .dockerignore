@@ -23,10 +23,18 @@ video-customizer-reveal-dark.html
 # this is in neither. It was the largest single item in a 181 MB build context.
 workvivo-dewalt.mp4
 
-# 310 MB of source video. public/img/l2-reference-212s.mp4 is the same 212 seconds at
-# CRF 24 — 45 MB, audio included — and is what the wizard lays down; see REFERENCE_VIDEO
-# in src/WorkvivoCut.tsx. Shipping both would be a 400 MB image.
+# The original L2 edit, in both its encodes: 310 MB of master and 45 MB of CRF 24
+# re-encode. NEITHER is loaded at render time any more. Every one of the film's 5300
+# frames is drawn by a scene now — verified by rendering the whole thing with the
+# reference replaced by a marker colour and finding none of it left — and the only thing
+# the video was still carrying, its audio track, is extracted to
+# public/audio/l2-soundtrack.m4a and played from there. See the note on SOUNDTRACK in
+# src/WorkvivoCut.tsx.
+#
+# They stay in the REPO because every scene's numbers were measured off them and the prep
+# scripts still read them; they are simply not build inputs.
 public/img/L2 Video(Virgin Airline).mp4
+public/img/l2-reference-212s.mp4
 
 # The old 54-second trim, from when the customised cut stopped at frame 1350. Nothing
 # references it now that the wizard runs the whole film.
@@ -45,3 +53,14 @@ public/img/webianr.mp4
 **/.DS_Store
 .claude
 web/**/*.test.*
+
+# Audio build inputs for the Japanese cut. The image needs the finished mix
+# (public/audio/japanese-soundtrack.mp3, 5 MB) and none of what it was made from: the music
+# stem alone is 42 MB. Rebuild them with scripts/build-japanese-vo.mjs, which is a
+# development step, not a deploy one.
+public/audio/Quantum_Flow.wav
+public/audio/VO.mp3
+public/audio/japanese-voiceover.mp3
+public/audio/japanese-voiceover-paced.mp3
+public/audio/japanese-voiceover-v1.mp3
+public/audio/japanes-voiceover-2.mp3

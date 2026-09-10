@@ -1,0 +1,3495 @@
+{
+  "task": "transcribe",
+  "language": "english",
+  "duration": 212.25,
+  "text": "Every employee deserves a headquarters. Now they have one. Welcome to Workvivo HQ, the AI native employee experience platform where comms, knowledge, action, and insight come together in one connected experience. Create tailored experiences for every role, team, and location with personalized homepage experiences. Back from time off? Catch up in an instant with personalized AI summaries. Keep everyone informed, connected, and engaged through content that captures attention and drives engagement. Celebrate success and recognize your best people with public shoutouts tied to company values. Create, refine, and localize content in seconds with AI that actually knows your people, culture, and tone of voice. Connect leadership with your team in turn important moments into interactive experiences everyone can be part of. Build stronger communities with dedicated spaces for collaboration, conversation, and connection. Deliver personalized, timely AI-powered journeys that adapt to each employee, from onboarding to change rollouts. Amplify the reach of internal communications by displaying Workvivo content on screens across your organization. Double-tap on the stories that matter most with newsletters. Collaborate faster with chat, voice, and video calls and AI-powered conversation summaries. Ask HQ anything and get instant answers from across your connected systems. Then go further and take action, all without leaving HQ. From ask to answer to job done. One app with multiple context-aware experiences giving every employee access to the right tools, resources, and information, no matter where they are. Bring it to life with a library of ready-made widgets, from business tools and integrations, to news, culture, and employee resources. Or create your own with our AI Widget Builder. Publish polished content in minutes with our AI-powered page creation. Turn scattered information into structured, searchable knowledge hubs. See what's working, understand your people, and act on real data, not guesswork, with advanced analytics. Run engagement surveys that actually get answered and measure what matters most to your people. Go beyond the numbers with AI-powered insights that uncover trends, reveal what's driving engagement, and highlight where to focus next. Give managers instant visibility into team sentiment so they can take action with confidence, wherever they are. From the moment employees share feedback to the moment they see meaningful change, it all happens here, in HQ. Let AI do the hard work of building your survey so you can jump straight into the results. All your favorite tools, one experience layer, everything your people need, right inside HQ. Manage your employee experience with confidence through powerful self-service admin tools and feature toggles. Enable AI with confidence with granular controls, permissions, and governance built in. Powered by Zoom AI technology, enterprise-grade intelligence built into every experience. The employee experience platform your people actually use, trusted by the world's biggest brands. This is Workvivo HQ.",
+  "segments": [
+    {
+      "id": 0,
+      "seek": 0,
+      "start": 0,
+      "end": 4.380000114440918,
+      "text": " Every employee deserves a headquarters. Now they have one.",
+      "tokens": [
+        50376,
+        2048,
+        10738,
+        17037,
+        257,
+        21052,
+        13,
+        823,
+        436,
+        362,
+        472,
+        13,
+        50576
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2349264770746231,
+      "compression_ratio": 1.6115702390670776,
+      "no_speech_prob": 0.007807305082678795
+    },
+    {
+      "id": 1,
+      "seek": 0,
+      "start": 5.119999885559082,
+      "end": 10.579999923706055,
+      "text": " Welcome to Workvivo HQ, the AI native employee experience platform where comms,",
+      "tokens": [
+        50604,
+        4027,
+        281,
+        6603,
+        85,
+        6340,
+        43209,
+        11,
+        264,
+        7318,
+        8470,
+        10738,
+        1752,
+        3663,
+        689,
+        800,
+        82,
+        11,
+        50896
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2349264770746231,
+      "compression_ratio": 1.6115702390670776,
+      "no_speech_prob": 0.007807305082678795
+    },
+    {
+      "id": 2,
+      "seek": 0,
+      "start": 11.100000381469727,
+      "end": 14.65999984741211,
+      "text": " knowledge, action, and insight come together in one connected experience.",
+      "tokens": [
+        50896,
+        3601,
+        11,
+        3069,
+        11,
+        293,
+        11269,
+        808,
+        1214,
+        294,
+        472,
+        4582,
+        1752,
+        13,
+        51092
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2349264770746231,
+      "compression_ratio": 1.6115702390670776,
+      "no_speech_prob": 0.007807305082678795
+    },
+    {
+      "id": 3,
+      "seek": 0,
+      "start": 16.579999923706055,
+      "end": 21.899999618530273,
+      "text": " Create tailored experiences for every role, team, and location with personalized homepage",
+      "tokens": [
+        51172,
+        20248,
+        34858,
+        5235,
+        337,
+        633,
+        3090,
+        11,
+        1469,
+        11,
+        293,
+        4914,
+        365,
+        28415,
+        31301,
+        51456
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2349264770746231,
+      "compression_ratio": 1.6115702390670776,
+      "no_speech_prob": 0.007807305082678795
+    },
+    {
+      "id": 4,
+      "seek": 0,
+      "start": 21.68000030517578,
+      "end": 27.639999389648438,
+      "text": " experiences. Back from time off? Catch up in an instant with personalized AI summaries.",
+      "tokens": [
+        51456,
+        5235,
+        13,
+        5833,
+        490,
+        565,
+        766,
+        30,
+        23869,
+        493,
+        294,
+        364,
+        9836,
+        365,
+        28415,
+        7318,
+        8367,
+        4889,
+        13,
+        51752
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2349264770746231,
+      "compression_ratio": 1.6115702390670776,
+      "no_speech_prob": 0.007807305082678795
+    },
+    {
+      "id": 5,
+      "seek": 2764,
+      "start": 28.420000076293945,
+      "end": 33.7599983215332,
+      "text": " Keep everyone informed, connected, and engaged through content that captures attention and",
+      "tokens": [
+        50368,
+        5527,
+        1518,
+        11740,
+        11,
+        4582,
+        11,
+        293,
+        8237,
+        807,
+        2701,
+        300,
+        27986,
+        3202,
+        293,
+        50660
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24008607864379883,
+      "compression_ratio": 1.6053811311721802,
+      "no_speech_prob": 0.0015729815931990743
+    },
+    {
+      "id": 6,
+      "seek": 2764,
+      "start": 33.7599983215332,
+      "end": 38.68000030517578,
+      "text": " drives engagement. Celebrate success and recognize your best people with public",
+      "tokens": [
+        50660,
+        11754,
+        8742,
+        13,
+        30413,
+        473,
+        2245,
+        293,
+        5521,
+        428,
+        1151,
+        561,
+        365,
+        1908,
+        50908
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24008607864379883,
+      "compression_ratio": 1.6053811311721802,
+      "no_speech_prob": 0.0015729815931990743
+    },
+    {
+      "id": 7,
+      "seek": 2764,
+      "start": 38.68000030517578,
+      "end": 47.400001525878906,
+      "text": " shoutouts tied to company values. Create, refine, and localize content in seconds with AI that",
+      "tokens": [
+        50908,
+        8043,
+        7711,
+        9601,
+        281,
+        2237,
+        4190,
+        13,
+        20248,
+        11,
+        33906,
+        11,
+        293,
+        2654,
+        1125,
+        2701,
+        294,
+        3949,
+        365,
+        7318,
+        300,
+        51348
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24008607864379883,
+      "compression_ratio": 1.6053811311721802,
+      "no_speech_prob": 0.0015729815931990743
+    },
+    {
+      "id": 8,
+      "seek": 2764,
+      "start": 47.400001525878906,
+      "end": 52.279998779296875,
+      "text": " actually knows your people, culture, and tone of voice. Connect leadership with your team in",
+      "tokens": [
+        51348,
+        767,
+        3255,
+        428,
+        561,
+        11,
+        3713,
+        11,
+        293,
+        8027,
+        295,
+        3177,
+        13,
+        11653,
+        5848,
+        365,
+        428,
+        1469,
+        294,
+        51596
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.24008607864379883,
+      "compression_ratio": 1.6053811311721802,
+      "no_speech_prob": 0.0015729815931990743
+    },
+    {
+      "id": 9,
+      "seek": 5248,
+      "start": 53.439998626708984,
+      "end": 58.540000915527344,
+      "text": " turn important moments into interactive experiences everyone can be part of. Build",
+      "tokens": [
+        50412,
+        1261,
+        1021,
+        6065,
+        666,
+        15141,
+        5235,
+        1518,
+        393,
+        312,
+        644,
+        295,
+        13,
+        11875,
+        50664
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.21739839017391205,
+      "compression_ratio": 1.5756458044052124,
+      "no_speech_prob": 0.11433036625385284
+    },
+    {
+      "id": 10,
+      "seek": 5248,
+      "start": 58.540000915527344,
+      "end": 63.959999084472656,
+      "text": " stronger communities with dedicated spaces for collaboration, conversation, and connection.",
+      "tokens": [
+        50664,
+        7249,
+        4456,
+        365,
+        8374,
+        7673,
+        337,
+        9363,
+        11,
+        3761,
+        11,
+        293,
+        4984,
+        13,
+        50932
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.21739839017391205,
+      "compression_ratio": 1.5756458044052124,
+      "no_speech_prob": 0.11433036625385284
+    },
+    {
+      "id": 11,
+      "seek": 5248,
+      "start": 64.95999908447266,
+      "end": 68.9000015258789,
+      "text": " Deliver personalized, timely AI-powered journeys that adapt to each employee,",
+      "tokens": [
+        50964,
+        5831,
+        1837,
+        28415,
+        11,
+        25150,
+        7318,
+        12,
+        27178,
+        36736,
+        300,
+        6231,
+        281,
+        1184,
+        10738,
+        11,
+        51192
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.21739839017391205,
+      "compression_ratio": 1.5756458044052124,
+      "no_speech_prob": 0.11433036625385284
+    },
+    {
+      "id": 12,
+      "seek": 5248,
+      "start": 69.30000305175781,
+      "end": 74.86000061035156,
+      "text": " from onboarding to change rollouts. Amplify the reach of internal communications by displaying",
+      "tokens": [
+        51192,
+        490,
+        24033,
+        278,
+        281,
+        1319,
+        3373,
+        7711,
+        13,
+        2012,
+        564,
+        2505,
+        264,
+        2524,
+        295,
+        6920,
+        15163,
+        538,
+        36834,
+        51480
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.21739839017391205,
+      "compression_ratio": 1.5756458044052124,
+      "no_speech_prob": 0.11433036625385284
+    },
+    {
+      "id": 13,
+      "seek": 5248,
+      "start": 74.86000061035156,
+      "end": 79.68000030517578,
+      "text": " Workvivo content on screens across your organization. Double-tap on the stories",
+      "tokens": [
+        51480,
+        6603,
+        85,
+        6340,
+        2701,
+        322,
+        11171,
+        2108,
+        428,
+        4475,
+        13,
+        16633,
+        12,
+        83,
+        569,
+        322,
+        264,
+        3676,
+        51720
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.21739839017391205,
+      "compression_ratio": 1.5756458044052124,
+      "no_speech_prob": 0.11433036625385284
+    },
+    {
+      "id": 14,
+      "seek": 7968,
+      "start": 79.68000030517578,
+      "end": 84.73999786376953,
+      "text": " that matter most with newsletters. Collaborate faster with chat, voice,",
+      "tokens": [
+        50364,
+        300,
+        1871,
+        881,
+        365,
+        2583,
+        2631,
+        1559,
+        13,
+        44483,
+        473,
+        4663,
+        365,
+        5081,
+        11,
+        3177,
+        11,
+        50616
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2038712203502655,
+      "compression_ratio": 1.5335968732833862,
+      "no_speech_prob": 0.008315440267324448
+    },
+    {
+      "id": 15,
+      "seek": 7968,
+      "start": 84.77999877929688,
+      "end": 87.83999633789062,
+      "text": " and video calls and AI-powered conversation summaries.",
+      "tokens": [
+        50616,
+        293,
+        960,
+        5498,
+        293,
+        7318,
+        12,
+        27178,
+        3761,
+        8367,
+        4889,
+        13,
+        50772
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2038712203502655,
+      "compression_ratio": 1.5335968732833862,
+      "no_speech_prob": 0.008315440267324448
+    },
+    {
+      "id": 16,
+      "seek": 7968,
+      "start": 90.31999969482422,
+      "end": 94.5,
+      "text": " Ask HQ anything and get instant answers from across your connected systems.",
+      "tokens": [
+        50876,
+        12320,
+        43209,
+        1340,
+        293,
+        483,
+        9836,
+        6338,
+        490,
+        2108,
+        428,
+        4582,
+        3652,
+        13,
+        51104
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2038712203502655,
+      "compression_ratio": 1.5335968732833862,
+      "no_speech_prob": 0.008315440267324448
+    },
+    {
+      "id": 17,
+      "seek": 7968,
+      "start": 95.08000183105469,
+      "end": 101.72000122070312,
+      "text": " Then go further and take action, all without leaving HQ. From ask to answer to job done.",
+      "tokens": [
+        51132,
+        1396,
+        352,
+        3052,
+        293,
+        747,
+        3069,
+        11,
+        439,
+        1553,
+        5012,
+        43209,
+        13,
+        3358,
+        1029,
+        281,
+        1867,
+        281,
+        1691,
+        1096,
+        13,
+        51460
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2038712203502655,
+      "compression_ratio": 1.5335968732833862,
+      "no_speech_prob": 0.008315440267324448
+    },
+    {
+      "id": 18,
+      "seek": 7968,
+      "start": 102.30000305175781,
+      "end": 107.76000213623047,
+      "text": " One app with multiple context-aware experiences giving every employee access to the right tools,",
+      "tokens": [
+        51492,
+        1485,
+        724,
+        365,
+        3866,
+        4319,
+        12,
+        17074,
+        5235,
+        2902,
+        633,
+        10738,
+        2105,
+        281,
+        264,
+        558,
+        3873,
+        11,
+        51776
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2038712203502655,
+      "compression_ratio": 1.5335968732833862,
+      "no_speech_prob": 0.008315440267324448
+    },
+    {
+      "id": 19,
+      "seek": 10776,
+      "start": 107.76000213623047,
+      "end": 111.5199966430664,
+      "text": " resources, and information, no matter where they are.",
+      "tokens": [
+        50372,
+        3593,
+        11,
+        293,
+        1589,
+        11,
+        572,
+        1871,
+        689,
+        436,
+        366,
+        13,
+        50528
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.1956116259098053,
+      "compression_ratio": 1.5907173156738281,
+      "no_speech_prob": 0.002672927686944604
+    },
+    {
+      "id": 20,
+      "seek": 10776,
+      "start": 112.36000061035156,
+      "end": 116.45999908447266,
+      "text": " Bring it to life with a library of ready-made widgets, from business tools and integrations,",
+      "tokens": [
+        50580,
+        12842,
+        309,
+        281,
+        993,
+        365,
+        257,
+        6405,
+        295,
+        1919,
+        12,
+        10341,
+        43355,
+        11,
+        490,
+        1606,
+        3873,
+        293,
+        3572,
+        763,
+        11,
+        50804
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.1956116259098053,
+      "compression_ratio": 1.5907173156738281,
+      "no_speech_prob": 0.002672927686944604
+    },
+    {
+      "id": 21,
+      "seek": 10776,
+      "start": 116.76000213623047,
+      "end": 123,
+      "text": " to news, culture, and employee resources. Or create your own with our AI Widget Builder.",
+      "tokens": [
+        50804,
+        281,
+        2583,
+        11,
+        3713,
+        11,
+        293,
+        10738,
+        3593,
+        13,
+        1610,
+        1884,
+        428,
+        1065,
+        365,
+        527,
+        7318,
+        28331,
+        847,
+        11875,
+        260,
+        13,
+        51120
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.1956116259098053,
+      "compression_ratio": 1.5907173156738281,
+      "no_speech_prob": 0.002672927686944604
+    },
+    {
+      "id": 22,
+      "seek": 10776,
+      "start": 123.87999725341797,
+      "end": 127.27999877929688,
+      "text": " Publish polished content in minutes with our AI-powered page creation.",
+      "tokens": [
+        51148,
+        21808,
+        1933,
+        29079,
+        2701,
+        294,
+        2077,
+        365,
+        527,
+        7318,
+        12,
+        27178,
+        3028,
+        8016,
+        13,
+        51352
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.1956116259098053,
+      "compression_ratio": 1.5907173156738281,
+      "no_speech_prob": 0.002672927686944604
+    },
+    {
+      "id": 23,
+      "seek": 10776,
+      "start": 127.9000015258789,
+      "end": 131.4600067138672,
+      "text": " Turn scattered information into structured, searchable knowledge hubs.",
+      "tokens": [
+        51352,
+        7956,
+        21986,
+        1589,
+        666,
+        18519,
+        11,
+        3164,
+        712,
+        3601,
+        46870,
+        13,
+        51548
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.1956116259098053,
+      "compression_ratio": 1.5907173156738281,
+      "no_speech_prob": 0.002672927686944604
+    },
+    {
+      "id": 24,
+      "seek": 13146,
+      "start": 134.25999450683594,
+      "end": 141.0399932861328,
+      "text": " See what's working, understand your people, and act on real data, not guesswork, with advanced",
+      "tokens": [
+        50412,
+        3008,
+        437,
+        311,
+        1364,
+        11,
+        1223,
+        428,
+        561,
+        11,
+        293,
+        605,
+        322,
+        957,
+        1412,
+        11,
+        406,
+        2041,
+        1902,
+        11,
+        365,
+        7339,
+        50704
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2879772186279297,
+      "compression_ratio": 1.658088207244873,
+      "no_speech_prob": 0.004070009104907513
+    },
+    {
+      "id": 25,
+      "seek": 13146,
+      "start": 141.0399932861328,
+      "end": 146.17999267578125,
+      "text": " analytics. Run engagement surveys that actually get answered and measure what matters most to",
+      "tokens": [
+        50704,
+        15370,
+        13,
+        8950,
+        8742,
+        22711,
+        300,
+        767,
+        483,
+        10103,
+        293,
+        3481,
+        437,
+        7001,
+        881,
+        281,
+        50952
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2879772186279297,
+      "compression_ratio": 1.658088207244873,
+      "no_speech_prob": 0.004070009104907513
+    },
+    {
+      "id": 26,
+      "seek": 13146,
+      "start": 146.17999267578125,
+      "end": 150.9600067138672,
+      "text": " your people. Go beyond the numbers with AI-powered insights that uncover trends,",
+      "tokens": [
+        50952,
+        428,
+        561,
+        13,
+        1037,
+        4399,
+        264,
+        3547,
+        365,
+        7318,
+        12,
+        27178,
+        14310,
+        300,
+        21694,
+        13892,
+        11,
+        51196
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2879772186279297,
+      "compression_ratio": 1.658088207244873,
+      "no_speech_prob": 0.004070009104907513
+    },
+    {
+      "id": 27,
+      "seek": 13146,
+      "start": 151.5,
+      "end": 156.44000244140625,
+      "text": " reveal what's driving engagement, and highlight where to focus next. Give managers instant",
+      "tokens": [
+        51196,
+        10658,
+        437,
+        311,
+        4840,
+        8742,
+        11,
+        293,
+        5078,
+        689,
+        281,
+        1879,
+        958,
+        13,
+        5303,
+        14084,
+        9836,
+        51452
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2879772186279297,
+      "compression_ratio": 1.658088207244873,
+      "no_speech_prob": 0.004070009104907513
+    },
+    {
+      "id": 28,
+      "seek": 13146,
+      "start": 156.44000244140625,
+      "end": 161.44000244140625,
+      "text": " visibility into team sentiment so they can take action with confidence, wherever they are.",
+      "tokens": [
+        51452,
+        19883,
+        666,
+        1469,
+        16149,
+        370,
+        436,
+        393,
+        747,
+        3069,
+        365,
+        6687,
+        11,
+        8660,
+        436,
+        366,
+        13,
+        51700
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2879772186279297,
+      "compression_ratio": 1.658088207244873,
+      "no_speech_prob": 0.004070009104907513
+    },
+    {
+      "id": 29,
+      "seek": 16144,
+      "start": 161.44000244140625,
+      "end": 165.60000610351562,
+      "text": " From the moment employees share feedback to the moment they see meaningful change,",
+      "tokens": [
+        50376,
+        3358,
+        264,
+        1623,
+        6619,
+        2073,
+        5824,
+        281,
+        264,
+        1623,
+        436,
+        536,
+        10995,
+        1319,
+        11,
+        50584
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.19087928533554077,
+      "compression_ratio": 1.6071428060531616,
+      "no_speech_prob": 0.00007254227966768667
+    },
+    {
+      "id": 30,
+      "seek": 16144,
+      "start": 166.02000427246094,
+      "end": 171.4199981689453,
+      "text": " it all happens here, in HQ. Let AI do the hard work of building your survey",
+      "tokens": [
+        50584,
+        309,
+        439,
+        2314,
+        510,
+        11,
+        294,
+        43209,
+        13,
+        961,
+        7318,
+        360,
+        264,
+        1152,
+        589,
+        295,
+        2390,
+        428,
+        8984,
+        50872
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.19087928533554077,
+      "compression_ratio": 1.6071428060531616,
+      "no_speech_prob": 0.00007254227966768667
+    },
+    {
+      "id": 31,
+      "seek": 16144,
+      "start": 171.4199981689453,
+      "end": 177.39999389648438,
+      "text": " so you can jump straight into the results. All your favorite tools, one experience layer,",
+      "tokens": [
+        50872,
+        370,
+        291,
+        393,
+        3012,
+        2997,
+        666,
+        264,
+        3542,
+        13,
+        1057,
+        428,
+        2954,
+        3873,
+        11,
+        472,
+        1752,
+        4583,
+        11,
+        51176
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.19087928533554077,
+      "compression_ratio": 1.6071428060531616,
+      "no_speech_prob": 0.00007254227966768667
+    },
+    {
+      "id": 32,
+      "seek": 16144,
+      "start": 177.9199981689453,
+      "end": 183.25999450683594,
+      "text": " everything your people need, right inside HQ. Manage your employee experience with confidence",
+      "tokens": [
+        51176,
+        1203,
+        428,
+        561,
+        643,
+        11,
+        558,
+        1854,
+        43209,
+        13,
+        2458,
+        609,
+        428,
+        10738,
+        1752,
+        365,
+        6687,
+        51460
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.19087928533554077,
+      "compression_ratio": 1.6071428060531616,
+      "no_speech_prob": 0.00007254227966768667
+    },
+    {
+      "id": 33,
+      "seek": 16144,
+      "start": 183.25999450683594,
+      "end": 186.55999755859375,
+      "text": " through powerful self-service admin tools and feature toggles.",
+      "tokens": [
+        51460,
+        807,
+        4005,
+        2698,
+        12,
+        39279,
+        24236,
+        3873,
+        293,
+        4111,
+        26911,
+        904,
+        13,
+        51640
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.19087928533554077,
+      "compression_ratio": 1.6071428060531616,
+      "no_speech_prob": 0.00007254227966768667
+    },
+    {
+      "id": 34,
+      "seek": 18656,
+      "start": 186.55999755859375,
+      "end": 192.32000732421875,
+      "text": " Enable AI with confidence with granular controls, permissions, and governance built in.",
+      "tokens": [
+        50380,
+        2193,
+        712,
+        7318,
+        365,
+        6687,
+        365,
+        39962,
+        9003,
+        11,
+        32723,
+        11,
+        293,
+        17449,
+        3094,
+        294,
+        13,
+        50632
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2938102185726166,
+      "compression_ratio": 1.4439024925231934,
+      "no_speech_prob": 0.002800773363560438
+    },
+    {
+      "id": 35,
+      "seek": 18656,
+      "start": 193.3000030517578,
+      "end": 198.32000732421875,
+      "text": " Powered by Zoom AI technology, enterprise-grade intelligence built into every experience.",
+      "tokens": [
+        50684,
+        7086,
+        292,
+        538,
+        13453,
+        7318,
+        2899,
+        11,
+        14132,
+        12,
+        8692,
+        7599,
+        3094,
+        666,
+        633,
+        1752,
+        13,
+        50944
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2938102185726166,
+      "compression_ratio": 1.4439024925231934,
+      "no_speech_prob": 0.002800773363560438
+    },
+    {
+      "id": 36,
+      "seek": 18656,
+      "start": 198.89999389648438,
+      "end": 204.3000030517578,
+      "text": " The employee experience platform your people actually use, trusted by the world's biggest brands.",
+      "tokens": [
+        50972,
+        440,
+        10738,
+        1752,
+        3663,
+        428,
+        561,
+        767,
+        764,
+        11,
+        16034,
+        538,
+        264,
+        1002,
+        311,
+        3880,
+        11324,
+        13,
+        51244
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2938102185726166,
+      "compression_ratio": 1.4439024925231934,
+      "no_speech_prob": 0.002800773363560438
+    },
+    {
+      "id": 37,
+      "seek": 18656,
+      "start": 206.0800018310547,
+      "end": 208.02000427246094,
+      "text": " This is Workvivo HQ.",
+      "tokens": [
+        51332,
+        639,
+        307,
+        6603,
+        85,
+        6340,
+        43209,
+        13,
+        51448
+      ],
+      "temperature": 0,
+      "avg_logprob": -0.2938102185726166,
+      "compression_ratio": 1.4439024925231934,
+      "no_speech_prob": 0.002800773363560438
+    }
+  ],
+  "words": [
+    {
+      "word": "Every",
+      "start": 0,
+      "end": 0.6800000071525574
+    },
+    {
+      "word": "employee",
+      "start": 0.6800000071525574,
+      "end": 1.159999966621399
+    },
+    {
+      "word": "deserves",
+      "start": 1.159999966621399,
+      "end": 1.5800000429153442
+    },
+    {
+      "word": "a",
+      "start": 1.5800000429153442,
+      "end": 1.899999976158142
+    },
+    {
+      "word": "headquarters",
+      "start": 1.899999976158142,
+      "end": 2.240000009536743
+    },
+    {
+      "word": "Now",
+      "start": 2.9600000381469727,
+      "end": 3.240000009536743
+    },
+    {
+      "word": "they",
+      "start": 3.240000009536743,
+      "end": 3.680000066757202
+    },
+    {
+      "word": "have",
+      "start": 3.680000066757202,
+      "end": 4.059999942779541
+    },
+    {
+      "word": "one",
+      "start": 4.059999942779541,
+      "end": 4.380000114440918
+    },
+    {
+      "word": "Welcome",
+      "start": 5.119999885559082,
+      "end": 5.159999847412109
+    },
+    {
+      "word": "to",
+      "start": 5.159999847412109,
+      "end": 5.559999942779541
+    },
+    {
+      "word": "Workvivo",
+      "start": 5.559999942779541,
+      "end": 6.079999923706055
+    },
+    {
+      "word": "HQ",
+      "start": 6.079999923706055,
+      "end": 6.880000114440918
+    },
+    {
+      "word": "the",
+      "start": 7.360000133514404,
+      "end": 7.480000019073486
+    },
+    {
+      "word": "AI",
+      "start": 7.480000019073486,
+      "end": 7.820000171661377
+    },
+    {
+      "word": "native",
+      "start": 7.820000171661377,
+      "end": 8.260000228881836
+    },
+    {
+      "word": "employee",
+      "start": 8.260000228881836,
+      "end": 8.640000343322754
+    },
+    {
+      "word": "experience",
+      "start": 8.640000343322754,
+      "end": 9.220000267028809
+    },
+    {
+      "word": "platform",
+      "start": 9.220000267028809,
+      "end": 9.619999885559082
+    },
+    {
+      "word": "where",
+      "start": 9.619999885559082,
+      "end": 10.100000381469727
+    },
+    {
+      "word": "comms",
+      "start": 10.100000381469727,
+      "end": 10.579999923706055
+    },
+    {
+      "word": "knowledge",
+      "start": 11.100000381469727,
+      "end": 11.100000381469727
+    },
+    {
+      "word": "action",
+      "start": 11.600000381469727,
+      "end": 11.600000381469727
+    },
+    {
+      "word": "and",
+      "start": 11.65999984741211,
+      "end": 12.199999809265137
+    },
+    {
+      "word": "insight",
+      "start": 12.199999809265137,
+      "end": 12.199999809265137
+    },
+    {
+      "word": "come",
+      "start": 12.199999809265137,
+      "end": 12.619999885559082
+    },
+    {
+      "word": "together",
+      "start": 12.619999885559082,
+      "end": 12.9399995803833
+    },
+    {
+      "word": "in",
+      "start": 12.9399995803833,
+      "end": 13.279999732971191
+    },
+    {
+      "word": "one",
+      "start": 13.279999732971191,
+      "end": 13.539999961853027
+    },
+    {
+      "word": "connected",
+      "start": 13.539999961853027,
+      "end": 13.920000076293945
+    },
+    {
+      "word": "experience",
+      "start": 13.920000076293945,
+      "end": 14.65999984741211
+    },
+    {
+      "word": "Create",
+      "start": 16.579999923706055,
+      "end": 16.600000381469727
+    },
+    {
+      "word": "tailored",
+      "start": 16.600000381469727,
+      "end": 17.020000457763672
+    },
+    {
+      "word": "experiences",
+      "start": 17.020000457763672,
+      "end": 17.6200008392334
+    },
+    {
+      "word": "for",
+      "start": 17.6200008392334,
+      "end": 18.020000457763672
+    },
+    {
+      "word": "every",
+      "start": 18.020000457763672,
+      "end": 18.5
+    },
+    {
+      "word": "role",
+      "start": 18.5,
+      "end": 18.760000228881836
+    },
+    {
+      "word": "team",
+      "start": 19.3799991607666,
+      "end": 19.3799991607666
+    },
+    {
+      "word": "and",
+      "start": 19.579999923706055,
+      "end": 19.8799991607666
+    },
+    {
+      "word": "location",
+      "start": 19.8799991607666,
+      "end": 20.219999313354492
+    },
+    {
+      "word": "with",
+      "start": 20.219999313354492,
+      "end": 20.81999969482422
+    },
+    {
+      "word": "personalized",
+      "start": 20.81999969482422,
+      "end": 21.420000076293945
+    },
+    {
+      "word": "homepage",
+      "start": 21.420000076293945,
+      "end": 21.899999618530273
+    },
+    {
+      "word": "experiences",
+      "start": 21.68000030517578,
+      "end": 22.520000457763672
+    },
+    {
+      "word": "Back",
+      "start": 23.719999313354492,
+      "end": 23.739999771118164
+    },
+    {
+      "word": "from",
+      "start": 23.739999771118164,
+      "end": 23.959999084472656
+    },
+    {
+      "word": "time",
+      "start": 23.959999084472656,
+      "end": 24.239999771118164
+    },
+    {
+      "word": "off",
+      "start": 24.239999771118164,
+      "end": 24.559999465942383
+    },
+    {
+      "word": "Catch",
+      "start": 25.1200008392334,
+      "end": 25.1200008392334
+    },
+    {
+      "word": "up",
+      "start": 25.1200008392334,
+      "end": 25.299999237060547
+    },
+    {
+      "word": "in",
+      "start": 25.299999237060547,
+      "end": 25.479999542236328
+    },
+    {
+      "word": "an",
+      "start": 25.479999542236328,
+      "end": 26
+    },
+    {
+      "word": "instant",
+      "start": 26,
+      "end": 26
+    },
+    {
+      "word": "with",
+      "start": 26,
+      "end": 26.360000610351562
+    },
+    {
+      "word": "personalized",
+      "start": 26.360000610351562,
+      "end": 26.860000610351562
+    },
+    {
+      "word": "AI",
+      "start": 26.860000610351562,
+      "end": 27.360000610351562
+    },
+    {
+      "word": "summaries",
+      "start": 27.360000610351562,
+      "end": 27.639999389648438
+    },
+    {
+      "word": "Keep",
+      "start": 28.420000076293945,
+      "end": 29.18000030517578
+    },
+    {
+      "word": "everyone",
+      "start": 29.18000030517578,
+      "end": 29.600000381469727
+    },
+    {
+      "word": "informed",
+      "start": 29.600000381469727,
+      "end": 30.100000381469727
+    },
+    {
+      "word": "connected",
+      "start": 30.65999984741211,
+      "end": 30.65999984741211
+    },
+    {
+      "word": "and",
+      "start": 30.84000015258789,
+      "end": 31.1200008392334
+    },
+    {
+      "word": "engaged",
+      "start": 31.1200008392334,
+      "end": 31.459999084472656
+    },
+    {
+      "word": "through",
+      "start": 31.459999084472656,
+      "end": 31.860000610351562
+    },
+    {
+      "word": "content",
+      "start": 31.860000610351562,
+      "end": 32.220001220703125
+    },
+    {
+      "word": "that",
+      "start": 32.220001220703125,
+      "end": 32.5
+    },
+    {
+      "word": "captures",
+      "start": 32.5,
+      "end": 32.84000015258789
+    },
+    {
+      "word": "attention",
+      "start": 32.84000015258789,
+      "end": 33.31999969482422
+    },
+    {
+      "word": "and",
+      "start": 33.31999969482422,
+      "end": 33.7599983215332
+    },
+    {
+      "word": "drives",
+      "start": 33.7599983215332,
+      "end": 34.040000915527344
+    },
+    {
+      "word": "engagement",
+      "start": 34.040000915527344,
+      "end": 34.63999938964844
+    },
+    {
+      "word": "Celebrate",
+      "start": 35.7400016784668,
+      "end": 35.900001525878906
+    },
+    {
+      "word": "success",
+      "start": 35.900001525878906,
+      "end": 36.400001525878906
+    },
+    {
+      "word": "and",
+      "start": 36.400001525878906,
+      "end": 36.779998779296875
+    },
+    {
+      "word": "recognize",
+      "start": 36.779998779296875,
+      "end": 37.119998931884766
+    },
+    {
+      "word": "your",
+      "start": 37.119998931884766,
+      "end": 37.29999923706055
+    },
+    {
+      "word": "best",
+      "start": 37.29999923706055,
+      "end": 37.5
+    },
+    {
+      "word": "people",
+      "start": 37.5,
+      "end": 37.880001068115234
+    },
+    {
+      "word": "with",
+      "start": 37.880001068115234,
+      "end": 38.29999923706055
+    },
+    {
+      "word": "public",
+      "start": 38.29999923706055,
+      "end": 38.68000030517578
+    },
+    {
+      "word": "shoutouts",
+      "start": 38.68000030517578,
+      "end": 39.099998474121094
+    },
+    {
+      "word": "tied",
+      "start": 39.099998474121094,
+      "end": 39.5
+    },
+    {
+      "word": "to",
+      "start": 39.5,
+      "end": 40
+    },
+    {
+      "word": "company",
+      "start": 40,
+      "end": 40
+    },
+    {
+      "word": "values",
+      "start": 40,
+      "end": 40.5
+    },
+    {
+      "word": "Create",
+      "start": 43.20000076293945,
+      "end": 43.29999923706055
+    },
+    {
+      "word": "refine",
+      "start": 44.08000183105469,
+      "end": 44.08000183105469
+    },
+    {
+      "word": "and",
+      "start": 44.41999816894531,
+      "end": 44.58000183105469
+    },
+    {
+      "word": "localize",
+      "start": 44.58000183105469,
+      "end": 45.08000183105469
+    },
+    {
+      "word": "content",
+      "start": 45.08000183105469,
+      "end": 45.439998626708984
+    },
+    {
+      "word": "in",
+      "start": 45.439998626708984,
+      "end": 46.040000915527344
+    },
+    {
+      "word": "seconds",
+      "start": 46.040000915527344,
+      "end": 46.29999923706055
+    },
+    {
+      "word": "with",
+      "start": 46.29999923706055,
+      "end": 46.84000015258789
+    },
+    {
+      "word": "AI",
+      "start": 46.84000015258789,
+      "end": 47.18000030517578
+    },
+    {
+      "word": "that",
+      "start": 47.18000030517578,
+      "end": 47.400001525878906
+    },
+    {
+      "word": "actually",
+      "start": 47.400001525878906,
+      "end": 47.900001525878906
+    },
+    {
+      "word": "knows",
+      "start": 47.900001525878906,
+      "end": 48.099998474121094
+    },
+    {
+      "word": "your",
+      "start": 48.099998474121094,
+      "end": 48.279998779296875
+    },
+    {
+      "word": "people",
+      "start": 48.279998779296875,
+      "end": 48.65999984741211
+    },
+    {
+      "word": "culture",
+      "start": 49.34000015258789,
+      "end": 49.34000015258789
+    },
+    {
+      "word": "and",
+      "start": 49.36000061035156,
+      "end": 49.81999969482422
+    },
+    {
+      "word": "tone",
+      "start": 49.81999969482422,
+      "end": 49.81999969482422
+    },
+    {
+      "word": "of",
+      "start": 49.81999969482422,
+      "end": 50.2400016784668
+    },
+    {
+      "word": "voice",
+      "start": 50.2400016784668,
+      "end": 50.2400016784668
+    },
+    {
+      "word": "Connect",
+      "start": 50.959999084472656,
+      "end": 50.97999954223633
+    },
+    {
+      "word": "leadership",
+      "start": 50.97999954223633,
+      "end": 51.380001068115234
+    },
+    {
+      "word": "with",
+      "start": 51.380001068115234,
+      "end": 51.65999984741211
+    },
+    {
+      "word": "your",
+      "start": 51.65999984741211,
+      "end": 51.900001525878906
+    },
+    {
+      "word": "team",
+      "start": 51.900001525878906,
+      "end": 52.099998474121094
+    },
+    {
+      "word": "in",
+      "start": 52.099998474121094,
+      "end": 52.47999954223633
+    },
+    {
+      "word": "turn",
+      "start": 53.22999954223633,
+      "end": 53.63999938964844
+    },
+    {
+      "word": "important",
+      "start": 53.63999938964844,
+      "end": 54.2599983215332
+    },
+    {
+      "word": "moments",
+      "start": 54.2599983215332,
+      "end": 54.58000183105469
+    },
+    {
+      "word": "into",
+      "start": 54.58000183105469,
+      "end": 54.959999084472656
+    },
+    {
+      "word": "interactive",
+      "start": 54.959999084472656,
+      "end": 55.52000045776367
+    },
+    {
+      "word": "experiences",
+      "start": 55.52000045776367,
+      "end": 56.2400016784668
+    },
+    {
+      "word": "everyone",
+      "start": 56.2400016784668,
+      "end": 56.939998626708984
+    },
+    {
+      "word": "can",
+      "start": 56.939998626708984,
+      "end": 57.15999984741211
+    },
+    {
+      "word": "be",
+      "start": 57.15999984741211,
+      "end": 57.47999954223633
+    },
+    {
+      "word": "part",
+      "start": 57.47999954223633,
+      "end": 57.540000915527344
+    },
+    {
+      "word": "of",
+      "start": 57.540000915527344,
+      "end": 57.900001525878906
+    },
+    {
+      "word": "Build",
+      "start": 58.540000915527344,
+      "end": 58.540000915527344
+    },
+    {
+      "word": "stronger",
+      "start": 58.540000915527344,
+      "end": 59
+    },
+    {
+      "word": "communities",
+      "start": 59,
+      "end": 59.47999954223633
+    },
+    {
+      "word": "with",
+      "start": 59.47999954223633,
+      "end": 59.91999816894531
+    },
+    {
+      "word": "dedicated",
+      "start": 59.91999816894531,
+      "end": 60.36000061035156
+    },
+    {
+      "word": "spaces",
+      "start": 60.36000061035156,
+      "end": 60.86000061035156
+    },
+    {
+      "word": "for",
+      "start": 60.86000061035156,
+      "end": 61.29999923706055
+    },
+    {
+      "word": "collaboration",
+      "start": 61.29999923706055,
+      "end": 61.91999816894531
+    },
+    {
+      "word": "conversation",
+      "start": 62.91999816894531,
+      "end": 62.91999816894531
+    },
+    {
+      "word": "and",
+      "start": 63.02000045776367,
+      "end": 63.58000183105469
+    },
+    {
+      "word": "connection",
+      "start": 63.58000183105469,
+      "end": 63.959999084472656
+    },
+    {
+      "word": "Deliver",
+      "start": 64.95999908447266,
+      "end": 64.95999908447266
+    },
+    {
+      "word": "personalized",
+      "start": 64.95999908447266,
+      "end": 65.68000030517578
+    },
+    {
+      "word": "timely",
+      "start": 66.19999694824219,
+      "end": 66.22000122070312
+    },
+    {
+      "word": "AI",
+      "start": 66.22000122070312,
+      "end": 66.72000122070312
+    },
+    {
+      "word": "powered",
+      "start": 66.72000122070312,
+      "end": 67.05999755859375
+    },
+    {
+      "word": "journeys",
+      "start": 67.05999755859375,
+      "end": 67.4000015258789
+    },
+    {
+      "word": "that",
+      "start": 67.4000015258789,
+      "end": 67.81999969482422
+    },
+    {
+      "word": "adapt",
+      "start": 67.81999969482422,
+      "end": 68.05999755859375
+    },
+    {
+      "word": "to",
+      "start": 68.05999755859375,
+      "end": 68.33999633789062
+    },
+    {
+      "word": "each",
+      "start": 68.33999633789062,
+      "end": 68.5999984741211
+    },
+    {
+      "word": "employee",
+      "start": 68.5999984741211,
+      "end": 68.9000015258789
+    },
+    {
+      "word": "from",
+      "start": 69.30000305175781,
+      "end": 69.45999908447266
+    },
+    {
+      "word": "onboarding",
+      "start": 69.45999908447266,
+      "end": 70.0199966430664
+    },
+    {
+      "word": "to",
+      "start": 70.0199966430664,
+      "end": 70.27999877929688
+    },
+    {
+      "word": "change",
+      "start": 70.27999877929688,
+      "end": 70.5999984741211
+    },
+    {
+      "word": "rollouts",
+      "start": 70.5999984741211,
+      "end": 71.04000091552734
+    },
+    {
+      "word": "Amplify",
+      "start": 72.22000122070312,
+      "end": 72.23999786376953
+    },
+    {
+      "word": "the",
+      "start": 72.23999786376953,
+      "end": 72.55999755859375
+    },
+    {
+      "word": "reach",
+      "start": 72.55999755859375,
+      "end": 72.76000213623047
+    },
+    {
+      "word": "of",
+      "start": 72.76000213623047,
+      "end": 73.05999755859375
+    },
+    {
+      "word": "internal",
+      "start": 73.05999755859375,
+      "end": 73.27999877929688
+    },
+    {
+      "word": "communications",
+      "start": 73.27999877929688,
+      "end": 73.94000244140625
+    },
+    {
+      "word": "by",
+      "start": 73.94000244140625,
+      "end": 74.5
+    },
+    {
+      "word": "displaying",
+      "start": 74.5,
+      "end": 74.86000061035156
+    },
+    {
+      "word": "Workvivo",
+      "start": 74.86000061035156,
+      "end": 75.4000015258789
+    },
+    {
+      "word": "content",
+      "start": 75.4000015258789,
+      "end": 75.91999816894531
+    },
+    {
+      "word": "on",
+      "start": 75.91999816894531,
+      "end": 76.36000061035156
+    },
+    {
+      "word": "screens",
+      "start": 76.36000061035156,
+      "end": 76.5999984741211
+    },
+    {
+      "word": "across",
+      "start": 76.5999984741211,
+      "end": 77.0199966430664
+    },
+    {
+      "word": "your",
+      "start": 77.0199966430664,
+      "end": 77.26000213623047
+    },
+    {
+      "word": "organization",
+      "start": 77.26000213623047,
+      "end": 77.77999877929688
+    },
+    {
+      "word": "Double",
+      "start": 78.69999694824219,
+      "end": 78.87999725341797
+    },
+    {
+      "word": "tap",
+      "start": 78.87999725341797,
+      "end": 79.04000091552734
+    },
+    {
+      "word": "on",
+      "start": 79.04000091552734,
+      "end": 79.27999877929688
+    },
+    {
+      "word": "the",
+      "start": 79.27999877929688,
+      "end": 79.68000030517578
+    },
+    {
+      "word": "stories",
+      "start": 79.68000030517578,
+      "end": 79.68000030517578
+    },
+    {
+      "word": "that",
+      "start": 79.68000030517578,
+      "end": 79.87999725341797
+    },
+    {
+      "word": "matter",
+      "start": 79.87999725341797,
+      "end": 80.12000274658203
+    },
+    {
+      "word": "most",
+      "start": 80.12000274658203,
+      "end": 80.63999938964844
+    },
+    {
+      "word": "with",
+      "start": 80.63999938964844,
+      "end": 81.33999633789062
+    },
+    {
+      "word": "newsletters",
+      "start": 81.33999633789062,
+      "end": 81.91999816894531
+    },
+    {
+      "word": "Collaborate",
+      "start": 83.36000061035156,
+      "end": 83.4800033569336
+    },
+    {
+      "word": "faster",
+      "start": 83.4800033569336,
+      "end": 83.83999633789062
+    },
+    {
+      "word": "with",
+      "start": 83.83999633789062,
+      "end": 84.16000366210938
+    },
+    {
+      "word": "chat",
+      "start": 84.16000366210938,
+      "end": 84.44000244140625
+    },
+    {
+      "word": "voice",
+      "start": 84.73999786376953,
+      "end": 84.73999786376953
+    },
+    {
+      "word": "and",
+      "start": 84.77999877929688,
+      "end": 85.22000122070312
+    },
+    {
+      "word": "video",
+      "start": 85.22000122070312,
+      "end": 85.23999786376953
+    },
+    {
+      "word": "calls",
+      "start": 85.23999786376953,
+      "end": 85.5
+    },
+    {
+      "word": "and",
+      "start": 85.5,
+      "end": 86
+    },
+    {
+      "word": "AI",
+      "start": 86,
+      "end": 86.4000015258789
+    },
+    {
+      "word": "powered",
+      "start": 86.4000015258789,
+      "end": 86.66000366210938
+    },
+    {
+      "word": "conversation",
+      "start": 86.66000366210938,
+      "end": 87.37999725341797
+    },
+    {
+      "word": "summaries",
+      "start": 87.37999725341797,
+      "end": 87.83999633789062
+    },
+    {
+      "word": "Ask",
+      "start": 90.31999969482422,
+      "end": 90.31999969482422
+    },
+    {
+      "word": "HQ",
+      "start": 90.31999969482422,
+      "end": 90.91999816894531
+    },
+    {
+      "word": "anything",
+      "start": 90.91999816894531,
+      "end": 91.36000061035156
+    },
+    {
+      "word": "and",
+      "start": 91.36000061035156,
+      "end": 91.95999908447266
+    },
+    {
+      "word": "get",
+      "start": 91.95999908447266,
+      "end": 92.16000366210938
+    },
+    {
+      "word": "instant",
+      "start": 92.16000366210938,
+      "end": 92.54000091552734
+    },
+    {
+      "word": "answers",
+      "start": 92.54000091552734,
+      "end": 92.87999725341797
+    },
+    {
+      "word": "from",
+      "start": 92.87999725341797,
+      "end": 93.16000366210938
+    },
+    {
+      "word": "across",
+      "start": 93.16000366210938,
+      "end": 93.41999816894531
+    },
+    {
+      "word": "your",
+      "start": 93.41999816894531,
+      "end": 93.66000366210938
+    },
+    {
+      "word": "connected",
+      "start": 93.66000366210938,
+      "end": 94.0199966430664
+    },
+    {
+      "word": "systems",
+      "start": 94.0199966430664,
+      "end": 94.5
+    },
+    {
+      "word": "Then",
+      "start": 95.08000183105469,
+      "end": 95.37999725341797
+    },
+    {
+      "word": "go",
+      "start": 95.37999725341797,
+      "end": 95.62000274658203
+    },
+    {
+      "word": "further",
+      "start": 95.62000274658203,
+      "end": 95.91999816894531
+    },
+    {
+      "word": "and",
+      "start": 95.91999816894531,
+      "end": 96.4000015258789
+    },
+    {
+      "word": "take",
+      "start": 96.4000015258789,
+      "end": 96.58000183105469
+    },
+    {
+      "word": "action",
+      "start": 96.58000183105469,
+      "end": 96.95999908447266
+    },
+    {
+      "word": "all",
+      "start": 97.44000244140625,
+      "end": 97.54000091552734
+    },
+    {
+      "word": "without",
+      "start": 97.54000091552734,
+      "end": 97.76000213623047
+    },
+    {
+      "word": "leaving",
+      "start": 97.76000213623047,
+      "end": 98.04000091552734
+    },
+    {
+      "word": "HQ",
+      "start": 98.04000091552734,
+      "end": 98.5199966430664
+    },
+    {
+      "word": "From",
+      "start": 99.33999633789062,
+      "end": 99.55999755859375
+    },
+    {
+      "word": "ask",
+      "start": 99.55999755859375,
+      "end": 99.95999908447266
+    },
+    {
+      "word": "to",
+      "start": 99.95999908447266,
+      "end": 100.30000305175781
+    },
+    {
+      "word": "answer",
+      "start": 100.30000305175781,
+      "end": 100.66000366210938
+    },
+    {
+      "word": "to",
+      "start": 100.66000366210938,
+      "end": 101.13999938964844
+    },
+    {
+      "word": "job",
+      "start": 101.13999938964844,
+      "end": 101.41999816894531
+    },
+    {
+      "word": "done",
+      "start": 101.41999816894531,
+      "end": 101.72000122070312
+    },
+    {
+      "word": "One",
+      "start": 102.30000305175781,
+      "end": 102.66000366210938
+    },
+    {
+      "word": "app",
+      "start": 102.66000366210938,
+      "end": 102.9000015258789
+    },
+    {
+      "word": "with",
+      "start": 102.9000015258789,
+      "end": 103.31999969482422
+    },
+    {
+      "word": "multiple",
+      "start": 103.31999969482422,
+      "end": 103.77999877929688
+    },
+    {
+      "word": "context",
+      "start": 103.77999877929688,
+      "end": 104.33999633789062
+    },
+    {
+      "word": "aware",
+      "start": 104.33999633789062,
+      "end": 104.5999984741211
+    },
+    {
+      "word": "experiences",
+      "start": 104.5999984741211,
+      "end": 105.16000366210938
+    },
+    {
+      "word": "giving",
+      "start": 105.16000366210938,
+      "end": 105.62000274658203
+    },
+    {
+      "word": "every",
+      "start": 105.62000274658203,
+      "end": 106.12000274658203
+    },
+    {
+      "word": "employee",
+      "start": 106.12000274658203,
+      "end": 106.41999816894531
+    },
+    {
+      "word": "access",
+      "start": 106.41999816894531,
+      "end": 106.86000061035156
+    },
+    {
+      "word": "to",
+      "start": 106.86000061035156,
+      "end": 107.08000183105469
+    },
+    {
+      "word": "the",
+      "start": 107.08000183105469,
+      "end": 107.23999786376953
+    },
+    {
+      "word": "right",
+      "start": 107.23999786376953,
+      "end": 107.44000244140625
+    },
+    {
+      "word": "tools",
+      "start": 107.44000244140625,
+      "end": 107.76000213623047
+    },
+    {
+      "word": "resources",
+      "start": 107.76000213623047,
+      "end": 108.4800033569336
+    },
+    {
+      "word": "and",
+      "start": 108.77999877929688,
+      "end": 108.9000015258789
+    },
+    {
+      "word": "information",
+      "start": 108.9000015258789,
+      "end": 109.4800033569336
+    },
+    {
+      "word": "no",
+      "start": 109.87999725341797,
+      "end": 110.08000183105469
+    },
+    {
+      "word": "matter",
+      "start": 110.08000183105469,
+      "end": 110.22000122070312
+    },
+    {
+      "word": "where",
+      "start": 110.22000122070312,
+      "end": 110.66000366210938
+    },
+    {
+      "word": "they",
+      "start": 110.66000366210938,
+      "end": 110.83999633789062
+    },
+    {
+      "word": "are",
+      "start": 110.83999633789062,
+      "end": 111.5199966430664
+    },
+    {
+      "word": "Bring",
+      "start": 112.36000061035156,
+      "end": 112.4000015258789
+    },
+    {
+      "word": "it",
+      "start": 112.4000015258789,
+      "end": 112.54000091552734
+    },
+    {
+      "word": "to",
+      "start": 112.54000091552734,
+      "end": 112.80000305175781
+    },
+    {
+      "word": "life",
+      "start": 112.80000305175781,
+      "end": 112.83999633789062
+    },
+    {
+      "word": "with",
+      "start": 112.83999633789062,
+      "end": 113.0199966430664
+    },
+    {
+      "word": "a",
+      "start": 113.0199966430664,
+      "end": 113.23999786376953
+    },
+    {
+      "word": "library",
+      "start": 113.23999786376953,
+      "end": 113.58000183105469
+    },
+    {
+      "word": "of",
+      "start": 113.58000183105469,
+      "end": 113.95999908447266
+    },
+    {
+      "word": "ready",
+      "start": 113.95999908447266,
+      "end": 114.13999938964844
+    },
+    {
+      "word": "made",
+      "start": 114.13999938964844,
+      "end": 114.33999633789062
+    },
+    {
+      "word": "widgets",
+      "start": 114.33999633789062,
+      "end": 114.55999755859375
+    },
+    {
+      "word": "from",
+      "start": 114.95999908447266,
+      "end": 115.13999938964844
+    },
+    {
+      "word": "business",
+      "start": 115.13999938964844,
+      "end": 115.55999755859375
+    },
+    {
+      "word": "tools",
+      "start": 115.55999755859375,
+      "end": 115.80000305175781
+    },
+    {
+      "word": "and",
+      "start": 115.80000305175781,
+      "end": 116
+    },
+    {
+      "word": "integrations",
+      "start": 116,
+      "end": 116.45999908447266
+    },
+    {
+      "word": "to",
+      "start": 116.76000213623047,
+      "end": 117.0199966430664
+    },
+    {
+      "word": "news",
+      "start": 117.0199966430664,
+      "end": 117.26000213623047
+    },
+    {
+      "word": "culture",
+      "start": 117.95999908447266,
+      "end": 117.95999908447266
+    },
+    {
+      "word": "and",
+      "start": 118.23999786376953,
+      "end": 118.66000366210938
+    },
+    {
+      "word": "employee",
+      "start": 118.66000366210938,
+      "end": 118.9800033569336
+    },
+    {
+      "word": "resources",
+      "start": 118.9800033569336,
+      "end": 119.63999938964844
+    },
+    {
+      "word": "Or",
+      "start": 120.13999938964844,
+      "end": 120.4800033569336
+    },
+    {
+      "word": "create",
+      "start": 120.4800033569336,
+      "end": 120.76000213623047
+    },
+    {
+      "word": "your",
+      "start": 120.76000213623047,
+      "end": 121
+    },
+    {
+      "word": "own",
+      "start": 121,
+      "end": 121.22000122070312
+    },
+    {
+      "word": "with",
+      "start": 121.22000122070312,
+      "end": 121.63999938964844
+    },
+    {
+      "word": "our",
+      "start": 121.63999938964844,
+      "end": 121.91999816894531
+    },
+    {
+      "word": "AI",
+      "start": 121.91999816894531,
+      "end": 122.23999786376953
+    },
+    {
+      "word": "Widget",
+      "start": 122.23999786376953,
+      "end": 122.5
+    },
+    {
+      "word": "Builder",
+      "start": 122.5,
+      "end": 123
+    },
+    {
+      "word": "Publish",
+      "start": 123.87999725341797,
+      "end": 123.87999725341797
+    },
+    {
+      "word": "polished",
+      "start": 123.87999725341797,
+      "end": 124.31999969482422
+    },
+    {
+      "word": "content",
+      "start": 124.31999969482422,
+      "end": 124.73999786376953
+    },
+    {
+      "word": "in",
+      "start": 124.73999786376953,
+      "end": 125.41999816894531
+    },
+    {
+      "word": "minutes",
+      "start": 125.41999816894531,
+      "end": 125.41999816894531
+    },
+    {
+      "word": "with",
+      "start": 125.41999816894531,
+      "end": 125.62000274658203
+    },
+    {
+      "word": "our",
+      "start": 125.62000274658203,
+      "end": 125.81999969482422
+    },
+    {
+      "word": "AI",
+      "start": 125.81999969482422,
+      "end": 126.18000030517578
+    },
+    {
+      "word": "powered",
+      "start": 126.18000030517578,
+      "end": 126.4000015258789
+    },
+    {
+      "word": "page",
+      "start": 126.4000015258789,
+      "end": 126.77999877929688
+    },
+    {
+      "word": "creation",
+      "start": 126.77999877929688,
+      "end": 127.27999877929688
+    },
+    {
+      "word": "Turn",
+      "start": 127.9000015258789,
+      "end": 127.9000015258789
+    },
+    {
+      "word": "scattered",
+      "start": 127.9000015258789,
+      "end": 128.25999450683594
+    },
+    {
+      "word": "information",
+      "start": 128.25999450683594,
+      "end": 128.83999633789062
+    },
+    {
+      "word": "into",
+      "start": 128.83999633789062,
+      "end": 129.5
+    },
+    {
+      "word": "structured",
+      "start": 129.5,
+      "end": 130.0399932861328
+    },
+    {
+      "word": "searchable",
+      "start": 130.4600067138672,
+      "end": 130.72000122070312
+    },
+    {
+      "word": "knowledge",
+      "start": 130.72000122070312,
+      "end": 131.16000366210938
+    },
+    {
+      "word": "hubs",
+      "start": 131.16000366210938,
+      "end": 131.4600067138672
+    },
+    {
+      "word": "See",
+      "start": 134.25999450683594,
+      "end": 134.97999572753906
+    },
+    {
+      "word": "what's",
+      "start": 134.97999572753906,
+      "end": 135.17999267578125
+    },
+    {
+      "word": "working",
+      "start": 135.17999267578125,
+      "end": 135.5399932861328
+    },
+    {
+      "word": "understand",
+      "start": 136.33999633789062,
+      "end": 136.33999633789062
+    },
+    {
+      "word": "your",
+      "start": 136.33999633789062,
+      "end": 136.55999755859375
+    },
+    {
+      "word": "people",
+      "start": 136.55999755859375,
+      "end": 136.86000061035156
+    },
+    {
+      "word": "and",
+      "start": 137.32000732421875,
+      "end": 137.5399932861328
+    },
+    {
+      "word": "act",
+      "start": 137.5399932861328,
+      "end": 137.82000732421875
+    },
+    {
+      "word": "on",
+      "start": 137.82000732421875,
+      "end": 138.22000122070312
+    },
+    {
+      "word": "real",
+      "start": 138.22000122070312,
+      "end": 138.5800018310547
+    },
+    {
+      "word": "data",
+      "start": 138.5800018310547,
+      "end": 138.8800048828125
+    },
+    {
+      "word": "not",
+      "start": 139.55999755859375,
+      "end": 139.63999938964844
+    },
+    {
+      "word": "guesswork",
+      "start": 139.63999938964844,
+      "end": 140.17999267578125
+    },
+    {
+      "word": "with",
+      "start": 140.39999389648438,
+      "end": 140.66000366210938
+    },
+    {
+      "word": "advanced",
+      "start": 140.66000366210938,
+      "end": 141.0399932861328
+    },
+    {
+      "word": "analytics",
+      "start": 141.0399932861328,
+      "end": 141.5399932861328
+    },
+    {
+      "word": "Run",
+      "start": 142.17999267578125,
+      "end": 142.1999969482422
+    },
+    {
+      "word": "engagement",
+      "start": 142.1999969482422,
+      "end": 142.74000549316406
+    },
+    {
+      "word": "surveys",
+      "start": 142.74000549316406,
+      "end": 143
+    },
+    {
+      "word": "that",
+      "start": 143,
+      "end": 143.33999633789062
+    },
+    {
+      "word": "actually",
+      "start": 143.33999633789062,
+      "end": 143.82000732421875
+    },
+    {
+      "word": "get",
+      "start": 143.82000732421875,
+      "end": 144.05999755859375
+    },
+    {
+      "word": "answered",
+      "start": 144.05999755859375,
+      "end": 144.36000061035156
+    },
+    {
+      "word": "and",
+      "start": 144.36000061035156,
+      "end": 144.9199981689453
+    },
+    {
+      "word": "measure",
+      "start": 144.9199981689453,
+      "end": 145.22000122070312
+    },
+    {
+      "word": "what",
+      "start": 145.22000122070312,
+      "end": 145.60000610351562
+    },
+    {
+      "word": "matters",
+      "start": 145.60000610351562,
+      "end": 145.72000122070312
+    },
+    {
+      "word": "most",
+      "start": 145.72000122070312,
+      "end": 146.0399932861328
+    },
+    {
+      "word": "to",
+      "start": 146.0399932861328,
+      "end": 146.17999267578125
+    },
+    {
+      "word": "your",
+      "start": 146.17999267578125,
+      "end": 146.33999633789062
+    },
+    {
+      "word": "people",
+      "start": 146.33999633789062,
+      "end": 146.63999938964844
+    },
+    {
+      "word": "Go",
+      "start": 147.27999877929688,
+      "end": 147.4199981689453
+    },
+    {
+      "word": "beyond",
+      "start": 147.4199981689453,
+      "end": 147.72000122070312
+    },
+    {
+      "word": "the",
+      "start": 147.72000122070312,
+      "end": 148.33999633789062
+    },
+    {
+      "word": "numbers",
+      "start": 148.33999633789062,
+      "end": 148.33999633789062
+    },
+    {
+      "word": "with",
+      "start": 148.33999633789062,
+      "end": 148.74000549316406
+    },
+    {
+      "word": "AI",
+      "start": 148.74000549316406,
+      "end": 149.1199951171875
+    },
+    {
+      "word": "powered",
+      "start": 149.1199951171875,
+      "end": 149.44000244140625
+    },
+    {
+      "word": "insights",
+      "start": 149.44000244140625,
+      "end": 149.82000732421875
+    },
+    {
+      "word": "that",
+      "start": 149.82000732421875,
+      "end": 150.13999938964844
+    },
+    {
+      "word": "uncover",
+      "start": 150.13999938964844,
+      "end": 150.52000427246094
+    },
+    {
+      "word": "trends",
+      "start": 150.52000427246094,
+      "end": 150.9600067138672
+    },
+    {
+      "word": "reveal",
+      "start": 151.5,
+      "end": 151.5
+    },
+    {
+      "word": "what's",
+      "start": 151.5,
+      "end": 152.1199951171875
+    },
+    {
+      "word": "driving",
+      "start": 152.1199951171875,
+      "end": 152.1199951171875
+    },
+    {
+      "word": "engagement",
+      "start": 152.1199951171875,
+      "end": 152.6199951171875
+    },
+    {
+      "word": "and",
+      "start": 153.02000427246094,
+      "end": 153.55999755859375
+    },
+    {
+      "word": "highlight",
+      "start": 153.55999755859375,
+      "end": 153.55999755859375
+    },
+    {
+      "word": "where",
+      "start": 153.55999755859375,
+      "end": 153.86000061035156
+    },
+    {
+      "word": "to",
+      "start": 153.86000061035156,
+      "end": 154.36000061035156
+    },
+    {
+      "word": "focus",
+      "start": 154.36000061035156,
+      "end": 154.36000061035156
+    },
+    {
+      "word": "next",
+      "start": 154.36000061035156,
+      "end": 154.8000030517578
+    },
+    {
+      "word": "Give",
+      "start": 155.25999450683594,
+      "end": 155.44000244140625
+    },
+    {
+      "word": "managers",
+      "start": 155.44000244140625,
+      "end": 155.89999389648438
+    },
+    {
+      "word": "instant",
+      "start": 155.89999389648438,
+      "end": 156.44000244140625
+    },
+    {
+      "word": "visibility",
+      "start": 156.44000244140625,
+      "end": 156.9199981689453
+    },
+    {
+      "word": "into",
+      "start": 156.9199981689453,
+      "end": 157.32000732421875
+    },
+    {
+      "word": "team",
+      "start": 157.32000732421875,
+      "end": 157.67999267578125
+    },
+    {
+      "word": "sentiment",
+      "start": 157.67999267578125,
+      "end": 158
+    },
+    {
+      "word": "so",
+      "start": 158,
+      "end": 158.5
+    },
+    {
+      "word": "they",
+      "start": 158.5,
+      "end": 158.67999267578125
+    },
+    {
+      "word": "can",
+      "start": 158.67999267578125,
+      "end": 158.9199981689453
+    },
+    {
+      "word": "take",
+      "start": 158.9199981689453,
+      "end": 159.1199951171875
+    },
+    {
+      "word": "action",
+      "start": 159.1199951171875,
+      "end": 159.44000244140625
+    },
+    {
+      "word": "with",
+      "start": 159.44000244140625,
+      "end": 159.75999450683594
+    },
+    {
+      "word": "confidence",
+      "start": 159.75999450683594,
+      "end": 160.25999450683594
+    },
+    {
+      "word": "wherever",
+      "start": 160.77999877929688,
+      "end": 160.83999633789062
+    },
+    {
+      "word": "they",
+      "start": 160.83999633789062,
+      "end": 161.05999755859375
+    },
+    {
+      "word": "are",
+      "start": 161.05999755859375,
+      "end": 161.44000244140625
+    },
+    {
+      "word": "From",
+      "start": 161.44000244140625,
+      "end": 161.9600067138672
+    },
+    {
+      "word": "the",
+      "start": 161.9600067138672,
+      "end": 162.16000366210938
+    },
+    {
+      "word": "moment",
+      "start": 162.16000366210938,
+      "end": 162.32000732421875
+    },
+    {
+      "word": "employees",
+      "start": 162.32000732421875,
+      "end": 162.74000549316406
+    },
+    {
+      "word": "share",
+      "start": 162.74000549316406,
+      "end": 163.0399932861328
+    },
+    {
+      "word": "feedback",
+      "start": 163.0399932861328,
+      "end": 163.5
+    },
+    {
+      "word": "to",
+      "start": 163.5,
+      "end": 163.82000732421875
+    },
+    {
+      "word": "the",
+      "start": 163.82000732421875,
+      "end": 164.22000122070312
+    },
+    {
+      "word": "moment",
+      "start": 164.22000122070312,
+      "end": 164.25999450683594
+    },
+    {
+      "word": "they",
+      "start": 164.25999450683594,
+      "end": 164.4600067138672
+    },
+    {
+      "word": "see",
+      "start": 164.4600067138672,
+      "end": 164.74000549316406
+    },
+    {
+      "word": "meaningful",
+      "start": 164.74000549316406,
+      "end": 165.0800018310547
+    },
+    {
+      "word": "change",
+      "start": 165.0800018310547,
+      "end": 165.60000610351562
+    },
+    {
+      "word": "it",
+      "start": 166.02000427246094,
+      "end": 166.1199951171875
+    },
+    {
+      "word": "all",
+      "start": 166.1199951171875,
+      "end": 166.55999755859375
+    },
+    {
+      "word": "happens",
+      "start": 166.55999755859375,
+      "end": 166.72000122070312
+    },
+    {
+      "word": "here",
+      "start": 166.72000122070312,
+      "end": 167.10000610351562
+    },
+    {
+      "word": "in",
+      "start": 167.4600067138672,
+      "end": 167.63999938964844
+    },
+    {
+      "word": "HQ",
+      "start": 167.63999938964844,
+      "end": 168.1999969482422
+    },
+    {
+      "word": "Let",
+      "start": 169.02000427246094,
+      "end": 169.24000549316406
+    },
+    {
+      "word": "AI",
+      "start": 169.24000549316406,
+      "end": 169.5800018310547
+    },
+    {
+      "word": "do",
+      "start": 169.5800018310547,
+      "end": 169.8000030517578
+    },
+    {
+      "word": "the",
+      "start": 169.8000030517578,
+      "end": 170.0399932861328
+    },
+    {
+      "word": "hard",
+      "start": 170.0399932861328,
+      "end": 170.33999633789062
+    },
+    {
+      "word": "work",
+      "start": 170.33999633789062,
+      "end": 170.47999572753906
+    },
+    {
+      "word": "of",
+      "start": 170.47999572753906,
+      "end": 170.89999389648438
+    },
+    {
+      "word": "building",
+      "start": 170.89999389648438,
+      "end": 170.89999389648438
+    },
+    {
+      "word": "your",
+      "start": 170.89999389648438,
+      "end": 171.1999969482422
+    },
+    {
+      "word": "survey",
+      "start": 171.1999969482422,
+      "end": 171.4199981689453
+    },
+    {
+      "word": "so",
+      "start": 171.4199981689453,
+      "end": 171.83999633789062
+    },
+    {
+      "word": "you",
+      "start": 171.83999633789062,
+      "end": 172.02000427246094
+    },
+    {
+      "word": "can",
+      "start": 172.02000427246094,
+      "end": 172.32000732421875
+    },
+    {
+      "word": "jump",
+      "start": 172.32000732421875,
+      "end": 172.5399932861328
+    },
+    {
+      "word": "straight",
+      "start": 172.5399932861328,
+      "end": 173.10000610351562
+    },
+    {
+      "word": "into",
+      "start": 173.10000610351562,
+      "end": 173.3000030517578
+    },
+    {
+      "word": "the",
+      "start": 173.3000030517578,
+      "end": 173.94000244140625
+    },
+    {
+      "word": "results",
+      "start": 173.94000244140625,
+      "end": 173.94000244140625
+    },
+    {
+      "word": "All",
+      "start": 175.0800018310547,
+      "end": 175.17999267578125
+    },
+    {
+      "word": "your",
+      "start": 175.17999267578125,
+      "end": 175.3800048828125
+    },
+    {
+      "word": "favorite",
+      "start": 175.3800048828125,
+      "end": 175.63999938964844
+    },
+    {
+      "word": "tools",
+      "start": 175.63999938964844,
+      "end": 175.9600067138672
+    },
+    {
+      "word": "one",
+      "start": 176.4600067138672,
+      "end": 176.6199951171875
+    },
+    {
+      "word": "experience",
+      "start": 176.6199951171875,
+      "end": 177.13999938964844
+    },
+    {
+      "word": "layer",
+      "start": 177.13999938964844,
+      "end": 177.39999389648438
+    },
+    {
+      "word": "everything",
+      "start": 177.9199981689453,
+      "end": 178.1999969482422
+    },
+    {
+      "word": "your",
+      "start": 178.1999969482422,
+      "end": 178.47999572753906
+    },
+    {
+      "word": "people",
+      "start": 178.47999572753906,
+      "end": 178.67999267578125
+    },
+    {
+      "word": "need",
+      "start": 178.67999267578125,
+      "end": 178.94000244140625
+    },
+    {
+      "word": "right",
+      "start": 179.24000549316406,
+      "end": 179.4199981689453
+    },
+    {
+      "word": "inside",
+      "start": 179.4199981689453,
+      "end": 179.8000030517578
+    },
+    {
+      "word": "HQ",
+      "start": 179.8000030517578,
+      "end": 180.3800048828125
+    },
+    {
+      "word": "Manage",
+      "start": 181.36000061035156,
+      "end": 181.3800048828125
+    },
+    {
+      "word": "your",
+      "start": 181.3800048828125,
+      "end": 181.67999267578125
+    },
+    {
+      "word": "employee",
+      "start": 181.67999267578125,
+      "end": 181.8800048828125
+    },
+    {
+      "word": "experience",
+      "start": 181.8800048828125,
+      "end": 182.44000244140625
+    },
+    {
+      "word": "with",
+      "start": 182.44000244140625,
+      "end": 182.77999877929688
+    },
+    {
+      "word": "confidence",
+      "start": 182.77999877929688,
+      "end": 183.25999450683594
+    },
+    {
+      "word": "through",
+      "start": 183.25999450683594,
+      "end": 183.63999938964844
+    },
+    {
+      "word": "powerful",
+      "start": 183.63999938964844,
+      "end": 184.13999938964844
+    },
+    {
+      "word": "self",
+      "start": 184.13999938964844,
+      "end": 184.5
+    },
+    {
+      "word": "service",
+      "start": 184.5,
+      "end": 184.72000122070312
+    },
+    {
+      "word": "admin",
+      "start": 184.72000122070312,
+      "end": 185.16000366210938
+    },
+    {
+      "word": "tools",
+      "start": 185.16000366210938,
+      "end": 185.44000244140625
+    },
+    {
+      "word": "and",
+      "start": 185.44000244140625,
+      "end": 185.83999633789062
+    },
+    {
+      "word": "feature",
+      "start": 185.83999633789062,
+      "end": 186.13999938964844
+    },
+    {
+      "word": "toggles",
+      "start": 186.13999938964844,
+      "end": 186.55999755859375
+    },
+    {
+      "word": "Enable",
+      "start": 186.55999755859375,
+      "end": 187.4199981689453
+    },
+    {
+      "word": "AI",
+      "start": 187.4199981689453,
+      "end": 187.82000732421875
+    },
+    {
+      "word": "with",
+      "start": 187.82000732421875,
+      "end": 188.1199951171875
+    },
+    {
+      "word": "confidence",
+      "start": 188.1199951171875,
+      "end": 188.55999755859375
+    },
+    {
+      "word": "with",
+      "start": 188.55999755859375,
+      "end": 188.9199981689453
+    },
+    {
+      "word": "granular",
+      "start": 188.9199981689453,
+      "end": 189.32000732421875
+    },
+    {
+      "word": "controls",
+      "start": 189.32000732421875,
+      "end": 189.89999389648438
+    },
+    {
+      "word": "permissions",
+      "start": 190.5399932861328,
+      "end": 190.5399932861328
+    },
+    {
+      "word": "and",
+      "start": 190.75999450683594,
+      "end": 191.36000061035156
+    },
+    {
+      "word": "governance",
+      "start": 191.36000061035156,
+      "end": 191.36000061035156
+    },
+    {
+      "word": "built",
+      "start": 191.36000061035156,
+      "end": 191.83999633789062
+    },
+    {
+      "word": "in",
+      "start": 191.83999633789062,
+      "end": 192.32000732421875
+    },
+    {
+      "word": "Powered",
+      "start": 193.3000030517578,
+      "end": 193.4199981689453
+    },
+    {
+      "word": "by",
+      "start": 193.4199981689453,
+      "end": 193.66000366210938
+    },
+    {
+      "word": "Zoom",
+      "start": 193.66000366210938,
+      "end": 193.97999572753906
+    },
+    {
+      "word": "AI",
+      "start": 193.97999572753906,
+      "end": 194.3800048828125
+    },
+    {
+      "word": "technology",
+      "start": 194.3800048828125,
+      "end": 195
+    },
+    {
+      "word": "enterprise",
+      "start": 195.5,
+      "end": 195.74000549316406
+    },
+    {
+      "word": "grade",
+      "start": 195.74000549316406,
+      "end": 196.02000427246094
+    },
+    {
+      "word": "intelligence",
+      "start": 196.02000427246094,
+      "end": 196.5399932861328
+    },
+    {
+      "word": "built",
+      "start": 196.5399932861328,
+      "end": 196.8800048828125
+    },
+    {
+      "word": "into",
+      "start": 196.8800048828125,
+      "end": 197.1999969482422
+    },
+    {
+      "word": "every",
+      "start": 197.1999969482422,
+      "end": 197.63999938964844
+    },
+    {
+      "word": "experience",
+      "start": 197.63999938964844,
+      "end": 198.32000732421875
+    },
+    {
+      "word": "The",
+      "start": 198.89999389648438,
+      "end": 199.1199951171875
+    },
+    {
+      "word": "employee",
+      "start": 199.1199951171875,
+      "end": 199.5
+    },
+    {
+      "word": "experience",
+      "start": 199.5,
+      "end": 200.1199951171875
+    },
+    {
+      "word": "platform",
+      "start": 200.1199951171875,
+      "end": 200.5
+    },
+    {
+      "word": "your",
+      "start": 200.5,
+      "end": 200.8000030517578
+    },
+    {
+      "word": "people",
+      "start": 200.8000030517578,
+      "end": 201.0800018310547
+    },
+    {
+      "word": "actually",
+      "start": 201.0800018310547,
+      "end": 201.74000549316406
+    },
+    {
+      "word": "use",
+      "start": 201.74000549316406,
+      "end": 202.17999267578125
+    },
+    {
+      "word": "trusted",
+      "start": 202.72000122070312,
+      "end": 202.72000122070312
+    },
+    {
+      "word": "by",
+      "start": 202.72000122070312,
+      "end": 202.94000244140625
+    },
+    {
+      "word": "the",
+      "start": 202.94000244140625,
+      "end": 203.17999267578125
+    },
+    {
+      "word": "world's",
+      "start": 203.17999267578125,
+      "end": 203.63999938964844
+    },
+    {
+      "word": "biggest",
+      "start": 203.63999938964844,
+      "end": 203.8800048828125
+    },
+    {
+      "word": "brands",
+      "start": 203.8800048828125,
+      "end": 204.3000030517578
+    },
+    {
+      "word": "This",
+      "start": 206.0800018310547,
+      "end": 206.44000244140625
+    },
+    {
+      "word": "is",
+      "start": 206.44000244140625,
+      "end": 207
+    },
+    {
+      "word": "Workvivo",
+      "start": 207,
+      "end": 207.4600067138672
+    },
+    {
+      "word": "HQ",
+      "start": 207.4600067138672,
+      "end": 208.02000427246094
+    }
+  ],
+  "usage": {
+    "type": "duration",
+    "seconds": 213
+  }
+}

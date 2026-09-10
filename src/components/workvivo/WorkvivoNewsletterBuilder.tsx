@@ -2,6 +2,7 @@ import React from "react";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
 import "./WorkvivoNewsletterBuilderStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo newsletter builder — component palette, canvas and save bar, on the tenant
@@ -223,12 +224,15 @@ const POST: Array<[string, React.ReactNode]> = [
 const PaletteItem: React.FC<{ label: string; glyph: React.ReactNode }> = ({
   label,
   glyph,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div className="wnb-item">
     {glyph}
-    <span>{label}</span>
+    <span>{ui(label)}</span>
   </div>
 );
+};
 
 /** The builder's empty-image state — peach fill with the picture glyph, not photography. */
 const Placeholder: React.FC<{ className?: string }> = ({ className }) => (
@@ -242,6 +246,7 @@ export const WorkvivoNewsletterBuilder: React.FC<WorkvivoNewsletterBuilderProps>
   height = 1080,
   brand = "#e30613",
 }) => {
+  const ui = useT();
   // Cover the composition from the natural-scale stage, so the crop matches the
   // reference whatever size the composition is registered at.
   const scale = Math.max(width / STAGE_W, height / STAGE_H);
@@ -265,25 +270,25 @@ export const WorkvivoNewsletterBuilder: React.FC<WorkvivoNewsletterBuilderProps>
         {/* ---------- component palette ---------- */}
         <aside className="wnb-palette">
           <div className="wnb-seg">
-            <div className="is-on">Components</div>
-            <div>Design</div>
+            <div className="is-on">{ui("Components")}</div>
+            <div>{ui("Design")}</div>
           </div>
 
-          <div className="wnb-sec">Layouts</div>
+          <div className="wnb-sec">{ui("Layouts")}</div>
           <div className="wnb-grid">
             {LAYOUTS.map(([label, cols]) => (
               <PaletteItem key={label} label={label} glyph={<LayoutGlyph cols={cols} />} />
             ))}
           </div>
 
-          <div className="wnb-sec">Content</div>
+          <div className="wnb-sec">{ui("Content")}</div>
           <div className="wnb-grid">
             {CONTENT.map(([label, glyph]) => (
               <PaletteItem key={label} label={label} glyph={glyph} />
             ))}
           </div>
 
-          <div className="wnb-sec">Post</div>
+          <div className="wnb-sec">{ui("Post")}</div>
           <div className="wnb-grid">
             {POST.map(([label, glyph]) => (
               <PaletteItem key={label} label={label} glyph={glyph} />
@@ -315,7 +320,7 @@ export const WorkvivoNewsletterBuilder: React.FC<WorkvivoNewsletterBuilderProps>
               </div>
 
               <div className="wnb-block">
-                <div className="wnb-h1">Heading text</div>
+                <div className="wnb-h1">{ui("Heading text")}</div>
               </div>
 
               <div className="wnb-row">
@@ -323,17 +328,17 @@ export const WorkvivoNewsletterBuilder: React.FC<WorkvivoNewsletterBuilderProps>
                   <Placeholder />
                 </div>
                 <div className="wnb-cell">
-                  <div className="wnb-h2">Heading text</div>
-                  <div className="wnb-body">{LOREM}</div>
-                  <div className="wnb-btn">Button</div>
+                  <div className="wnb-h2">{ui("Heading text")}</div>
+                  <div className="wnb-body">{ui(LOREM)}</div>
+                  <div className="wnb-btn">{ui("Button")}</div>
                 </div>
               </div>
 
               {/* Runs off the bottom of the frame, as in the reference. */}
               <div className="wnb-row">
                 <div className="wnb-cell">
-                  <div className="wnb-h2">Heading text</div>
-                  <div className="wnb-body">{LOREM}</div>
+                  <div className="wnb-h2">{ui("Heading text")}</div>
+                  <div className="wnb-body">{ui(LOREM)}</div>
                 </div>
                 <div className="wnb-cell">
                   <Placeholder />
@@ -345,8 +350,8 @@ export const WorkvivoNewsletterBuilder: React.FC<WorkvivoNewsletterBuilderProps>
 
         {/* ---------- save bar ---------- */}
         <div className="wnb-save">
-          <div className="wnb-save-primary">Save as Draft</div>
-          <div className="wnb-save-ghost">Save as Template</div>
+          <div className="wnb-save-primary">{ui("Save as Draft")}</div>
+          <div className="wnb-save-ghost">{ui("Save as Template")}</div>
         </div>
       </div>
     </div>

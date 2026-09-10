@@ -1,0 +1,97 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Workvivo video wizard — companies",
+    "version": "1.0.0",
+    "description": "Customers this tool has made videos for, for reconciliation against CRM records. Read-only."
+  },
+  "servers": [{ "url": "https://l2-concept.fly.dev" }],
+  "security": [{ "bearerAuth": [] }],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "The value of COMPANIES_API_TOKEN, set as a Fly secret on the app."
+      }
+    },
+    "schemas": {
+      "Company": {
+        "type": "object",
+        "required": ["name", "key", "videosCompleted", "rendersAttempted", "researchRuns", "firstSeen", "lastSeen", "lastVideoAt"],
+        "properties": {
+          "name": { "type": "string", "description": "Display spelling, capitalisation preferred. Match this against the CRM account name." },
+          "key": { "type": "string", "description": "Case-folded, whitespace-collapsed name. Stable identity across spellings." },
+          "videosCompleted": { "type": "integer", "description": "Renders that finished encoding." },
+          "rendersAttempted": { "type": "integer", "description": "Renders started, including failed and aborted." },
+          "researchRuns": { "type": "integer", "description": "Times the wizard generated copy, whether or not a video followed." },
+          "firstSeen": { "type": "string", "format": "date-time" },
+          "lastSeen": { "type": "string", "format": "date-time" },
+          "lastVideoAt": { "type": ["string", "null"], "format": "date-time", "description": "Null when no render has completed." }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/api/companies": {
+      "get": {
+        "operationId": "listCompanies",
+        "summary": "List companies the wizard has produced videos for",
+        "description": "Rows are sorted most-recently-active first, so an incremental sync sees new entries without paging. The `basis` field in the response states which rule produced the list — read it rather than assuming it.",
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["completed", "attempted", "researched"], "default": "completed" },
+            "description": "completed = at least one finished video. attempted = a render was started. researched = the wizard was run at all."
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "format": "date-time" },
+            "description": "ISO 8601. Keeps companies active on or after this instant."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "integer", "default": 500, "minimum": 1, "maximum": 5000 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The list.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": ["generatedAt", "basis", "include", "since", "total", "returned", "truncated", "companies"],
+                  "properties": {
+                    "generatedAt": { "type": "string", "format": "date-time" },
+                    "basis": { "type": "string", "description": "Prose statement of the rule used to select rows." },
+                    "include": { "type": "string", "enum": ["completed", "attempted", "researched"] },
+                    "since": { "type": ["string", "null"], "format": "date-time" },
+                    "total": { "type": "integer", "description": "Matches before the limit." },
+                    "returned": { "type": "integer" },
+                    "truncated": { "type": "boolean", "description": "True when total exceeded limit. Raise limit rather than paging." },
+                    "companies": { "type": "array", "items": { "$ref": "#/components/schemas/Company" } }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Invalid include, since or limit." },
+          "401": { "description": "Missing or wrong bearer token." },
+          "405": { "description": "Method other than GET." },
+          "429": {
+            "description": "Ten failed attempts from this address; five-minute hold. A correct token is never rate limited.",
+            "headers": { "Retry-After": { "schema": { "type": "integer" } } }
+          },
+          "503": { "description": "COMPANIES_API_TOKEN is unset or shorter than 24 characters. The endpoint is off, not open." }
+        }
+      }
+    }
+  }
+}

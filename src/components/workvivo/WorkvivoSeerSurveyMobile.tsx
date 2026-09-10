@@ -316,6 +316,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
   isCompleted,
   showSparkles = true,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const { copy, logo, theme } = useCustomization();
@@ -448,7 +449,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
               <div className="mis-titlebar">
                 <button
                   className="mis-back"
-                  aria-label="Back"
+                  aria-label={ui("Back")}
                   style={{
                     background: "none",
                     border: "none",
@@ -492,7 +493,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                   ></div>
                 </div>
                 <div className="mis-progress-text" data-mis-count="">
-                  {isFinished ? "5/5" : `${idx + 1}/${total}`}
+                  {ui(isFinished ? "5/5" : `${idx + 1}/${total}`)}
                 </div>
               </div>
 
@@ -500,7 +501,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                 <div className="mis-completion-wrap">
                   <div className="mis-completion-illustration">
                     {custom ? (
-                      <img src={staticFile(custom[2] ?? custom[0])} alt="Survey Completed" />
+                      <img src={staticFile(custom[2] ?? custom[0])} alt={ui("Survey Completed")} />
                     ) : (
                       <Illustration
                         markup={SURVEY_ILLUSTRATION_SVGS[2]}
@@ -508,12 +509,12 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                       />
                     )}
                   </div>
-                  <h2 className="mis-completion-title">Survey Completed</h2>
+                  <h2 className="mis-completion-title">{ui("Survey Completed")}</h2>
                   <p className="mis-completion-desc">
-                    Thanks for taking the time to complete our survey. Your feedback is important to us.
+                    {ui("Thanks for taking the time to complete our survey. Your feedback is important to us.")}
                   </p>
                   <button className="mis-btn-close" type="button">
-                    Close
+                    {ui("Close")}
                   </button>
                 </div>
               ) : (
@@ -542,7 +543,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
 
                   <div className="mis-question" data-vc-slot="seer.survey">
                     <div className="mis-q-badge" data-mis-badge="">{idx + 1}</div>
-                    <div className="mis-q-text" data-mis-text="">{asked[idx]}</div>
+                    <div className="mis-q-text" data-mis-text="">{ui(asked[idx])}</div>
                   </div>
 
                   <div className="mis-options" data-mis-options="">
@@ -557,7 +558,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                           <Face kind={opt.icon} />
                         </div>
                         <div className="mis-option-label" style={{ whiteSpace: "pre-line" }}>
-                          {opt.label}
+                          {ui(opt.label)}
                         </div>
                       </button>
                     ))}
@@ -567,7 +568,7 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
                     <textarea
                       className="mis-comment"
                       data-mis-comment=""
-                      placeholder="Add Comment"
+                      placeholder={ui("Add Comment")}
                       value={comment}
                       readOnly
                     ></textarea>
@@ -579,17 +580,17 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
             {!isFinished && (
               <div className="mis-buttons">
                 <button className="mis-btn-prev" data-mis-prev="" disabled={idx === 0}>
-                  Previous
+                  {ui("Previous")}
                 </button>
                 <button className="mis-btn-skip" data-mis-skip="" disabled={isLast}>
-                  Skip
+                  {ui("Skip")}
                 </button>
                 <button
                   className="mis-btn-next"
                   data-mis-next=""
                   disabled={answer === null}
                 >
-                  {isLast ? "Submit" : "Next"}
+                  {ui(isLast ? "Submit" : "Next")}
                 </button>
               </div>
             )}
@@ -601,3 +602,4 @@ export const WorkvivoSeerSurveyMobile: React.FC<WorkvivoSeerSurveyMobileProps> =
   );
 };
 import { InlineSvg } from "../InlineSvg";
+import { useT } from "../../customize/uiStrings";

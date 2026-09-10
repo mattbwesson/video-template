@@ -2,6 +2,7 @@ import React from "react";
 import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import "./WorkvivoJourneyPhoneStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo Journeys — the mobile journey detail screen, at its native 393pt.
@@ -175,6 +176,7 @@ export const WorkvivoJourneyPhone: React.FC<WorkvivoJourneyPhoneProps> = ({
   days,
   checkFrames = DEFAULT_CHECK_FRAMES,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy, image } = useCustomization();
   const phoneCopy = copy.journeys.phone;
@@ -255,8 +257,8 @@ export const WorkvivoJourneyPhone: React.FC<WorkvivoJourneyPhoneProps> = ({
       </div>
 
       <div className="wjp-summary">
-        <div className="wjp-title">{heroTitle}</div>
-        <div className="wjp-blurb">{heroBlurb}</div>
+        <div className="wjp-title">{ui(heroTitle)}</div>
+        <div className="wjp-blurb">{ui(heroBlurb)}</div>
         <div className="wjp-progress">
           <div className="wjp-track">
             {effectiveProgress > 0 ? (
@@ -264,7 +266,7 @@ export const WorkvivoJourneyPhone: React.FC<WorkvivoJourneyPhoneProps> = ({
             ) : null}
           </div>
           <div className="wjp-steps">
-            {effectiveCompleted}/{total} steps completed
+            {effectiveCompleted}/{total}{ui(" steps completed")}
           </div>
         </div>
         <span
@@ -274,7 +276,7 @@ export const WorkvivoJourneyPhone: React.FC<WorkvivoJourneyPhoneProps> = ({
               : "wjp-status wjp-status-notstarted"
           }
         >
-          {status}
+          {ui(status)}
         </span>
       </div>
 
@@ -282,7 +284,7 @@ export const WorkvivoJourneyPhone: React.FC<WorkvivoJourneyPhoneProps> = ({
         {heroDays.map((day, dayIndex) => (
           <div key={day.label}>
             <div className="wjp-dayhead">
-              {day.label}
+              {ui(day.label)}
               <ChevronUp />
             </div>
             <div className="wjp-daycard">
@@ -305,10 +307,10 @@ export const WorkvivoJourneyPhone: React.FC<WorkvivoJourneyPhoneProps> = ({
                     </span>
                     <span>
                       <span className="wjp-step-title" style={{ display: "block" }}>
-                        {step.title}
+                        {ui(step.title)}
                       </span>
                       <span className="wjp-step-sub" style={{ display: "block" }}>
-                        {step.sub}
+                        {ui(step.sub)}
                       </span>
                     </span>
                   </div>

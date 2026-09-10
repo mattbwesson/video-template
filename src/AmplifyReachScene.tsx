@@ -1,5 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
+import { RadialWash, type WashStop } from "./components/RadialWash";
 
 /**
  * Two words on the brand field: "amplify", then a hard cut to "reach".
@@ -20,10 +22,20 @@ import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
  * one, because the reference has a broad glow plus a tighter, hotter core inside it that a
  * single gradient cannot describe.
  */
-const FIELD =
-  "radial-gradient(115% 85% at 10% 80%, rgba(124,58,237,0.95) 0%, rgba(91,33,182,0.55) 34%, rgba(46,16,101,0.18) 62%, rgba(1,0,38,0) 84%)," +
-  "radial-gradient(85% 65% at 52% 108%, rgba(109,40,217,0.62) 0%, rgba(1,0,38,0) 68%)," +
-  "#010026";
+const FIELD_BASE = "#010026";
+/** The hotter core: `115% 85% at 10% 80%` of the frame. Drawn over the glow, as CSS
+ *  layers the first-listed gradient on top. */
+const FIELD_CORE: WashStop[] = [
+  [0, "rgba(124,58,237,0.95)"],
+  [0.34, "rgba(91,33,182,0.55)"],
+  [0.62, "rgba(46,16,101,0.18)"],
+  [0.84, "rgba(1,0,38,0)"],
+];
+/** The broad glow under it: `85% 65% at 52% 108%`. */
+const FIELD_GLOW: WashStop[] = [
+  [0, "rgba(109,40,217,0.62)"],
+  [0.68, "rgba(1,0,38,0)"],
+];
 
 /** Frames each word takes to finish growing. Same 0.88 -> 1.0 the Headquarters word uses. */
 const GROW_FRAMES = 18;
@@ -70,6 +82,7 @@ export const AmplifyReachScene: React.FC<AmplifyReachSceneProps> = ({
   scaleDownTarget = 0.25,
   scaleDownDuration = 7,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
 
   // Circular mask radius: 0 to 1200px across maskFrom to maskTo
@@ -113,7 +126,7 @@ export const AmplifyReachScene: React.FC<AmplifyReachSceneProps> = ({
   return (
     <AbsoluteFill
       style={{
-        background: FIELD,
+        backgroundColor: FIELD_BASE,
         alignItems: "center",
         justifyContent: "center",
         overflow: "hidden",
@@ -121,13 +134,17 @@ export const AmplifyReachScene: React.FC<AmplifyReachSceneProps> = ({
         WebkitClipPath: maskRadius >= 1200 ? undefined : `circle(${maskRadius}px at 50% 50%)`,
       }}
     >
+      {/* The two washes were CSS radial-gradients on this fill, which the wizard's
+          in-browser export does not paint; the glow first, the core over it. */}
+      <RadialWash id="ar-glow" width={1920} height={1080} cx={0.52 * 1920} cy={1.08 * 1080} rx={0.85 * 1920} ry={0.65 * 1080} stops={FIELD_GLOW} />
+      <RadialWash id="ar-core" width={1920} height={1080} cx={0.1 * 1920} cy={0.8 * 1080} rx={1.15 * 1920} ry={0.85 * 1080} stops={FIELD_CORE} />
       <div
         style={{
           transform: `scale(${scale})`,
           transformOrigin: "center center",
         }}
       >
-        <span style={WORD_STYLE}>{frame < cutAt ? words[0] : words[1]}</span>
+        <span style={WORD_STYLE}>{ui(frame < cutAt ? words[0] : words[1])}</span>
       </div>
     </AbsoluteFill>
   );

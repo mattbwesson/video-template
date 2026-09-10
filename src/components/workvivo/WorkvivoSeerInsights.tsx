@@ -3,6 +3,7 @@ import { Easing, interpolate, useCurrentFrame } from "remotion";
 import "./WorkvivoStyles.css";
 import "./WorkvivoSeerInsightsStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { countText, surveyCommentScale, surveyComments } from "../../customize/memberCounts";
 import "./WorkvivoGlassEdge.css";
 import { SEER_TABS, WorkvivoSeerChrome } from "./WorkvivoSeerChrome";
 import {
@@ -168,14 +169,21 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
   animateIn,
   animateStartFrame,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy } = useCustomization();
   const scale = Math.min(width / 1760, height / 1080);
 
-  // Titles and words from the copy table; sentiment bands, comment counts, scores and
-  // dates from the baseline. The chart's shape is the product's, the words on it are the
-  // company's — the same split the Rater tab makes.
-  const topics = SEER_TOPICS.map((t, i) => ({ ...t, title: copy.seer.topics[i] }));
+  // Titles and words from the copy table; sentiment bands, scores and dates from the
+  // baseline. The chart's shape is the product's, the words on it are the company's — the
+  // same split the Rater tab makes. Comment COUNTS are headcount-shaped and follow the
+  // survey's responses (memberCounts.ts), so the per-topic volumes scale with the total.
+  const commentScale = surveyCommentScale(copy.companySize);
+  const topics = SEER_TOPICS.map((t, i) => ({
+    ...t,
+    title: copy.seer.topics[i],
+    comments: Math.round(t.comments * commentScale),
+  }));
   const comments = SEER_COMMENTS.map((c, i) => ({
     ...c,
     driver: copy.seer.comments[i].driver,
@@ -237,7 +245,7 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
                     className={f.active ? "wsi-pill wsi-on" : "wsi-pill"}
                   >
                     {f.ai ? <Sparkle size={12} /> : null}
-                    {f.label}
+                    {ui(f.label)}
                     {f.help ? <Help /> : <Chevron />}
                   </span>
                 ))}
@@ -247,15 +255,15 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
                 <span className="wsi-ai-mark">
                   <Sparkle size={15} />
                 </span>
-                <span className="wsi-ai-label">Seer AI</span>
-                <span className="wsi-ai-summary">Summary</span>
+                <span className="wsi-ai-label">{ui("Seer AI")}</span>
+                <span className="wsi-ai-summary">{ui("Summary")}</span>
               </div>
 
               <div className="wsi-section" style={getAnimStyle(4, 20)}>
                 <Sparkle size={14} />
-                <span className="wsi-section-title">Popular Topics</span>
+                <span className="wsi-section-title">{ui("Popular Topics")}</span>
                 <Help />
-                <span className="wsi-view-all">View All</span>
+                <span className="wsi-view-all">{ui("View All")}</span>
               </div>
 
               <div className="wsi-topics">
@@ -266,24 +274,24 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
                     style={getAnimStyle(5 + idx * 1.2, 24)}
                   >
                     <div className={`wsi-topic-status ${SENTIMENT_CLASS[t.sentiment]}`}>
-                      {t.sentiment}
+                      {ui(t.sentiment)}
                     </div>
-                    <div className="wsi-topic-title">{t.title}</div>
+                    <div className="wsi-topic-title">{ui(t.title)}</div>
                     <div className="wsi-topic-meta">
-                      <b>{t.comments}</b> Comments
+                      <b>{t.comments}</b>{ui(" Comments")}
                     </div>
                   </div>
                 ))}
               </div>
 
               <div className="wsi-comments-head" style={getAnimStyle(16, 24)}>
-                <span className="wsi-comments-title">All Comments</span>
-                <span className="wsi-comments-count">9,430 Comments</span>
+                <span className="wsi-comments-title">{ui("All Comments")}</span>
+                <span className="wsi-comments-count">{countText(surveyComments(copy.companySize))}{ui(" Comments")}</span>
               </div>
 
               <div className="wsi-sentiment" style={getAnimStyle(17, 24)}>
-                <span className="wsi-sentiment-label">Sentiment</span>
-                <span className="wsi-sentiment-value">Very Positive</span>
+                <span className="wsi-sentiment-label">{ui("Sentiment")}</span>
+                <span className="wsi-sentiment-value">{ui("Very Positive")}</span>
                 <span className="wsi-bar">
                   {SENTIMENT_BAR.map(([w, c]) => (
                     <span key={c} style={{ width: w, background: c }} />
@@ -300,14 +308,14 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
                     <span className={`wsi-score ${SCORE_CLASS(c.score)}`}>{c.score}</span>
                     <div className="wsi-comment-body">
                       <div className="wsi-comment-meta">
-                        <span>{c.driver}</span>
+                        <span>{ui(c.driver)}</span>
                         <i />
-                        <span>{c.survey}</span>
+                        <span>{ui(c.survey)}</span>
                         <i />
-                        <span>{c.date}</span>
+                        <span>{ui(c.date)}</span>
                       </div>
-                      <div className="wsi-comment-title">{c.question}</div>
-                      <div className="wsi-comment-text">{c.body}</div>
+                      <div className="wsi-comment-title">{ui(c.question)}</div>
+                      <div className="wsi-comment-text">{ui(c.body)}</div>
                     </div>
                     <span className="wsi-star">
                       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -347,3 +355,4 @@ export const WorkvivoSeerInsights: React.FC<WorkvivoSeerInsightsProps> = ({
   return hasProvider ? body : <CustomizationProvider>{body}</CustomizationProvider>;
 };
 import { GlassRing } from "./GlassRing";
+import { useT } from "../../customize/uiStrings";

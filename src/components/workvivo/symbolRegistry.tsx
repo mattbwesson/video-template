@@ -72,6 +72,80 @@ export const registerSymbolJsx = (element: React.ReactElement): void => {
 };
 
 /**
+ * The declarations the export must not see on an <svg> root, lifted onto a wrapper.
+ * See the note in SymbolSvg. ONE list, consumed only through PlacedSvg below, so every
+ * inline-SVG component in the film lifts the same declarations.
+ *
+ * No margin keys: the renderer resets the margins on the root before it serialises it
+ * (see SymbolSvg), so they are safe where they are, and lifting one onto a `display:block`
+ * wrapper would turn an inline glyph into a block box and change the flow around it.
+ */
+const PLACEMENT_KEYS = new Set<string>([
+  "position", "left", "top", "right", "bottom", "inset", "opacity", "transform",
+  "transformOrigin", "zIndex",
+]);
+
+const splitPlacement = (
+  style: React.CSSProperties | undefined,
+): { wrapperStyle: React.CSSProperties | null; svgStyle: React.CSSProperties } => {
+  if (!style) return { wrapperStyle: null, svgStyle: {} };
+  const wrapper: Record<string, unknown> = {};
+  const rest: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(style)) {
+    if (PLACEMENT_KEYS.has(k)) wrapper[k] = v;
+    else rest[k] = v;
+  }
+  return {
+    wrapperStyle: Object.keys(wrapper).length ? (wrapper as React.CSSProperties) : null,
+    svgStyle: rest as React.CSSProperties,
+  };
+};
+
+/**
+ * THE one way an inline `<svg>` takes a caller's style.
+ *
+ * The export draws an inline <svg> by serialising it — inline `style` attribute and all —
+ * into a standalone SVG image and drawing that into the element's box. It resets
+ * `transform` and the margins on the root first, and nothing else. So `position:absolute;
+ * left:69px; top:107px` on the root is carried into an 86x86 image, where it offsets the
+ * root clean out of its own viewport: the Add Page button's plus exported as nothing at
+ * all. Measured directly — the same path with the same style attribute yields 0 ink
+ * pixels, and 1820 without it. Inline `opacity` is worse in a quieter way: it is baked
+ * into the image AND applied again by the renderer, so an icon at 0.35 draws at 0.12.
+ *
+ * So the style is split: the placement declarations (PLACEMENT_KEYS) go on a block wrapper
+ * the renderer walks like any other box, and everything else — the size, a `filter`, a
+ * `color` — reaches the svg through `children`, which receives it and puts it on the root.
+ * `box` is the CSS size, stated on the wrapper AND handed to the svg: the export's layout
+ * engine reads the box from CSS, not from the width/height attributes, and an absolutely
+ * positioned glyph with no CSS size came out as nothing. With no placement in the style
+ * the svg renders bare, exactly as it did before any of this.
+ *
+ * `display:block` goes on the svg only when the caller gave a style at all. A glyph with
+ * none is inline, and inline is what its layout was measured with — the page editor's
+ * toolbar chevrons sit on the text baseline as inline svgs and rose 4px as blocks.
+ *
+ * Every inline-svg component goes through here — SymbolSvg, Spark, CursorArrow, the
+ * survey's glyphs — so a change to what the renderer tolerates lands in one place.
+ */
+export const PlacedSvg: React.FC<{
+  style?: React.CSSProperties;
+  box?: { width?: number | string; height?: number | string };
+  className?: string;
+  children: (svgStyle: React.CSSProperties) => React.ReactElement;
+}> = ({ style, box, className, children }) => {
+  const { wrapperStyle, svgStyle } = splitPlacement(style);
+  const svg = children({ ...(style ? { display: "block" } : {}), ...box, ...svgStyle });
+  return wrapperStyle || className ? (
+    <span className={className} style={{ display: "block", ...box, ...wrapperStyle }} aria-hidden>
+      {svg}
+    </span>
+  ) : (
+    svg
+  );
+};
+
+/**
  * An `<svg>` with the referenced symbol's content inlined — the export-safe replacement
  * for `<svg><use href="#id"/></svg>`. Accepts the same props the raw element did, so a
  * call site converts by renaming the tag and nothing else.
@@ -114,13 +188,35 @@ export const SymbolSvg: React.FC<
   }
   const { fill, ...rest } = def.attrs;
   const inner = paint ? def.inner.split(paintFrom).join(paint) : def.inner;
+  /*
+   * The size goes in CSS as well as on the attributes.
+   *
+   * Chromium lays an `<svg width={86} height={86}>` out at 86 square from the attributes
+   * alone. The export's layout engine reads the box from CSS, and an absolutely-positioned
+   * glyph with no CSS size came out as nothing at all — the Add Page button's plus was
+   * simply missing from every exported MP4 while the same component's toolbar glyphs, which
+   * sit in normal flow, rendered fine. Stating it twice costs nothing and removes the
+   * dependency on which of the two a given renderer happens to read.
+   *
+   * `svgProps.style` still comes last, so a caller can override either value.
+   */
+  const boxed =
+    typeof svgProps.width === "number" && typeof svgProps.height === "number"
+      ? { width: svgProps.width, height: svgProps.height }
+      : {};
+  // Positioning and opacity never go on the <svg> itself — see PlacedSvg.
   return (
-    <svg
-      viewBox={def.viewBox}
-      {...(fill ? { fill } : {})}
-      {...rest}
-      {...svgProps}
-      dangerouslySetInnerHTML={{ __html: inner }}
-    />
+    <PlacedSvg style={svgProps.style} box={boxed}>
+      {(svgStyle) => (
+        <svg
+          viewBox={def.viewBox}
+          {...(fill ? { fill } : {})}
+          {...rest}
+          {...svgProps}
+          style={svgStyle}
+          dangerouslySetInnerHTML={{ __html: inner }}
+        />
+      )}
+    </PlacedSvg>
   );
 };

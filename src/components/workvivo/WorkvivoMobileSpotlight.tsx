@@ -182,19 +182,23 @@ const SPACE_CHROME: { icon: string; cover: string; slot: ImageSlotKey }[] =
     },
   ];
 
-const Meta: React.FC<{ when: string; white?: boolean }> = ({ when, white }) => (
+const Meta: React.FC<{ when: string; white?: boolean }> = ({ when, white }) => {
+  const ui = useT();
+  return (
   <>
     <div className={white ? "wms-meta wms-meta-white" : "wms-meta"}>
       <Icon href="#i-ui-everyone" width={14} height={14} />
-      Global
+      {ui("Global")}
     </div>
-    <div className={white ? "wms-meta wms-meta-white" : "wms-meta"}>{when}</div>
+    <div className={white ? "wms-meta wms-meta-white" : "wms-meta"}>{ui(when)}</div>
   </>
 );
+};
 
 export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = ({
   scrollTop = 0,
 }) => {
+  const ui = useT();
   const { copy, image, person, header, logo } = useCustomization();
   const hdr = header('mobile.hero');
   const spotlight = copy.spotlight;
@@ -238,18 +242,18 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                 <Icon href="#i-ui-journeys" width={20} height={20} />
               </span>
               <span className="wms-journey-text">
-                <div className="wms-journey-title">{spotlight.journey}</div>
+                <div className="wms-journey-title">{ui(spotlight.journey)}</div>
                 <div className="wms-journey-bar" />
               </span>
-              <span className="wms-start">Start</span>
+              <span className="wms-start">{ui("Start")}</span>
             </div>
           </div>
 
           {/* Quick Links */}
           <div data-vc-slot="spotlight.links">
             <div className="wms-sec">
-              <span className="wms-sec-title">Quick Links</span>
-              <span className="wms-sec-link">View All</span>
+              <span className="wms-sec-title">{ui("Quick Links")}</span>
+              <span className="wms-sec-link">{ui("View All")}</span>
             </div>
             <div className="wms-rows">
               <div className="wms-tiles">
@@ -265,7 +269,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                         )}
                       </SlotIcon>
                     </span>
-                    <span className="wms-tile-label">{spotlight.apps[i]}</span>
+                    <span className="wms-tile-label">{ui(spotlight.apps[i])}</span>
                   </div>
                 ))}
               </div>
@@ -278,7 +282,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                         <span className="wms-link-ico">
                           <img src={v(QUICK_LINK_ART[i])} alt="" />
                         </span>
-                        <span className="wms-link-label">{spotlight.quickLinks[i]}</span>
+                        <span className="wms-link-label">{ui(spotlight.quickLinks[i])}</span>
                       </div>
                     );
                   })}
@@ -290,8 +294,8 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           {/* Documents */}
           <div>
             <div className="wms-sec">
-              <span className="wms-sec-title">Documents</span>
-              <span className="wms-sec-link">View All</span>
+              <span className="wms-sec-title">{ui("Documents")}</span>
+              <span className="wms-sec-link">{ui("View All")}</span>
             </div>
             <div className="wms-card">
               {DOCUMENT_ART.map((art, i) => (
@@ -299,7 +303,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                   <span className="wms-link-ico">
                     <img src={v(art)} alt="" />
                   </span>
-                  <span className="wms-doc-label">{spotlight.documents[i]}</span>
+                  <span className="wms-doc-label">{ui(spotlight.documents[i])}</span>
                 </div>
               ))}
             </div>
@@ -308,8 +312,8 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           {/* Featured News */}
           <div>
             <div className="wms-sec">
-              <span className="wms-sec-title">Featured News</span>
-              <span className="wms-sec-link">View All</span>
+              <span className="wms-sec-title">{ui("Featured News")}</span>
+              <span className="wms-sec-link">{ui("View All")}</span>
             </div>
             <div className="wms-card" style={{ gap: 16 }}>
               <div className="wms-news-hero">
@@ -323,7 +327,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                   {/* The reference breaks this headline across two lines by hand; letting
                       it wrap on its own is what keeps a longer or shorter one whole. */}
                   <div className="wms-news-hero-title">
-                    {copy.feed.mobileNews[0].title}
+                    {ui(copy.feed.mobileNews[0].title)}
                   </div>
                   <Meta when="Published 2 days ago" white />
                 </div>
@@ -336,7 +340,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                     alt=""
                   />
                   <div>
-                    <div className="wms-news-title">{newsTitles[i]}</div>
+                    <div className="wms-news-title">{ui(newsTitles[i])}</div>
                     <Meta when={n.when} />
                   </div>
                 </div>
@@ -347,8 +351,8 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           {/* Spaces */}
           <div>
             <div className="wms-sec">
-              <span className="wms-sec-title">Spaces</span>
-              <span className="wms-sec-link">See All</span>
+              <span className="wms-sec-title">{ui("Spaces")}</span>
+              <span className="wms-sec-link">{ui("See All")}</span>
             </div>
             <div className="wms-spaces">
               {SPACE_CHROME.map((s, i) => (
@@ -359,13 +363,13 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
                     src={image(s.slot, staticFile(s.cover))}
                     alt=""
                   />
-                  <span className="wms-space-join">Join</span>
+                  <span className="wms-space-join">{ui("Join")}</span>
                   <span className="wms-space-av">
                     <Icon href={s.icon} width={26} height={26} />
                   </span>
                   <div className="wms-space-text">
-                    <div className="wms-space-title">{copy.feed.spaces[i].name}</div>
-                    <div className="wms-space-members">{spaceMembers(copy.companySize, TRENDING_INDEX[i])}</div>
+                    <div className="wms-space-title">{ui(copy.feed.spaces[i].name)}</div>
+                    <div className="wms-space-members">{ui(spaceMembers(copy.companySize, TRENDING_INDEX[i]))}</div>
                   </div>
                 </div>
               ))}
@@ -375,8 +379,8 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           {/* Upcoming Events */}
           <div>
             <div className="wms-sec">
-              <span className="wms-sec-title">Upcoming Events</span>
-              <span className="wms-sec-link">View All</span>
+              <span className="wms-sec-title">{ui("Upcoming Events")}</span>
+              <span className="wms-sec-link">{ui("View All")}</span>
             </div>
             <div className="wms-event-card">
               <img
@@ -389,23 +393,23 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
               />
               <div className="wms-event">
                 <div className="wms-event-date">
-                  <div className="wms-event-mon">AUG</div>
+                  <div className="wms-event-mon">{ui("AUG")}</div>
                   <div className="wms-event-day">13</div>
                 </div>
                 <div>
-                  <div className="wms-event-title">{spotlight.event.title}</div>
+                  <div className="wms-event-title">{ui(spotlight.event.title)}</div>
                   {/* Two lines with a real newline between them, so a slot value that has
                       one breaks where the copy says rather than where the box happens to. */}
                   <div className="wms-event-when" style={{ whiteSpace: "pre-line" }}>
-                    {spotlight.event.when}
+                    {ui(spotlight.event.when)}
                   </div>
                   <div className="wms-meta" style={{ marginTop: 5 }}>
                     <Icon href="#i-ui-everyone" width={14} height={14} />
-                    Global
+                    {ui("Global")}
                   </div>
                 </div>
               </div>
-              <div className="wms-event-btn">View Event</div>
+              <div className="wms-event-btn">{ui("View Event")}</div>
             </div>
           </div>
         </div>
@@ -423,7 +427,7 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
         {hdr.showLogo && (
           <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
         )}
-        <div className="wm-heroV">{companyInitial}</div>
+        <div className="wm-heroV">{ui(companyInitial)}</div>
         {/* z4 in the old ladder: over the photo, letter and wash, under the
             z5 controls below. DOM order is what the export paints by. */}
         <div className="wm-hero-scrim" />
@@ -433,8 +437,8 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
           <div className="wm-gbtn"><SymbolSvg width="16.5" height="16.5" href="#i-ui-employee-standalone" /></div>
         </div>
         <div className="wm-herotabs">
-          <a href="#">Feed</a>
-          <a href="#" className="wm-on">Spotlight<span className="wm-tab-underline" /></a>
+          <a href="#">{ui("Feed")}</a>
+          <a href="#" className="wm-on">{ui("Spotlight")}<span className="wm-tab-underline" /></a>
         </div>
       </div>
 
@@ -455,19 +459,19 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
       <div className="wms-bottom">
         <div className="wms-bnav wms-on">
           <Icon href="#i-ui-home-nav-rail" width={22} height={22} />
-          <span className="wms-bnav-label">Home</span>
+          <span className="wms-bnav-label">{ui("Home")}</span>
         </div>
         <div className="wms-bnav">
           <Icon href="#i-ui-chat" width={22} height={22} />
-          <span className="wms-bnav-label">Chat</span>
+          <span className="wms-bnav-label">{ui("Chat")}</span>
         </div>
         <div className="wms-bnav">
           <Icon href="#i-ui-notifications" width={22} height={22} />
-          <span className="wms-bnav-label">Inbox</span>
+          <span className="wms-bnav-label">{ui("Inbox")}</span>
         </div>
         <div className="wms-bnav">
           <Burger />
-          <span className="wms-bnav-label">More</span>
+          <span className="wms-bnav-label">{ui("More")}</span>
         </div>
       </div>
     </div>
@@ -476,3 +480,4 @@ export const WorkvivoMobileSpotlight: React.FC<WorkvivoMobileSpotlightProps> = (
 import { SlotIcon } from "../../customize/SlotIcon";
 import type { IconSlotKey } from "../../customize/icons";
 import { spaceMembers, TRENDING_INDEX } from "../../customize/memberCounts";
+import { useT } from "../../customize/uiStrings";

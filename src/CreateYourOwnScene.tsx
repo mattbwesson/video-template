@@ -1,5 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
 
 const GROW_EASE = Easing.bezier(0.16, 1, 0.3, 1);
 const WORD_DURATION = 10;
@@ -25,8 +26,13 @@ export const CreateYourOwnScene: React.FC<CreateYourOwnSceneProps> = ({
   icon,
   iconWidth = 544,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
-  const words = text.split(" ");
+  // Translate BEFORE splitting. Splitting first hands ui() "Create", "your", "own" one at
+  // a time, so a dictionary keyed on the whole phrase never matches and the card stays
+  // English — the same fault the feedback article's body had. Japanese has no spaces, so
+  // it comes back as a single unit and animates as one.
+  const words = ui(text).split(" ").filter(Boolean);
 
   const sparkleStart = (words.length - 1) * WORD_STAGGER + 2;
   const sparkleOpacity = interpolate(

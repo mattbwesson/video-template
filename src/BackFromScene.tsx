@@ -8,9 +8,9 @@ import {
 import { MobileClick, WorkvivoCatchMeUp } from './components/workvivo';
 import { useCustomization } from './customize/CustomizationProvider';
 import { FIXED_COPY } from './customize/videoCopy';
+import { useT, useWordGap } from "./customize/uiStrings";
 
 /** Gap between the words. The sizer has to use the same value to measure true. */
-const WORD_GAP = '0.20em';
 
 // Tap on the "Catch Me Up" chevron, at local 60 (global 660). It has to be gone by
 // local 70, when the story opens and the phone starts scaling away underneath it.
@@ -23,6 +23,8 @@ const TAP_Y = '71.7%';
 const TAP_SIZE = 108;
 
 export const BackFromScene: React.FC = () => {
+  const ui = useT();
+  const { gapEm: WORD_GAP } = useWordGap();
   const frame = useCurrentFrame();
   const { theme } = useCustomization();
   // Four separate words because each animates in on its own: `lead` sits centred alone
@@ -240,10 +242,10 @@ export const BackFromScene: React.FC = () => {
               opacity: 0,
             }}
           >
-            {lead}
-            <span style={{ marginLeft: WORD_GAP }}>{second}</span>
-            <span style={{ marginLeft: WORD_GAP }}>{third}</span>
-            <span style={{ marginLeft: WORD_GAP }}>{fourth}</span>
+            {ui(lead, "timeoff")}
+            <span style={{ marginLeft: WORD_GAP }}>{ui(second, "timeoff")}</span>
+            <span style={{ marginLeft: WORD_GAP }}>{ui(third, "timeoff")}</span>
+            <span style={{ marginLeft: WORD_GAP }}>{ui(fourth, "timeoff")}</span>
           </span>
 
           {/* Visible copy, laid over the sizer. The two percentage transforms below
@@ -267,7 +269,7 @@ export const BackFromScene: React.FC = () => {
                 transform: `translateX(${-centerOnBack * 50}%)`,
               }}
             >
-              {lead}
+              {ui(lead, "timeoff")}
               <span
                 style={{
                   position: 'absolute',
@@ -279,7 +281,7 @@ export const BackFromScene: React.FC = () => {
                 }}
               >
                 <span style={{ opacity: fromOpacity, display: 'inline-block' }}>
-                  {second}
+                  {ui(second, "timeoff")}
                 </span>
                 <span
                   style={{
@@ -289,7 +291,7 @@ export const BackFromScene: React.FC = () => {
                     display: 'inline-block',
                   }}
                 >
-                  {third}
+                  {ui(third, "timeoff")}
                 </span>
                 <span
                   style={{
@@ -299,7 +301,7 @@ export const BackFromScene: React.FC = () => {
                     display: 'inline-block',
                   }}
                 >
-                  {fourth}
+                  {ui(fourth, "timeoff")}
                 </span>
               </span>
             </span>

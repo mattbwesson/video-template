@@ -27,7 +27,7 @@ import { WorkvivoSeerRater, WorkvivoSeerInsights } from "./components/workvivo";
 import "./components/workvivo/WorkvivoGlassEdge.css";
 import { GlassRing } from "./components/workvivo/GlassRing";
 import { useCustomization } from "./customize/CustomizationProvider";
-import { REFERENCE_VIDEO } from "./WorkvivoCut";
+import { REFERENCE_VIDEO } from "./referenceVideo";
 
 /**
  * The People Intelligence cut — the `Zoe-test-people` composition.

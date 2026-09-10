@@ -62,6 +62,7 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
   videoSrc = "img/webinar.mp4",
   chapterClickFrame = 80,
 }) => {
+  const ui = useT();
   const { copy, image, logo } = useCustomization();
   const livestream = copy.livestream;
 
@@ -82,8 +83,8 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
       <div className="lr-head">
         <span className="lr-back" />
         <div className="lr-htx">
-          <span className="lr-pill">LIVE REPLAY</span>
-          <h1>{livestream.title}</h1>
+          <span className="lr-pill">{ui("LIVE REPLAY")}</span>
+          <h1>{ui(livestream.title)}</h1>
         </div>
         {/* Supplied art, not library icons. The mute file ships #606060; the reference
             draws it white, hence the knockout filter. */}
@@ -131,7 +132,7 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
 
       <div className="lr-sheet" data-vc-slot="livestream.chapters">
         <div className="lr-shead">
-          <h2>Chapters</h2>
+          <h2>{ui("Chapters")}</h2>
           <span className="lr-xbtn"><span className="lr-g-x"><i /><i /></span></span>
         </div>
         {CHAPTER_CHROME.map((c, index) => (
@@ -162,8 +163,8 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
               />
             )}
             <span className="lr-ctx">
-              <span className="lr-cttl">{livestream.chapters[index]}</span>
-              <span className="lr-tstamp">{c.stamp}</span>
+              <span className="lr-cttl">{ui(livestream.chapters[index])}</span>
+              <span className="lr-tstamp">{ui(c.stamp)}</span>
             </span>
           </div>
         ))}
@@ -173,6 +174,7 @@ export const WorkvivoLiveReplay: React.FC<WorkvivoLiveReplayProps> = ({
 );
 };
 import { GlassRing } from "./GlassRing";
+import { useT } from "../../customize/uiStrings";
 
 // Feed this file's symbols into the inline registry (symbolRegistry.tsx): the hidden
 // sprite above cannot be referenced across <svg> roots in the in-browser export, so

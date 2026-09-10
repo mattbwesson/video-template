@@ -140,6 +140,7 @@ export const WidgetCard: React.FC<{ item: WidgetItem; style?: React.CSSPropertie
   item,
   style,
 }) => {
+  const ui = useT();
   const chip = CHIP[item.category];
   return (
     <div className="wwl-card" style={style}>
@@ -161,21 +162,22 @@ export const WidgetCard: React.FC<{ item: WidgetItem; style?: React.CSSPropertie
         </span>
         <span className="wwl-text">
           <span className="wwl-title" style={{ display: "block" }}>
-            {item.title}
+            {ui(item.title)}
           </span>
           <span className="wwl-desc" style={{ display: "block" }}>
-            {item.desc}
+            {ui(item.desc)}
           </span>
         </span>
       </div>
       <span className="wwl-chip" style={{ background: chip.bg, color: chip.fg }}>
-        {item.category}
+        {ui(item.category)}
       </span>
     </div>
   );
 };
 import { InlineSvg } from "../InlineSvg";
 import { staticFile } from "remotion";
+import { useT } from "../../customize/uiStrings";
 
 export interface WorkvivoWidgetListProps {
   left?: WidgetItem[];

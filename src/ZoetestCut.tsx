@@ -68,7 +68,7 @@ import { WorkvivoCustomerGridScene } from "./WorkvivoCustomerGridScene";
  */
 import { useCustomization } from "./customize/CustomizationProvider";
 import { GlassRing } from "./components/workvivo/GlassRing";
-import { REFERENCE_VIDEO } from "./WorkvivoCut";
+import { REFERENCE_VIDEO } from "./referenceVideo";
 
 /**
  * An independent copy of WorkvivoCut's TIMELINE, for the `Zoetest` composition.

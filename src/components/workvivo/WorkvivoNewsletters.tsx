@@ -7,6 +7,7 @@ import { WorkvivoTopbar } from "./WorkvivoTopbar";
 import { DocumentFolderIcon, FolderGlyph } from "./WorkvivoFolderIcon";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo Newsletters screen.
@@ -147,21 +148,23 @@ export const NewsletterCard: React.FC<{
   slot?: string;
   style?: React.CSSProperties;
   hoverProgress?: number;
-}> = ({ item, slot, style, hoverProgress = 0 }) => (
+}> = ({ item, slot, style, hoverProgress = 0 }) => {
+  const ui = useT();
+  return (
   <div className="nl-card" style={style}>
     <img data-vc-slot={slot} src={item.cover} alt="" />
     <div className="nl-scrim" />
     <div className="nl-card-body">
       <div className="nl-card-meta">
-        <div className="nl-card-title">{item.title}</div>
-        <div className="nl-card-scope">{item.scope}</div>
+        <div className="nl-card-title">{ui(item.title)}</div>
+        <div className="nl-card-scope">{ui(item.scope)}</div>
         <div className="nl-card-folder">
           <FolderGlyph size={16} color="#fff" />
-          {item.folder}
+          {ui(item.folder)}
         </div>
       </div>
       <div className="nl-card-foot">
-        <div className="nl-card-date">{item.date}</div>
+        <div className="nl-card-date">{ui(item.date)}</div>
         <span
           className={
             item.status === "Sent"
@@ -169,7 +172,7 @@ export const NewsletterCard: React.FC<{
               : "nl-badge nl-badge-scheduled"
           }
         >
-          {item.status}
+          {ui(item.status)}
         </span>
       </div>
     </div>
@@ -189,6 +192,7 @@ export const NewsletterCard: React.FC<{
     )}
   </div>
 );
+};
 
 export interface WorkvivoNewslettersProps {
   /**
@@ -213,6 +217,7 @@ export const WorkvivoNewsletters: React.FC<WorkvivoNewslettersProps> = ({
   chrome = 1,
   cards = true,
 }) => {
+  const ui = useT();
   const { copy, image, person } = useCustomization();
   const newsletters = useNewsletters();
 
@@ -271,30 +276,30 @@ export const WorkvivoNewsletters: React.FC<WorkvivoNewslettersProps> = ({
                 <div className="nl-head">
                   <div className="nl-title">
                     <Icon href="#i-ui-newsletters" width={24} height={24} />
-                    Newsletters
+                    {ui("Newsletters")}
                   </div>
                   <div className="nl-headacts">
                     <span className="nl-btn">
-                      Options
+                      {ui("Options")}
                       <span className="nl-caret" />
                     </span>
-                    <span className="nl-btn nl-btn-primary">Create Newsletter</span>
+                    <span className="nl-btn nl-btn-primary">{ui("Create Newsletter")}</span>
                   </div>
                 </div>
 
                 <div className="nl-field">
                   <Icon href="#i-ui-explore" width={15} height={15} />
-                  <span>Search Newsletters</span>
+                  <span>{ui("Search Newsletters")}</span>
                 </div>
 
                 <div className="nl-chips">
-                  <span className="nl-chip nl-on">All</span>
-                  <span className="nl-chip">Drafts</span>
-                  <span className="nl-chip">Scheduled</span>
-                  <span className="nl-chip">Sent</span>
+                  <span className="nl-chip nl-on">{ui("All")}</span>
+                  <span className="nl-chip">{ui("Drafts")}</span>
+                  <span className="nl-chip">{ui("Scheduled")}</span>
+                  <span className="nl-chip">{ui("Sent")}</span>
                 </div>
 
-                <div className="nl-sec nl-sec-recent">Recent Newsletters</div>
+                <div className="nl-sec nl-sec-recent">{ui("Recent Newsletters")}</div>
                 <div className="nl-row">
                   {newsletters.map((n, i) => (
                     <NewsletterCard
@@ -313,13 +318,13 @@ export const WorkvivoNewsletters: React.FC<WorkvivoNewslettersProps> = ({
                   </span>
                 </div>
 
-                <div className="nl-sec nl-sec-folders">Folders</div>
+                <div className="nl-sec nl-sec-folders">{ui("Folders")}</div>
                 <div className="nl-folders">
-                  <span className="nl-btn nl-viewfolders">View Folders</span>
+                  <span className="nl-btn nl-viewfolders">{ui("View Folders")}</span>
                   {copy.newsletters.folders.map((f) => (
                     <span className="nl-folder" key={f}>
                       <DocumentFolderIcon />
-                      {f}
+                      {ui(f)}
                     </span>
                   ))}
                 </div>

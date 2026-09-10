@@ -518,6 +518,10 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
       { path: "article.language", label: "Language" },
       { path: "article.lead", label: "Opening" },
       { path: "article.heading", label: "Subheading" },
+      // The request typed into the page builder before this article appears. It has to
+      // name the same subject as the title, so it is editable from the article as well as
+      // from the builder beat (`article.request` below).
+      { path: "article.prompt", label: "Page request" },
     ],
   },
   "article.figure.0": {
@@ -562,6 +566,20 @@ const EXTRAS: Partial<Record<ImageSlotKey, Extra>> = {
  * misfiled one shows up as a missing editable rather than as a photo swap.
  */
 const TEXT_ONLY: Editable[] = [
+  {
+    // The line the model writes into the page builder's prompt bar (global 3163-3213).
+    // Anchored on a hit area PageBuilderScene draws over the bar rather than on the bar
+    // itself, which is rendered under motion blur as several stacked copies.
+    key: "article.request",
+    label: "Page builder request",
+    text: [{ path: "article.prompt", label: "Request" }],
+  },
+  {
+    // The one line the model writes into the survey-builder modal (global 4253-4397).
+    key: "surveyBuilder.request",
+    label: "Survey request",
+    text: [{ path: "surveyBuilder.prompt", label: "Request" }],
+  },
   {
     key: "seer.survey",
     label: "Survey questions",

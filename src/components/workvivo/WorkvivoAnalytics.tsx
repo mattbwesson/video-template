@@ -8,6 +8,7 @@ import { WorkvivoTopbar } from "./WorkvivoTopbar";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { ImageSlotKey } from "../../customize/imagery";
 import { GlassRing } from "./GlassRing";
+import { useT } from "../../customize/uiStrings";
 
 /* The export rasterizes an <svg> by serializing it and loading it as a
    data:image/svg+xml — a SEPARATE document, which sees neither the page's CSS nor
@@ -77,6 +78,7 @@ export const GaugeDial: React.FC<{ gauge: Gauge; progress?: number }> = ({
   gauge,
   progress = 1,
 }) => {
+  const ui = useT();
   const size = 200;
   const stroke = 24;
   const r = (size - stroke) / 2;
@@ -131,7 +133,7 @@ export const GaugeDial: React.FC<{ gauge: Gauge; progress?: number }> = ({
         fontWeight="600"
         fill="#111827"
       >
-        {currentPct.toFixed(2)}%
+        {ui(currentPct.toFixed(2))}%
       </text>
 
       {/* Scale ends and value appear next to the semi-circle when complete */}
@@ -262,6 +264,7 @@ export const LineChart: React.FC<{ chart: LineChartData; progress?: number }> = 
   chart,
   progress = 1,
 }) => {
+  const ui = useT();
   const w = 420;
   const h = 230;
   const padL = 38;
@@ -321,7 +324,7 @@ export const LineChart: React.FC<{ chart: LineChartData; progress?: number }> = 
             textAnchor="end"
             transform={`rotate(-42 ${dx} ${dy})`}
           >
-            {date}
+            {ui(date)}
           </text>
         );
       })}
@@ -364,6 +367,7 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
   lineChartProgress,
   lineSegmentStyle,
 }) => {
+  const ui = useT();
   const { person, image } = useCustomization();
 
   return (
@@ -379,15 +383,15 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
               {RAIL_TOP.map((n) => (
                 <div className="an-nav" key={n.label}>
                   <Icon href={n.icon} width={20} height={20} />
-                  <span className="an-nav-label">{n.label}</span>
+                  <span className="an-nav-label">{ui(n.label)}</span>
                   {n.caret ? <span className="an-caret" /> : null}
                 </div>
               ))}
 
               <div className="an-nav">
                 <img className="an-me-av" src={person.avatarUrl} style={person.avatarFit} alt="" />
-                <span className="an-nav-label">{person.name}</span>
-                <span className="an-me-badge">Profile</span>
+                <span className="an-nav-label">{ui(person.name)}</span>
+                <span className="an-me-badge">{ui("Profile")}</span>
               </div>
 
               <span className="an-navgap" />
@@ -395,7 +399,7 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
               {RAIL_BOTTOM.map((n) => (
                 <div className="an-nav" key={n.label}>
                   <Icon href={n.icon} width={20} height={20} />
-                  <span className="an-nav-label">{n.label}</span>
+                  <span className="an-nav-label">{ui(n.label)}</span>
                   {n.caretRight ? <span className="an-caret an-caret-right" /> : null}
                 </div>
               ))}
@@ -417,18 +421,18 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
               <div className="an-head">
                 <div className="an-title">
                   <Icon href="#i-ui-spaces" width={42} height={42} />
-                  Analytics &amp; Reporting
+                  {ui("Analytics & Reporting")}
                 </div>
                 <div className="an-headacts">
-                  <span className="an-btn">Revert to Old Version</span>
-                  <span className="an-btn">Open Fullscreen</span>
+                  <span className="an-btn">{ui("Revert to Old Version")}</span>
+                  <span className="an-btn">{ui("Open Fullscreen")}</span>
                 </div>
               </div>
 
               <div className="an-tabs">
                 {TABS.map((t) => (
                   <span className={t === "Snapshot" ? "an-tab an-on" : "an-tab"} key={t}>
-                    {t}
+                    {ui(t)}
                   </span>
                 ))}
               </div>
@@ -438,11 +442,11 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
                   {["Primary Team", "Secondary Team", "Tertiary Team"].map((t) => (
                     <div key={t}>
                       <div className="an-label">
-                        {t}
+                        {ui(t)}
                         <span className="an-info">i</span>
                       </div>
                       <div className="an-field">
-                        <span>All</span>
+                        <span>{ui("All")}</span>
                         <span className="an-caret" />
                       </div>
                     </div>
@@ -452,7 +456,7 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
                 <div className="an-gauges">
                   {GAUGES.map((g) => (
                     <div key={g.label}>
-                      <div className="an-label an-label-section">{g.label}</div>
+                      <div className="an-label an-label-section">{ui(g.label)}</div>
                       <div className="an-gauge">
                         <GaugeDial gauge={g} progress={gaugeProgress} />
                       </div>
@@ -467,11 +471,11 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
                   ].map((d) => (
                     <div key={d.label}>
                       <div className="an-label">
-                        {d.label}
+                        {ui(d.label)}
                         <span className="an-info">i</span>
                       </div>
                       <div className="an-field">
-                        <span>{d.value}</span>
+                        <span>{ui(d.value)}</span>
                       </div>
                     </div>
                   ))}
@@ -483,7 +487,7 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
                       key={c.label}
                       style={segmentStyle ? segmentStyle(i) : undefined}
                     >
-                      <div className="an-label an-label-section">{c.label}</div>
+                      <div className="an-label an-label-section">{ui(c.label)}</div>
                       <div className="an-chart">
                         <BarChart
                           chart={c}
@@ -501,8 +505,8 @@ export const WorkvivoAnalytics: React.FC<WorkvivoAnalyticsProps> = ({
                       className="an-line-chart-card"
                       style={lineSegmentStyle ? lineSegmentStyle(i) : undefined}
                     >
-                      <div className="an-label">{c.title}</div>
-                      <div className="an-line-chart-subtitle">{c.subtitle}</div>
+                      <div className="an-label">{ui(c.title)}</div>
+                      <div className="an-line-chart-subtitle">{ui(c.subtitle)}</div>
                       <LineChart
                         chart={c}
                         progress={lineChartProgress ? lineChartProgress(i) : 1}

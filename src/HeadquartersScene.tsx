@@ -10,6 +10,7 @@ import {
 } from "remotion";
 import { useCustomization } from "./customize/CustomizationProvider";
 import { FIXED_COPY } from "./customize/videoCopy";
+import { useT } from "./customize/uiStrings";
 
 interface AvatarItem {
   id: string;
@@ -154,6 +155,7 @@ const AvatarCircle: React.FC<{
 );
 
 export const HeadquartersScene: React.FC = () => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
   const { theme, image } = useCustomization();
@@ -334,7 +336,7 @@ export const HeadquartersScene: React.FC = () => {
             transformOrigin: "center center",
           }}
         >
-          {FIXED_COPY.headquartersHeadline}
+          {ui(FIXED_COPY.headquartersHeadline)}
         </h1>
       </div>
 
@@ -409,7 +411,7 @@ export const HeadquartersScene: React.FC = () => {
                 "0 0 25px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 255, 255, 0.3)",
             }}
           >
-            {currentWord}
+            {ui(currentWord)}
           </span>
         </div>
       )}
