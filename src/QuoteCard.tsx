@@ -1,5 +1,6 @@
 import React from "react";
 import { CursorArrow } from "./components/CursorArrow";
+import { RadialWash, ellipseFarthestCorner, farthestCorner, type WashStop } from "./components/RadialWash";
 import {
   AbsoluteFill,
   Easing,
@@ -148,15 +149,18 @@ const pulse = (frame: number, period: number) =>
   (1 - Math.cos((2 * Math.PI * frame) / period)) / 2;
 
 const Halo: React.FC<{
+  id: string;
   left: number;
   top: number;
   width: number;
   height: number;
-  background: string;
+  /** Stops of the CSS `radial-gradient(ellipse at center, …)` this was: the ellipse is
+   *  `farthest-corner`, rx = w/√2, ry = h/√2, drawn by RadialWash so the export paints it. */
+  stops: WashStop[];
   blur: number;
   baseOpacity: number;
   period: number;
-}> = ({ left, top, width, height, background, blur, baseOpacity, period }) => {
+}> = ({ id, left, top, width, height, stops, blur, baseOpacity, period }) => {
   const frame = useCurrentFrame();
   const t = pulse(frame, period);
 
@@ -169,7 +173,6 @@ const Halo: React.FC<{
         width,
         height,
         borderRadius: "50%",
-        background,
         filter: `blur(${blur}px)`,
         opacity: baseOpacity * interpolate(t, [0, 1], [0.8, 0.98]),
         transform: `scale(${interpolate(t, [0, 1], [1, 1.08])}) translate(${interpolate(
@@ -179,7 +182,9 @@ const Halo: React.FC<{
         )}px, ${interpolate(t, [0, 1], [0, 8])}px)`,
         pointerEvents: "none",
       }}
-    />
+    >
+      <RadialWash id={id} width={width} height={height} cx={width / 2} cy={height / 2} {...ellipseFarthestCorner(width, height)} stops={stops} />
+    </div>
   );
 };
 
@@ -200,14 +205,23 @@ const CrestHalo: React.FC<{ driftX?: number; driftY?: number }> = ({
         width: 380,
         height: 320,
         borderRadius: "50%",
-        background:
-          "radial-gradient(circle at center, rgba(226, 208, 255, 0.9) 0%, rgba(160, 130, 240, 0.6) 40%, rgba(96, 56, 200, 0.2) 70%, rgba(0, 3, 31, 0) 100%)",
         filter: "blur(45px)",
         opacity: interpolate(t, [0, 1], [0.85, 1]),
         transform: `translate(${driftX * 0.7}px, ${driftY * 0.7}px) scale(${interpolate(t, [0, 1], [1, 1.15])})`,
         pointerEvents: "none",
       }}
-    />
+    >
+      {/* Was `radial-gradient(circle at center, …)`: a farthest-corner circle of the 380x320 box. */}
+      <RadialWash
+        id="qc-crest"
+        width={380}
+        height={320}
+        cx={190}
+        cy={160}
+        rx={farthestCorner(190, 160, 380, 320)}
+        stops={[[0, "rgba(226, 208, 255, 0.9)"], [0.4, "rgba(160, 130, 240, 0.6)"], [0.7, "rgba(96, 56, 200, 0.2)"], [1, "rgba(0, 3, 31, 0)"]]}
+      />
+    </div>
   );
 };
 
@@ -298,31 +312,34 @@ export const QuoteCard: React.FC = () => {
   return (
     <AbsoluteFill style={{ backgroundColor: "#00031F", overflow: "hidden" }}>
       <Halo
+        id="qc-halo-0"
         left={350}
         top={250}
         width={1220}
         height={620}
-        background="radial-gradient(ellipse at center, rgba(112, 89, 220, 0.75) 0%, rgba(61, 39, 143, 0.45) 50%, rgba(0, 3, 31, 0) 75%)"
+        stops={[[0, "rgba(112, 89, 220, 0.75)"], [0.5, "rgba(61, 39, 143, 0.45)"], [0.75, "rgba(0, 3, 31, 0)"]]}
         blur={140}
         baseOpacity={0.85}
         period={125} // 5s at 25fps
       />
       <Halo
+        id="qc-halo-1"
         left={420}
         top={280}
         width={1080}
         height={560}
-        background="radial-gradient(ellipse at center, rgba(97, 3, 237, 0.65) 0%, rgba(52, 32, 143, 0.35) 60%, rgba(0, 3, 31, 0) 80%)"
+        stops={[[0, "rgba(97, 3, 237, 0.65)"], [0.6, "rgba(52, 32, 143, 0.35)"], [0.8, "rgba(0, 3, 31, 0)"]]}
         blur={120}
         baseOpacity={0.9}
         period={150} // 6s at 25fps
       />
       <Halo
+        id="qc-halo-2"
         left={380}
         top={620}
         width={780}
         height={320}
-        background="radial-gradient(ellipse at center, rgba(147, 96, 247, 0.8) 0%, rgba(96, 52, 214, 0.4) 50%, rgba(0, 3, 31, 0) 75%)"
+        stops={[[0, "rgba(147, 96, 247, 0.8)"], [0.5, "rgba(96, 52, 214, 0.4)"], [0.75, "rgba(0, 3, 31, 0)"]]}
         blur={100}
         baseOpacity={1}
         period={175} // 7s at 25fps

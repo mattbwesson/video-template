@@ -8,6 +8,7 @@ import { useCustomization } from '../../customize/CustomizationProvider';
 import type { Customization } from '../../customize/CustomizationProvider';
 import type { ImageSlotKey } from '../../customize/imagery';
 import { GlassRing } from "./GlassRing";
+import { RadialWash, farthestCorner, type WashStop } from "../RadialWash";
 import { useT } from "../../customize/uiStrings";
 
 export interface StorySlideData {
@@ -18,7 +19,21 @@ export interface StorySlideData {
   tags?: string[];
   paragraphs: string[];
   bgStyle?: React.CSSProperties;
+  /**
+   * Radial washes over `bgStyle`, in fractions of the stage, first-listed on top — what
+   * these were as CSS `radial-gradient(circle at x% y%, …)` layers, which the wizard's
+   * in-browser export does not paint. Each is a `farthest-corner` circle (see RadialWash).
+   */
+  washes?: { cx: number; cy: number; stops: WashStop[] }[];
 }
+
+/**
+ * The stage's box in composition px: the 393-wide phone less its 16.5px bezel each side,
+ * and the height left under the story's status bar and segments. Measured off the mounted
+ * component (gallery, `.wcmu-stage`), because `.wcmu-stage` is `flex: 1` and the CSS does
+ * not state it; the circles' farthest-corner radii need the real box.
+ */
+const STAGE = { w: 360, h: 699.5 };
 
 /**
  * The four story cards, as a function of the customisation rather than a constant.
@@ -46,11 +61,11 @@ const catchMeUpSlides = ({ image, theme, copy }: Customization): StorySlideData[
     tags: ['12 Questions', 'Anonymous'],
     paragraphs: [copy.stories[1].body],
 
-    bgStyle: {
-      background: '#FFFFFF',
-      backgroundImage:
-        `radial-gradient(circle at 85% 65%, ${theme.alpha(0.4)} 0%, ${theme.alpha(0.08)} 45%, transparent 65%), radial-gradient(circle at 15% 25%, ${theme.alpha(0.25)} 0%, transparent 45%)`,
-    },
+    bgStyle: { background: '#FFFFFF' },
+    washes: [
+      { cx: 0.85, cy: 0.65, stops: [[0, theme.alpha(0.4)], [0.45, theme.alpha(0.08)], [0.65, 'transparent']] },
+      { cx: 0.15, cy: 0.25, stops: [[0, theme.alpha(0.25)], [0.45, 'transparent']] },
+    ],
   },
   {
     title: copy.stories[2].title,
@@ -59,11 +74,11 @@ const catchMeUpSlides = ({ image, theme, copy }: Customization): StorySlideData[
     tags: ['1 step remaining'],
     paragraphs: [copy.stories[2].body],
 
-    bgStyle: {
-      background: '#FFFFFF',
-      backgroundImage:
-        `radial-gradient(circle at 80% 70%, ${theme.alpha(0.35)} 0%, ${theme.alpha(0.06)} 45%, transparent 65%), radial-gradient(circle at 20% 30%, ${theme.alpha(0.2)} 0%, transparent 40%)`,
-    },
+    bgStyle: { background: '#FFFFFF' },
+    washes: [
+      { cx: 0.8, cy: 0.7, stops: [[0, theme.alpha(0.35)], [0.45, theme.alpha(0.06)], [0.65, 'transparent']] },
+      { cx: 0.2, cy: 0.3, stops: [[0, theme.alpha(0.2)], [0.4, 'transparent']] },
+    ],
   },
   {
     title: copy.stories[3].title,
@@ -376,6 +391,19 @@ export const WorkvivoCatchMeUp: React.FC<WorkvivoCatchMeUpProps> = ({
                 overflow: 'hidden',
               }}
             >
+              {/* Bottom layer first, so the first-listed wash ends up on top as CSS had it. */}
+              {[...(currentSlide.washes ?? [])].reverse().map((w, i) => (
+                <RadialWash
+                  key={i}
+                  id={`cmu-wash-${currentSlide.slot}-${i}`}
+                  width={STAGE.w}
+                  height={STAGE.h}
+                  cx={w.cx * STAGE.w}
+                  cy={w.cy * STAGE.h}
+                  rx={farthestCorner(w.cx * STAGE.w, w.cy * STAGE.h, STAGE.w, STAGE.h)}
+                  stops={w.stops}
+                />
+              ))}
               <div className="wcmu-tapzone wcmu-l" id="prev" onClick={onPrevSlide} />
               <div className="wcmu-tapzone wcmu-r" id="next" onClick={onNextSlide} />
               <div

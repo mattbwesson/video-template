@@ -3,6 +3,7 @@ import { Easing, interpolate, useCurrentFrame } from "remotion";
 import "./WorkvivoStyles.css";
 import "./WorkvivoSeerInsightsStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { countText, surveyCommentScale, surveyComments } from "../../customize/memberCounts";
 import "./WorkvivoGlassEdge.css";
 import { SEER_TABS, WorkvivoSeerChrome } from "./WorkvivoSeerChrome";
 import {
@@ -173,10 +174,16 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
   const { copy } = useCustomization();
   const scale = Math.min(width / 1760, height / 1080);
 
-  // Titles and words from the copy table; sentiment bands, comment counts, scores and
-  // dates from the baseline. The chart's shape is the product's, the words on it are the
-  // company's — the same split the Rater tab makes.
-  const topics = SEER_TOPICS.map((t, i) => ({ ...t, title: copy.seer.topics[i] }));
+  // Titles and words from the copy table; sentiment bands, scores and dates from the
+  // baseline. The chart's shape is the product's, the words on it are the company's — the
+  // same split the Rater tab makes. Comment COUNTS are headcount-shaped and follow the
+  // survey's responses (memberCounts.ts), so the per-topic volumes scale with the total.
+  const commentScale = surveyCommentScale(copy.companySize);
+  const topics = SEER_TOPICS.map((t, i) => ({
+    ...t,
+    title: copy.seer.topics[i],
+    comments: Math.round(t.comments * commentScale),
+  }));
   const comments = SEER_COMMENTS.map((c, i) => ({
     ...c,
     driver: copy.seer.comments[i].driver,
@@ -279,7 +286,7 @@ const WorkvivoSeerInsightsBody: React.FC<Required<WorkvivoSeerInsightsProps>> = 
 
               <div className="wsi-comments-head" style={getAnimStyle(16, 24)}>
                 <span className="wsi-comments-title">{ui("All Comments")}</span>
-                <span className="wsi-comments-count">{ui("9,430 Comments")}</span>
+                <span className="wsi-comments-count">{countText(surveyComments(copy.companySize))}{ui(" Comments")}</span>
               </div>
 
               <div className="wsi-sentiment" style={getAnimStyle(17, 24)}>

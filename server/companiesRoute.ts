@@ -48,6 +48,23 @@ const MISS_LIMIT = 10;
 const MISS_WINDOW_MS = 5 * 60 * 1000;
 const misses = new Map<string, { n: number; until: number }>();
 
+/**
+ * The map is otherwise only pruned when an address comes back, so an address that misses
+ * once and never returns would sit in it for the life of the process — a scanner rotating
+ * source addresses against a directly-exposed instance would grow it without bound. Past
+ * this many entries, a new address first drops every expired one and then, if still full,
+ * the oldest (a Map iterates in insertion order). Behind fly-proxy every request shares a
+ * handful of peer addresses and this never fires; it exists for the exposed case.
+ */
+const MISS_MAP_CAP = 10_000;
+const sweep = (now: number): void => {
+  for (const [addr, hit] of misses) if (now > hit.until) misses.delete(addr);
+  if (misses.size >= MISS_MAP_CAP) {
+    const oldest = misses.keys().next().value;
+    if (oldest !== undefined) misses.delete(oldest);
+  }
+};
+
 const throttled = (addr: string): boolean => {
   const hit = misses.get(addr);
   if (!hit) return false;
@@ -62,6 +79,7 @@ const noteMiss = (addr: string): void => {
   const hit = misses.get(addr);
   const now = Date.now();
   if (!hit || now > hit.until) {
+    if (!hit && misses.size >= MISS_MAP_CAP) sweep(now);
     misses.set(addr, { n: 1, until: now + MISS_WINDOW_MS });
     return;
   }
