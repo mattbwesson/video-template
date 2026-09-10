@@ -31,8 +31,13 @@ import { WorkvivoIntegrationsMarketplaceScene } from "../WorkvivoIntegrationsMar
 import { WorkvivoAdminHubScene } from "../WorkvivoAdminHubScene";
 import { WorkvivoCustomerGridScene } from "../WorkvivoCustomerGridScene";
 import { WorkvivoPhonesScene } from "../components/workvivo";
-import { HqOpeningScene, HQ_OPENING_FROM, HQ_OPENING_TO } from "../HqOpeningScene";
-import { HqFanBeatScene, HQ_FAN_BEATS } from "../HqFanBeatScene";
+import {
+  HqOpeningScene,
+  HQ_OPENING_FROM,
+  HQ_OPENING_TO,
+  type HqPane,
+} from "../HqOpeningScene";
+import { HqFanBeatScene, HQ_FAN_BEATS, type HqFanBeat } from "../HqFanBeatScene";
 import { SurveyBuilderScene, SURVEY_FROM, SURVEY_TO } from "../SurveyBuilderScene";
 import { AdminCategoriesScene, ADMIN_FROM, ADMIN_TO } from "../AdminCategoriesScene";
 import { SignOffScene, SIGNOFF_FROM, SIGNOFF_TO } from "../SignOffScene";
@@ -89,6 +94,69 @@ export type BlockProps = {
 const placer = (slot: Slot) => (globalFrame: number) =>
   slot.localOffset + globalFrame - slot.window.from;
 
+/**
+ * The global frame the opening's wheel hands a chapter its pillar card on.
+ *
+ * 390 is where the intro window ends and where, in the film, the Comms card begins. The
+ * opening's own tables run to 417 and clamp after that, so a card longer than 27 frames
+ * simply holds the wheel at its last pose — which is what the Search and People cards, at
+ * 34 and 62 frames, do.
+ */
+const CARD_FROM = 390;
+
+/**
+ * The pillar card at the head of a chapter: the wheel with that chapter's pane put forward.
+ *
+ * TWO WAYS IN, and `slot.cardFromOpening` decides. A chapter that opens a cut CONTINUES the
+ * opening's wheel — `HqOpeningScene` carries on from 390 with `lit` set to this chapter's
+ * pane, so the two others drop back to glass and nothing on screen moves or is replaced. A
+ * chapter arriving after another chapter plays its own fan beat, which is the film's own
+ * shot: the fan drops in high, settles, and one pane lights.
+ *
+ * The reason is in `Slot.cardFromOpening` at length. Short version: the opening ends with a
+ * settled wheel, all three panes lit; a fan beat starts with an unsettled wheel, none lit.
+ * Cutting between those jumps and dissolving between them draws both fans at once. Only the
+ * film's own answer — keep the wheel, put one pane out — reads as a single graphic.
+ */
+const PillarCard: React.FC<{
+  slot: Slot;
+  lit: HqPane;
+  /** This chapter's own fan beat, or null for Comms, whose card only ever comes from the opening. */
+  beat: HqFanBeat | null;
+}> = ({ slot, lit, beat }) => {
+  const at = placer(slot);
+  const length = beat ? beat.to - beat.from : HQ_OPENING_TO - CARD_FROM;
+
+  if (slot.cardFromOpening) {
+    return (
+      <Sequence
+        name={`Pillar card, continuing the opening (${slot.window.from} - ${slot.window.from + length})`}
+        from={at(slot.window.from)}
+        durationInFrames={length}
+      >
+        {/* Carries the scene back to where it began, so it reads global 390 on this card's
+            first frame. It derives its own global frame, so nothing here restates its
+            motion — see IntroBlock, which mounts the earlier 251 frames of the same
+            component. */}
+        <Sequence from={HQ_OPENING_FROM - CARD_FROM}>
+          <HqOpeningScene lit={lit} />
+        </Sequence>
+      </Sequence>
+    );
+  }
+
+  if (!beat) return null;
+  return (
+    <Sequence
+      name={`HQ Fan beat (${beat.from} - ${beat.to})`}
+      from={at(beat.from)}
+      durationInFrames={beat.to - beat.from}
+    >
+      <HqFanBeatScene beat={beat} />
+    </Sequence>
+  );
+};
+
 // ---------------------------------------------------------------------------------------
 
 /**
@@ -97,13 +165,15 @@ const placer = (slot: Slot) => (globalFrame: number) =>
  * The brand mark, the faces, the workvivo HQ title card, and the wheel with all three
  * pillars lit.
  *
- * `HqOpeningScene` runs 139 - 417 in the film, which is 27 frames PAST this window: its
- * tail is the pillar card that belongs to whichever chapter follows, and in the film that
- * chapter is always Comms. Here it is clipped at 390 and `CommsBlock` mounts the tail, so
- * a cut going intro -> Search dissolves away from the wheel with all three lit rather than
- * from a Comms card its chapter never plays. The scene reads its own global frame off
- * `useCurrentFrame() + HQ_OPENING_FROM`, which is what lets both halves be mounted from the
- * one component without either of them re-deriving its motion.
+ * `HqOpeningScene` runs 139 - 417 in the film, which is 27 frames PAST this window. Those
+ * last frames are the pillar card of whichever chapter follows — the wheel dropping two
+ * panes back to glass — so they belong to that chapter and not to the intro, and `PillarCard`
+ * mounts them. Clipping here at 390 is what lets a cut open on any of the three: the intro
+ * always ends with all three panes lit, and the chapter decides which one survives.
+ *
+ * The scene reads its own global frame off `useCurrentFrame() + HQ_OPENING_FROM`, which is
+ * what lets both halves be mounted from the one component without either re-deriving its
+ * motion.
  */
 export const IntroBlock: React.FC<BlockProps> = ({ slot }) => {
   const at = placer(slot);
@@ -166,20 +236,9 @@ export const CommsBlock: React.FC<BlockProps> = ({ slot }) => {
         audio={slot.audio}
       />
       <BlockFade slot={slot}>
-        {/* The pillar card: the tail of the HQ opening, whose wheel lights Communication &
-          Engagement across these 27 frames. The scene started 251 frames before this window
-          and derives its own global frame, so the inner sequence carries it back to where it
-          began rather than restating any of its motion — see IntroBlock, which mounts the
-          other 251 frames of the same component. */}
-        <Sequence
-          name={`HQ Opening, pillar card (${slot.window.from} - ${HQ_OPENING_TO})`}
-          from={at(slot.window.from)}
-          durationInFrames={HQ_OPENING_TO - slot.window.from}
-        >
-          <Sequence from={HQ_OPENING_FROM - slot.window.from}>
-            <HqOpeningScene />
-          </Sequence>
-        </Sequence>
+        {/* The wheel puts Communication & Engagement forward over these 27 frames, the other
+          two panes dropping back to glass at 393-399. */}
+        <PillarCard slot={slot} lit="comm" beat={null} />
         {/* Workvivo Home (417 - 600) */}
         <Sequence
           name="Workvivo Home (417 - 600)"
@@ -379,11 +438,12 @@ export const CommsBlock: React.FC<BlockProps> = ({ slot }) => {
 /**
  * Search & Knowledge — global 2236 - 2760.
  *
- * It opens on the fan dropping in and settling, Search & Knowledge lighting at 2252.
+ * It opens on the wheel with Search & Knowledge put forward, which is either this chapter's
+ * own fan beat or the opening's wheel continued — see PillarCard.
  *
- * That beat runs to 2270 rather than to the 2268 the ask bar starts on, and the two frames
+ * The card runs to 2270 rather than to the 2268 the ask bar starts on, and the two frames
  * are load-bearing: the ask bar opens a circular mask over 2268-2270, and a mask has to
- * open ONTO something. The fan holds its last pose behind the growing circle for those two
+ * open ONTO something. The wheel is still there behind the growing circle for those two
  * frames, which is what the original had underneath it. See HQ_FAN_BEATS.
  */
 export const SearchBlock: React.FC<BlockProps> = ({ slot }) => {
@@ -398,14 +458,10 @@ export const SearchBlock: React.FC<BlockProps> = ({ slot }) => {
         audio={slot.audio}
       />
       <BlockFade slot={slot}>
-        {/* The pillar card: the fan drops in high, settles and pushes in. */}
-        <Sequence
-          name={`HQ Fan beat (${HQ_FAN_BEATS.askBar.from} - ${HQ_FAN_BEATS.askBar.to})`}
-          from={at(HQ_FAN_BEATS.askBar.from)}
-          durationInFrames={HQ_FAN_BEATS.askBar.to - HQ_FAN_BEATS.askBar.from}
-        >
-          <HqFanBeatScene beat={HQ_FAN_BEATS.askBar} />
-        </Sequence>
+        {/* The wheel puts Search & Knowledge forward — either the opening's wheel doing it
+            in place, or this chapter's own fan beat arriving. See PillarCard. Whichever it
+            is, it is still on screen at 2268 for the ask bar's mask to open onto. */}
+        <PillarCard slot={slot} lit="search" beat={HQ_FAN_BEATS.askBar} />
         {/* A circular mask scales up revealing the ask bar. */}
         <Sequence name="Ask bar (2268 - 2317)" from={at(2268)} durationInFrames={49}>
           <AskBarScene background={theme.brand} maskFrom={0} maskTo={2} />
@@ -482,15 +538,9 @@ export const PeopleBlock: React.FC<BlockProps> = ({ slot }) => {
         audio={slot.audio}
       />
       <BlockFade slot={slot}>
-        {/* The pillar card: the fan drops in and settles, People Intelligence lighting as the
-          chapter's own voiceover starts at 3387. */}
-        <Sequence
-          name={`HQ Fan beat (${HQ_FAN_BEATS.analytics.from} - ${HQ_FAN_BEATS.analytics.to})`}
-          from={at(HQ_FAN_BEATS.analytics.from)}
-          durationInFrames={HQ_FAN_BEATS.analytics.to - HQ_FAN_BEATS.analytics.from}
-        >
-          <HqFanBeatScene beat={HQ_FAN_BEATS.analytics} />
-        </Sequence>
+        {/* The wheel puts People Intelligence forward across these 62 frames, the chapter's
+            own voiceover starting at 3387. See PillarCard for the two ways in. */}
+        <PillarCard slot={slot} lit="people" beat={HQ_FAN_BEATS.analytics} />
         {/* The chapter proper starts at 3388, where Analytics & Reporting animates up on
           #010320: the camera pans to the bar charts at 3430, zooms out at 3475 and the
           whole screen animates back down from 3534. */}

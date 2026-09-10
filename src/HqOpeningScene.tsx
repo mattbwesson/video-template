@@ -53,22 +53,61 @@ const TAGLINE_CX = 958.5;
 
 /** Lockup width in px, by global frame. The scale that drives the entire card. */
 const LOCKUP_W: [number, number][] = [
-  [139, 934], [145, 918], [151, 902], [157, 886], [163, 868], [169, 850],
-  [175, 836], [181, 824], [187, 816], [193, 810], [199, 806], [205, 802],
-  [211, 794], [217, 790], [223, 782], [229, 774], [235, 762], [241, 752],
-  [247, 738], [253, 722], [259, 702], [263, 688],
+  [139, 934],
+  [145, 918],
+  [151, 902],
+  [157, 886],
+  [163, 868],
+  [169, 850],
+  [175, 836],
+  [181, 824],
+  [187, 816],
+  [193, 810],
+  [199, 806],
+  [205, 802],
+  [211, 794],
+  [217, 790],
+  [223, 782],
+  [229, 774],
+  [235, 762],
+  [241, 752],
+  [247, 738],
+  [253, 722],
+  [259, 702],
+  [263, 688],
 ];
 
 /** Lockup centre Y. Flat at 538 until the tagline arrives, then up ~58px and a slow drift. */
 const LOCKUP_Y: [number, number][] = [
-  [139, 538], [190, 538], [193, 530], [196, 506], [199, 493], [202, 486],
-  [205, 483], [208, 480], [217, 479], [229, 479], [241, 481], [253, 484], [263, 486],
+  [139, 538],
+  [190, 538],
+  [193, 530],
+  [196, 506],
+  [199, 493],
+  [202, 486],
+  [205, 483],
+  [208, 480],
+  [217, 479],
+  [229, 479],
+  [241, 481],
+  [253, 484],
+  [263, 486],
 ];
 
 /** Tagline centre Y: slides up as it fades in, then rides the card's scale. */
 const TAGLINE_Y: [number, number][] = [
-  [190, 762], [193, 760], [196, 753], [199, 739], [202, 732], [205, 728],
-  [208, 725], [217, 720], [229, 716], [241, 711], [253, 704], [263, 705],
+  [190, 762],
+  [193, 760],
+  [196, 753],
+  [199, 739],
+  [202, 732],
+  [205, 728],
+  [208, 725],
+  [217, 720],
+  [229, 716],
+  [241, 711],
+  [253, 704],
+  [263, 705],
 ];
 
 /**
@@ -79,8 +118,20 @@ const TAGLINE_Y: [number, number][] = [
  * It starts at 0.45, not 0: the reference began this fade before frame 139, and the film
  * cuts into the middle of it. Starting from 0 here would be a different shot.
  */
-const LOCKUP_O: [number, number][] = [[139, 0.45], [142, 0.6], [145, 0.74], [148, 0.91], [151, 1]];
-const TAGLINE_O: [number, number][] = [[190, 0], [193, 0.36], [196, 0.79], [199, 0.95], [202, 1]];
+const LOCKUP_O: [number, number][] = [
+  [139, 0.45],
+  [142, 0.6],
+  [145, 0.74],
+  [148, 0.91],
+  [151, 1],
+];
+const TAGLINE_O: [number, number][] = [
+  [190, 0],
+  [193, 0.36],
+  [196, 0.79],
+  [199, 0.95],
+  [202, 1],
+];
 
 /** The tagline is this multiple of the lockup's width, constant to 0.2% across the beat. */
 const TAGLINE_RATIO = 1.801;
@@ -188,27 +239,82 @@ const CUT_END = 0.6;
 const FAN_ORIGIN: [number, number] = [950, 869];
 const FAN_OFFSET: [number, number] = [3, -2];
 const FAN_SCALE: [number, number][] = [
-  [277, 0.9722], [285, 0.9731], [300, 0.9745], [320, 0.9772],
-  [350, 0.9827], [380, 0.9953], [400, 1.0078], [416, 1.0226],
+  [277, 0.9722],
+  [285, 0.9731],
+  [300, 0.9745],
+  [320, 0.9772],
+  [350, 0.9827],
+  [380, 0.9953],
+  [400, 1.0078],
+  [416, 1.0226],
 ];
 
+export type HqPane = "comm" | "search" | "people";
+
 /**
- * When each pane fills, and when the last two drop back to glass. Read off the reference by
- * sampling the middle of each pane and finding the frames where it steps.
+ * When each pane fills. Read off the reference by sampling the middle of each pane and
+ * finding the frames where it steps.
  */
-const FILL: Record<"comm" | "search" | "people", [number, number][]> = {
-  comm: [[268, 0], [272, 1]],
-  search: [[284, 0], [285, 0], [293, 1], [393, 1], [399, 0]],
-  people: [[305, 0], [306, 0], [313, 1], [393, 1], [399, 0]],
+const RISE: Record<HqPane, [number, number][]> = {
+  comm: [
+    [268, 0],
+    [272, 1],
+  ],
+  search: [
+    [284, 0],
+    [285, 0],
+    [293, 1],
+  ],
+  people: [
+    [305, 0],
+    [306, 0],
+    [313, 1],
+  ],
 };
 
-const at = (table: [number, number][], g: number) =>
-  interpolate(g, table.map((r) => r[0]), table.map((r) => r[1]), {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-  });
+/**
+ * The drop back to glass, appended to every pane EXCEPT the one being picked out.
+ *
+ * This is the beat that hands the opening over to a chapter: all three panes are lit from
+ * 313, and then over these six frames two of them let go, leaving the chapter that follows
+ * alone on the wheel. In the reference the survivor is always Communication & Engagement,
+ * because that is the chapter the film cuts to — which is why `lit` defaults to it and why
+ * `WorkvivoCut` never passes the prop.
+ *
+ * A cut whose first chapter is Search & Knowledge or People Intelligence needs the same
+ * beat with a different survivor. Doing it here rather than by cutting to that chapter's
+ * own fan beat is the whole point: the wheel never leaves the screen, so one pane simply
+ * goes out and the graphic is continuous. See src/cuts/blocks.tsx.
+ */
+const DROP_BACK: [number, number][] = [
+  [393, 1],
+  [399, 0],
+];
 
-export const HqOpeningScene: React.FC = () => {
+const at = (table: [number, number][], g: number) =>
+  interpolate(
+    g,
+    table.map((r) => r[0]),
+    table.map((r) => r[1]),
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
+
+/** A pane's fill by global frame: its own rise, then the drop-back unless it is the one lit. */
+const fillOf = (pane: HqPane, lit: HqPane, g: number) =>
+  at(pane === lit ? RISE[pane] : [...RISE[pane], ...DROP_BACK], g);
+
+export const HqOpeningScene: React.FC<{
+  /**
+   * Which pane is left lit when the other two drop back at 393-399.
+   *
+   * Defaults to the pane the reference leaves lit, so the film is unchanged by this prop
+   * existing. Only a cut that opens on a different chapter passes it.
+   */
+  lit?: HqPane;
+}> = ({ lit = "comm" }) => {
   // Local 0 is global HQ_OPENING_FROM. The tables are global, so convert once, here.
   const g = useCurrentFrame() + HQ_OPENING_FROM;
   const t = useT();
@@ -228,9 +334,13 @@ export const HqOpeningScene: React.FC = () => {
           top: at(LOCKUP_Y, g),
           transform: "translate(-50%, -50%)",
           opacity: at(LOCKUP_O, g),
-        }}>
+        }}
+      >
         {/* One turn every 6s, as in the source artwork's own rig. */}
-        <HqLockup width={lockupW} gradientAngle={((g - HQ_OPENING_FROM) / 25 / 6) * 360} />
+        <HqLockup
+          width={lockupW}
+          gradientAngle={((g - HQ_OPENING_FROM) / 25 / 6) * 360}
+        />
       </div>
       <div
         style={{
@@ -248,7 +358,8 @@ export const HqOpeningScene: React.FC = () => {
           letterSpacing: TAGLINE_TRACKING,
           whiteSpace: "nowrap",
           textAlign: "center",
-        }}>
+        }}
+      >
         {t("The AI-native employee experience platform")}
       </div>
     </AbsoluteFill>
@@ -259,13 +370,14 @@ export const HqOpeningScene: React.FC = () => {
       style={{
         transform: `translate(${FAN_OFFSET[0]}px, ${FAN_OFFSET[1]}px) scale(${fanScale.toFixed(4)})`,
         transformOrigin: `${FAN_ORIGIN[0]}px ${FAN_ORIGIN[1]}px`,
-      }}>
+      }}
+    >
       <WorkvivoHqFan
         field={false}
         fills={{
-          comm: at(FILL.comm, g),
-          search: at(FILL.search, g),
-          people: at(FILL.people, g),
+          comm: fillOf("comm", lit, g),
+          search: fillOf("search", lit, g),
+          people: fillOf("people", lit, g),
         }}
       />
     </AbsoluteFill>

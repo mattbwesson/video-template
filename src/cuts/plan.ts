@@ -38,12 +38,18 @@
  * dissolve laid across two consecutive frames of one shot is a transition between a shot
  * and itself, which costs 15 frames and looks like a fault.
  *
- * Checked against the three cuts that were signed off, back when they were separate
- * compositions: a plan for `search` alone comes out at 1216 frames and one for `people`
- * alone at 2349, which were their hand-cut lengths exactly. `comms` alone comes out at
- * 2553 against that fork's 2545, because the fork mounted its logo wall four frames early
- * and stopped its tail four frames short of the strapline. The plan's number is the right
- * one — the eight frames are the ending the fork was clipping.
+ * LENGTHS, and why none of the three matches the fork it replaced:
+ *
+ *   comms   2553   against the fork's 2545. The fork mounted its logo wall four frames
+ *                  early and stopped its tail four frames short of the strapline; the
+ *                  eight frames are the ending it was clipping.
+ *   search  1231   against 1216, and people 2364 against 2349. Both gain the same fifteen:
+ *   people  2364   the first chapter used to be pulled back over the opening's tail for a
+ *                  CROSSFADE, and it no longer arrives on one — see `cardFromOpening`.
+ *
+ * The chapters themselves are untouched by any of that. Every scene still sits on the
+ * global frame it sat on in L2VirginAirline, which is checked by rendering frames of a cut
+ * and the same global frames of the film and comparing them byte for byte.
  */
 
 /** The three pillars, in the order the film puts them up. */
@@ -73,10 +79,16 @@ export const lengthOf = (w: Window): number => w.to - w.from;
 /**
  * Frames of dissolve where a chapter arrives on a cut rather than on a continuation.
  *
- * Fifteen, as both the Search and People cuts use, and for their reason: every chapter in
- * this film opens on the pillar wheel dimmed and re-entering with its own pillar picked
- * out, so a dissolve into it reads as one graphic changing state rather than as a cut
- * between two shots.
+ * Fifteen, and for the reason the Search and People cuts gave: a chapter opens on the
+ * pillar wheel re-entering with its own pillar picked out, so a dissolve into it reads as
+ * one graphic changing state rather than as a cut between two shots.
+ *
+ * NOT USED AT THE OPENING'S JOIN, which is the one place that argument turns out to be
+ * wrong. The wheel is ALREADY on screen there, so a dissolve puts two of them up at once
+ * and doubles every label; that join continues the opening instead of dissolving into a
+ * second fan. See `cardFromOpening`. What is left for this constant is a chapter arriving
+ * after another chapter, where the outgoing shot is a product screen and there genuinely
+ * are two different things to dissolve between.
  *
  * It costs frames — the incoming window is pulled back over the tail of the outgoing one —
  * which is why `planFor` subtracts it from the running offset rather than adding it.
@@ -161,6 +173,23 @@ export type Slot = {
   fadeIn: number;
   /** Which ends of the soundtrack are faded, and where. Empty for a continuation. */
   audio: AudioFades;
+  /**
+   * Draw this chapter's pillar card by CONTINUING the opening's wheel rather than by
+   * arriving on its own fan beat. True for whichever chapter comes first.
+   *
+   * The opening ends with the wheel on screen and all three panes lit, and every chapter
+   * begins by putting one pane forward. Played as two shots those are two fans — the
+   * opening's, settled, and the chapter's, dropping in from high with its panes unlit — so
+   * cutting between them jumps and dissolving between them leaves both on screen at once,
+   * doubling every label. Neither is a transition anyone would ask for.
+   *
+   * The film never has the problem, because the only chapter it cuts to from the opening is
+   * Comms, whose card IS the opening's last 27 frames: the wheel stays put and two panes go
+   * out. This flag gives the other two chapters the same treatment when they open a cut —
+   * `HqOpeningScene` continues, with `lit` set to that chapter's pane. One graphic changing
+   * state, which is what the beat was always meant to be.
+   */
+  cardFromOpening: boolean;
 };
 
 export type CutPlan = {
@@ -215,10 +244,17 @@ export const planFor = (picked: readonly PillarId[]): CutPlan => {
 
     const isOutro = key === "outro";
 
+    // The first chapter continues the opening's wheel rather than arriving on its own fan
+    // beat, so there is nothing to dissolve — see `cardFromOpening`. Note this deliberately
+    // does NOT extend to the sound: the picture is one continuous graphic across this join,
+    // but the two windows are unrelated stretches of the track, so the audio fades below
+    // still apply.
+    const cardFromOpening = i > 0 && keys[i - 1] === "intro" && !isOutro;
+
     // The outro never dissolves in. It either continues (people last), dips through the
     // brand colour (search last) or hard-cuts (comms last) — the three treatments the
     // three approved cuts already use, each reproduced at the join it belongs to.
-    const fadeIn = i === 0 || abutsPrev || isOutro ? 0 : CROSSFADE;
+    const fadeIn = i === 0 || abutsPrev || isOutro || cardFromOpening ? 0 : CROSSFADE;
 
     if (isOutro) {
       if (abutsPrev) gridDissolve = OUTRO_GRID_DISSOLVE;
@@ -236,6 +272,7 @@ export const planFor = (picked: readonly PillarId[]): CutPlan => {
       window,
       localOffset: offset,
       fadeIn,
+      cardFromOpening,
       audio: {
         ...(abutsPrev || i === 0 ? {} : { fadeIn: audio.fadeIn }),
         ...(abutsNext || i === keys.length - 1 ? {} : { fadeOut: audio.fadeOut }),
