@@ -131,7 +131,11 @@ export const RemotionRoot: React.FC = () => {
           Question palette and the per-question action bar. */}
       <Composition
         id="WorkvivoSurveyBuilder"
-        component={WorkvivoSurveyBuilder}
+        /* withCustomization, like every other customised screen here: the modal reads
+           `copy.surveyBuilder.prompt` through useCustomization(), which throws without
+           a provider above it. The main cut and the gallery both supply one; a bare
+           registration here rendered nothing but that error. */
+        component={withCustomization(WorkvivoSurveyBuilder)}
         durationInFrames={VIRGIN_FPS * 5}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
