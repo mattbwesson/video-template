@@ -1133,7 +1133,11 @@ export const ENTRIES: Entry[] = [
     height: 1080,
     durationInFrames: 1,
     poster: 0,
-    Stage: () => <WorkvivoSurveyBuilder />,
+    Stage: () => (
+      <Provided>
+        <WorkvivoSurveyBuilder />
+      </Provided>
+    ),
   },
 
   {

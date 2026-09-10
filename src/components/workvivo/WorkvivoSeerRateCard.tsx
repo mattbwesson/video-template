@@ -35,10 +35,13 @@ export interface WorkvivoSeerRateCardProps {
   /** 0..1, threaded into the donut so the ring can sweep on entrance. */
   progress?: number;
   /**
-   * The responses figure. The card floating beside the phone shows the whole company's
-   * count; the copy inside the phone is one manager's team, so it reads 12/16.
+   * The responses figure, "<responses>/<audience>". Required, with no capture default:
+   * the card floating beside the phone shows the whole company's count, which derives
+   * from `companySize` (surveyResponses/surveyAudience in memberCounts.ts) and must
+   * agree with the desktop dashboard six seconds earlier; the copy inside the phone is
+   * one manager's team, so it reads 12/16.
    */
-  responses?: string;
+  responses: string;
   /**
    * Phone scale rather than the desktop screen's body scale. The card inside the phone at
    * 3903 sits among 14-16px type, so the 12px it uses beside the phone reads as small
@@ -50,7 +53,7 @@ export interface WorkvivoSeerRateCardProps {
 
 export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
   progress = 1,
-  responses = "10,395/13,860",
+  responses,
   large = false,
   style,
 }) => {

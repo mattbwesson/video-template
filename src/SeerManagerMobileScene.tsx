@@ -12,6 +12,8 @@ import { GlassRing } from "./components/workvivo/GlassRing";
 import { SeerScoreCard } from "./components/workvivo/WorkvivoSeerManagerInsights";
 import { WorkvivoSeerManagerMobile } from "./components/workvivo/WorkvivoSeerManagerMobile";
 import { WorkvivoSeerRateCard } from "./components/workvivo/WorkvivoSeerRateCard";
+import { useCustomization } from "./customize/CustomizationProvider";
+import { countText, surveyAudience, surveyResponses } from "./customize/memberCounts";
 import "./components/workvivo/WorkvivoMobileStyles.css";
 import "./components/workvivo/WorkvivoGlassEdge.css";
 import "./components/workvivo/WorkvivoSeerManagerInsightsStyles.css";
@@ -228,6 +230,11 @@ export const SeerManagerMobileScene: React.FC = () => {
     };
   };
 
+  // The floating card is the whole company's survey, so its figure is the same derived
+  // pair the desktop dashboard printed at 3758 — not the capture's 10,395/13,860.
+  const { copy } = useCustomization();
+  const responses = `${countText(surveyResponses(copy.companySize))}/${countText(surveyAudience(copy.companySize))}`;
+
   const bubble = arrive(0, -34);
   const rate = arrive(1, -46);
   const score = arrive(2, 46);
@@ -292,7 +299,7 @@ export const SeerManagerMobileScene: React.FC = () => {
           willChange: "transform, opacity",
         }}
       >
-        <WorkvivoSeerRateCard progress={cardDonut} />
+        <WorkvivoSeerRateCard progress={cardDonut} responses={responses} />
       </div>
 
       {/* ---- centre: the phone ---- */}

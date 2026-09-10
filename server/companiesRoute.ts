@@ -244,10 +244,19 @@ export const handleCompanies = (req: IncomingMessage, res: ServerResponse): void
     since = d.toISOString();
   }
 
-  const limitRaw = Number(url.searchParams.get("limit") ?? DEFAULT_LIMIT);
-  const limit = Number.isFinite(limitRaw)
-    ? Math.min(MAX_LIMIT, Math.max(1, Math.floor(limitRaw)))
-    : DEFAULT_LIMIT;
+  // Absent or empty means the default; anything else must be a positive integer, as the
+  // OpenAPI declares (minimum 1) — `Number("")` is 0, so the empty case is checked by
+  // hand rather than left to clamp silently to a one-row page.
+  const limitRaw = url.searchParams.get("limit");
+  let limit = DEFAULT_LIMIT;
+  if (limitRaw !== null && limitRaw.trim() !== "") {
+    const n = Number(limitRaw);
+    if (!Number.isInteger(n) || n < 1) {
+      send(res, 400, { error: "limit must be a positive integer." });
+      return;
+    }
+    limit = Math.min(MAX_LIMIT, n);
+  }
 
   let rows = companiesFrom(readAll());
   if (since) rows = rows.filter((c) => c.lastSeen >= since);

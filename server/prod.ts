@@ -94,7 +94,7 @@ const servePublic = sirv(PUBLIC_DIR, { maxAge: 3600, etag: true });
  *     out.mp4 --props=workvivo-acme.json
  *
  * The renderer fetches bundle.js and index.html from here once, then streams the
- * composition's assets — including the 45 MB reference video, by Range request, which is
+ * composition's assets — the soundtrack by Range request, and the glass PNGs — which is
  * why this goes through sirv like everything else. Webpack's chunk names are not
  * content-hashed, so the cache policy matches public/: an hour with revalidation, not a
  * year. Built by `npm run bundle:build` and copied in by the Dockerfile.

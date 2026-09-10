@@ -88,23 +88,26 @@ const FACES: { src: string; slot: ImageSlotKey }[] = [
  * the break is derived instead: the first half of the words go on line one, the rest on
  * line two, and the final two words are bolded. For the baseline string that reproduces
  * the reference exactly, and a shorter or longer title still lands on two lines.
+ *
+ * Translated as a whole and THEN split — the dictionary is keyed on the full title, so
+ * translating the fragments matched nothing and the Japanese cut kept the English cover.
  */
 const DocTitle: React.FC<{ text: string }> = ({ text }) => {
   const ui = useT();
-  const words = text.trim().split(/\s+/);
+  const words = ui(text).trim().split(/\s+/);
   const split = Math.ceil(words.length / 2);
   const head = words.slice(0, split).join(" ");
   const tail = words.slice(split);
   const boldFrom = Math.max(0, tail.length - 2);
   return (
     <div className="wsf-doc-title">
-      {ui(head)}
+      {head}
       {tail.length ? (
         <>
           <br />
-          {ui(tail.slice(0, boldFrom).join(" "))}
-          {ui(boldFrom ? " " : "")}
-          <b>{ui(tail.slice(boldFrom).join(" "))}</b>
+          {tail.slice(0, boldFrom).join(" ")}
+          {boldFrom ? " " : ""}
+          <b>{tail.slice(boldFrom).join(" ")}</b>
         </>
       ) : null}
     </div>

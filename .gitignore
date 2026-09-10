@@ -17,7 +17,7 @@ build
 # rejected outright. `l2-reference-212s.mp4` is the same 212 seconds at CRF 24 and IS
 # committed, because it is what every scene's measurements were read off — see the ffmpeg
 # lines in the scene headers. Neither is a render dependency any longer; the film draws
-# all 5300 of its own frames and plays its soundtrack from public/audio/l2-soundtrack.mp3.
+# all 5300 of its own frames and plays its soundtrack from public/audio/l2-soundtrack.m4a.
 public/img/L2 Video(Virgin Airline).mp4
 
 # The old 54-second trim, from when the customised cut stopped at frame 1350. Nothing

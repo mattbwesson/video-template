@@ -222,10 +222,10 @@ export const startRender = ({
       // 192 kbps AAC rather than the default 128. Two megabytes over the whole cut, on a
       // soundtrack that carries the film's only music.
       audioBitrate: "high",
-      // The reference video underneath every scene is a 212-second 1920x1080 file. The
-      // default cache is far smaller than one decode pass over it, so frames get re-decoded
-      // constantly; 512 MB keeps the working set resident and is the single biggest lever
-      // on how long this takes.
+      // Sized when a 212-second 1920x1080 reference video sat under every scene and its
+      // decode working set had to stay resident. The film draws all its own frames now and
+      // the only media is the 5 MB soundtrack, so this is a ceiling nothing approaches —
+      // kept because it costs nothing unused, not because it still matters.
       mediaCacheSizeInBytes: 512 * 1024 * 1024,
       onProgress: (p) =>
         onProgress({

@@ -36,14 +36,15 @@
   width: 480px;
 }
 
-/* `color` is repeated here and on .hqf-sub rather than inherited from .hqf-label.
-   Both labels exported as a DARK ghost of themselves — visible as a shadow on the lit
-   wedge, invisible on the dim ones — i.e. the fill resolved to something near black rather
-   than to the white on the parent. Inheritance is the thing the export's style resolution
-   cannot be relied on for; the same reasoning is why SymbolSvg substitutes `paint` into a
-   symbol's own paths instead of setting `color` on the root.
+/* `color` is stated here and on .hqf-sub as well as on .hqf-label. Before that, both
+   labels exported as a DARK ghost of themselves — visible as a shadow on the lit wedge,
+   invisible on the dim ones. Two things changed together (the explicit colour and the
+   text-shadow below) and which one cured it was not isolated, so this does NOT show that
+   inheritance fails in the export: the survey card's headings inherit from `.wsb-card`
+   and measure white-on-dark correctly there. Stating the colour on the text itself is
+   simply the cheapest way to be sure.
 
-   The text-shadow goes with it. It is what MADE the dark ghost legible, and it is not on
+   The text-shadow went with it. It is what MADE the dark ghost legible, and it is not on
    any supported list — the reference's own labels sit on a soft wedge and read fine
    without it. */
 .hqf-title {

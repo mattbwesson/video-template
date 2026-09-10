@@ -1,8 +1,8 @@
 import React from "react";
 import { AbsoluteFill, staticFile } from "remotion";
 /**
- * `Audio` from @remotion/media, not from remotion, for the same reason `Video` comes from
- * there in WorkvivoCut: the plain one is an HTML media element, and @remotion/web-renderer
+ * `Audio` from @remotion/media, not from remotion, for the same reason WorkvivoCut's
+ * soundtrack uses it: the plain one is an HTML media element, and @remotion/web-renderer
  * refuses those outright — using it here would break the wizard's in-browser export.
  */
 import { Audio } from "@remotion/media";
@@ -48,10 +48,10 @@ import "./japanese/JapaneseType.css";
 /**
  * SOUND — the third thing that differs, after words and type.
  *
- * The English cut has no audio of its own: the reference video underneath it carries the
- * whole soundtrack, narration and music together. That is no use here, because the
- * narration in it is English — so this cut silences the reference (`ownSoundtrack`) and
- * plays a mix built for it instead.
+ * The English cut plays public/audio/l2-soundtrack.m4a — the reference edit's own audio
+ * track, narration and music together. That is no use here, because the narration in it
+ * is English — so this cut drops that track (`ownSoundtrack`) and plays a mix built for
+ * it instead.
  *
  * The mix is a build artefact rather than something assembled at render time. The supplied
  * Japanese read is 231.4s against a 212s film, and every line has to sit under the picture

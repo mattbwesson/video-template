@@ -145,7 +145,11 @@ export const AskBarScene: React.FC<AskBarSceneProps> = ({
   // Typewriter animation: placeholder disappears at frame 19 (global 2287)
   // and 'What is our time off policy?' types in across frames 19 to 31 (completes at global 2299)
   // The same question the search bar is still showing at 2317 — one constant, two shots.
-  const TARGET_QUERY = FIXED_COPY.hqQuery;
+  // Translated BEFORE it is sliced: the dictionary is keyed on the whole string, so a
+  // prefix of the English would never match and the Japanese cut typed in English until
+  // the last frame. Typing the translated string also paces the typewriter to its own
+  // length. (PageBuilderScene does the same for the article prompt.)
+  const TARGET_QUERY = ui(FIXED_COPY.hqQuery);
   const isTyping = frame >= 19;
   const charsTyped = isTyping
     ? Math.min(
@@ -158,7 +162,7 @@ export const AskBarScene: React.FC<AskBarSceneProps> = ({
         )
       )
     : 0;
-  const displayText = isTyping ? TARGET_QUERY.slice(0, charsTyped) : placeholder;
+  const displayText = isTyping ? TARGET_QUERY.slice(0, charsTyped) : ui(placeholder);
   const showCaret = isTyping && frame <= 48 && Math.floor(frame / 6) % 2 === 0;
 
   return (
@@ -232,7 +236,7 @@ export const AskBarScene: React.FC<AskBarSceneProps> = ({
             alignItems: "center",
           }}
         >
-          <span>{ui(displayText)}</span>
+          <span>{displayText}</span>
           {showCaret && (
             <span
               style={{

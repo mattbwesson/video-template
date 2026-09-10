@@ -130,14 +130,16 @@ type Batch = { name: string; keys: string[] };
  * WHICH ROUND A GROUP BELONGS IN IS DECIDED BY THE CROSS-REFERENCE GRAPH, NOT BY SCENE ORDER.
  *
  * Round two exists solely to let a few guides say "must match something written earlier".
- * Extracted from the guides themselves, the entire graph is four edges:
+ * Extracted from the guides themselves, the entire graph is three edges:
  *
  *     spaces    -> composed
  *     spotlight -> feed, spaces
  *     signage   -> feed, composed
- *     voice     -> feed
  *
- * So only `spaces`, `spotlight`, `signage` and `voice` have any reason to wait, and only
+ * (`voice` used to be a fourth node with an edge to `feed`; it is fixed copy now — see
+ * FIXED_COPY in videoCopy.ts — so it is neither researched nor in the graph.)
+ *
+ * So only `spaces`, `spotlight` and `signage` have any reason to wait, and only
  * `feed` and `composed` have any reason to go first. Everything else — the opening, Chat,
  * the HQ Agent, Journeys, Newsletters, the article, Employee Insights — depends on nothing
  * but the brief and was sitting in round two purely because it happens late in the film.

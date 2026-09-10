@@ -151,7 +151,7 @@ window keeps the machine warm and the question moot.
 | --- | --- | --- |
 | `include` | `completed` | `completed` = at least one finished video. `attempted` = a render was started. `researched` = the wizard was run at all. |
 | `since` | none | ISO 8601. Keeps companies active on or after it. |
-| `limit` | 500 | Capped at 5000. `truncated` says whether anything was cut. |
+| `limit` | 500 | A positive integer, capped at 5000; empty means the default, anything else is a 400. `truncated` says whether anything was cut. |
 
 ```json
 {

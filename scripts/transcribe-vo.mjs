@@ -13,10 +13,10 @@
  * this does, and it is the only step that needs the network.
  *
  * WHERE THE ENGLISH AUDIO COMES FROM
- * There is no separate English VO file. The reference edit — the same `<Video>` that
- * WorkvivoCut lays underneath everything — carries the film's entire soundtrack, narration
- * and music together. So the English transcript is pulled from the reference's own audio
- * track. See the REFERENCE_VIDEO comment in src/WorkvivoCut.tsx.
+ * There is no separate English VO file. The reference edit carries the film's entire
+ * soundtrack, narration and music together — the same track the English cut now plays
+ * as public/audio/l2-soundtrack.m4a (see the SOUNDTRACK comment in src/WorkvivoCut.tsx).
+ * So the English transcript is pulled from the reference's own audio track.
  *
  * WHY whisper-1 AND NOT gpt-4o-transcribe
  * Only whisper-1 returns `verbose_json` with segment and word timestamps. The newer

@@ -409,7 +409,7 @@ export const WorkvivoHqFan: React.FC<WorkvivoHqFanProps> = ({ fills, field = tru
     </svg>
 
     {/* Glass PNGs with the purple overlay baked in by scripts/prep-fan-icons.py — a CSS
-        tint would not survive the export. Three have no asset and are drawn: the heart,
+        tint would not survive the export. Four have no asset and are drawn: the heart,
         the document, the target, and the small chip beside the loupe. */}
     {/* The four drawn icons are a positioned <div> around an svg that fills it, not a
         positioned svg. The export serialises an inline svg's own style attribute into the
