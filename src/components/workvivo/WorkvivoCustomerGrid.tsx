@@ -1,6 +1,6 @@
 import React from "react";
 import { InlineSvg } from "../InlineSvg";
-import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { CUSTOMER_GRID_ROWS } from "./WorkvivoCustomerLogos";
 import "./WorkvivoCustomerGridStyles.css";
 import { cleanHex, isHex, rgba, withLightness, toHsl, css } from "../../customize/color";
@@ -19,7 +19,7 @@ export interface WorkvivoCustomerGridProps {
 
 /**
  * 16:9 full-screen Customer Logo Wall with square tiles in a 7x13 matrix,
- * centered around the iconic Workvivo hero mark on an illuminated red grid background.
+ * centered around the Workvivo mark on the tenant's flat brand field.
  */
 export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
   brand = DEFAULT_GRID_BRAND,
@@ -93,7 +93,10 @@ export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
       >
         {CUSTOMER_GRID_ROWS.map((row, rowIndex) =>
           row.map((item, colIndex) => {
-            const isCenter = rowIndex === 3 && colIndex === 6;
+            // The table says which cell is the centre; the indices below only measure
+            // distance from it. Tying the SVG to a hardcoded (3, 6) as well meant a row
+            // edit could draw the mark over a customer and drop the real centre to text.
+            const isCenter = item.center === true;
             // Radial distance from center card (row 3, col 6 in 7x13 matrix)
             const dx = colIndex - 6;
             const dy = rowIndex - 3;
@@ -209,18 +212,16 @@ export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
                     alt="Workvivo"
                   />
                 ) : item.src ? (
-                  <img
+                  /* Remotion's Img, not a bare <img>: the CLI still does not wait for a
+                     bare image to decode, and with the tiles now ~400px across five cards
+                     came out blank on one frame and drawn on the next. Img holds the frame
+                     (delayRender) until the file has loaded, in the CLI and the export. */
+                  <Img
                     className="wcg-logo-img"
                     src={staticFile(item.src)}
                     alt={item.name}
                   />
-                ) : item.component ? (
-                  <div className="wcg-logo-wrap">{item.component}</div>
-                ) : (
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#333333" }}>
-                    {item.name}
-                  </span>
-                )}
+                ) : null}
               </div>
             );
           })

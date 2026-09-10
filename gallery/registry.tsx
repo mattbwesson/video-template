@@ -397,7 +397,7 @@ export const ENTRIES: Entry[] = [
     file: "src/components/workvivo/WorkvivoCustomerGrid.tsx",
     group: "Screens",
     summary:
-      "Customer Logo Wall — 5×11 grid of white client cards on glowing brand red mesh with center Workvivo mark.",
+      "Customer Logo Wall — 7×13 grid of white client cards on the tenant's flat brand field, the Workvivo mark at the centre. Every tile is a PNG cut from the high-res reference by scripts/prep-customer-logos.py.",
     width: 1920,
     height: 1080,
     durationInFrames: 60,

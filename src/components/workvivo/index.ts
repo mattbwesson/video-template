@@ -47,44 +47,7 @@ export { WorkvivoSeerSurveyMobile } from "./WorkvivoSeerSurveyMobile";
 export type { WorkvivoSeerSurveyMobileProps } from "./WorkvivoSeerSurveyMobile";
 export { WorkvivoCustomerGrid } from "./WorkvivoCustomerGrid";
 export type { WorkvivoCustomerGridProps } from "./WorkvivoCustomerGrid";
-export {
-  CUSTOMER_GRID_ROWS,
-  WorkvivoCenterLogo,
-  IrishRailLogo,
-  BusEireannLogo,
-  VirginAustraliaLogo,
-  ExosLogo,
-  ScootLogo,
-  JamulCasinoLogo,
-  IamsLogo,
-  WaldenLogo,
-  UnipharLogo,
-  WiderCircleLogo,
-  ArhLogo,
-  SpringHealthLogo,
-  FlexjetLogo,
-  ChangiLogo,
-  ValorLogo,
-  NhsRoyalBerkshireLogo,
-  LondonAmbulanceLogo,
-  FishLogo,
-  AirNavLogo,
-  VolvoWordmarkLogo,
-  EmpirxHealthLogo,
-  GreaterGoodHealthLogo,
-  PmsLogo,
-  PettittsLogo,
-  EndeavourGroupLogo,
-  InsomniaCoffeeLogo,
-  AeroCloudLogo,
-  HickorysLogo,
-  AmFreshLogo,
-  BimedaLogo,
-  HarrisFarmLogo,
-  WoodiesLogo,
-  KokoBlackLogo,
-  SanDiegoAirportLogo,
-} from "./WorkvivoCustomerLogos";
+export { CUSTOMER_GRID_ROWS } from "./WorkvivoCustomerLogos";
 
 /* ---------- surfaces, sections and primitives ---------- */
 
