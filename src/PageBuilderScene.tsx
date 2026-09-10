@@ -279,6 +279,15 @@ export const PageBuilderScene: React.FC = () => {
           <FieldAndPrompt />
         </MotionBlur>
       )}
+      {/* The review screen's click target for the prompt, over the bar at its settled size.
+          Outside the blur on purpose: each blur sample is a copy of the bar, and marking
+          the bar itself would put three targets on one line. Paints nothing. */}
+      {g >= 3163 && (
+        <div
+          data-vc-slot="article.request"
+          style={{ position: "absolute", left: 960 - PROMPT_BAR.w / 2, top: 540 - PROMPT_BAR.h / 2, width: PROMPT_BAR.w, height: PROMPT_BAR.h }}
+        />
+      )}
       {g >= CURSOR_FROM && g <= 3233 && (
         <CursorArrow
           fill="#6102ec"

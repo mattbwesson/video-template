@@ -137,6 +137,22 @@ export const surveyCompletions = (size: CompanySize): number =>
   tidy(surveyResponses(size) * SURVEY_COMPLETION_RATE);
 
 /**
+ * The Comments tab's volumes — the "9,430 Comments" total and the ten per-topic counts —
+ * are counts of people-actions on that same survey, so they follow its responses too: the
+ * capture's 9,430 against its 10,395 responses is the rate, and the topics scale by the
+ * same factor so no topic ever reports more comments than the survey has. At the large
+ * band the factor is exactly 1 and every figure is the capture's own.
+ */
+const SURVEY_COMMENT_RATE = 9430 / 10395;
+/** The band the Seer screens were captured at — every figure on them is that band's. */
+const CAPTURED_BAND: CompanySize = "large";
+
+export const surveyComments = (size: CompanySize): number =>
+  tidy(surveyResponses(size) * SURVEY_COMMENT_RATE);
+export const surveyCommentScale = (size: CompanySize): number =>
+  surveyResponses(size) / surveyResponses(CAPTURED_BAND);
+
+/**
  * A bare count, no "Members" after it.
  *
  * `separator` is not decoration. The captured dashboard prints its audience and response

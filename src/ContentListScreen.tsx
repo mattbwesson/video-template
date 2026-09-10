@@ -1,6 +1,31 @@
 import React from 'react';
 import { AbsoluteFill, Easing, interpolate, staticFile, useCurrentFrame } from 'remotion';
 import { SPECK_SRC } from './contentListAssets';
+import { RadialWash, type WashStop } from './components/RadialWash';
+
+/**
+ * The five ambient glows. Each was a CSS `radial-gradient(closest-side, …)` on a blurred
+ * ellipse, which the wizard's in-browser export does not paint; the same stops now go to a
+ * RadialWash that fills the same ellipse — `closest-side` at the centre of a w×h box is
+ * rx = w/2, ry = h/2. The div keeps its size, blur, transform and breathing.
+ */
+const Glow: React.FC<{ id: string; width: number; height: number; stops: WashStop[]; style: React.CSSProperties }> = ({
+  id,
+  width,
+  height,
+  stops,
+  style,
+}) => (
+  <div style={{ position: 'absolute', borderRadius: '50%', pointerEvents: 'none', width, height, willChange: 'transform', ...style }}>
+    <RadialWash id={id} width={width} height={height} cx={width / 2} cy={height / 2} rx={width / 2} ry={height / 2} stops={stops} />
+  </div>
+);
+
+const WASH: WashStop[] = [[0, 'rgba(80,13,217,.95)'], [0.34, 'rgba(60,2,160,.72)'], [0.58, 'rgba(40,2,120,.40)'], [0.8, 'rgba(22,2,78,.16)'], [1, 'rgba(18,2,67,0)']];
+const BAND: WashStop[] = [[0, 'rgba(96,24,238,1)'], [0.38, 'rgba(72,4,186,.78)'], [0.7, 'rgba(50,2,145,.34)'], [1, 'rgba(30,2,95,0)']];
+const BLOOM: WashStop[] = [[0, 'rgba(129,94,232,.34)'], [0.36, 'rgba(80,13,217,.40)'], [0.68, 'rgba(66,2,170,.26)'], [1, 'rgba(66,2,170,0)']];
+const LEFT: WashStop[] = [[0, 'rgba(52,1,150,1)'], [0.3, 'rgba(39,1,112,.88)'], [0.6, 'rgba(30,1,90,.44)'], [0.82, 'rgba(20,1,70,.12)'], [1, 'rgba(20,1,70,0)']];
+const RIGHT: WashStop[] = [[0, 'rgba(66,2,170,.30)'], [0.48, 'rgba(18,2,67,.12)'], [1, 'rgba(18,2,67,0)']];
 import { useT } from "./customize/uiStrings";
 
 const specksData = [
@@ -36,94 +61,24 @@ export const ContentListBackground: React.FC = () => {
       }}
     >
       {/* Glow Wash */}
-      <div
-        style={{
-          position: 'absolute',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          width: 2400,
-          height: 1450,
-          left: '50%',
-          top: '112%',
-          background:
-            'radial-gradient(closest-side, rgba(80,13,217,.95) 0%, rgba(60,2,160,.72) 34%, rgba(40,2,120,.40) 58%, rgba(22,2,78,.16) 80%, rgba(18,2,67,0) 100%)',
-          filter: 'blur(64px)',
-          transform: `translate(-50%, -50%) scale(${breathe1})`,
-          willChange: 'transform',
-        }}
-      />
+      <Glow id="cl-wash" width={2400} height={1450} stops={WASH}
+        style={{ left: '50%', top: '112%', filter: 'blur(64px)', transform: `translate(-50%, -50%) scale(${breathe1})` }} />
 
       {/* Glow Band */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '60%',
-          top: '88%',
-          width: 1900,
-          height: 780,
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          background:
-            'radial-gradient(closest-side, rgba(96,24,238,1) 0%, rgba(72,4,186,.78) 38%, rgba(50,2,145,.34) 70%, rgba(30,2,95,0) 100%)',
-          filter: 'blur(70px)',
-          transform: `translate(-50%, -50%) rotate(-24deg) scale(${breatheBand})`,
-          willChange: 'transform',
-        }}
-      />
+      <Glow id="cl-band" width={1900} height={780} stops={BAND}
+        style={{ left: '60%', top: '88%', filter: 'blur(70px)', transform: `translate(-50%, -50%) rotate(-24deg) scale(${breatheBand})` }} />
 
       {/* Glow Bloom */}
-      <div
-        style={{
-          position: 'absolute',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          width: 1100,
-          height: 720,
-          left: '40%',
-          top: '107%',
-          background:
-            'radial-gradient(closest-side, rgba(129,94,232,.34) 0%, rgba(80,13,217,.40) 36%, rgba(66,2,170,.26) 68%, rgba(66,2,170,0) 100%)',
-          filter: 'blur(58px)',
-          transform: `translate(-50%, -50%) scale(${breatheBloom})`,
-          willChange: 'transform',
-        }}
-      />
+      <Glow id="cl-bloom" width={1100} height={720} stops={BLOOM}
+        style={{ left: '40%', top: '107%', filter: 'blur(58px)', transform: `translate(-50%, -50%) scale(${breatheBloom})` }} />
 
       {/* Glow Left */}
-      <div
-        style={{
-          position: 'absolute',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          width: 900,
-          height: 1250,
-          left: '-4%',
-          top: '46%',
-          background:
-            'radial-gradient(closest-side, rgba(52,1,150,1) 0%, rgba(39,1,112,.88) 30%, rgba(30,1,90,.44) 60%, rgba(20,1,70,.12) 82%, rgba(20,1,70,0) 100%)',
-          filter: 'blur(78px)',
-          transform: `translate(-50%, -50%) scale(${breatheLeft})`,
-          willChange: 'transform',
-        }}
-      />
+      <Glow id="cl-left" width={900} height={1250} stops={LEFT}
+        style={{ left: '-4%', top: '46%', filter: 'blur(78px)', transform: `translate(-50%, -50%) scale(${breatheLeft})` }} />
 
       {/* Glow Right */}
-      <div
-        style={{
-          position: 'absolute',
-          borderRadius: '50%',
-          pointerEvents: 'none',
-          width: 1150,
-          height: 900,
-          left: '92%',
-          top: '90%',
-          background:
-            'radial-gradient(closest-side, rgba(66,2,170,.30) 0%, rgba(18,2,67,.12) 48%, rgba(18,2,67,0) 100%)',
-          filter: 'blur(80px)',
-          transform: `translate(-50%, -50%) scale(${breatheRight})`,
-          willChange: 'transform',
-        }}
-      />
+      <Glow id="cl-right" width={1150} height={900} stops={RIGHT}
+        style={{ left: '92%', top: '90%', filter: 'blur(80px)', transform: `translate(-50%, -50%) scale(${breatheRight})` }} />
 
       {/* Star Specks */}
       {specksData.map((s, idx) => {
