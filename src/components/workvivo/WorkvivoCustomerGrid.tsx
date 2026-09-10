@@ -1,6 +1,6 @@
 import React from "react";
 import { InlineSvg } from "../InlineSvg";
-import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
+import { Easing, Img, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { CUSTOMER_GRID_ROWS } from "./WorkvivoCustomerLogos";
 import "./WorkvivoCustomerGridStyles.css";
 import { cleanHex, isHex, rgba, withLightness, toHsl, css } from "../../customize/color";
@@ -209,13 +209,15 @@ export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
                     alt="Workvivo"
                   />
                 ) : item.src ? (
-                  <img
+                  /* Remotion's Img, not a bare <img>: the CLI still does not wait for a
+                     bare image to decode, and with the tiles now ~400px across five cards
+                     came out blank on one frame and drawn on the next. Img holds the frame
+                     (delayRender) until the file has loaded, in the CLI and the export. */
+                  <Img
                     className="wcg-logo-img"
                     src={staticFile(item.src)}
                     alt={item.name}
                   />
-                ) : item.component ? (
-                  <div className="wcg-logo-wrap">{item.component}</div>
                 ) : (
                   <span style={{ fontSize: 13, fontWeight: 700, color: "#333333" }}>
                     {item.name}
