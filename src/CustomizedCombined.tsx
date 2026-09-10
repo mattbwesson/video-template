@@ -5,21 +5,17 @@ import { orderPillars, type PillarId } from "./cuts/plan";
 import type { VideoInputProps } from "./customize/videoCopy";
 
 /**
- * A multi-pillar cut, as the wizard drives it.
+ * A cut of any pillars, as the wizard drives it.
  *
- * Same relationship `CustomizedZoetest` has to `Zoetest`: one serialisable customisation
- * object flows from the wizard's state into the `<Player>` and then into the render.
+ * One serialisable customisation object flows from the wizard's state into the `<Player>`
+ * and then into the render.
  *
- * `reference="wizard"` for the same load-bearing reason as the other three — the deployed
- * container ships only the 45 MB CRF 24 re-encode, not the 310 MB master, so a component
- * pointing at the master would work locally and 404 in production.
- *
- * Worth knowing about every cut in this family: the intro and outro are largely REFERENCE
- * footage rather than rebuilt scenes — the workvivo HQ title card, all three states of the
- * pillar wheel, the endcard and the strapline exist only in that encode. Those stretches
- * are therefore NOT customisable beyond the logo on the opening card: a prospect's brand
- * appears in the chapters' scenes and in the customer wall, and the framing at either end
- * stays Workvivo's own. That is a property of the cut, not a bug in the plumbing.
+ * There is no `reference` prop and no video to choose an encode for. Every frame of every
+ * window is a scene now — including the workvivo HQ title card, all three states of the
+ * pillar wheel, the endcard and the strapline, which used to exist only as footage and so
+ * carried Virgin's branding into every customer's video. A prospect's brand now reaches
+ * both ends of the film as well as its chapters. All the original edit still supplies is
+ * the soundtrack; see src/cuts/parts.tsx.
  */
 
 /**
@@ -36,8 +32,9 @@ import type { VideoInputProps } from "./customize/videoCopy";
  * 0 on every keystroke in the edit panel, and mid-render it would be worse. The cache is
  * what makes "the same pillars" mean "the same component".
  *
- * There are at most seven entries, and in practice four: a single pillar plays its own
- * approved cut and never reaches this file. See web/templates.ts.
+ * There are at most seven entries — every non-empty subset of three pillars. Single pillars
+ * come through here too, since the three forked single-pillar cuts were retired; see the
+ * header of CombinedCut for why.
  */
 const cache = new Map<string, React.FC<Partial<VideoInputProps>>>();
 
@@ -54,7 +51,7 @@ export const customizedCombined = (
   const chosen = orderPillars(pillars);
   const Component: React.FC<Partial<VideoInputProps>> = (input) => (
     <CustomizationProvider input={input}>
-      <CombinedCut pillars={chosen} reference="wizard" />
+      <CombinedCut pillars={chosen} />
     </CustomizationProvider>
   );
   Component.displayName = `CustomizedCombined(${key})`;

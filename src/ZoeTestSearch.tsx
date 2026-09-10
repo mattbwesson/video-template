@@ -1,20 +1,16 @@
 import React from "react";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
-import { ZoeTestSearchCut } from "./ZoeTestSearchCut";
+import { CombinedCut } from "./CombinedCut";
 
 /**
- * The `Zoe-test-search` composition — a working copy of the full 5300-frame L2 cut, on
- * the same approved baseline as `L2VirginAirline`: Spotify's green, Spotify's wordmark,
- * Daniel Ek, the stock portraits.
+ * The `Zoe-test-search` composition — the film's opening, the Search & Knowledge chapter,
+ * and the film's ending, on the same approved baseline as `L2VirginAirline`.
  *
- * Identical to VirginAirline except for which timeline it mounts. This one gets
- * `ZoeTestSearchCut`, its own copy of the sequence list, so retiming or reordering here
- * leaves both `L2VirginAirline` and `Zoe-test-comms` untouched. The scene components
- * underneath are shared by all three — see the header of ZoeTestSearchCut.tsx for exactly
- * where the independence stops.
+ * A one-chapter plan, assembled by `CombinedCut`. It was a hand-forked timeline until that
+ * fork fell behind the film it was cut from; see src/Zoetest.tsx for the whole story.
  */
 export const ZoeTestSearch: React.FC = () => (
   <CustomizationProvider>
-    <ZoeTestSearchCut />
+    <CombinedCut pillars={["zoe-test-search"]} />
   </CustomizationProvider>
 );

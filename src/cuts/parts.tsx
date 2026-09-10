@@ -1,18 +1,31 @@
 import React from "react";
-import { AbsoluteFill, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
-import { Video } from "@remotion/media";
-import { REFERENCE_VIDEO } from "../referenceVideo";
-import { lengthOf, type AudioFades, type Window } from "./plan";
+import {
+  AbsoluteFill,
+  Easing,
+  Sequence,
+  interpolate,
+  staticFile,
+  useCurrentFrame,
+} from "remotion";
+import { Audio } from "@remotion/media";
+import { lengthOf, type AudioFades, type Slot, type Window } from "./plan";
 
 /**
  * The four mechanisms every window of the original edit is laid down with.
  *
- * Lifted verbatim from ZoeTestSearchCut and ZoeTestPeopleCut, which each carry their own
- * copy of most of this — the combined cut needs all of it at once, so here it is in one
- * place. The three single-pillar cuts are deliberately NOT changed to import from here:
- * they are signed off, and a shared module that anyone can retune is a way to move three
- * approved films by accident. This copy exists to be edited when the combined cut needs it
- * to be.
+ * THE REFERENCE VIDEO IS GONE FROM THIS FAMILY, and that is the change these parts exist
+ * around. Every window used to mount a `<Video>` of the original edit and let its unbuilt
+ * stretches show through; upstream then rebuilt the last of those stretches as scenes and
+ * dropped the video from `WorkvivoCut` entirely (see the note on SOUNDTRACK there). The
+ * blocks in this directory now cover every frame of every window with scenes, so what a
+ * window still needs from the original is its SOUND and nothing else.
+ *
+ * That is why `ReferenceWindow` became `SoundtrackWindow` and why `BlockFade` had to be
+ * written. A picture crossfade used to be applied to the window's video, which worked only
+ * because every chapter opened on a reference-only pillar card — the one thing on screen at
+ * the join. With the card rebuilt as a scene there is no video to fade, so the fade moves
+ * to the block as a whole, which is also the correct compositing for a crossfade: the
+ * incoming chapter dissolves up as one picture rather than scene by scene.
  */
 
 /**
@@ -73,7 +86,7 @@ export const DipThrough: React.FC<{ colour: string; frames: number }> = ({
  *
  * `<Video volume>` is called with the frame counted from its own Sequence's start, so this
  * converts: sequence-local 0 is global `from`, except for a window starting at global 0,
- * which is mounted one frame late (see `ReferenceWindow`) and whose local 0 is therefore
+ * which is mounted one frame late (see `SoundtrackWindow`) and whose local 0 is therefore
  * global 1.
  *
  * `Math.sqrt` rather than a straight line: the two windows either side of a join are
@@ -94,61 +107,86 @@ export const audioEnvelope = (w: Window, fades: AudioFades) => {
 };
 
 /**
- * One window of the original edit, laid at `localOffset`.
+ * The film's soundtrack, stream-copied out of the original edit's master.
  *
- * The reference is mounted at `from={1}` in the full timeline, so composition frame F shows
- * video frame F-1. Preserving that offset is what keeps picture and audio in the sync they
- * were graded in, and it is why `trimBefore` is `from - 1` rather than `from`.
+ * The same asset `WorkvivoCut` plays, for the same reason: the reference video was the only
+ * sound in the tree, so removing it without this would ship a silent film that looked
+ * completely correct.
+ */
+const SOUNDTRACK = "audio/l2-soundtrack.m4a";
+
+/**
+ * One window's worth of the film's sound, laid at `localOffset`.
  *
- * A window starting at global 0 is the exception: there is no video frame -1, and the
- * original simply had no reference on its first frame. That case starts one frame later and
+ * The soundtrack is mounted at `from={1}` in the full timeline, so composition frame F is
+ * track frame F-1. Preserving that offset is what keeps a window's sound in the sync it was
+ * cut against, and it is why `trimBefore` is `from - 1` rather than `from`.
+ *
+ * A window starting at global 0 is the exception: there is no track frame -1, and the
+ * original simply had no sound on its first frame. That case starts one frame later and
  * plays from the top, which is exactly what the original does.
  *
- * There is deliberately no `durationInFrames` on the `<Video>` itself. This component is
+ * There is deliberately no `durationInFrames` on the `<Audio>` itself. This component is
  * mounted up to five times in one cut, at five different lengths, so a length set here
  * would cap every window at the same number and silently truncate the longer ones. The
  * Sequence's own `durationInFrames` is what ends each window.
  */
-export const ReferenceWindow: React.FC<{
+export const SoundtrackWindow: React.FC<{
   name: string;
   window: Window;
   localOffset: number;
-  reference: keyof typeof REFERENCE_VIDEO;
-  /** Frames to fade the PICTURE up over on entry. 0 for a hard cut or a continuation. */
-  fadeIn?: number;
   /**
-   * Where the SOUNDTRACK fades, in global frames — deliberately independent of the
+   * Where the soundtrack fades, in global frames — deliberately independent of the
    * picture's. At the intro's join the picture starts changing on 375 while the last word
    * runs to 384, so the sound holds at full through the front of the dissolve and only lets
    * go afterwards. See the AUDIO table in plan.ts.
    */
   audio?: AudioFades;
-}> = ({ name, window: w, localOffset, reference, fadeIn = 0, audio = {} }) => {
+}> = ({ name, window: w, localOffset, audio = {} }) => {
   const atZero = w.from === 0;
   const length = lengthOf(w) - (atZero ? 1 : 0);
   return (
-    <Sequence
-      name={name}
-      from={localOffset + (atZero ? 1 : 0)}
-      durationInFrames={length}
-      style={{
-        scale: 0.712,
-        translate: "-1px 0px",
-      }}
-    >
-      <FadeIn frames={fadeIn}>
-        {/* Unmuted, as in the original: this element is the film's only sound. */}
-        <Video
-          src={staticFile(REFERENCE_VIDEO[reference])}
-          trimBefore={atZero ? 0 : w.from - 1}
-          volume={audioEnvelope(w, audio)}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "contain",
-          }}
-        />
-      </FadeIn>
+    <Sequence name={name} from={localOffset + (atZero ? 1 : 0)} durationInFrames={length}>
+      <Audio
+        src={staticFile(SOUNDTRACK)}
+        trimBefore={atZero ? 0 : w.from - 1}
+        volume={audioEnvelope(w, audio)}
+      />
     </Sequence>
   );
+};
+
+/**
+ * The picture crossfade a chapter arrives on, applied to a whole block.
+ *
+ * Read the note at the top of this file for why it lives here rather than on the window:
+ * with every frame of every window now drawn by scenes, the thing that has to dissolve up
+ * is the block's entire picture.
+ *
+ * It reads `useCurrentFrame()` from OUTSIDE any sequence on purpose — a block's children
+ * are placed at absolute composition offsets by `placer`, so wrapping them in a Sequence to
+ * get local frames would re-base every one of those offsets. The composition frame plus
+ * `slot.localOffset` is the same information without moving anything.
+ *
+ * `fadeIn === 0` renders the children with no wrapper at all. Most joins in a cut are
+ * continuations rather than transitions, so this is the common path, and keeping the DOM
+ * identical on it is what makes those windows byte-for-byte the film.
+ */
+export const BlockFade: React.FC<{ slot: Slot; children: React.ReactNode }> = ({
+  slot,
+  children,
+}) => {
+  const frame = useCurrentFrame();
+  if (slot.fadeIn <= 0) return <>{children}</>;
+  const opacity = interpolate(
+    frame,
+    [slot.localOffset, slot.localOffset + Math.max(1, slot.fadeIn - 1)],
+    [0, 1],
+    {
+      easing: Easing.bezier(0.4, 0, 0.6, 1),
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+    },
+  );
+  return <AbsoluteFill style={{ opacity }}>{children}</AbsoluteFill>;
 };

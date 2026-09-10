@@ -1,10 +1,12 @@
 /**
  * How a cut is assembled out of the film, given the pillars an operator picked.
  *
- * `ZoetestCut`, `ZoeTestSearchCut` and `ZoeTestPeopleCut` each hard-code ONE arrangement:
- * the film's intro, one chapter, the film's outro. This module is the same arithmetic with
- * the chapter list as an argument, so the wizard can ask for two of them, or all three, and
- * get one video with a single intro at the front and a single ending at the back.
+ * There were once three hand-forked compositions, one per pillar, each hard-coding ONE
+ * arrangement: the film's intro, one chapter, the film's outro. This module is the same
+ * arithmetic with the chapter list as an argument, so the wizard can ask for one of them,
+ * or two, or all three, and get one video with a single intro at the front and a single
+ * ending at the back. The forks are gone — see src/CombinedCut.tsx for what a copied
+ * timeline cost — and every cut in the repo is now a plan from this file.
  *
  * It is deliberately free of React and of Remotion. Two callers need the same answer and
  * must not be able to disagree about it: `CombinedCut` lays the windows down from this
@@ -36,16 +38,20 @@
  * dissolve laid across two consecutive frames of one shot is a transition between a shot
  * and itself, which costs 15 frames and looks like a fault.
  *
- * Checked against the two cuts that were signed off: a plan for `search` alone comes out at
- * 1216 frames and one for `people` alone at 2349, which are `SEARCH_CUT_DURATION` and
- * `PEOPLE_CUT_DURATION` exactly. `comms` alone comes out at 2553 against
- * `ZOETEST_CUT_DURATION`'s 2545, because that cut mounts its logo wall four frames early
- * and stops its tail four frames short — see the note there. The wizard does not use this
- * plan for a single pillar anyway; it plays the approved cut. See web/templates.ts.
+ * Checked against the three cuts that were signed off, back when they were separate
+ * compositions: a plan for `search` alone comes out at 1216 frames and one for `people`
+ * alone at 2349, which were their hand-cut lengths exactly. `comms` alone comes out at
+ * 2553 against that fork's 2545, because the fork mounted its logo wall four frames early
+ * and stopped its tail four frames short of the strapline. The plan's number is the right
+ * one — the eight frames are the ending the fork was clipping.
  */
 
 /** The three pillars, in the order the film puts them up. */
-export const PILLAR_IDS = ["zoe-test-comms", "zoe-test-search", "zoe-test-people"] as const;
+export const PILLAR_IDS = [
+  "zoe-test-comms",
+  "zoe-test-search",
+  "zoe-test-people",
+] as const;
 
 export type PillarId = (typeof PILLAR_IDS)[number];
 
@@ -91,15 +97,15 @@ export const CROSSFADE = 15;
 export const OUTRO_DIP = 10;
 
 /**
- * Frames the customer logo wall dissolves up over the reference before 4983, used at the
- * one join where the chapter and the outro ABUT — i.e. when People Intelligence is the
- * last pillar picked.
+ * Frames the customer logo wall dissolves up over the picture before 4983, used at the one
+ * join where the chapter and the outro ABUT — i.e. when People Intelligence is the last
+ * pillar picked.
  *
- * Only possible there. The dissolve needs the reference underneath it to be running
+ * Only possible there. The dissolve needs the picture underneath it to be running
  * continuously into 4983, which is true when the People chapter has just played and false
  * otherwise. The mount moves EARLIER by this length rather than the dissolve running across
- * 4983, so the wall is opaque on 4983 exactly as the original is — see ZoeTestPeopleCut for
- * why anything still translucent at 4987 turns olive.
+ * 4983, so the wall is opaque on 4983 exactly as the original is: anything still
+ * translucent past that point mixes the tenant's colour with the shot beneath it.
  */
 export const OUTRO_GRID_DISSOLVE = 12;
 
@@ -119,8 +125,7 @@ export type AudioFades = {
  * global frames, and re-deriving them by hand as offsets from a window edge is exactly how
  * a fade ends up on top of a word.
  *
- * MEASURED, off the reference's own track (mono 16k, pre-emphasised, RMS per video frame —
- * see ZoeTestPeopleCut's AUDIO block for the method):
+ * MEASURED, off the soundtrack itself (mono 16k, pre-emphasised, RMS per video frame):
  *
  *   384 - 424    a 40-frame pause after the intro's last phrase. `intro.fadeOut` sits in
  *                the front of it, so the sound holds at FULL through the first two thirds

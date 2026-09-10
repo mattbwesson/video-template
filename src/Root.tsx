@@ -3,11 +3,8 @@ import { Composition } from "remotion";
 import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
 import { Zoetest } from "./Zoetest";
-import { ZOETEST_CUT_DURATION } from "./ZoetestCut";
 import { ZoeTestSearch } from "./ZoeTestSearch";
-import { SEARCH_CUT_DURATION } from "./ZoeTestSearchCut";
 import { ZoeTestPeople } from "./ZoeTestPeople";
-import { PEOPLE_CUT_DURATION } from "./ZoeTestPeopleCut";
 import { ZoeTestAllPillars } from "./ZoeTestAllPillars";
 import { combinedDuration, PILLAR_IDS } from "./cuts/plan";
 import { Japanese } from "./Japanese";
@@ -109,13 +106,13 @@ export const RemotionRoot: React.FC = () => {
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
       />
-      {/* The Search & Knowledge cut: frames 2236-2760 of the film, which is the pillar
-          card naming the three pillars plus the chapter it introduces. 524 frames, not
-          5300 — see the header of ZoeTestSearchCut.tsx for what was left out and why. */}
+      {/* The Search & Knowledge cut: the film's opening, then frames 2236-2760 — the pillar
+          card with Search & Knowledge picked out and the chapter it introduces — then the
+          film's ending. See src/cuts/plan.ts for the windows and the joins. */}
       <Composition
         id="Zoe-test-search"
         component={ZoeTestSearch}
-        durationInFrames={SEARCH_CUT_DURATION}
+        durationInFrames={combinedDuration(["zoe-test-search"])}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
@@ -131,32 +128,28 @@ export const RemotionRoot: React.FC = () => {
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
       />
-      {/* The People Intelligence cut: the film's opening, then frames 3326-5300 — the
-          pillar card at global 333 with People Intelligence ("turn signals into insight,
-          action, and results") picked out, the chapter it introduces, the integrations and
-          admin run that follows it, and the film's own ending. 2349 frames, not 5300.
-
-          See the header of ZoeTestPeopleCut.tsx for what is left out and why, and for why
-          its one remaining join puts the picture and the sound in different places. */}
+      {/* The People Intelligence cut: the film's opening, then frames 3326-4983 — the
+          pillar card with People Intelligence ("turn signals into insight, action, and
+          results") picked out, the chapter it introduces and the integrations and admin run
+          that follows it — then the film's own ending. */}
       <Composition
         id="Zoe-test-people"
         component={ZoeTestPeople}
-        durationInFrames={PEOPLE_CUT_DURATION}
+        durationInFrames={combinedDuration(["zoe-test-people"])}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
       />
-      {/* The comms cut, on its own timeline (ZoetestCut) so it can be retimed and
-          reordered without moving L2VirginAirline. The scene components are shared with
-          both other cuts — see the header of ZoetestCut.tsx.
+      {/* The Communication & Engagement cut: the film's opening, frames 390-2236, then the
+          film's ending.
 
-          Length comes from ZOETEST_CUT_DURATION rather than a literal, because the wizard
-          reads the same constant: a composition that is one length in the Studio and
-          another in an operator's render is a bug nobody notices until the file is out. */}
+          Length comes from `planFor` rather than a literal, because the wizard reads the
+          same function: a composition that is one length in the Studio and another in an
+          operator's render is a bug nobody notices until the file is out. */}
       <Composition
         id="Zoe-test-comms"
         component={Zoetest}
-        durationInFrames={ZOETEST_CUT_DURATION}
+        durationInFrames={combinedDuration(["zoe-test-comms"])}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}

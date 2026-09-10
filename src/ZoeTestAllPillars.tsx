@@ -16,8 +16,8 @@ import { PILLAR_IDS } from "./cuts/plan";
  * `pillars` prop below, or by ticking boxes in the wizard.
  *
  * Nothing about the wizard's output depends on this file — that route goes through
- * `customizedCombined`, which mounts the same `CombinedCut` against the 45 MB re-encode
- * rather than the master. See src/CustomizedCombined.tsx.
+ * `customizedCombined`, which mounts the same `CombinedCut` with the operator's
+ * customisation flowed into it. See src/CustomizedCombined.tsx.
  */
 export const ZoeTestAllPillars: React.FC = () => (
   <CustomizationProvider>

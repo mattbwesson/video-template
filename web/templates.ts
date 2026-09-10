@@ -1,11 +1,5 @@
 import type React from "react";
-import { CustomizedZoetest } from "../src/CustomizedZoetest";
-import { CustomizedZoeTestSearch } from "../src/CustomizedZoeTestSearch";
-import { CustomizedZoeTestPeople } from "../src/CustomizedZoeTestPeople";
 import { customizedCombined } from "../src/CustomizedCombined";
-import { ZOETEST_CUT_DURATION } from "../src/ZoetestCut";
-import { SEARCH_CUT_DURATION } from "../src/ZoeTestSearchCut";
-import { PEOPLE_CUT_DURATION } from "../src/ZoeTestPeopleCut";
 import { combinedDuration, orderPillars } from "../src/cuts/plan";
 import type { VideoInputProps } from "../src/customize/videoCopy";
 
@@ -20,22 +14,24 @@ import type { VideoInputProps } from "../src/customize/videoCopy";
  * preview plays one film and the render encodes another. Both now read `component` and
  * `durationInFrames` off the entry the operator picked, so they cannot drift.
  *
- * Every template must:
+ * Every template takes the whole customisation as its props (`Partial<VideoInputProps>`), so
+ * the same wizard state drives any of them with no per-template plumbing.
  *
- *  - take the whole customisation as its props (`Partial<VideoInputProps>`), so the same
- *    wizard state drives any of them with no per-template plumbing; and
- *  - lay down `reference="wizard"` rather than the master encode, because the deployed
- *    image does not ship the 310 MB file. See CustomizedZoetest for the detail.
+ * EVERY ENTRY IS A PLAN NOW, single pillar or not. There used to be three hand-forked
+ * compositions here, one per pillar, named as the approved cuts; they were copies of a
+ * timeline taken before the film rebuilt its last stretches of reference footage, so they
+ * went on playing that footage — a Virgin-branded title card and strapline at either end of
+ * every customer's video. `customizedCombined` derives all of them from the same windows
+ * instead, which is why the durations below are computed rather than imported.
  *
  * `L2VirginAirline` is deliberately NOT here. It is the approved 212-second film and it
- * stays a Studio composition; the wizard customises the three derived cuts, one per
- * pillar of the wheel the film itself puts up. Putting it back
- * is one entry — `CustomizedWorkvivo` and `CUSTOMIZED_CUT_DURATION`, both already
- * exported — if a full-length option is ever wanted.
+ * stays a Studio composition; the wizard customises cuts of it, one per pillar of the wheel
+ * the film itself puts up. Putting it back is one entry — `CustomizedWorkvivo` and
+ * `CUSTOMIZED_CUT_DURATION`, both already exported — if a full-length option is ever wanted.
  *
- * The components are imported statically rather than lazily. `Reveal` already imported
- * one of them at module scope, so the scene tree is in the wizard's initial bundle either
- * way; pretending otherwise here would only hide that.
+ * The components are built statically rather than lazily. `Reveal` already imported one at
+ * module scope, so the scene tree is in the wizard's initial bundle either way; pretending
+ * otherwise here would only hide that.
  */
 
 export type TemplateId = "zoe-test-comms" | "zoe-test-search" | "zoe-test-people";
@@ -87,8 +83,8 @@ export const TEMPLATES: readonly Pillar[] = [
     blurb: "A shortened cut of the L2 Virgin Airline film.",
     detail:
       "About half of the full 212-second film: the home feed and desktop, the livestream, spaces, the space page, journeys and newsletters, then the customer wall and the workvivo HQ endcard.",
-    component: CustomizedZoetest,
-    durationInFrames: ZOETEST_CUT_DURATION,
+    component: customizedCombined(["zoe-test-comms"]),
+    durationInFrames: combinedDuration(["zoe-test-comms"]),
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,
@@ -100,8 +96,8 @@ export const TEMPLATES: readonly Pillar[] = [
     blurb: "A shorter cut of the same film, on Search & Knowledge.",
     detail:
       "The film's own opening, then the pillar card, Ask HQ, the HQ Agent and the mobile answer, then its ending. The two joins are a dissolve and a dip through the brand colour.",
-    component: CustomizedZoeTestSearch,
-    durationInFrames: SEARCH_CUT_DURATION,
+    component: customizedCombined(["zoe-test-search"]),
+    durationInFrames: combinedDuration(["zoe-test-search"]),
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,
@@ -113,8 +109,8 @@ export const TEMPLATES: readonly Pillar[] = [
     blurb: "A shorter cut of the same film, on People Intelligence.",
     detail:
       "The film's own opening, then the pillar card, Analytics and the Seer run — manager insights, the rater, comments and the survey on mobile — the space feed, integrations and Admin Hub, then its ending.",
-    component: CustomizedZoeTestPeople,
-    durationInFrames: PEOPLE_CUT_DURATION,
+    component: customizedCombined(["zoe-test-people"]),
+    durationInFrames: combinedDuration(["zoe-test-people"]),
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,
@@ -149,12 +145,10 @@ const andList = (parts: readonly string[]): string =>
  * and asks no further questions. That is the point: a preview playing one film while the
  * render encodes another is the failure this shape exists to make impossible.
  *
- * ONE pillar returns its own approved cut rather than a one-chapter combined one.
- * `Zoe-test-comms`, `Zoe-test-search` and `Zoe-test-people` are signed off frame by frame,
- * and `CombinedCut` would re-derive each of them from the same windows to within a handful
- * of frames. "Within a handful" is not "identical", and there is nothing to gain by
- * re-deriving a film that already exists — so a single tick plays the film it has always
- * played. Only combinations, which had no cut before, go through `CombinedCut`.
+ * ONE pillar returns its entry from the table above, which is itself a one-chapter plan, so
+ * a single tick and a combination are the same machinery with a different chapter list.
+ * They were not always: a single pillar used to play a hand-forked composition, which is
+ * how those three came to be months out of date with the film they were cut from.
  *
  * An empty selection falls back to the default single cut. The wizard will not send one —
  * Continue is gated on at least one pillar — but this is also on the render path, and the

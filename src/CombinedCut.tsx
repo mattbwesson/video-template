@@ -1,7 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Sequence } from "remotion";
 import { useCustomization } from "./customize/CustomizationProvider";
-import type { REFERENCE_VIDEO } from "./referenceVideo";
 import { DipThrough } from "./cuts/parts";
 import {
   CommsBlock,
@@ -16,27 +15,26 @@ import { planFor, type PillarId, type SlotKey } from "./cuts/plan";
 /**
  * One video out of any combination of the film's three pillars.
  *
- * The wizard's first step is a multi-select now rather than a single pick, and this is what
- * it produces when more than one box is ticked: the film's own opening, then each chosen
- * chapter in the order the film puts them in, then the film's own ending — one intro and
- * one outro, however many chapters are in between.
+ * The film's own opening, then each chosen chapter in the order the film puts them in, then
+ * the film's own ending — one intro and one outro, however many chapters are in between.
  *
- * A cut of ONE pillar does not come through here. The wizard plays the approved
- * single-pillar composition for that case (`Zoe-test-comms`, `Zoe-test-search`,
- * `Zoe-test-people`), because those three are signed off frame by frame and there is no
- * reason to re-derive a film that already exists. See web/templates.ts, where that choice
- * is made. This composition exists for the combinations that had no cut before.
+ * EVERY cut comes through here, including a cut of one pillar. It did not used to: there
+ * were three hand-forked single-pillar compositions, and this existed only for the
+ * combinations they could not express. Those forks were copies of a timeline rather than of
+ * a technique, so when the film rebuilt its last stretches of reference footage as scenes
+ * they silently kept playing the footage — an opening title card and a closing strapline
+ * with Virgin's branding on them, in every customer's video, uncustomisable. They are gone,
+ * and this is the only assembly left. A single pillar is a plan with one chapter in it.
  *
  * WHAT IT IS AND IS NOT
  *
- * It is the same windows-of-the-original technique the Search and People cuts use, with the
- * window list as an argument instead of a constant — see src/cuts/plan.ts for the windows
- * and for how the joins between them are decided. Every scene sits on the global frame it
- * sat on in L2VirginAirline, so a combined cut is the film with stretches removed, not a
- * new edit.
+ * It is the film's own windows with the window list as an argument — see src/cuts/plan.ts
+ * for the windows and for how the joins between them are decided. Every scene sits on the
+ * global frame it sat on in L2VirginAirline, so a cut is the film with stretches removed,
+ * not a new edit.
  *
  * It is NOT a new set of transitions. Each join reproduces whichever treatment the approved
- * cut for that boundary already uses — a dissolve into a chapter that arrives on a cut, a
+ * cut for that boundary already used — a dissolve into a chapter that arrives on a cut, a
  * dip through brand leaving the Search chapter for the ending, the logo wall dissolving up
  * when People Intelligence runs straight into it, and nothing at all at the three joins
  * where two windows are consecutive frames of one film. The only join in the set that no
@@ -44,11 +42,10 @@ import { planFor, type PillarId, type SlotKey } from "./cuts/plan";
  * than the intro, and that takes the same 15-frame dissolve every other arrival at a pillar
  * card takes.
  *
- * PAINT ORDER is the one structural rule. Blocks are mounted in play order and each mounts
- * its reference before its scenes, because the export paints in DOM order and ignores
- * z-index: a chapter dissolving in has to fade up over the previous block's SCENES, not
- * just over its footage, and it can only do that from below in time and after in the tree.
- * The dip is mounted last of everything, for the same reason.
+ * PAINT ORDER is the one structural rule. Blocks are mounted in play order, because the
+ * export paints in DOM order and ignores z-index: a chapter dissolving in has to fade up
+ * over the previous block's scenes, and it can only do that from below in time and after in
+ * the tree. The dip is mounted last of everything, for the same reason.
  */
 
 /**
@@ -69,9 +66,7 @@ const BLOCKS: Partial<Record<SlotKey, React.FC<BlockProps>>> = {
 export const CombinedCut: React.FC<{
   /** Which pillars to include, in any order. The film's own order is imposed by the plan. */
   pillars: readonly PillarId[];
-  /** Which encode to lay underneath. Defaults to the full one, as the Studio needs. */
-  reference?: keyof typeof REFERENCE_VIDEO;
-}> = ({ pillars, reference = "full" }) => {
+}> = ({ pillars }) => {
   const { theme } = useCustomization();
   const plan = planFor(pillars);
   const outro = plan.slots[plan.slots.length - 1];
@@ -84,18 +79,11 @@ export const CombinedCut: React.FC<{
       {plan.slots.map((slot) => {
         if (slot.key === "outro") {
           return (
-            <OutroBlock
-              key={slot.key}
-              slot={slot}
-              reference={reference}
-              gridDissolve={plan.gridDissolve}
-            />
+            <OutroBlock key={slot.key} slot={slot} gridDissolve={plan.gridDissolve} />
           );
         }
         const Block = BLOCKS[slot.key];
-        return Block ? (
-          <Block key={slot.key} slot={slot} reference={reference} />
-        ) : null;
+        return Block ? <Block key={slot.key} slot={slot} /> : null;
       })}
 
       {/* LAST in the tree, and that is the whole mechanism: it has to paint over every

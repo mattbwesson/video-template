@@ -23,13 +23,14 @@ import { GlassRing } from "../components/workvivo/GlassRing";
 import { useCustomization } from "../customize/CustomizationProvider";
 
 /**
- * The shots the three single-pillar cuts each keep privately, gathered so a cut made of
- * several chapters can mount all of them.
+ * The composite shots a cut needs that are not scenes of their own — a scene under a mask,
+ * two scenes handed off across an iris, a phone rebuilt at a second scale.
  *
- * Every one is a verbatim copy of the version in ZoetestCut, ZoeTestSearchCut or
- * ZoeTestPeopleCut, with its own frame constants alongside it. Copied rather than shared,
- * for the reason set out in parts.tsx: those three cuts are signed off, and pointing them
- * at a module the combined cut is free to retune is how three approved films move at once.
+ * These began as private copies inside three hand-forked single-pillar cuts, one copy per
+ * cut. Those forks are gone (see src/CombinedCut.tsx for why), so this is the only version
+ * of each, and it is shared by every cut the wizard and the Studio can produce. They are
+ * kept here rather than beside their scenes because a shot is an arrangement of scenes at
+ * particular frames, which is a property of the film's timeline and not of any one scene.
  *
  * Everything here reads frames from ITS OWN `<Sequence>`, so nothing in this file knows
  * where in the assembled cut it has been placed. That is what makes laying a chapter down
@@ -330,11 +331,16 @@ export const MobileIrisOpen: React.FC = () => {
   const near = solve(nearWidth, nearTop, PHONE_NEAR.centreX);
   const far = solve(farWidth, farTop, PHONE_FAR.centreX);
 
-  const pullback = interpolate(frame, [MOBILE_PULLBACK_FROM, MOBILE_PULLBACK_TO], [0, 1], {
-    extrapolateLeft: "clamp",
-    extrapolateRight: "clamp",
-    easing: PULLBACK_EASE,
-  });
+  const pullback = interpolate(
+    frame,
+    [MOBILE_PULLBACK_FROM, MOBILE_PULLBACK_TO],
+    [0, 1],
+    {
+      extrapolateLeft: "clamp",
+      extrapolateRight: "clamp",
+      easing: PULLBACK_EASE,
+    },
+  );
 
   // ---- the exit ----------------------------------------------------------------------
   // Past the far pose the device carries on up and out. Position and velocity are both

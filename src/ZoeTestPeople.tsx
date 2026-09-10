@@ -1,20 +1,19 @@
 import React from "react";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
-import { ZoeTestPeopleCut } from "./ZoeTestPeopleCut";
+import { CombinedCut } from "./CombinedCut";
 
 /**
- * The `Zoe-test-people` composition — the People Intelligence chapter of the L2 cut, on
- * the same approved baseline as `L2VirginAirline`: Spotify's green, Spotify's wordmark,
- * Daniel Ek, the stock portraits.
+ * The `Zoe-test-people` composition — the film's opening, the People Intelligence chapter
+ * and the integrations and admin run that follows it, then the film's ending, on the same
+ * approved baseline as `L2VirginAirline`.
  *
- * Identical to VirginAirline except for which timeline it mounts. This one gets
- * `ZoeTestPeopleCut`, its own copy of the sequence list and of every shot helper those
- * sequences use, so retiming or reordering here leaves `L2VirginAirline`, `Zoe-test-comms`
- * and `Zoe-test-search` untouched. The scene components underneath are shared by all four
- * — see the header of ZoeTestPeopleCut.tsx for exactly where the independence stops.
+ * A one-chapter plan, assembled by `CombinedCut`. It was a hand-forked timeline until that
+ * fork fell behind the film it was cut from — this cut was the worst affected of the three,
+ * carrying nearly six hundred frames of footage the film had already rebuilt as scenes. See
+ * src/Zoetest.tsx.
  */
 export const ZoeTestPeople: React.FC = () => (
   <CustomizationProvider>
-    <ZoeTestPeopleCut />
+    <CombinedCut pillars={["zoe-test-people"]} />
   </CustomizationProvider>
 );

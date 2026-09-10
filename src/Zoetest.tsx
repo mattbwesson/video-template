@@ -1,19 +1,20 @@
 import React from "react";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
-import { ZoetestCut } from "./ZoetestCut";
+import { CombinedCut } from "./CombinedCut";
 
 /**
- * The `Zoetest` composition — a working copy of the full 5300-frame L2 cut, on the same
- * approved baseline as `L2VirginAirline`: Spotify's green, Spotify's wordmark, Daniel Ek,
- * the stock portraits.
+ * The `Zoe-test-comms` composition — the film's opening, the Communication & Engagement
+ * chapter, and the film's ending, on the same approved baseline as `L2VirginAirline`.
  *
- * Identical to VirginAirline except for which timeline it mounts. This one gets
- * `ZoetestCut`, its own copy of the sequence list, so retiming or reordering here leaves
- * `L2VirginAirline` untouched. The scene components underneath are still shared — see the
- * header of ZoetestCut.tsx for exactly where the independence stops.
+ * It used to be `ZoetestCut`, a hand-forked copy of the film's whole sequence list kept so
+ * this cut could be retimed without moving `L2VirginAirline`. That independence is what
+ * went wrong with it: the fork was taken before the film rebuilt its opening title card and
+ * closing strapline as scenes, and a copied timeline does not follow. It is a one-chapter
+ * plan now, assembled by `CombinedCut` from the same windows every other cut uses, so the
+ * film and its cuts cannot drift apart again. See src/cuts/plan.ts.
  */
 export const Zoetest: React.FC = () => (
   <CustomizationProvider>
-    <ZoetestCut />
+    <CombinedCut pillars={["zoe-test-comms"]} />
   </CustomizationProvider>
 );
