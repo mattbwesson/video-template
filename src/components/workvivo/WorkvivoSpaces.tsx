@@ -130,12 +130,14 @@ const SpaceCard: React.FC<{
   title: string;
   members: string;
   desc: string;
-}> = ({ chrome, cover, title, members, desc }) => (
+}> = ({ chrome, cover, title, members, desc }) => {
+  const ui = useT();
+  return (
   <div className="sp-card">
     <img className="sp-cover" data-vc-slot={chrome.slot} src={cover} alt="" />
     <div className="sp-card-inner">
       <div className="sp-card-top">
-        {chrome.tag ? <span className="sp-tag">{chrome.tag}</span> : <span />}
+        {chrome.tag ? <span className="sp-tag">{ui(chrome.tag)}</span> : <span />}
         <span className="sp-star">
           <Icon
             href={chrome.starred ? "#i-ui-favorite-star" : "#i-ui-favorite-star-outline"}
@@ -152,20 +154,22 @@ const SpaceCard: React.FC<{
         </span>
         <span className="sp-joinedwrap">
           <span className="sp-joined">
-            <span className="sp-tick">&#10003;</span>Joined
+            <span className="sp-tick">&#10003;</span>{ui("Joined")}
           </span>
         </span>
       </div>
       <div className="sp-card-text">
-        <div className="sp-card-title">{title}</div>
-        <div className="sp-members">{members}</div>
-        <div className="sp-desc">{desc}</div>
+        <div className="sp-card-title">{ui(title)}</div>
+        <div className="sp-members">{ui(members)}</div>
+        <div className="sp-desc">{ui(desc)}</div>
       </div>
     </div>
   </div>
 );
+};
 
 export const WorkvivoSpaces: React.FC = () => {
+  const ui = useT();
   const { copy, image } = useCustomization();
   const { welcome, directory } = copy.spaces;
 
@@ -213,17 +217,17 @@ export const WorkvivoSpaces: React.FC = () => {
                 <Icon href="#i-ui-learning-hub" width={30} height={30} />
               </span>
             </span>
-            <div className="sp-welcome-title">{welcome.title}</div>
+            <div className="sp-welcome-title">{ui(welcome.title)}</div>
           </div>
-          <div className="sp-welcome-body">{welcome.body}</div>
-          <span className="sp-join">Join</span>
+          <div className="sp-welcome-body">{ui(welcome.body)}</div>
+          <span className="sp-join">{ui("Join")}</span>
         </div>
       </div>
 
       <div className="sp-head">
-        <h2>My Spaces</h2>
+        <h2>{ui("My Spaces")}</h2>
         <span className="sp-viewall">
-          View All
+          {ui("View All")}
           <span className="sp-caret" />
         </span>
       </div>
@@ -241,7 +245,7 @@ export const WorkvivoSpaces: React.FC = () => {
             run under the rail rather than beside it — which is what the reference does. */}
         <div className="sp-rail-slot">
           <aside className="sp-rail">
-            <h3>Trending Spaces</h3>
+            <h3>{ui("Trending Spaces")}</h3>
             <div className="sp-rail-list">
               {TRENDING_CHROME.map((t, i) => (
                 <div className="sp-trend" key={t.icon}>
@@ -251,13 +255,13 @@ export const WorkvivoSpaces: React.FC = () => {
                         <Icon href={t.icon} width={26} height={26} />
                       </span>
                     </span>
-                    <div className="sp-trend-name">{copy.feed.spaces[i].name}</div>
+                    <div className="sp-trend-name">{ui(copy.feed.spaces[i].name)}</div>
                     <span className={t.pillEmoji ? "sp-pill sp-pill-emoji" : "sp-pill"}>
-                      {t.pill}
+                      {ui(t.pill)}
                     </span>
                   </div>
-                  <div className="sp-trend-desc">{copy.feed.spaces[i].description}</div>
-                  <span className="sp-trend-btn">{t.cta}</span>
+                  <div className="sp-trend-desc">{ui(copy.feed.spaces[i].description)}</div>
+                  <span className="sp-trend-btn">{ui(t.cta)}</span>
                 </div>
               ))}
             </div>
@@ -268,3 +272,4 @@ export const WorkvivoSpaces: React.FC = () => {
   );
 };
 import { spaceMembers } from "../../customize/memberCounts";
+import { useT } from "../../customize/uiStrings";

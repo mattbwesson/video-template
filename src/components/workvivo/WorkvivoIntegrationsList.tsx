@@ -132,6 +132,7 @@ export const WorkvivoIntegrationsList: React.FC<WorkvivoIntegrationsListProps> =
   frame: frameProp,
   entranceStartFrame = 0,
 }) => {
+  const ui = useT();
   const currentFrame = useCurrentFrame();
   const frame = animated ? (frameProp ?? currentFrame) : 100;
 
@@ -190,7 +191,7 @@ export const WorkvivoIntegrationsList: React.FC<WorkvivoIntegrationsListProps> =
 
   const renderCard = (a: App) => (
     <div key={a.name} className="wil-card">
-      <span className={"wil-chip wil-chip-" + a.category.toLowerCase()}>{a.category}</span>
+      <span className={"wil-chip wil-chip-" + a.category.toLowerCase()}>{ui(a.category)}</span>
 
       <div className="wil-card-head">
         {/* Inline, not <img src="…svg">. Every one of these files is viewBox-only artwork
@@ -202,26 +203,26 @@ export const WorkvivoIntegrationsList: React.FC<WorkvivoIntegrationsListProps> =
             className="wil-logo"
             src={staticFile(`img/integrations/${a.logo}.svg`)}
           />
-        <div className="wil-card-name">{a.name}</div>
+        <div className="wil-card-name">{ui(a.name)}</div>
       </div>
 
       <div className="wil-tags">
         <Icon href="#i-ui-apps-widget" width={26} height={26} style={{ flex: "none" }} />
-        <span>{a.tags}</span>
+        <span>{ui(a.tags)}</span>
       </div>
 
-      <div className="wil-desc">{a.desc}</div>
+      <div className="wil-desc">{ui(a.desc)}</div>
 
       <div className="wil-actions">
-        {a.status === "setup" && <span className="wil-btn wil-btn-outline">Setup</span>}
-        {a.status === "manage" && <span className="wil-btn wil-btn-solid">Manage</span>}
+        {a.status === "setup" && <span className="wil-btn wil-btn-outline">{ui("Setup")}</span>}
+        {a.status === "manage" && <span className="wil-btn wil-btn-solid">{ui("Manage")}</span>}
         {a.status === "active" && (
           <>
             <span className="wil-status">
               <CheckMark />
-              Active
+              {ui("Active")}
             </span>
-            <span className="wil-btn wil-btn-solid">Manage</span>
+            <span className="wil-btn wil-btn-solid">{ui("Manage")}</span>
           </>
         )}
       </div>
@@ -275,3 +276,4 @@ export const WorkvivoIntegrationsList: React.FC<WorkvivoIntegrationsListProps> =
   );
 };
 import { InlineSvg } from "../InlineSvg";
+import { useT } from "../../customize/uiStrings";

@@ -1497,11 +1497,29 @@ export const COPY = defineCopy({
    * would be visible on its way past.
    */
   article: {
+    /**
+     * What is typed into the page builder's AI bar at 3109-3264, one letter at a time,
+     * before the article below is what the film cuts to at 3264.
+     *
+     * It lives in this group, not in one of its own, because the two have to agree: the
+     * viewer watches the request go in and the page come out fourteen frames later, and a
+     * prompt about one subject followed by an article about another is the single most
+     * visible way this beat can go wrong.
+     */
+    prompt: text({
+      default: "Write a page to help with improving team productivity",
+      // The bar is 1254px wide at 30px and the line is typed out in full; past about 60
+      // characters it reaches the Submit pill.
+      max: 58,
+      guide:
+        "The request typed into the AI page builder, starting with 'Write a page'. It must name the SAME subject as `article.title` — the viewer sees this typed and then sees that article appear. Something positive this company is working towards: a capability it is building, a standard it is raising, a way of working it wants more of. Never a problem, a failure, a risk or anything remedial.",
+    }),
     title: text({
       default: "Team Productivity",
       // 920px banner at 44px bold, one line over the photo.
       max: 32,
-      guide: "The article's title. Title case, no full stop.",
+      guide:
+        "The article's title, and the subject `article.prompt` asked for. Title case, no full stop. Positive and forward-looking — the thing being built or improved, not a problem being fixed.",
     }),
     language: text({
       default: "English",
@@ -1579,13 +1597,42 @@ export const COPY = defineCopy({
   },
 
   /**
+   * Surveys & Forms, global 4253-4397: the AI modal opens, a request is already in the
+   * field, and a survey is generated from it.
+   *
+   * ONE SLOT, DELIBERATELY. The survey the modal generates — its title, its blurb and its
+   * three questions — is Workvivo's own example of what the feature produces, and it is
+   * on screen for under two seconds at a size where only the request is readable. Handing
+   * a model the generated survey as well would buy nothing on screen and give it four more
+   * places to contradict itself.
+   */
+  surveyBuilder: {
+    prompt: text({
+      default: "Create a survey to check in on how employees are feeling.",
+      // The field is 620 design units wide at 13px and wraps to two lines.
+      max: 78,
+      guide:
+        "The request typed into the survey builder's AI field, phrased as an instruction starting with 'Create a survey'. What THIS company would actually want to ask its own people about — name their work, their sites or their teams where it helps. One sentence, ending in a full stop.",
+    }),
+  },
+
+  /**
    * Employee Insights, global 3571-3903: the survey on the phone, then the three tabs of
    * the Seer dashboard.
    *
-   * Everything numeric on those screens — scores, response counts, NPS bands, the
-   * heatmap — is fixed. Those are the shape of the product's own charts, and a model
-   * writing plausible-looking numbers into a dashboard is exactly the kind of invented
-   * specific the research pass is told never to produce.
+   * Everything numeric on those screens — scores, NPS bands, the heatmap, the timeline —
+   * is fixed. Those are the shape of the product's own charts, and a model writing
+   * plausible-looking numbers into a dashboard is exactly the kind of invented specific
+   * the research pass is told never to produce.
+   *
+   * THE THREE HEADCOUNTS ARE THE EXCEPTION, AND THEY ARE STILL NOT THE MODEL'S
+   * The dashboard's audience, responses and completions are DERIVED, from `companySize`,
+   * in src/customize/memberCounts.ts. That is not a hole in the rule above: the rule is
+   * about a model inventing figures, and no model touches these. It is that a headcount
+   * which ignores how big the company is contradicts every other headcount in the film —
+   * an employer of under 800 people was being shown a survey audience of 13,860. The
+   * derivation is pinned so the band those screens were captured at renders exactly what
+   * the reference does; see the note on `surveyAudience`.
    */
   seer: {
     /** The five statements the survey walks through on the phone. */
@@ -1868,6 +1915,8 @@ export const FIXED_COPY = {
   amplifyWords: ["Amplify", "Reach"] as const,
   /** Global 2499-2577. Three cards, one word or phrase each. */
   askWords: ["Ask", "Answer", "Job Done"] as const,
+  /** Global 2760-2823. Five words; the last three arrive after the line has settled. */
+  noMatterWords: ["No", "matter", "where", "they", "are"] as const,
   /** Global 3022-3109, over the widget wall. */
   createWords: ["Create your own", "AI Widget Builder"] as const,
   /** Global 3702-3776, pushed up and off by the device arriving under it. */

@@ -15,6 +15,6 @@ import type { VideoInputProps } from "./customize/videoCopy";
  */
 export const CustomizedWorkvivo: React.FC<Partial<VideoInputProps>> = (input) => (
   <CustomizationProvider input={input}>
-    <WorkvivoCut reference="wizard" />
+    <WorkvivoCut />
   </CustomizationProvider>
 );

@@ -100,6 +100,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
   showComposedPost = false,
   reactionsStart = null,
 }) => {
+  const ui = useT();
   const reactions = useReactionCounts(reactionsStart);
   const { person, logo, copy, image, header } = useCustomization();
   const hdr = header('app.hero');
@@ -121,7 +122,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
         <img className="wvd-mark" src={logo.onDark} alt={copy.companyName} />
         <div className="wvd-tsearch">
           <SymbolSvg width="17" height="17" href="#i-ui-explore" />
-          <span>Search</span>
+          <span>{ui("Search")}</span>
         </div>
         <div className="wvd-tacts">
           <SymbolSvg width="21" height="21" href="#i-ui-notifications" />
@@ -138,17 +139,17 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
           <div className="wvd-me">
             <img className="wvd-meav" src={person.avatarUrl} style={person.avatarFit} alt="" />
             <div>
-              <b>{person.name}</b>
-              <span>{person.title}</span>
+              <b>{ui(person.name)}</b>
+              <span>{ui(person.title)}</span>
             </div>
           </div>
           <nav className="wvd-grp">
-            <a className="wvd-nav wvd-on"><SymbolSvg width="16" height="16" href="#i-ui-home-nav-rail" /><span>Home</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-my-company" /><span>My Company</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-resources" /><span>Communications</span></a>
+            <a className="wvd-nav wvd-on"><SymbolSvg width="16" height="16" href="#i-ui-home-nav-rail" /><span>{ui("Home")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-my-company" /><span>{ui("My Company")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-resources" /><span>{ui("Communications")}</span></a>
             <a className="wvd-nav">
               <SymbolSvg width="16" height="16" href="#i-ui-chat" />
-              <span>Chat</span>
+              <span>{ui("Chat")}</span>
               <span className="wvd-astack">
                 <img data-vc-slot="app.face.0" className="wvd-av" src={image("app.face.0", staticFile("img/avatar-3.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
                 <img data-vc-slot="app.face.1" className="wvd-av" src={image("app.face.1", staticFile("img/avatar-1.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
@@ -156,31 +157,31 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
             </a>
             <a className="wvd-nav">
               <SymbolSvg width="16" height="16" href="#i-ui-spaces" />
-              <span>Spaces</span>
+              <span>{ui("Spaces")}</span>
               <span className="wvd-astack">
                 <img data-vc-slot="app.face.2" className="wvd-av" src={image("app.face.2", staticFile("img/avatar-4.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
                 <img data-vc-slot="app.face.3" className="wvd-av" src={image("app.face.3", staticFile("img/avatar-5.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
                 <img data-vc-slot="app.face.4" className="wvd-av" src={image("app.face.4", staticFile("img/avatar-6.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
               </span>
             </a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-employee-insights" /><span>Seer</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-admin" /><span>Admin</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-employee-insights" /><span>{ui("Seer")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-admin" /><span>{ui("Admin")}</span></a>
           </nav>
-          <div className="wvd-secl">EXPLORE</div>
+          <div className="wvd-secl">{ui("EXPLORE")}</div>
           <nav className="wvd-grp">
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-news" /><span>News</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-events-nav-rail" /><span>Events</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-pages" /><span>Pages</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-podcasts" /><span>Podcasts</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-surveys-and-forms" /><span>Survey & Forms</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-newsletters" /><span>Newsletters</span></a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-journeys" /><span>Journeys</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-news" /><span>{ui("News")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-events-nav-rail" /><span>{ui("Events")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-pages" /><span>{ui("Pages")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-podcasts" /><span>{ui("Podcasts")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-surveys-and-forms" /><span>{ui("Survey & Forms")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-newsletters" /><span>{ui("Newsletters")}</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-journeys" /><span>{ui("Journeys")}</span></a>
           </nav>
-          <div className="wvd-secl">CONNECT</div>
+          <div className="wvd-secl">{ui("CONNECT")}</div>
           <nav className="wvd-grp">
             <a className="wvd-nav">
               <SymbolSvg width="16" height="16" href="#i-ui-connect" />
-              <span>People</span>
+              <span>{ui("People")}</span>
               <span className="wvd-astack">
                 <img data-vc-slot="app.face.5" className="wvd-av" src={image("app.face.5", staticFile("img/avatar-1.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
                 <img data-vc-slot="app.face.6" className="wvd-av" src={image("app.face.6", staticFile("img/avatar-3.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
@@ -189,22 +190,22 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
             </a>
             <a className="wvd-nav">
               <SymbolSvg width="16" height="16" href="#i-ui-teams" />
-              <span>Teams</span>
+              <span>{ui("Teams")}</span>
               <span className="wvd-astack">
                 <img data-vc-slot="app.face.8" className="wvd-av" src={image("app.face.8", staticFile("img/avatar-5.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
                 <img data-vc-slot="app.face.9" className="wvd-av" src={image("app.face.9", staticFile("img/avatar-6.jpeg"))} style={{ objectFit: "cover", display: "block" }} alt="" />
               </span>
             </a>
-            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-org-chart" /><span>Org Chart</span></a>
+            <a className="wvd-nav"><SymbolSvg width="16" height="16" href="#i-ui-org-chart" /><span>{ui("Org Chart")}</span></a>
           </nav>
-          <div className="wvd-secl">RESOURCES</div>
+          <div className="wvd-secl">{ui("RESOURCES")}</div>
           <div className="wvd-res">
-            <div><SymbolSvg width="18" height="18" href="#i-ui-apps-widget" />Apps</div>
-            <div><SymbolSvg width="18" height="18" href="#i-ui-documents-nav" />Docs</div>
-            <div><SymbolSvg width="18" height="18" href="#i-ui-gallery" />Gallery</div>
+            <div><SymbolSvg width="18" height="18" href="#i-ui-apps-widget" />{ui("Apps")}</div>
+            <div><SymbolSvg width="18" height="18" href="#i-ui-documents-nav" />{ui("Docs")}</div>
+            <div><SymbolSvg width="18" height="18" href="#i-ui-gallery" />{ui("Gallery")}</div>
           </div>
-          <div className="wvd-secl" style={{ marginTop: 22 }}>INTEGRATIONS</div>
-          <div className="wvd-integ"><SymbolSvg width="20" height="20" href="#i-vendor-google-drive" />Google Drive</div>
+          <div className="wvd-secl" style={{ marginTop: 22 }}>{ui("INTEGRATIONS")}</div>
+          <div className="wvd-integ"><SymbolSvg width="20" height="20" href="#i-vendor-google-drive" />{ui("Google Drive")}</div>
         </aside>
 
         {/* Main scrollable area */}
@@ -239,8 +240,8 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
               <div>
                 <section className="wvd-card">
                   <div className="wvd-chead">
-                    <div className="wvd-ch"><SymbolSvg width="17" height="17" href="#i-ui-featured-news" /><span>Featured News</span></div>
-                    <span className="wvd-viewall">View All</span>
+                    <div className="wvd-ch"><SymbolSvg width="17" height="17" href="#i-ui-featured-news" /><span>{ui("Featured News")}</span></div>
+                    <span className="wvd-viewall">{ui("View All")}</span>
                   </div>
                   <div className="wvd-body">
                     <img data-vc-slot="app.news.0"
@@ -249,16 +250,16 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       alt=""
                       style={{ width: '100%', height: 150, objectFit: 'cover', borderRadius: 6 }}
                     />
-                    <div className="wvd-ttl">{news[1].title}</div>
-                    <div className="wvd-meta">Megan Wilson · 3 days ago · <SymbolSvg width="13" height="13" href="#i-ui-spaces" /><span>New Hires</span></div>
+                    <div className="wvd-ttl">{ui(news[1].title)}</div>
+                    <div className="wvd-meta">{ui("Megan Wilson · 3 days ago · ")}<SymbolSvg width="13" height="13" href="#i-ui-spaces" /><span>{ui("New Hires")}</span></div>
                   </div>
                   <div className="wvd-dots"><i className="wvd-on" /><i /><i /></div>
                 </section>
 
                 <section className="wvd-card">
                   <div className="wvd-chead">
-                    <div className="wvd-ch"><SymbolSvg width="17" height="17" href="#i-ui-spaces" /><span>Trending Spaces</span></div>
-                    <span className="wvd-viewall">View All</span>
+                    <div className="wvd-ch"><SymbolSvg width="17" height="17" href="#i-ui-spaces" /><span>{ui("Trending Spaces")}</span></div>
+                    <span className="wvd-viewall">{ui("View All")}</span>
                   </div>
                   <div className="wvd-body">
                     <span data-vc-slot="app.space.0" className="wvd-tphoto">
@@ -267,9 +268,9 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                         style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover", borderRadius: "inherit" }}
                         alt=""
                       />
-                      <span className="wvd-tpill">Corporate</span>
+                      <span className="wvd-tpill">{ui("Corporate")}</span>
                       <span className="wvd-tstar"><SymbolSvg width="18" height="18" href="#i-ui-favorite-star" /></span>
-                      <span className="wvd-welcome">Welcome</span>
+                      <span className="wvd-welcome">{ui("Welcome")}</span>
                     </span>
                     <div className="wvd-tb">
                       <span className="wvd-tbadge">
@@ -277,10 +278,10 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                           <SymbolSvg width="26" height="26" href="#i-ui-networking" />
                         </SlotIcon>
                       </span>
-                      <span className="wvd-joined">✓ Joined</span>
-                      <div className="wvd-tname">{spaces[0].name}</div>
-                      <div className="wvd-tmem">{spaceMembers(copy.companySize, TRENDING_INDEX[0])}</div>
-                      <div className="wvd-tdesc">{spaces[0].description}</div>
+                      <span className="wvd-joined">{ui("✓ Joined")}</span>
+                      <div className="wvd-tname">{ui(spaces[0].name)}</div>
+                      <div className="wvd-tmem">{ui(spaceMembers(copy.companySize, TRENDING_INDEX[0]))}</div>
+                      <div className="wvd-tdesc">{ui(spaces[0].description)}</div>
                     </div>
                   </div>
                   <div className="wvd-dots"><i className="wvd-on" /><i /><i /></div>
@@ -288,8 +289,8 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
 
                 <section className="wvd-card">
                   <div className="wvd-chead">
-                    <div className="wvd-ch"><SymbolSvg width="16" height="16" href="#i-ui-pages-older-capture" /><span>Featured Pages</span></div>
-                    <span className="wvd-viewall">View All</span>
+                    <div className="wvd-ch"><SymbolSvg width="16" height="16" href="#i-ui-pages-older-capture" /><span>{ui("Featured Pages")}</span></div>
+                    <span className="wvd-viewall">{ui("View All")}</span>
                   </div>
                   <div className="wvd-body">
                     <img data-vc-slot="app.page.0"
@@ -298,8 +299,8 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       alt=""
                       style={{ width: '100%', height: 150, objectFit: 'cover', borderRadius: 6 }}
                     />
-                    <div className="wvd-ttl">{pages[0].title}</div>
-                    <div className="wvd-meta">1 day ago · <SymbolSvg width="13" height="13" href="#i-ui-spaces" /><span>IT</span></div>
+                    <div className="wvd-ttl">{ui(pages[0].title)}</div>
+                    <div className="wvd-meta">{ui("1 day ago · ")}<SymbolSvg width="13" height="13" href="#i-ui-spaces" /><span>{ui("IT")}</span></div>
                     <div className="wvd-rule" />
                     <img data-vc-slot="app.page.1"
                       className="wvd-shot"
@@ -307,8 +308,8 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       alt=""
                       style={{ width: '100%', height: 150, objectFit: 'cover', borderRadius: 6 }}
                     />
-                    <div className="wvd-ttl">{pages[1].title}</div>
-                    <div className="wvd-meta">2 days ago · <SymbolSvg width="13" height="13" href="#i-ui-spaces" /><span>Connect</span></div>
+                    <div className="wvd-ttl">{ui(pages[1].title)}</div>
+                    <div className="wvd-meta">{ui("2 days ago · ")}<SymbolSvg width="13" height="13" href="#i-ui-spaces" /><span>{ui("Connect")}</span></div>
                   </div>
                 </section>
               </div>
@@ -317,16 +318,16 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
               <div>
                 <section className="wvd-card">
                   <div className="wvd-chead">
-                    <Img className="wvd-hqlogo" src={staticFile("img/HQAgent_Black.png")} alt="HQ agent" />
-                    <span className="wvd-viewall">Expand</span>
+                    <Img className="wvd-hqlogo" src={staticFile("img/HQAgent_Black.png")} alt={ui("HQ agent")} />
+                    <span className="wvd-viewall">{ui("Expand")}</span>
                   </div>
-                  <div className="wvd-compose">Write a message
+                  <div className="wvd-compose">{ui("Write a message")}
                     <span className="wvd-sendb"><SymbolSvg width="16" height="16" href="#i-ui-send" /></span>
                   </div>
                   <div className="wvd-qacts">
-                    <div className="wvd-qact"><SymbolSvg width="15" height="15" href="#i-ui-start-new-chat" />Start New Chat</div>
-                    <div className="wvd-qact"><SymbolSvg width="15" height="15" href="#i-ui-summarise-content" />Summarise Content</div>
-                    <div className="wvd-qact"><SymbolSvg width="15" height="15" href="#i-ui-teams" />Team Updates</div>
+                    <div className="wvd-qact"><SymbolSvg width="15" height="15" href="#i-ui-start-new-chat" />{ui("Start New Chat")}</div>
+                    <div className="wvd-qact"><SymbolSvg width="15" height="15" href="#i-ui-summarise-content" />{ui("Summarise Content")}</div>
+                    <div className="wvd-qact"><SymbolSvg width="15" height="15" href="#i-ui-teams" />{ui("Team Updates")}</div>
                   </div>
                 </section>
 
@@ -344,12 +345,12 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                         alt=""
                       />
                       <div>
-                        <div className="wvd-pby"><b>{person.name}</b> posted a document.</div>
+                        <div className="wvd-pby"><b>{ui(person.name)}</b>{ui(" posted a document.")}</div>
                         <div className="wvd-pmeta">
-                          Just now &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" />
+                          {ui("Just now  ·  ")}<SymbolSvg width="13" height="13" href="#i-ui-everyone" />
                         </div>
                         <div style={{ fontSize: 12, color: '#6B7280', marginTop: 2 }}>
-                          Value: {copy.composed.value}
+                          {ui("Value: ")}{ui(copy.composed.value)}
                         </div>
                       </div>
                       <div className="wvd-kebab" style={{ color: '#6103ED' }}>···</div>
@@ -369,14 +370,14 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                     </div>
 
                     <div className="wvd-pfoot" style={{ marginTop: 14, borderTop: '1px solid #F3F4F6' }}>
-                      <span style={{ color: '#6103ED' }}>{reactions.total} reactions</span>
+                      <span style={{ color: '#6103ED' }}>{reactions.total}{ui(" reactions")}</span>
                       <span className="wvd-dot">·</span>
-                      <span style={{ color: '#6103ED' }}>10 comments</span>
+                      <span style={{ color: '#6103ED' }}>{ui("10 comments")}</span>
                       <span className="wvd-share" style={{ color: '#6103ED' }}>
                         <svg width="15" height="15" style={{ transform: 'rotate(-45deg)', fill: 'currentColor' }}>
                           <path d="M2.5 12.5L12.5 2.5M12.5 2.5H5M12.5 2.5V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                         </svg>
-                        Share
+                        {ui("Share")}
                       </span>
                     </div>
 
@@ -392,7 +393,7 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                             transform: `scale(${reactions.pop[kind]})`,
                           }}
                         >
-                          <span className="wvd-e">{REACTION_GLYPH[kind]}</span> {reactions.counts[kind]}
+                          <span className="wvd-e">{ui(REACTION_GLYPH[kind])}</span> {reactions.counts[kind]}
                         </span>
                       ))}
                       <span className="wvd-rxadd">
@@ -405,24 +406,24 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                     <div className="wvd-prow">
                       <img data-vc-slot="app.face.10" className="wvd-pav" src={image("app.face.10", staticFile("img/avatar-3.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
                       <div>
-                        <div className="wvd-pby"><b>{appPost.document.author}</b> posted a document.</div>
-                        <div className="wvd-pmeta">1 day ago &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" /></div>
-                        <div className="wvd-pspace"><SymbolSvg width="13" height="13" href="#i-ui-spaces" />{appPost.document.space}</div>
+                        <div className="wvd-pby"><b>{ui(appPost.document.author)}</b>{ui(" posted a document.")}</div>
+                        <div className="wvd-pmeta">{ui("1 day ago  ·  ")}<SymbolSvg width="13" height="13" href="#i-ui-everyone" /></div>
+                        <div className="wvd-pspace"><SymbolSvg width="13" height="13" href="#i-ui-spaces" />{ui(appPost.document.space)}</div>
                       </div>
                       <div className="wvd-kebab">···</div>
                     </div>
-                    <div className="wvd-ptext">{appPost.document.body}</div>
+                    <div className="wvd-ptext">{ui(appPost.document.body)}</div>
                     <div className="wvd-pdoc">
                       <div className="wvd-img">{documentCover(appPost.document.title)}</div>
-                      <div className="wvd-cap">{appPost.document.title}</div>
+                      <div className="wvd-cap">{ui(appPost.document.title)}</div>
                     </div>
                     <div className="wvd-att">
-                      <div className="wvd-lbl">Attachments(1)</div>
-                      <div className="wvd-attrow"><InlineSvg src={staticFile("img/file-pdf.svg")} style={{ width: 28, height: 33, objectFit: "contain", flex: "none" }} alt="" />PDF document<span className="wvd-kb">756 KB</span></div>
+                      <div className="wvd-lbl">{ui("Attachments(1)")}</div>
+                      <div className="wvd-attrow"><InlineSvg src={staticFile("img/file-pdf.svg")} style={{ width: 28, height: 33, objectFit: "contain", flex: "none" }} alt="" />{ui("PDF document")}<span className="wvd-kb">{ui("756 KB")}</span></div>
                     </div>
                     <div className="wvd-pfoot">
-                      <span>42 reactions</span><span className="wvd-dot">·</span><span>12 comments</span>
-                      <span className="wvd-share"><span className="wvd-sharrow"><i /><i /></span>Share</span>
+                      <span>{ui("42 reactions")}</span><span className="wvd-dot">·</span><span>{ui("12 comments")}</span>
+                      <span className="wvd-share"><span className="wvd-sharrow"><i /><i /></span>{ui("Share")}</span>
                     </div>
                     <div className="wvd-reacts">
                       <span className="wvd-rx"><span className="wvd-e">❤️</span>22</span>
@@ -430,10 +431,10 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       <span className="wvd-rx"><span className="wvd-e">👏</span>10</span>
                       <span className="wvd-rxadd"><SymbolSvg width="17" height="17" href="#i-ui-emoji-reaction" /></span>
                     </div>
-                    <div className="wvd-allc">View all 12 comments</div>
+                    <div className="wvd-allc">{ui("View all 12 comments")}</div>
                     <div className="wvd-cbox">
                       <img data-vc-slot="app.face.11" className="wvd-cav" src={image("app.face.11", staticFile("img/avatar-4.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
-                      <div className="wvd-cin">Leave a comment…
+                      <div className="wvd-cin">{ui("Leave a comment…")}
                         <span className="wvd-tools">
                           <SymbolSvg width="18" height="18" href="#i-ui-add-image" />
                           <SymbolSvg width="18" height="18" href="#i-ui-add-gif" />
@@ -447,15 +448,15 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                   <div className="wvd-prow">
                     <img data-vc-slot="app.face.12" className="wvd-pav" src={image("app.face.12", staticFile("img/avatar-5.jpeg"))} style={PERSON_AVATAR_FIT} alt="" />
                     <div>
-                      <div className="wvd-pby"><b>{appPost.anniversary.author}</b> is celebrating a work anniversary.</div>
-                      <div className="wvd-pmeta">2 days ago &nbsp;·&nbsp; <SymbolSvg width="13" height="13" href="#i-ui-everyone" /></div>
+                      <div className="wvd-pby"><b>{ui(appPost.anniversary.author)}</b>{ui(" is celebrating a work anniversary.")}</div>
+                      <div className="wvd-pmeta">{ui("2 days ago  ·  ")}<SymbolSvg width="13" height="13" href="#i-ui-everyone" /></div>
                     </div>
                     <div className="wvd-kebab">···</div>
                   </div>
-                  <div className="wvd-ptext">{appPost.anniversary.body}</div>
+                  <div className="wvd-ptext">{ui(appPost.anniversary.body)}</div>
                   <div className="wvd-pfoot">
-                    <span>18 reactions</span><span className="wvd-dot">·</span><span>4 comments</span>
-                    <span className="wvd-share"><span className="wvd-sharrow"><i /><i /></span>Share</span>
+                    <span>{ui("18 reactions")}</span><span className="wvd-dot">·</span><span>{ui("4 comments")}</span>
+                    <span className="wvd-share"><span className="wvd-sharrow"><i /><i /></span>{ui("Share")}</span>
                   </div>
                 </section>
               </div>
@@ -469,19 +470,19 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", objectFit: "cover" }}
                       alt=""
                     />
-                    <div className="wvd-bpill"><SymbolSvg width="15" height="15" href="#i-ui-news" /><span>Billboards</span></div>
+                    <div className="wvd-bpill"><SymbolSvg width="15" height="15" href="#i-ui-news" /><span>{ui("Billboards")}</span></div>
                   </div>
                   <div className="wvd-bbtx">
-                    <h3>{billboards[1].title}</h3>
-                    <div className="wvd-m">Published 1 day ago · <SymbolSvg width="12" height="12" href="#i-ui-everyone" /><span>Global</span></div>
-                    <p>{billboards[1].blurb}</p>
+                    <h3>{ui(billboards[1].title)}</h3>
+                    <div className="wvd-m">{ui("Published 1 day ago · ")}<SymbolSvg width="12" height="12" href="#i-ui-everyone" /><span>{ui("Global")}</span></div>
+                    <p>{ui(billboards[1].blurb)}</p>
                   </div>
                   <div className="wvd-dots" style={{ paddingBottom: 12 }}><i className="wvd-on" /><i /><i /></div>
                 </section>
 
                 <section className="wvd-card">
                   <div className="wvd-chead">
-                    <div className="wvd-ch"><SymbolSvg width="16" height="16" href="#i-ui-surveys-and-forms-older-capture" /><span>Surveys &amp; Forms</span></div>
+                    <div className="wvd-ch"><SymbolSvg width="16" height="16" href="#i-ui-surveys-and-forms-older-capture" /><span>{ui("Surveys & Forms")}</span></div>
                   </div>
                   <div className="wvd-srv">
                     <img data-vc-slot="app.survey.0"
@@ -490,9 +491,9 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       alt=""
                       style={{ width: '100%', height: 110, objectFit: 'cover', borderRadius: 6 }}
                     />
-                    <div className="wvd-srvt">{surveys[0].title}</div>
-                    <div className="wvd-srvm">8 Minutes, 12 Questions, Anonymous</div>
-                    <div className="wvd-btn">Start Survey</div>
+                    <div className="wvd-srvt">{ui(surveys[0].title)}</div>
+                    <div className="wvd-srvm">{ui("8 Minutes, 12 Questions, Anonymous")}</div>
+                    <div className="wvd-btn">{ui("Start Survey")}</div>
                     <div className="wvd-rule" />
                     <img data-vc-slot="app.survey.1"
                       className="wvd-srvimg"
@@ -500,9 +501,9 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       alt=""
                       style={{ width: '100%', height: 110, objectFit: 'cover', borderRadius: 6 }}
                     />
-                    <div className="wvd-srvt">{surveys[1].title}</div>
-                    <div className="wvd-srvm">3 Minutes, 5 Questions, Anonymous</div>
-                    <div className="wvd-btn">Start Survey</div>
+                    <div className="wvd-srvt">{ui(surveys[1].title)}</div>
+                    <div className="wvd-srvm">{ui("3 Minutes, 5 Questions, Anonymous")}</div>
+                    <div className="wvd-btn">{ui("Start Survey")}</div>
                     <div className="wvd-rule" />
                     <img data-vc-slot="app.survey.2"
                       className="wvd-srvimg"
@@ -510,9 +511,9 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
                       alt=""
                       style={{ width: '100%', height: 110, objectFit: 'cover', borderRadius: 6 }}
                     />
-                    <div className="wvd-srvt">{surveys[2].title}</div>
-                    <div className="wvd-srvm">2 Minutes, 4 Questions, Anonymous</div>
-                    <div className="wvd-btn">Start Survey</div>
+                    <div className="wvd-srvt">{ui(surveys[2].title)}</div>
+                    <div className="wvd-srvm">{ui("2 Minutes, 4 Questions, Anonymous")}</div>
+                    <div className="wvd-btn">{ui("Start Survey")}</div>
                   </div>
                 </section>
               </div>
@@ -524,4 +525,4 @@ export const WorkvivoDesktop: React.FC<WorkvivoDesktopProps> = ({
     </div>
   );
 };
-import { spaceMembers, TRENDING_INDEX } from "../../customize/memberCounts";
+import { spaceMembers, TRENDING_INDEX } from "../../customize/memberCounts";import { useT } from "../../customize/uiStrings";

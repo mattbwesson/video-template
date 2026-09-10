@@ -4,6 +4,7 @@ import "./WorkvivoStyles.css";
 import "./WorkvivoFeedbackArticleStyles.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { FIXED_COPY } from "../../customize/videoCopy";
+import { useT } from "../../customize/uiStrings";
 
 export const ARTICLE_W = 920;
 
@@ -32,6 +33,7 @@ const ChevronDown: React.FC = () => (
  * every tenant's screen.
  */
 export const WorkvivoFeedbackArticle: React.FC = () => {
+  const ui = useT();
   const { copy, image } = useCustomization();
   // Fixed, not slots: the whole letter is a locked beat of the film — Workvivo's own
   // worked example rather than copy about the customer. See FIXED_COPY in videoCopy.ts.
@@ -39,14 +41,14 @@ export const WorkvivoFeedbackArticle: React.FC = () => {
 
   return (
     <div className="wfa-page">
-      <h1 className="wfa-title">{article.title}</h1>
+      <h1 className="wfa-title">{ui(article.title)}</h1>
 
       <p className="wfa-subtitle" style={{ whiteSpace: "pre-line" }}>
-        {article.standfirst}
+        {ui(article.standfirst)}
       </p>
 
       {/* Reactions Count */}
-      <div className="wfa-reactions-label">829 reactions</div>
+      <div className="wfa-reactions-label">{ui("829 reactions")}</div>
 
       {/* Reaction Badges */}
       <div className="wfa-reactions-row">
@@ -70,25 +72,25 @@ export const WorkvivoFeedbackArticle: React.FC = () => {
             className="wfa-avatar-img"
           />
           <div>
-            <div className="wfa-author-name">{article.author}</div>
-            <div className="wfa-author-meta">Published 2 days ago</div>
+            <div className="wfa-author-name">{ui(article.author)}</div>
+            <div className="wfa-author-meta">{ui("Published 2 days ago")}</div>
           </div>
         </div>
 
         <div className="wfa-lang-selector">
-          <span>{copy.article.language}</span>
+          <span>{ui(copy.article.language)}</span>
           <ChevronDown />
         </div>
       </div>
 
       {article.sections.map((section) => (
         <div className="wfa-section" key={section.heading}>
-          <h2 className="wfa-heading">{section.heading}</h2>
+          <h2 className="wfa-heading">{ui(section.heading)}</h2>
           {/* Split on blank lines: each becomes its own <p>, and the single newlines
               inside one are the reference's hand-set wrap points. */}
-          {section.body.split(/\n\s*\n/).map((para) => (
+          {ui(section.body).split(/\n\s*\n/).map((para) => (
             <p className="wfa-p" key={para.slice(0, 32)} style={{ whiteSpace: "pre-line" }}>
-              {para.trim()}
+              {ui(para.trim())}
             </p>
           ))}
         </div>

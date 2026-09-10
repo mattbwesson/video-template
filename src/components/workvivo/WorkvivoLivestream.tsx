@@ -6,6 +6,7 @@ import "./WorkvivoLivestreamStyles.css";
 import "./WorkvivoGlassEdge.css";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import { GlassRing } from "./GlassRing";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Native port of public/refs/workvivo-livestream.html (the desktop livestream player with
@@ -122,6 +123,7 @@ const LIVESTREAM_REACTIONS: LivestreamReactionSpawn[] = [
 ];
 
 const LivestreamFloatingReactions: React.FC = () => {
+  const ui = useT();
   const frame = useCurrentFrame();
 
   return (
@@ -163,7 +165,7 @@ const LivestreamFloatingReactions: React.FC = () => {
               filter: "drop-shadow(0 4px 10px rgba(0,0,0,0.35))",
             }}
           >
-            {s.emoji}
+            {ui(s.emoji)}
           </span>
         );
       })}
@@ -179,6 +181,7 @@ export interface WorkvivoLivestreamProps {
 export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
   panelOpen = 1,
 }) => {
+  const ui = useT();
   const { copy } = useCustomization();
   const livestream = copy.livestream;
   const comments = livestream.comments;
@@ -190,9 +193,9 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
     <div className="lv-stage" style={{ gap: LV_STAGE_GAP * panelOpen }}>
       <div className="lv-left">
         <div className="lv-vbar">
-          <span className="lv-live">LIVE</span>
+          <span className="lv-live">{ui("LIVE")}</span>
           <span className="lv-aud">
-            <SymbolSvg width="16" height="16" href="#lv-i-ui-everyone" />Everyone
+            <SymbolSvg width="16" height="16" href="#lv-i-ui-everyone" />{ui("Everyone")}
           </span>
           <span className="lv-count">301</span>
           {/* Only offered while the panel is collapsed — once it is open its own header
@@ -222,13 +225,13 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
         <div className="lv-vfoot">
           <div className="lv-stats">
             <span className="lv-caret" />
-            <span>Latency:2.0s</span><span>720p</span><span className="lv-hot">30fps</span>
+            <span>{ui("Latency:2.0s")}</span><span>720p</span><span className="lv-hot">{ui("30fps")}</span>
           </div>
         </div>
 
         <div className="lv-meta" data-vc-slot="livestream.event">
           <div className="lv-mtop">
-            <h1>{livestream.title}</h1>
+            <h1>{ui(livestream.title)}</h1>
             {panelOpen > 0.01 && (
               <div
                 className="lv-rbar"
@@ -244,12 +247,12 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
             )}
           </div>
           <div className="lv-watch">
-            <span><b>8,145</b> watching, started streaming <b>7 minutes ago</b></span>
+            <span><b>8,145</b>{ui(" watching, started streaming ")}<b>{ui("7 minutes ago")}</b></span>
             <span className="lv-chip"><span className="lv-g-link"><i /><i /></span></span>
           </div>
           <div className="lv-dsc">
             <p>
-              {livestream.description} <a>See more</a>
+              {ui(livestream.description)} <a>{ui("See more")}</a>
             </p>
             <div className="lv-dsc-actions">
               <span className="lv-kebab"><i /><i /><i /></span>
@@ -260,7 +263,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
                     opacity: 1 - panelOpen * 2,
                   }}
                 >
-                  End Stream
+                  {ui("End Stream")}
                 </button>
               )}
             </div>
@@ -306,16 +309,16 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
           <span className="lv-g-out">
             <SymbolSvg width="17" height="17" href="#lv-i-ui-sidebar-collapse-arrows" />
           </span>
-          <span>Comments</span>
+          <span>{ui("Comments")}</span>
           <span className="lv-caret" />
-          <span className="lv-all">All</span>
+          <span className="lv-all">{ui("All")}</span>
         </div>
         <div className="lv-clist">
           {COMMENT_CHROME.map((c, i) => (
             <div key={c.avatar + i}>
               <div className="lv-cname">
-                {comments[i].name}
-                {c.stamp && <span className="lv-stamp">{c.stamp}</span>}
+                {ui(comments[i].name)}
+                {c.stamp && <span className="lv-stamp">{ui(c.stamp)}</span>}
               </div>
               <div className="lv-crow">
                 <img
@@ -324,7 +327,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
                   style={AVATAR_FIT}
                   alt=""
                 />
-                <span className="lv-bub">{comments[i].text}</span>
+                <span className="lv-bub">{ui(comments[i].text)}</span>
               </div>
               {c.replies && (
                 <div className="lv-replies">
@@ -349,7 +352,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
                     />
                     <span className="lv-sav lv-rp"><span className="lv-g-reply"><i /><i /></span></span>
                   </span>
-                  <span className="lv-rtx">3 new replies</span>
+                  <span className="lv-rtx">{ui("3 new replies")}</span>
                   <span className="lv-caret" />
                 </div>
               )}
@@ -357,7 +360,7 @@ export const WorkvivoLivestream: React.FC<WorkvivoLivestreamProps> = ({
           ))}
         </div>
         <div className="lv-ccompose">
-          <div className="lv-ph">Leave a comment</div>
+          <div className="lv-ph">{ui("Leave a comment")}</div>
           <div className="lv-ctools">
             <SymbolSvg width="19" height="19" href="#lv-i-ui-emoji-reaction" />
             <span className="lv-snd">

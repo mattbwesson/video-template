@@ -1,5 +1,6 @@
 import React from "react";
 import { Icon } from "./WorkvivoIcons";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * A Workvivo Journeys card — a cover photo with a translucent white action bar
@@ -51,7 +52,9 @@ export const WorkvivoJourneyCard: React.FC<JourneyCardProps> = ({
   imageScale = 1.01,
   ctaLabel = "Start",
   style,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div
     style={{
       position: "relative",
@@ -149,7 +152,7 @@ export const WorkvivoJourneyCard: React.FC<JourneyCardProps> = ({
                 whiteSpace: "nowrap",
               }}
             >
-              {title}
+              {ui(title)}
             </div>
             {/* Progress track. The spec's 235.1 overhangs the 234.41 column by
                 a fraction; keep the spec value so the track lines up with the title. */}
@@ -200,10 +203,11 @@ export const WorkvivoJourneyCard: React.FC<JourneyCardProps> = ({
               lineHeight: "23.54px",
             }}
           >
-            {ctaLabel}
+            {ui(ctaLabel)}
           </div>
         </div>
       </div>
     </div>
   </div>
 );
+};

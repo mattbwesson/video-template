@@ -14,9 +14,10 @@ build
 
 # --- large media -----------------------------------------------------------------------
 # The 310 MB master edit. Over GitHub's 100 MB per-file limit, so a push carrying it is
-# rejected outright — and it is not needed: the wizard and every render lay down
-# `l2-reference-212s.mp4`, the same 212 seconds at CRF 24, which IS committed. See
-# REFERENCE_VIDEO in src/WorkvivoCut.tsx.
+# rejected outright. `l2-reference-212s.mp4` is the same 212 seconds at CRF 24 and IS
+# committed, because it is what every scene's measurements were read off — see the ffmpeg
+# lines in the scene headers. Neither is a render dependency any longer; the film draws
+# all 5300 of its own frames and plays its soundtrack from public/audio/l2-soundtrack.m4a.
 public/img/L2 Video(Virgin Airline).mp4
 
 # The old 54-second trim, from when the customised cut stopped at frame 1350. Nothing
@@ -37,3 +38,7 @@ cut_check_*
 workvivo-*.mp4
 workvivo-*.json
 .analytics/
+
+# Pure-Python potrace, used only by scripts/prep-editor-icons.py to regenerate the traced
+# editor glyphs. Machine-local; the generated .tsx is what is committed.
+.venv-trace/

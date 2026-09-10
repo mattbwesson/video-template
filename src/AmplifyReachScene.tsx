@@ -1,5 +1,6 @@
 import React from "react";
 import { AbsoluteFill, Easing, interpolate, useCurrentFrame } from "remotion";
+import { useT } from "./customize/uiStrings";
 
 /**
  * Two words on the brand field: "amplify", then a hard cut to "reach".
@@ -70,6 +71,7 @@ export const AmplifyReachScene: React.FC<AmplifyReachSceneProps> = ({
   scaleDownTarget = 0.25,
   scaleDownDuration = 7,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
 
   // Circular mask radius: 0 to 1200px across maskFrom to maskTo
@@ -127,7 +129,7 @@ export const AmplifyReachScene: React.FC<AmplifyReachSceneProps> = ({
           transformOrigin: "center center",
         }}
       >
-        <span style={WORD_STYLE}>{frame < cutAt ? words[0] : words[1]}</span>
+        <span style={WORD_STYLE}>{ui(frame < cutAt ? words[0] : words[1])}</span>
       </div>
     </AbsoluteFill>
   );

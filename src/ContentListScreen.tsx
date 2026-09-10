@@ -1,6 +1,7 @@
 import React from 'react';
 import { AbsoluteFill, Easing, interpolate, staticFile, useCurrentFrame } from 'remotion';
 import { SPECK_SRC } from './contentListAssets';
+import { useT } from "./customize/uiStrings";
 
 const specksData = [
   { left: '49.7%', top: '74.5%', size: 11, delay: -4.4 },
@@ -155,6 +156,7 @@ export const ContentListBackground: React.FC = () => {
 };
 
 export const ContentListContent: React.FC = () => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const time = frame / 25;
 
@@ -318,7 +320,7 @@ export const ContentListContent: React.FC = () => {
                   willChange: 'transform, opacity',
                 }}
               >
-                {item}
+                {ui(item)}
               </div>
             );
           });

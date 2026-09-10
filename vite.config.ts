@@ -17,6 +17,7 @@ const ASSETS_MODULE = path.resolve(__dirname, "server/assetsRoute.ts");
 const ANALYTICS_PAGE_MODULE = path.resolve(__dirname, "server/analyticsPage.ts");
 const ANALYTICS_MODULE = path.resolve(__dirname, "server/analyticsRoute.ts");
 const SESSION_MODULE = path.resolve(__dirname, "server/sessionRoute.ts");
+const COMPANIES_MODULE = path.resolve(__dirname, "server/companiesRoute.ts");
 const PUBLIC_DIR = path.resolve(__dirname, "public");
 
 const apiPlugin = (): Plugin => ({
@@ -69,6 +70,18 @@ const apiPlugin = (): Plugin => ({
       if (req.url !== "/" && req.url !== "") return next();
       const { analyticsPage } = await server.ssrLoadModule(ANALYTICS_PAGE_MODULE);
       analyticsPage(res);
+    });
+    // Mounted here as well as in server/prod.ts, and it has to be BOTH. A route added to
+    // production alone does not 404 in dev — it falls through to the SPA fallback and
+    // returns the wizard's index.html with a 200, so a caller sees HTML where it expected
+    // JSON and the status code says everything is fine. That is how this one was found.
+    server.middlewares.use("/api/companies", async (req, res, next) => {
+      try {
+        const { handleCompanies } = await server.ssrLoadModule(COMPANIES_MODULE);
+        handleCompanies(req, res);
+      } catch (err) {
+        next(err);
+      }
     });
     server.middlewares.use("/api/assets", async (req, res, next) => {
       try {

@@ -1,0 +1,66 @@
+/* Japanese typography. Every rule in this file is scoped under `.jp`.
+   ==================================================================
+   That scoping is the whole isolation guarantee, so it is not a style preference: this
+   stylesheet is loaded into the same document as all 38 shared ones (Remotion bundles
+   every composition together), and an unscoped rule here would restyle L2VirginAirline
+   and CustomizedWorkvivo too. A rule that does not begin `.jp` is a bug.
+
+   The shared stylesheets are never edited for Japanese. Override them from here instead.
+
+   WHY THIS IS NEEDED AT ALL
+   The embedded UI font is InterX — four 23 KB Latin subsets, base64'd into
+   WorkvivoStyles.css. It has no CJK coverage whatsoever, so without this file every
+   Japanese character renders as tofu (□) or silently falls back to whatever the render
+   host happens to have, which is nothing under headless Chromium.
+
+   SPECIFICITY
+   The shared rules set `font-family` on single classes (`.wsp-title`, 0-1-0). `.jp *` is
+   also 0-1-0, so it would win only on source order — which depends on import order and is
+   not something to rely on across 57 declarations. Hence `!important`, which is safe here
+   precisely because the selector cannot escape `.jp`.
+
+   THE `*` IS DELIBERATE, AND SO IS WHAT IT AVOIDS
+   The web renderer wraps every text node in a `<span>` and every word in another, so a
+   descendant selector matches those injected wrappers at any depth. That is a disaster for
+   LAYOUT properties — `display`, `width`, `height`, `padding`, `margin`, `flex`, `position`
+   on a broad selector puts one word per line (see docs/browser-render-best-practices.md).
+   It is harmless for the INHERITED typography properties below, which those wrappers would
+   inherit anyway.
+
+   So: keep `.jp *` for inherited type properties only. Anything that changes a box gets a
+   specific class — `.jp .wsp-title { ... }` — never `.jp *`. */
+
+.jp,
+.jp * {
+  /* NotoSansJP first so Japanese resolves to a face that has the glyphs; InterX stays
+     ahead of the generic stack so Latin text in the cut (product names, the wordmark,
+     numbers) keeps rendering exactly as it does in the English cut. */
+  font-family: NotoSansJPX, InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif
+    !important;
+
+  /* CJK has no spaces, so the browser may break a line between any two characters and
+     leave punctuation stranded at the start of a line. `strict` applies the full kinsoku
+     rules. Inherited, so it belongs in this block. */
+  line-break: strict;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+/* ---------------------------------------------------------------------------
+   Per-screen size and spacing corrections.
+
+   Add them here as you translate and find frames that need them. Two things bite
+   repeatedly with CJK in a layout budgeted for Latin:
+
+   1. Full-width glyphs. A Japanese string of half the character count is about the same
+      width, so a slot that fits its cap can still overflow its box.
+   2. Tighter apparent leading. CJK fills more of the em box, so line-height that reads as
+      comfortable in Latin reads as cramped here — 1.5-1.8 is usually right.
+
+   Use a specific class, not `.jp *`. Example of the shape:
+
+     .jp .wsp-title { font-size: 30px; line-height: 1.6; letter-spacing: 0; }
+
+   `letter-spacing` in particular should usually go to 0 or negative for CJK; the shared
+   sheets set small positive tracking that is tuned for Inter's Latin.
+   --------------------------------------------------------------------------- */

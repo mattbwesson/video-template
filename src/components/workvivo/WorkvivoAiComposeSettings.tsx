@@ -1,6 +1,7 @@
 import React from "react";
 import { SymbolSvg, registerSymbolJsx } from "./symbolRegistry";
 import "./WorkvivoAiComposeSettingsStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Native port of public/refs/workvivo-ai-compose-settings.html (the white admin panel).
@@ -39,26 +40,28 @@ interface WorkvivoAiComposeSettingsProps {
 
 export const WorkvivoAiComposeSettings: React.FC<WorkvivoAiComposeSettingsProps> = ({
   ceoVoiceOn = false,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div className="acs-panel">
     <SpriteDefs />
 
     <div className="acs-phead">
       <SymbolSvg paint="#6103ED" paintFrom="#FACC15" width="34" height="34" href="#acs-i-ui-favorite-star" />
-      <h1>AI Compose Settings</h1>
+      <h1>{ui("AI Compose Settings")}</h1>
     </div>
 
-    <h2>Compose</h2>
+    <h2>{ui("Compose")}</h2>
     <p className="acs-lede">
-      Use Workvivo AI assistance and prompts to create and revise updates, articles and comments.
+      {ui("Use Workvivo AI assistance and prompts to create and revise updates, articles and comments.")}
     </p>
 
     <div className="acs-row">
       <div className="acs-tx">
-        <h3>Workvivo AI for your Organization</h3>
+        <h3>{ui("Workvivo AI for your Organization")}</h3>
         <p>
-          By enabling AI, users in your organization can access and utilize Workvivo AI.{" "}
-          <a>Learn more</a>
+          {ui("By enabling AI, users in your organization can access and utilize Workvivo AI.")}{" "}
+          <a>{ui("Learn more")}</a>
         </p>
       </div>
       <span className="acs-tog acs-on"><i /></span>
@@ -67,19 +70,19 @@ export const WorkvivoAiComposeSettings: React.FC<WorkvivoAiComposeSettingsProps>
     <div className="acs-row acs-sub">
       <SymbolSvg className="acs-spark" paint="#6103ED" width="30" height="30" href="#acs-i-ui-summarise-content" />
       <div className="acs-tx">
-        <h3>Writing Profiles</h3>
-        <p>Allow users to choose a writing profile to tailor AI output to a specific role or audience.</p>
+        <h3>{ui("Writing Profiles")}</h3>
+        <p>{ui("Allow users to choose a writing profile to tailor AI output to a specific role or audience.")}</p>
       </div>
       <span className="acs-tog acs-on"><i /></span>
     </div>
 
-    <div className="acs-addwrap"><button className="acs-add">Add new profile</button></div>
+    <div className="acs-addwrap"><button className="acs-add">{ui("Add new profile")}</button></div>
 
     <div className="acs-table">
-      <div className="acs-thead"><span>Name</span><span>Default</span><span /></div>
+      <div className="acs-thead"><span>{ui("Name")}</span><span>{ui("Default")}</span><span /></div>
       {PROFILES.map((name) => (
         <div className="acs-trow" key={name}>
-          <a className="acs-pname">{name}</a>
+          <a className="acs-pname">{ui(name)}</a>
           <span className="acs-cell">
             <span className={`acs-tog ${name === "CEO Voice" && ceoVoiceOn ? "acs-on" : ""}`}><i /></span>
           </span>
@@ -89,6 +92,7 @@ export const WorkvivoAiComposeSettings: React.FC<WorkvivoAiComposeSettingsProps>
     </div>
   </div>
 );
+};
 
 // Feed this file's symbols into the inline registry (symbolRegistry.tsx): the hidden
 // sprite above cannot be referenced across <svg> roots in the in-browser export, so

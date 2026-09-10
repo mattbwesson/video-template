@@ -3,6 +3,7 @@ import { Easing, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { Icon, WorkvivoSvgDefs } from "./WorkvivoIcons";
 import "./WorkvivoStyles.css";
 import "./WorkvivoIntegrationsMarketplaceStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo Integrations Marketplace — the app-connector modal, on the tenant brand field.
@@ -64,12 +65,15 @@ const InfoMark: React.FC = () => (
   </svg>
 );
 
-const ViewIntegrations: React.FC = () => (
+const ViewIntegrations: React.FC = () => {
+  const ui = useT();
+  return (
   <span className="wim-link">
-    <span>View Integrations</span>
+    <span>{ui("View Integrations")}</span>
     <ArrowRight />
   </span>
 );
+};
 
 export const WorkvivoIntegrationsMarketplace: React.FC<WorkvivoIntegrationsMarketplaceProps> = ({
   brand = "#d40000",
@@ -78,6 +82,7 @@ export const WorkvivoIntegrationsMarketplace: React.FC<WorkvivoIntegrationsMarke
   animated = true,
   frame: frameProp,
 }) => {
+  const ui = useT();
   const currentFrame = useCurrentFrame();
   const frame = animated ? (frameProp ?? currentFrame) : 100;
   const EASE = Easing.bezier(0.16, 1, 0.3, 1);
@@ -94,13 +99,13 @@ export const WorkvivoIntegrationsMarketplace: React.FC<WorkvivoIntegrationsMarke
       <div className="wim-modal">
         <div className="wim-head">
           <StarIcon />
-          <h1 className="wim-h1">Integrations Marketplace</h1>
+          <h1 className="wim-h1">{ui("Integrations Marketplace")}</h1>
         </div>
 
         <div className="wim-notice">
           <InfoMark />
           <span>
-            The integrations setup is explained on <span className="wim-link-inline">Workvivo Help Center</span>
+            {ui("The integrations setup is explained on ")}<span className="wim-link-inline">{ui("Workvivo Help Center")}</span>
           </span>
         </div>
 
@@ -110,12 +115,12 @@ export const WorkvivoIntegrationsMarketplace: React.FC<WorkvivoIntegrationsMarke
 
         <div className="wim-search">
           <Icon href="#i-ui-explore" width={16} height={16} />
-          <span>Search Integrations</span>
+          <span>{ui("Search Integrations")}</span>
         </div>
 
         <div className="wim-browse">
-          <h2 className="wim-h2">Browse by category</h2>
-          <span className="wim-link">See all Integrations</span>
+          <h2 className="wim-h2">{ui("Browse by category")}</h2>
+          <span className="wim-link">{ui("See all Integrations")}</span>
         </div>
 
         <div className="wim-grid">
@@ -141,9 +146,9 @@ export const WorkvivoIntegrationsMarketplace: React.FC<WorkvivoIntegrationsMarke
                   willChange: "transform, opacity",
                 }}
               >
-                <div className="wim-card-cat">Category</div>
-                <div className="wim-card-t">{c.title}</div>
-                <div className="wim-card-s">{c.sub}</div>
+                <div className="wim-card-cat">{ui("Category")}</div>
+                <div className="wim-card-t">{ui(c.title)}</div>
+                <div className="wim-card-s">{ui(c.sub)}</div>
                 <ViewIntegrations />
               </div>
             );

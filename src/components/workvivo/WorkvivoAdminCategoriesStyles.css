@@ -1,0 +1,82 @@
+/* Admin category cards — the carousel at global 4585-4702.
+   Prefixed `wac-` per docs/PORTING-HTML-REFS.md.
+
+   Laid out in the FOCUSED card's units (512 x 400) and scaled from there, because that is
+   what the reference does: the neighbours are the same card at 0.695x, not a smaller design.
+   Every number below is read off the centre card of reference frame 4611 (card origin at
+   704,338): disc 88px at (50,34), title cap-top at (173,65), chips 58 tall at x48 from y154
+   on a 74px pitch, "View more" 58 tall at (52,310).
+
+   No element-type selectors: the exporter wraps every text node in spans. */
+
+.wac {
+  position: absolute;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 14px;
+  font-family: InterX, Inter, "Segoe UI", system-ui, Arial, sans-serif;
+  /* No visible shadow: the field 8px under the card reads (1,1,26) against (1,3,32). */
+}
+
+.wac-disc {
+  position: absolute;
+  left: 50px;
+  top: 34px;
+  width: 88px;
+  height: 88px;
+  border-radius: 44px;
+  /* The glyph is centred with padding rather than flex: the exporter's span wrapping makes
+     a flex child's box unreliable, and a fixed inset is exact. */
+  padding: 17.5px;
+  box-sizing: border-box;
+}
+
+.wac-title {
+  position: absolute;
+  left: 170px;
+  letter-spacing: -0.01em;
+  /* 30px Inter Medium: cap height 22, cap-top on row 65. The line box is 36 tall with the
+     caps sitting 7 below its top, so top = 65 - 7. */
+  top: 58px;
+  font-size: 30px;
+  line-height: 36px;
+  font-weight: 500;
+  color: #0c0f12;
+  white-space: nowrap;
+}
+
+.wac-chip {
+  position: absolute;
+  left: 48px;
+  height: 58px;
+  padding: 0 21px;
+  border-radius: 29px;
+  background: #f1f3f5;
+  color: #5e6266;
+  font-size: 26px;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 58px;
+  padding-top: 1px;
+  white-space: nowrap;
+}
+
+.wac-more {
+  position: absolute;
+  left: 52px;
+  height: 58px;
+  padding: 0 19px 0 17px;
+  border-radius: 29px;
+  box-sizing: border-box;
+  border: 1px solid #e4e4e4;
+  background: #ffffff;
+  /* Read off the stroke cores: the video's chroma is smeared on strokes this thin, so the
+     colour that survives is a deep violet, not the bright one it reads as at a glance. */
+  color: #2e0c6b;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 58px;
+  padding-top: 2px;
+  white-space: nowrap;
+}

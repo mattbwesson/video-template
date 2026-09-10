@@ -5,6 +5,7 @@ import "./WorkvivoStyles.css";
 import "./WorkvivoSeerRaterStyles.css";
 import { SEER_TABS, WorkvivoSeerChrome } from "./WorkvivoSeerChrome";
 import { useCustomization } from "../../customize/CustomizationProvider";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Seer Insights — the Radar tab: a segment x driver score heatmap.
@@ -193,6 +194,7 @@ export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
   animated = true,
   frame: frameProp,
 }) => {
+  const ui = useT();
   const currentFrame = useCurrentFrame();
   const frame = animated ? (frameProp ?? currentFrame) : 100;
   const { copy } = useCustomization();
@@ -213,14 +215,14 @@ export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
     <WorkvivoSeerChrome activeTab={activeTab} accent={accent} accentSoft={accentSoft}>
                 <div className="wsr-filters">
                   <span className="wsr-pill">
-                    {round}
+                    {ui(round)}
                     <ChevronDown />
                   </span>
                   <span className="wsr-pill">
-                    {score}
+                    {ui(score)}
                     <ChevronDown />
                   </span>
-                  <span className="wsr-export">Export CSV</span>
+                  <span className="wsr-export">{ui("Export CSV")}</span>
                 </div>
 
                 <div className="wsr-tablewrap" data-vc-slot="seer.rater">
@@ -242,7 +244,7 @@ export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
                         <th className="wsr-corner" />
                         {drivers.map((d) => (
                           <th className="wsr-colhead" key={d}>
-                            {d}
+                            {ui(d)}
                           </th>
                         ))}
                       </tr>
@@ -251,8 +253,8 @@ export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
                       {resolvedRows.map((row, rowIndex) => (
                         <tr key={row.name}>
                           <th className="wsr-rowhead">
-                            <div className="wsr-rowname">{row.name}</div>
-                            <div className="wsr-rowtype">{row.type}</div>
+                            <div className="wsr-rowname">{ui(row.name)}</div>
+                            <div className="wsr-rowtype">{ui(row.type)}</div>
                           </th>
                           {drivers.map((d, colIndex) => {
                             const v = row.scores[colIndex];
@@ -280,7 +282,7 @@ export const WorkvivoSeerRater: React.FC<WorkvivoSeerRaterProps> = ({
                                 >
                                   {/* Only 0 and 10 drop the decimal, as the reference has them —
                                       9.0 keeps its, so an is-integer test is not enough. */}
-                                  {v === 0 || v === 10 ? v : v.toFixed(1)}
+                                  {ui(v === 0 || v === 10 ? v : v.toFixed(1))}
                                 </div>
                               </td>
                             );

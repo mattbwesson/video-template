@@ -8,7 +8,9 @@ import {
   useCustomization,
 } from '../../customize/CustomizationProvider';
 
-export const WorkvivoMobileSvgDefs: React.FC = () => (
+export const WorkvivoMobileSvgDefs: React.FC = () => {
+  const ui = useT();
+  return (
   <svg
     className="wm-sprite"
     xmlns="http://www.w3.org/2000/svg"
@@ -66,10 +68,7 @@ export const WorkvivoMobileSvgDefs: React.FC = () => (
       </symbol>
       <symbol id="i-vendor-servicenow" viewBox="0 0 512 512">
         <defs>
-          <style>{`
-            .wm-servicenow-cls-1 { fill: #61d64e; }
-            .wm-servicenow-cls-2 { fill: #032d42; }
-          `}</style>
+          <style>{ui("\n            .wm-servicenow-cls-1 { fill: #61d64e; }\n            .wm-servicenow-cls-2 { fill: #032d42; }\n          ")}</style>
         </defs>
         <g>
           <g>
@@ -84,11 +83,7 @@ export const WorkvivoMobileSvgDefs: React.FC = () => (
       </symbol>
       <symbol id="i-vendor-workday" viewBox="0 0 3200 3200">
         <defs>
-          <style>{`
-            .wm-workday-cls-1 { fill: #fbfdfd; }
-            .wm-workday-cls-2 { fill: #005cb8; }
-            .wm-workday-cls-3 { fill: #ef8a03; }
-          `}</style>
+          <style>{ui("\n            .wm-workday-cls-1 { fill: #fbfdfd; }\n            .wm-workday-cls-2 { fill: #005cb8; }\n            .wm-workday-cls-3 { fill: #ef8a03; }\n          ")}</style>
         </defs>
         <path className="wm-workday-cls-2" d="M2576,0c.3,1.31,1.53,2.17,4.04,2.2l19.59.2,22.66,1.4c136.97,13.93,263.89,82.84,362.61,177.35,109.82,105.13,194.87,250.24,213.43,402.64.63,5.16-2.65,11.05,1.66,14.21v2012c-4.31,3.9-1.04,10.24-1.48,14.98-28.37,305.94-275.26,549.35-581.58,573.35-3.45.27-8.35-2.15-10.93,1.67H600c-1.89-3.69-6.24-1.39-10.12-1.75-136.67-12.56-261.41-76.38-361.45-168.75-116.1-107.19-206.79-258.71-224.31-417.31-.98-8.89.18-17.27-4.12-24.19V624c6.22-10.59,2.73-20.48,3.49-32.44C22.98,282.85,271.2,29.65,579.57,3.45c9.33-.79,15.27.7,24.75-1.47,5.9-1.35,14.81,2.71,19.78-1.98h1951.9ZM1744.79,771.23c124.36,29.48,235.37,96.69,318.66,193.3,42.44,49.23,76.87,103.81,102.21,163.56l29.28,82.73c14.24,46.09,53.96,78.01,103.09,77.43,64.32-2.35,111.9-58.44,104.28-122.41-34.97-140.65-105.63-269.61-206.08-373.69-184.31-190.97-451.52-282.95-714.77-246.41-272.49,37.82-515.64,216.48-631.81,465.61-21.16,45.38-38.89,90.41-51.22,138.7-9.53,37.32-.37,76.3,25.27,104.09s60.77,36.09,96.08,29.87c48.14-8.47,73.02-43.94,86.97-89.54,44.15-144.27,138.13-268.96,266.05-349.61,142.69-89.96,308.36-112.41,471.96-73.64ZM2349.95,1582.09l-133.9.32c-29.94.07-42.54,13.96-49.54,42.75l-143.79,591.44-47.65,184.88c-9.01-9.51-11.54-18.81-14.74-30.34l-202.97-751.76c-6.36-23.54-28.33-37.67-51.39-37.67h-213.91c-24.23.01-45.77,14.4-52.27,38.49l-67.97,251.59-143.17,525.06c-9.74-4.98-10.13-13.67-12.57-23.49l-187.18-755.2c-5.47-22.05-21.27-35.61-43.26-35.59l-147.24.12c-14.03.01-28.81,5.77-36.53,17.17s-9.16,26.19-5.38,40.31l265.31,991.22c6.19,23.14,25.91,37.6,49.2,37.57l210.76-.27c23.59-.03,43.22-13.74,49.18-35.64l17.25-63.27,213.72-768.35,11.74,35.44,211.72,792.99c7.38,27.63,22.62,38.24,50.78,38.29l211.65.34c28.01.05,41.3-13.85,48.51-40.74l262.66-980.04c3.15-11.76,3.66-22.14,2.22-33.21-3.02-23.28-27.25-32.46-51.26-32.4Z"/>
         <g>
@@ -102,6 +97,7 @@ export const WorkvivoMobileSvgDefs: React.FC = () => (
     </defs>
   </svg>
 );
+};
 
 export interface WorkvivoMobileHomeProps {
   scrollTop?: number;
@@ -134,6 +130,7 @@ const splitForTwoLines = (title: string): string => {
 export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
   scrollTop = 0,
 }) => {
+  const ui = useT();
   const { person, image, copy, header, logo } = useCustomization();
   const companyInitial = companyInitialOf(copy.companyName);
   const hdr = header('mobile.hero');
@@ -156,14 +153,14 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
           >
             {/* Segmented tabs */}
             <div className="wm-seg">
-              <a href="#" className="wm-on">My Work</a>
-              <a href="#">My Company</a>
-              <a href="#">Resources</a>
+              <a href="#" className="wm-on">{ui("My Work")}</a>
+              <a href="#">{ui("My Company")}</a>
+              <a href="#">{ui("Resources")}</a>
             </div>
 
             {/* Quick Links */}
             <div className="wm-sec">
-              <div className="wm-shead"><h2>Quick Links</h2><a href="#">View All</a></div>
+              <div className="wm-shead"><h2>{ui("Quick Links")}</h2><a href="#">{ui("View All")}</a></div>
               {/* Same three `app.quicklink` slots the desktop homepage and the Spotlight
                   tab draw — one swap, three screens. */}
               <div className="wm-qrow">
@@ -171,13 +168,13 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
                   <SlotIcon slot="app.quicklink.0" size={56}>
                     <SymbolSvg width="56" height="56" href="#i-vendor-workday" />
                   </SlotIcon>
-                  <span>{copy.spotlight.apps[0]}</span>
+                  <span>{ui(copy.spotlight.apps[0])}</span>
                 </div>
                 <div className="wm-qtile">
                   <SlotIcon slot="app.quicklink.1" size={56}>
                     <SymbolSvg className="wm-logo" width="56" height="56" href="#i-vendor-servicenow" />
                   </SlotIcon>
-                  <span>{copy.spotlight.apps[1]}</span>
+                  <span>{ui(copy.spotlight.apps[1])}</span>
                 </div>
                 <div className="wm-qtile">
                   <SlotIcon slot="app.quicklink.2" size={56}>
@@ -185,7 +182,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
                         draw the word "zoom" on a blue square as a stand-in. */}
                     <img className="wm-zoomph" src={staticFile("img/zoomicon.png")} width={56} height={56} alt="" />
                   </SlotIcon>
-                  <span>{copy.spotlight.apps[2]}</span>
+                  <span>{ui(copy.spotlight.apps[2])}</span>
                 </div>
               </div>
             </div>
@@ -193,26 +190,26 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             {/* Shortcut Grid */}
             <div className="wm-sec">
               <div className="wm-grid2">
-                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-human-resources" /></div><span>Payroll</span></div>
-                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-favorite-star" /></div><span>Benefits Hub</span></div>
-                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-it-support-and-resources" /></div><span>IT Support</span></div>
-                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg width="21" height="21" style={{ color: '#fff' }} href="#i-ui-pages-older-capture" /></div><span>Learning Centre</span></div>
+                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-human-resources" /></div><span>{ui("Payroll")}</span></div>
+                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-favorite-star" /></div><span>{ui("Benefits Hub")}</span></div>
+                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-it-support-and-resources" /></div><span>{ui("IT Support")}</span></div>
+                <div className="wm-srow"><div className="wm-rsq"><SymbolSvg width="21" height="21" style={{ color: '#fff' }} href="#i-ui-pages-older-capture" /></div><span>{ui("Learning Centre")}</span></div>
               </div>
             </div>
 
             {/* Documents */}
             <div className="wm-sec">
-              <div className="wm-shead"><h2>Documents</h2><a href="#">View All</a></div>
+              <div className="wm-shead"><h2>{ui("Documents")}</h2><a href="#">{ui("View All")}</a></div>
               <div className="wm-card wm-doclist">
-                <div className="wm-doc"><div className="wm-rsq"><SymbolSvg width="21" height="21" style={{ color: '#fff' }} href="#i-ui-pages-older-capture" /></div><span>Safety Procedures</span></div>
-                <div className="wm-doc"><div className="wm-rsq"><SymbolSvg width="20" height="20" style={{ color: '#fff' }} href="#i-ui-connect" /></div><span>Employee Handbook</span></div>
-                <div className="wm-doc"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-learning-hub" /></div><span>Learning Resources</span></div>
+                <div className="wm-doc"><div className="wm-rsq"><SymbolSvg width="21" height="21" style={{ color: '#fff' }} href="#i-ui-pages-older-capture" /></div><span>{ui("Safety Procedures")}</span></div>
+                <div className="wm-doc"><div className="wm-rsq"><SymbolSvg width="20" height="20" style={{ color: '#fff' }} href="#i-ui-connect" /></div><span>{ui("Employee Handbook")}</span></div>
+                <div className="wm-doc"><div className="wm-rsq"><SymbolSvg className="wm-white" width="22" height="22" href="#i-ui-learning-hub" /></div><span>{ui("Learning Resources")}</span></div>
               </div>
             </div>
 
             {/* Featured News */}
             <div className="wm-sec">
-              <div className="wm-shead"><h2>Featured News</h2><a href="#">View All</a></div>
+              <div className="wm-shead"><h2>{ui("Featured News")}</h2><a href="#">{ui("View All")}</a></div>
               <div data-vc-slot="mobile.lead.0" className="wm-bignews">
                 <img
                   src={image("mobile.lead.0", staticFile("fillers/spotify.Bloomberg.11.27.17.jpg"))}
@@ -225,9 +222,9 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
                 <div className="wm-bignews-dots" />
                 <div className="wm-bignews-scrim" />
                 <div className="wm-bntx">
-                  <h3 style={{ whiteSpace: "pre-line" }}>{splitForTwoLines(mnews[0].title)}</h3>
-                  <div className="wm-meta wm-light"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>Global</span></div>
-                  <div className="wm-pub">Published 2 days ago</div>
+                  <h3 style={{ whiteSpace: "pre-line" }}>{ui(splitForTwoLines(mnews[0].title))}</h3>
+                  <div className="wm-meta wm-light"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>{ui("Global")}</span></div>
+                  <div className="wm-pub">{ui("Published 2 days ago")}</div>
                 </div>
               </div>
               <div className="wm-ngrid">
@@ -238,9 +235,9 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
                     alt=""
                     style={{ objectFit: 'cover' }}
                   />
-                  <h4>{mnews[1].title}</h4>
-                  <div className="wm-meta"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>Global</span></div>
-                  <div className="wm-pub">Published 1 day ago</div>
+                  <h4>{ui(mnews[1].title)}</h4>
+                  <div className="wm-meta"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>{ui("Global")}</span></div>
+                  <div className="wm-pub">{ui("Published 1 day ago")}</div>
                 </div>
                 <div className="wm-ncard">
                   <img data-vc-slot="mobile.news.1"
@@ -249,9 +246,9 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
                     alt=""
                     style={{ objectFit: 'cover' }}
                   />
-                  <h4>{mnews[2].title}</h4>
-                  <div className="wm-meta"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>Global</span></div>
-                  <div className="wm-pub">Published 2 days ago</div>
+                  <h4>{ui(mnews[2].title)}</h4>
+                  <div className="wm-meta"><SymbolSvg width="16" height="16" href="#i-ui-everyone" /><span>{ui("Global")}</span></div>
+                  <div className="wm-pub">{ui("Published 2 days ago")}</div>
                 </div>
               </div>
             </div>
@@ -281,7 +278,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
           {hdr.showLogo && (
             <img className="wm-heroM" src={logo.onDark} alt={copy.companyName} />
           )}
-          <div className="wm-heroV">{companyInitial}</div>
+          <div className="wm-heroV">{ui(companyInitial)}</div>
           {/* z4 in the old ladder: over the photo, letter and wash, under the
               z5 controls below. DOM order is what the export paints by. */}
           <div className="wm-hero-scrim" />
@@ -291,8 +288,8 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
             <div className="wm-gbtn"><SymbolSvg width="16.5" height="16.5" href="#i-ui-employee-standalone" /></div>
           </div>
           <div className="wm-herotabs">
-            <a href="#">Feed</a>
-            <a href="#" className="wm-on">Spotlight<span className="wm-tab-underline" /></a>
+            <a href="#">{ui("Feed")}</a>
+            <a href="#" className="wm-on">{ui("Spotlight")}<span className="wm-tab-underline" /></a>
           </div>
         </div>
 
@@ -314,6 +311,7 @@ export const WorkvivoMobileHome: React.FC<WorkvivoMobileHomeProps> = ({
 };
 import { GlassRing } from "./GlassRing";
 import { SlotIcon } from "../../customize/SlotIcon";
+import { useT } from "../../customize/uiStrings";
 
 // Feed this file's symbols into the inline registry (symbolRegistry.tsx): the hidden
 // sprite above cannot be referenced across <svg> roots in the in-browser export, so

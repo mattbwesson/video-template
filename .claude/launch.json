@@ -4,22 +4,43 @@
     {
       "name": "wizard",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "wizard"],
+      "runtimeArgs": [
+        "run",
+        "wizard"
+      ],
       "port": 5273,
       "autoPort": true
     },
     {
       "name": "gallery",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "gallery"],
+      "runtimeArgs": [
+        "run",
+        "gallery"
+      ],
       "port": 5274,
       "autoPort": true
     },
     {
       "name": "studio",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "zm-motion-gallery",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "--prefix",
+        "../zm-motion-repo/site",
+        "run",
+        "dev"
+      ],
+      "port": 5173,
       "autoPort": true
     }
   ]

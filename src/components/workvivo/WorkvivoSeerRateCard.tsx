@@ -1,6 +1,7 @@
 import React from "react";
 import { Donut } from "./WorkvivoSeerManagerInsights";
 import "./WorkvivoSeerRateCardStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * The Response Rate card that floats beside the phone at global 3903-4072.
@@ -34,10 +35,13 @@ export interface WorkvivoSeerRateCardProps {
   /** 0..1, threaded into the donut so the ring can sweep on entrance. */
   progress?: number;
   /**
-   * The responses figure. The card floating beside the phone shows the whole company's
-   * count; the copy inside the phone is one manager's team, so it reads 12/16.
+   * The responses figure, "<responses>/<audience>". Required, with no capture default:
+   * the card floating beside the phone shows the whole company's count, which derives
+   * from `companySize` (surveyResponses/surveyAudience in memberCounts.ts) and must
+   * agree with the desktop dashboard six seconds earlier; the copy inside the phone is
+   * one manager's team, so it reads 12/16.
    */
-  responses?: string;
+  responses: string;
   /**
    * Phone scale rather than the desktop screen's body scale. The card inside the phone at
    * 3903 sits among 14-16px type, so the 12px it uses beside the phone reads as small
@@ -49,14 +53,16 @@ export interface WorkvivoSeerRateCardProps {
 
 export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
   progress = 1,
-  responses = "10,395/13,860",
+  responses,
   large = false,
   style,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <div className={large ? "wsrc-card wsrc-lg" : "wsrc-card"} style={style}>
     <div className="wsrc-tabs">
-      <span className="wsrc-tab wsrc-on">Response Rate</span>
-      <span className="wsrc-tab">Completion Rate</span>
+      <span className="wsrc-tab wsrc-on">{ui("Response Rate")}</span>
+      <span className="wsrc-tab">{ui("Completion Rate")}</span>
     </div>
 
     <div className="wsrc-body">
@@ -66,8 +72,8 @@ export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
 
       <div className="wsrc-stats">
         <div className="wsrc-box">
-          <div className="wsrc-num">{responses}</div>
-          <div className="wsrc-label">Responses</div>
+          <div className="wsrc-num">{ui(responses)}</div>
+          <div className="wsrc-label">{ui("Responses")}</div>
         </div>
         <div className="wsrc-box">
           <div className="wsrc-figure">
@@ -76,9 +82,10 @@ export const WorkvivoSeerRateCard: React.FC<WorkvivoSeerRateCardProps> = ({
             </span>
             <span className="wsrc-num">75%</span>
           </div>
-          <div className="wsrc-label">Company Score</div>
+          <div className="wsrc-label">{ui("Company Score")}</div>
         </div>
       </div>
     </div>
   </div>
 );
+};

@@ -1,6 +1,7 @@
 import React from "react";
 import { Icon } from "./WorkvivoIcons";
 import "./WorkvivoHqSidebarStyles.css";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * The HQ Agent overlay's chat-history rail.
@@ -31,7 +32,9 @@ export const WorkvivoHqSidebar: React.FC<WorkvivoHqSidebarProps> = ({
   active = "search",
   history,
   footer = false,
-}) => (
+}) => {
+  const ui = useT();
+  return (
   <aside className="whq-side">
     <div className="whq-side-top">
       <span className="whq-spark">
@@ -53,22 +56,23 @@ export const WorkvivoHqSidebar: React.FC<WorkvivoHqSidebarProps> = ({
 
     <div className={active === "search" ? "whq-nav whq-on" : "whq-nav"}>
       <Icon href="#i-ui-explore" className="" width={14} height={14} />
-      Search
+      {ui("Search")}
     </div>
     <div className={active === "new-chat" ? "whq-nav whq-on" : "whq-nav"}>
       <Icon href="#i-ui-start-new-chat" className="" width={14} height={14} />
-      New chat
+      {ui("New chat")}
     </div>
 
-    <div className="whq-hist-label">History</div>
+    <div className="whq-hist-label">{ui("History")}</div>
     {(history ?? []).map((h, i) => (
       // Keyed by index as well as text: the reference's list repeats an entry, and two
       // identical keys would collapse into one row.
       <div className="whq-hist" key={`${h}-${i}`}>
-        {h}
+        {ui(h)}
       </div>
     ))}
 
     {footer ? <div className="whq-side-foot" /> : null}
   </aside>
 );
+};

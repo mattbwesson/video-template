@@ -8,6 +8,7 @@ import { weatherInDisplayScale } from "../../customize/weather";
 import { useCustomization } from "../../customize/CustomizationProvider";
 import type { WorkvivoCopy } from "../../customize/videoCopy";
 import type { ImageSlotKey } from "../../customize/imagery";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * Workvivo Billboards — the full-screen digital-signage display.
@@ -179,6 +180,7 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
   secondSwipeFrom = 103,
   swipeDuration = 17.5,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   const { copy, image, logo: brandLogo, theme, person } = useCustomization();
   const signage = copy.signage;
@@ -265,8 +267,8 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
         </div>
 
         <div className="wbb-clock">
-          <b>11:37 AM</b>
-          <span>Monday, March 27</span>
+          <b>{ui("11:37 AM")}</b>
+          <span>{ui("Monday, March 27")}</span>
         </div>
 
         {/* The screen shows the SAME forecast the feed card does — one company, one day
@@ -284,10 +286,10 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
             src={staticFile(BILLBOARD_WEATHER_ICON[weather.condition])}
             fill="#ffffff"
           />
-          <span>{weather.city}</span>
+          <span>{ui(weather.city)}</span>
           <span className="wbb-sep">|</span>
           <span>
-            {wx.temperature}&deg; {wx.unit}
+            {ui(wx.temperature)}{ui("° ")}{ui(wx.unit)}
           </span>
         </div>
       </div>
@@ -348,13 +350,13 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                       />
                       <div>
                         <div className="wbb-author-line">
-                          <b>{storyName(i)}</b> {i === 0 ? (authorAction ?? story.action) : story.action}
+                          <b>{ui(storyName(i))}</b> {ui(i === 0 ? (authorAction ?? story.action) : story.action)}
                         </div>
                         <div className="wbb-author-meta">
-                          <span>{chrome.ago}</span>
+                          <span>{ui(chrome.ago)}</span>
                           <span>·</span>
                           <Icon href="#i-ui-everyone" width={12} height={12} />
-                          <span>{story.scope}</span>
+                          <span>{ui(story.scope)}</span>
                         </div>
                       </div>
                     </div>
@@ -369,29 +371,29 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                           src={staticFile("img/post types/post-translation.svg")}
                           alt=""
                         />
-                        <span>{signage.translatedFrom}</span>
+                        <span>{ui(signage.translatedFrom)}</span>
                       </div>
                     )}
 
                     <div className="wbb-hero-text">
-                      <p>{story.headline}</p>
-                      <p>{story.body}</p>
+                      <p>{ui(story.headline)}</p>
+                      <p>{ui(story.body)}</p>
                     </div>
 
                     <div className="wbb-value">
-                      <div className="wbb-vlabel">Value:</div>
+                      <div className="wbb-vlabel">{ui("Value:")}</div>
                       <div className="wbb-chip">
                         <InlineSvg className="wbb-chip-ico" src={staticFile("img/post types/post-value.svg")} alt="" />
-                        <span>{story.value}</span>
+                        <span>{ui(story.value)}</span>
                       </div>
                     </div>
 
-                    <div className="wbb-comments">{chrome.comments}</div>
+                    <div className="wbb-comments">{ui(chrome.comments)}</div>
 
                     <div className="wbb-reacts">
                       {chrome.reacts.map((r) => (
                         <span className="wbb-react" key={r}>
-                          {r.replace(BRAND_REACT, signage.reactionEmoji)}
+                          {ui(r.replace(BRAND_REACT, signage.reactionEmoji))}
                         </span>
                       ))}
                     </div>
@@ -408,20 +410,20 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
           <section className="wbb-card">
             <div className="wbb-card-media">
               <img data-vc-slot="signage.article.0" src={article} alt="" />
-              <div className="wbb-tag">Article</div>
+              <div className="wbb-tag">{ui("Article")}</div>
             </div>
             <div className="wbb-card-body">
               <div className="wbb-card-title">
-                {articleTitle ?? signage.article.title}
+                {ui(articleTitle ?? signage.article.title)}
               </div>
               <div className="wbb-card-foot">
-                <div className="wbb-card-meta">Posted 2 hours ago</div>
+                <div className="wbb-card-meta">{ui("Posted 2 hours ago")}</div>
                 <div className="wbb-byline">
                   <img
                     src={image("signage.face.1", staticFile("img/avatar-3.jpeg"))}
                     alt=""
                   />
-                  <span>{signage.article.author}</span>
+                  <span>{ui(signage.article.author)}</span>
                 </div>
               </div>
             </div>
@@ -431,19 +433,19 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
           <section className="wbb-card">
             <div className="wbb-card-media">
               <img data-vc-slot="signage.event.0" src={event} alt="" />
-              <div className="wbb-tag">Event</div>
+              <div className="wbb-tag">{ui("Event")}</div>
             </div>
             <div className="wbb-event-body">
               <div className="wbb-date">
-                <div className="wbb-date-m">Jul</div>
+                <div className="wbb-date-m">{ui("Jul")}</div>
                 <div className="wbb-date-d">10</div>
               </div>
               <div className="wbb-event-copy">
-                <div className="wbb-card-title">{keepHyphensWhole(eventTitle ?? signage.event.title)}</div>
+                <div className="wbb-card-title">{ui(keepHyphensWhole(eventTitle ?? signage.event.title))}</div>
                 <div className="wbb-event-meta">
                   <span>
                     <Icon href="#i-ui-everyone" width={12} height={12} />
-                    Livestream
+                    {ui("Livestream")}
                   </span>
                   <span>
                     <Icon href="#i-ui-event-time" width={12} height={12} />
@@ -463,15 +465,15 @@ export const WorkvivoBillboardScreen: React.FC<WorkvivoBillboardScreenProps> = (
                 alt=""
               />
               <div>
-                <div className="wbb-anniv-name">{signage.anniversary.name}</div>
-                <div className="wbb-anniv-copy">{signage.anniversary.note}</div>
+                <div className="wbb-anniv-name">{ui(signage.anniversary.name)}</div>
+                <div className="wbb-anniv-copy">{ui(signage.anniversary.note)}</div>
               </div>
             </div>
 
             <div className="wbb-qr">
               <div className="wbb-qr-copy">
-                <div className="wbb-qr-t">Find out more</div>
-                <div className="wbb-qr-url">{signage.link}</div>
+                <div className="wbb-qr-t">{ui("Find out more")}</div>
+                <div className="wbb-qr-url">{ui(signage.link)}</div>
               </div>
               {/* A real code now. The three-square block underneath it was a stand-in
                   from before there was artwork, and is kept only for a caller that

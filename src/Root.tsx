@@ -2,6 +2,9 @@ import React from "react";
 import { Composition } from "remotion";
 import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
+import { Japanese } from "./Japanese";
+import { WorkvivoHqFan } from "./components/workvivo/WorkvivoHqFan";
+import { WorkvivoSurveyBuilder } from "./components/workvivo/WorkvivoSurveyBuilder";
 import { CustomizedWorkvivo } from "./CustomizedWorkvivo";
 import { WorkvivoSpacesScene } from "./WorkvivoSpacesScene";
 import { WorkvivoNewslettersScene } from "./WorkvivoNewslettersScene";
@@ -91,6 +94,17 @@ export const RemotionRoot: React.FC = () => {
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
       />
+      {/* The same cut in Japanese. Same scenes, same 5300 frames — it differs in its words
+          (passed as inputProps) and its typography (a `.jp`-scoped stylesheet), so nothing
+          about it can reach L2VirginAirline above. See src/Japanese.tsx. */}
+      <Composition
+        id="Japanese"
+        component={Japanese}
+        durationInFrames={VIRGIN_DURATION_IN_FRAMES}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
       {/* What the wizard renders. The same scenes and the same 5300 frames, driven by
           inputProps. defaultProps is the approved baseline, so opening it in the Studio
           with no props shows exactly what L2VirginAirline shows — the only difference
@@ -103,6 +117,29 @@ export const RemotionRoot: React.FC = () => {
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
         defaultProps={DEFAULT_INPUT_PROPS}
+      />
+      {/* Still frame: the HQ capability fan — three glass wedges around the HQ mark. */}
+      <Composition
+        id="WorkvivoHqFan"
+        component={WorkvivoHqFan}
+        durationInFrames={VIRGIN_FPS * 5}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* Still frame: the Surveys & Forms builder — the AI generate modal, the Add
+          Question palette and the per-question action bar. */}
+      <Composition
+        id="WorkvivoSurveyBuilder"
+        /* withCustomization, like every other customised screen here: the modal reads
+           `copy.surveyBuilder.prompt` through useCustomization(), which throws without
+           a provider above it. The main cut and the gallery both supply one; a bare
+           registration here rendered nothing but that error. */
+        component={withCustomization(WorkvivoSurveyBuilder)}
+        durationInFrames={VIRGIN_FPS * 5}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
       />
       {/* Still frame: the Workvivo Space page for the Annual Employee Summit, at the
           1440x1415 size of the Figma export it recreates. */}

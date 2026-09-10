@@ -1,5 +1,6 @@
 import React from "react";
 import { Easing, interpolate, useCurrentFrame } from "remotion";
+import { useT } from "../../customize/uiStrings";
 
 /**
  * The reaction burst on Brian Niccol's post: emojis launch from the bottom of the image
@@ -126,6 +127,7 @@ export const useReactionCounts = (startFrame: number | null): ReactionCounts => 
 export const WorkvivoFloatingReactions: React.FC<{ startFrame: number | null }> = ({
   startFrame,
 }) => {
+  const ui = useT();
   const frame = useCurrentFrame();
   if (startFrame === null) return null;
   const elapsed = frame - startFrame;
@@ -175,7 +177,7 @@ export const WorkvivoFloatingReactions: React.FC<{ startFrame: number | null }> 
               filter: "drop-shadow(0 3px 6px rgba(0,0,0,0.22))",
             }}
           >
-            {REACTION_GLYPH[s.kind]}
+            {ui(REACTION_GLYPH[s.kind])}
           </span>
         );
       })}

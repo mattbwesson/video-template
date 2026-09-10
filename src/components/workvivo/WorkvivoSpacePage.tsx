@@ -152,15 +152,16 @@ const Wordmark: React.FC<{ text: string; style: React.CSSProperties }> = ({
   text,
   style,
 }) => {
+  const ui = useT();
   const words = text.trim().toUpperCase().split(/\s+/);
   const tail = words.length > 1 ? words.pop() : null;
   return (
     <div className="wsp-wordmark" style={style}>
-      {words.join(" ")}
+      {ui(words.join(" "))}
       {tail ? (
         <>
           <br />
-          {tail}
+          {ui(tail)}
         </>
       ) : null}
     </div>
@@ -177,12 +178,14 @@ const FeaturedCard: React.FC<{
   looseTitle?: boolean;
   padFoot?: boolean;
   height?: number;
-}> = ({ kicker, title, buttonLabel, media, meta, looseTitle, padFoot, height }) => (
+}> = ({ kicker, title, buttonLabel, media, meta, looseTitle, padFoot, height }) => {
+  const ui = useT();
+  return (
   <div className="wsp-rcard" style={height ? { height } : undefined}>
     {media}
     <div className="wsp-rbody">
       <div>
-        <div className="wsp-rkicker">{kicker}</div>
+        <div className="wsp-rkicker">{ui(kicker)}</div>
         <div className={"wsp-rtitle" + (looseTitle ? " wsp-rtitle-loose" : "")}>{title}</div>
       </div>
       {meta}
@@ -190,11 +193,12 @@ const FeaturedCard: React.FC<{
     <div className={"wsp-rfoot" + (padFoot ? " wsp-rfoot-pad" : "")}>
       <div className="wsp-btn-secondary">
         <Icon href="#i-ui-posts" width={16.43} height={16.43} />
-        <span>{buttonLabel}</span>
+        <span>{ui(buttonLabel)}</span>
       </div>
     </div>
   </div>
 );
+};
 
 export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
   logoSrc,
@@ -204,6 +208,7 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
   countdownSrc,
   meSrc,
 }) => {
+  const ui = useT();
   const { copy, image, logo: brandLogo, person } = useCustomization();
   const { page } = copy.spaces;
   /** The card the directory clicked into at 1545 — its name is this page's title. */
@@ -302,7 +307,7 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-tsearch-wrap">
             <div className="wsp-tsearch">
               <Icon href="#i-ui-explore" width={24} height={24} />
-              <span>Search</span>
+              <span>{ui("Search")}</span>
             </div>
           </div>
 
@@ -335,15 +340,15 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
             <span className="wsp-back">
               <span className="wsp-chev wsp-chev-back" />
             </span>
-            <div className="wsp-title">{spaceName}</div>
+            <div className="wsp-title">{ui(spaceName)}</div>
           </div>
 
           <div className="wsp-headright">
             <div className="wsp-adminlink">
-              <span>Admin</span>
+              <span>{ui("Admin")}</span>
               <span className="wsp-chev wsp-chev-down" />
             </div>
-            <div className="wsp-btn-primary">Join</div>
+            <div className="wsp-btn-primary">{ui("Join")}</div>
             <div className="wsp-iconbtn">
               <Icon href="#i-ui-favorite-star" width={20} height={19.2} />
             </div>
@@ -363,7 +368,7 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-tablist">
             {TABS.map((tab) => (
               <div key={tab} className={"wsp-tab" + (tab === "Feed" ? " is-on" : "")}>
-                <div className="wsp-tab-lbl">{tab}</div>
+                <div className="wsp-tab-lbl">{ui(tab)}</div>
                 <div className="wsp-tab-bar" />
               </div>
             ))}
@@ -375,40 +380,44 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
       <div className="wsp-left">
         <div className="wsp-search">
           <Icon href="#i-ui-explore" width={20} height={20} />
-          <span>Search Connect</span>
+          <span>{ui("Search Connect")}</span>
         </div>
 
         <section className="wsp-lcard wsp-lcard-about">
           <div className="wsp-about-top">
-            <div className="wsp-caplabel">ABOUT</div>
+            <div className="wsp-caplabel">{ui("ABOUT")}</div>
             <div className="wsp-chips">
-              <div className="wsp-chip">Corporate Spaces</div>
+              <div className="wsp-chip">{ui("Corporate Spaces")}</div>
               <div className="wsp-chip">
                 <Icon href="#i-ui-spaces" width={12} height={12} />
-                <span>{spaceName}</span>
+                <span>{ui(spaceName)}</span>
               </div>
             </div>
             <div className="wsp-about-text">
-              {spaceName} 2026
+              {ui(spaceName)} 2026
               <br />
               <br />
-              {page.about}
+              {ui(page.about)}
             </div>
           </div>
 
           <div className="wsp-members">
-            <div className="wsp-members-count">{spaceMembers(copy.companySize, SPACE_PAGE_INDEX)}</div>
+            <div className="wsp-members-count">{ui(spaceMembers(copy.companySize, SPACE_PAGE_INDEX))}</div>
             <div className="wsp-avrow">
               {MEMBER_FACES.map((src) => (
                 <img key={src} className="wsp-av" src={staticFile(`img/${src}`)} alt="" />
               ))}
-              <div className="wsp-avmore">12k+</div>
+              {/* Derived from the count above it, not the "12k+" the capture had — that
+                  read "12k+" beside "333 Members" for a small employer. See memberOverflow. */}
+              <div className="wsp-avmore">
+                {ui(memberOverflow(copy.companySize, SPACE_PAGE_INDEX, MEMBER_FACES.length))}
+              </div>
             </div>
           </div>
         </section>
 
         <section className="wsp-lcard wsp-lcard-admins">
-          <div className="wsp-caplabel">SPACE ADMINS</div>
+          <div className="wsp-caplabel">{ui("SPACE ADMINS")}</div>
           {/* One row of four. It was the same six portraits twice, the second row
               reversed — the export's trick for filling a second row without a seventh
               face, which on inspection reads as the same people listed again. */}
@@ -434,22 +443,22 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
                 so the three nodes JSX would otherwise produce ("What's going on, ",
                 the name, "?") became three real flex items and stacked vertically. */}
             <div className="wsp-comp-ph">
-              {`What\u2019s going on, ${person.firstName}?`}
+              {ui(`What\u2019s going on, ${person.firstName}?`)}
             </div>
           </div>
           <div className="wsp-hr" />
           <div className="wsp-comp-acts">
             <div className="wsp-comp-act">
               <Icon href="#i-ui-shout-out" width={24.56} height={24.56} />
-              <span>Give a Shout-out</span>
+              <span>{ui("Give a Shout-out")}</span>
             </div>
             <div className="wsp-comp-act">
               <Icon href="#i-ui-post-a-value-update" width={24.56} height={24.56} />
-              <span>Post a Value Update</span>
+              <span>{ui("Post a Value Update")}</span>
             </div>
             <div className="wsp-comp-act">
               <Icon href="#i-ui-ask-a-question" width={24.56} height={24.56} />
-              <span>Ask a Question</span>
+              <span>{ui("Ask a Question")}</span>
             </div>
           </div>
         </section>
@@ -468,10 +477,10 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           />
           <div className="wsp-survey-panel">
             <div className="wsp-survey-copy">
-              <div className="wsp-survey-t">{page.survey.title}</div>
-              <div className="wsp-survey-s">{page.survey.meta}</div>
+              <div className="wsp-survey-t">{ui(page.survey.title)}</div>
+              <div className="wsp-survey-s">{ui(page.survey.meta)}</div>
             </div>
-            <div className="wsp-btn-start">Start</div>
+            <div className="wsp-btn-start">{ui("Start")}</div>
           </div>
         </section>
 
@@ -486,23 +495,23 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
             />
             <div className="wsp-post-head">
               <div className="wsp-post-by">
-                <b>{page.post.author}</b> posted a Shout-out.
+                <b>{ui(page.post.author)}</b>{ui(" posted a Shout-out.")}
               </div>
               <div className="wsp-post-meta">
-                <span>2 hours ago</span>
+                <span>{ui("2 hours ago")}</span>
                 <span>·</span>
                 <Icon href="#i-ui-everyone" width={12.28} height={12.28} />
               </div>
             </div>
           </div>
 
-          <div className="wsp-post-body">{page.post.body}</div>
+          <div className="wsp-post-body">{ui(page.post.body)}</div>
 
           <div className="wsp-hooray">
-            <div className="wsp-hooray-lbl">Hooray to:</div>
+            <div className="wsp-hooray-lbl">{ui("Hooray to:")}</div>
             <div className="wsp-hooray-chip">
               <img data-vc-slot={POST_FACES[1].slot} src={postFace(1)} alt="" />
-              <span>{page.post.credit}</span>
+              <span>{ui(page.post.credit)}</span>
             </div>
           </div>
 
@@ -510,13 +519,13 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
 
           <div className="wsp-post-foot">
             <div className="wsp-post-counts">
-              <span>89 reaction</span>
+              <span>{ui("89 reaction")}</span>
               <span className="wsp-sep">·</span>
-              <b>33 comments</b>
+              <b>{ui("33 comments")}</b>
             </div>
             <div className="wsp-share">
               <ShareArrow />
-              <span>Share</span>
+              <span>{ui("Share")}</span>
             </div>
           </div>
 
@@ -540,28 +549,28 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
           <div className="wsp-count-side">
             <div className="wsp-count-hdr">
               <Icon href="#i-ui-event-time" width={10.65} height={10.65} />
-              <span>Countdown</span>
+              <span>{ui("Countdown")}</span>
             </div>
 
             <div className="wsp-count-mid">
-              <div className="wsp-count-title">{copy.feed.event.countdownName}</div>
+              <div className="wsp-count-title">{ui(copy.feed.event.countdownName)}</div>
               <div className="wsp-count-nums">
                 <div className="wsp-count-unit">
                   <div className="wsp-count-num">22 :</div>
-                  <div className="wsp-count-lbl">Days</div>
+                  <div className="wsp-count-lbl">{ui("Days")}</div>
                 </div>
                 <div className="wsp-count-unit" style={{ width: 39.26 }}>
                   <div className="wsp-count-num">02</div>
-                  <div className="wsp-count-lbl">Hours</div>
+                  <div className="wsp-count-lbl">{ui("Hours")}</div>
                 </div>
                 <div className="wsp-count-unit">
                   <div className="wsp-count-num">: 17</div>
-                  <div className="wsp-count-lbl">Minutes</div>
+                  <div className="wsp-count-lbl">{ui("Minutes")}</div>
                 </div>
               </div>
             </div>
 
-            <div className="wsp-btn-viewmore">View More</div>
+            <div className="wsp-btn-viewmore">{ui("View More")}</div>
           </div>
         </section>
       </div>
@@ -580,10 +589,10 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
             }
             meta={
               <div className="wsp-rmeta">
-                <div>Posted 1 day ago</div>
+                <div>{ui("Posted 1 day ago")}</div>
                 <div className="wsp-rmeta-row">
                   <Icon href="#i-ui-everyone" width={12.32} height={12.32} />
-                  <span>Everyone</span>
+                  <span>{ui("Everyone")}</span>
                 </div>
               </div>
             }
@@ -643,4 +652,5 @@ export const WorkvivoSpacePage: React.FC<WorkvivoSpacePageProps> = ({
     </div>
   );
 };
-import { spaceMembers, SPACE_PAGE_INDEX } from "../../customize/memberCounts";
+import { SPACE_PAGE_INDEX, memberOverflow, spaceMembers } from "../../customize/memberCounts";
+import { useT } from "../../customize/uiStrings";
