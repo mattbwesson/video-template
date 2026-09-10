@@ -1,8 +1,10 @@
 import type React from "react";
 import { CustomizedZoetest } from "../src/CustomizedZoetest";
 import { CustomizedZoeTestSearch } from "../src/CustomizedZoeTestSearch";
+import { CustomizedZoeTestPeople } from "../src/CustomizedZoeTestPeople";
 import { ZOETEST_CUT_DURATION } from "../src/ZoetestCut";
 import { SEARCH_CUT_DURATION } from "../src/ZoeTestSearchCut";
+import { PEOPLE_CUT_DURATION } from "../src/ZoeTestPeopleCut";
 import type { VideoInputProps } from "../src/customize/videoCopy";
 
 /**
@@ -24,7 +26,8 @@ import type { VideoInputProps } from "../src/customize/videoCopy";
  *    image does not ship the 310 MB file. See CustomizedZoetest for the detail.
  *
  * `L2VirginAirline` is deliberately NOT here. It is the approved 212-second film and it
- * stays a Studio composition; the wizard customises the two derived cuts. Putting it back
+ * stays a Studio composition; the wizard customises the three derived cuts, one per
+ * pillar of the wheel the film itself puts up. Putting it back
  * is one entry — `CustomizedWorkvivo` and `CUSTOMIZED_CUT_DURATION`, both already
  * exported — if a full-length option is ever wanted.
  *
@@ -33,11 +36,17 @@ import type { VideoInputProps } from "../src/customize/videoCopy";
  * way; pretending otherwise here would only hide that.
  */
 
-export type TemplateId = "zoe-test-comms" | "zoe-test-search";
+export type TemplateId = "zoe-test-comms" | "zoe-test-search" | "zoe-test-people";
 
 export type VideoTemplate = {
+  /**
+   * Stable key. Persisted in wizard state, handed to the renderer as the composition id
+   * and recorded against every render event — so it is deliberately NOT renamed when the
+   * operator-facing `label` changes, and it does not have to match the Studio composition
+   * it derives from.
+   */
   id: TemplateId;
-  /** Shown on the chooser card and in the step rail's summary. */
+  /** Operator-facing name. The only place either cut is named for a human. */
   label: string;
   /** One line under the label: what this cut is. */
   blurb: string;
@@ -57,10 +66,10 @@ const HEIGHT = 1080;
 export const TEMPLATES: readonly VideoTemplate[] = [
   {
     id: "zoe-test-comms",
-    label: "Zoe-test-comms",
+    label: "Communications & Engagement Focus",
     blurb: "A shortened cut of the L2 Virgin Airline film.",
     detail:
-      "About 102 seconds of the full 212-second film: the home feed and desktop, the livestream, spaces, the space page, journeys and newsletters, then the customer wall and the workvivo HQ endcard.",
+      "About half of the full 212-second film: the home feed and desktop, the livestream, spaces, the space page, journeys and newsletters, then the customer wall and the workvivo HQ endcard.",
     component: CustomizedZoetest,
     durationInFrames: ZOETEST_CUT_DURATION,
     fps: FPS,
@@ -69,19 +78,31 @@ export const TEMPLATES: readonly VideoTemplate[] = [
   },
   {
     id: "zoe-test-search",
-    label: "Zoe-test-search",
+    label: "Search & Knowledge Focus",
     blurb: "A shorter cut of the same film, on Search & Knowledge.",
     detail:
-      "About 49 seconds. The film's own opening, then the pillar card, Ask HQ, the HQ Agent and the mobile answer, then its ending. The two joins are a dissolve and a dip through the brand colour.",
+      "The film's own opening, then the pillar card, Ask HQ, the HQ Agent and the mobile answer, then its ending. The two joins are a dissolve and a dip through the brand colour.",
     component: CustomizedZoeTestSearch,
     durationInFrames: SEARCH_CUT_DURATION,
     fps: FPS,
     width: WIDTH,
     height: HEIGHT,
   },
+  {
+    id: "zoe-test-people",
+    label: "People Intelligence Focus",
+    blurb: "A shorter cut of the same film, on People Intelligence.",
+    detail:
+      "The film's own opening, then the pillar card, Analytics and the Seer run — manager insights, the rater, comments and the survey on mobile — the space feed, integrations and Admin Hub, then its ending.",
+    component: CustomizedZoeTestPeople,
+    durationInFrames: PEOPLE_CUT_DURATION,
+    fps: FPS,
+    width: WIDTH,
+    height: HEIGHT,
+  },
 ];
 
-/** The one an operator lands on. The longer of the two shortened cuts. */
+/** The one an operator lands on. The longest of the three, so the default says the most. */
 export const DEFAULT_TEMPLATE_ID: TemplateId = "zoe-test-comms";
 
 /**

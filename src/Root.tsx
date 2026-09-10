@@ -6,6 +6,8 @@ import { Zoetest } from "./Zoetest";
 import { ZOETEST_CUT_DURATION } from "./ZoetestCut";
 import { ZoeTestSearch } from "./ZoeTestSearch";
 import { SEARCH_CUT_DURATION } from "./ZoeTestSearchCut";
+import { ZoeTestPeople } from "./ZoeTestPeople";
+import { PEOPLE_CUT_DURATION } from "./ZoeTestPeopleCut";
 import { CustomizedWorkvivo } from "./CustomizedWorkvivo";
 import { WorkvivoSpacesScene } from "./WorkvivoSpacesScene";
 import { WorkvivoNewslettersScene } from "./WorkvivoNewslettersScene";
@@ -109,6 +111,21 @@ export const RemotionRoot: React.FC = () => {
         id="Zoe-test-search"
         component={ZoeTestSearch}
         durationInFrames={SEARCH_CUT_DURATION}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* The People Intelligence cut: the film's opening, then frames 3326-5300 — the
+          pillar card at global 333 with People Intelligence ("turn signals into insight,
+          action, and results") picked out, the chapter it introduces, the integrations and
+          admin run that follows it, and the film's own ending. 2349 frames, not 5300.
+
+          See the header of ZoeTestPeopleCut.tsx for what is left out and why, and for why
+          its one remaining join puts the picture and the sound in different places. */}
+      <Composition
+        id="Zoe-test-people"
+        component={ZoeTestPeople}
+        durationInFrames={PEOPLE_CUT_DURATION}
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}

@@ -13,13 +13,24 @@ import { TEMPLATES, type TemplateId } from "../templates";
  *
  * The whole card is the label, so the hit target is the card and not just the dot.
  */
+
+/**
+ * A cut's running time, as a clock — "1:42".
+ *
+ * m:ss rather than the raw second count this showed before. "102s" is a number, and a
+ * number next to a title reads as a quantity of something; an operator picking between two
+ * cuts is comparing LENGTHS, and a colon is what says so without a unit label.
+ */
+const runtime = (frames: number, fps: number): string => {
+  const total = Math.round(frames / fps);
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, "0")}`;
+};
+
 export const TemplateStep: React.FC<{
   state: WizardState;
   patch: (p: Partial<WizardState>) => void;
   onNext: () => void;
 }> = ({ state, patch, onNext }) => {
-  const seconds = (frames: number, fps: number) => Math.round(frames / fps);
-
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
@@ -52,7 +63,7 @@ export const TemplateStep: React.FC<{
                 <span className="vc-tpl-head">
                   <span className="vc-tpl-name">{t.label}</span>
                   <span className="vc-tpl-len vc-mono">
-                    {seconds(t.durationInFrames, t.fps)}s
+                    {runtime(t.durationInFrames, t.fps)}
                   </span>
                 </span>
                 <span className="vc-tpl-blurb">{t.blurb}</span>
