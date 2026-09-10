@@ -42,7 +42,7 @@ Remotion composition in `src/Root.tsx`.
 | `WorkvivoSeerInsights` | 1920×1080 | Seer Insights — survey-analysis screen with sentiment topic cards and comment list |
 | `WorkvivoSeerManagerInsights` | 1920×1080 | Seer Manager Insights — overview, score donuts, timeline and direct reports |
 | `WorkvivoSeerSurveyMobile` | 1920×1080 | The Seer survey on mobile — fits to height, being a phone |
-| `WorkvivoCustomerGrid` | 1920×1080 | Customer Logo Wall — 5×11 grid of white client cards on glowing brand red mesh with center Workvivo mark |
+| `WorkvivoCustomerGrid` | 1920×1080 | Customer Logo Wall — 7×13 grid of white client cards on the tenant's flat brand field, the Workvivo mark at the centre |
 
 Each exposes its images and brand colour as props so a customer run can swap them
 without touching the layout — e.g. `WorkvivoBillboardScreen` takes `brand`, `logoSrc`,

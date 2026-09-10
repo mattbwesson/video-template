@@ -680,6 +680,7 @@ questions eyeballing can't, and it works even when the pane can't render a scree
 - [ ] No `<style>` blocks inside inline SVG — fills are presentation attributes on the elements.
 - [ ] **No `useEffect` + `setState` deciding what a frame looks like.** If unavoidable, hold `delayRender` **and** prove it with a *cold-cache* export.
 - [ ] No `mask-image` / `mask-composite` in the export path — masked artwork is baked into the asset, or the effect is removed.
+- [ ] No file-backed bare `<img>` in a scene the CLI stills — a bare image is not awaited, so a still can capture the frame before it decodes (five blank logo-wall cards on one frame, drawn on the next). Use Remotion's `<Img>`, and `premountFor` on the Sequence when a scene mounts many at once.
 - [ ] No CSS `radial-gradient` — every gradient that must appear is `linear-gradient` or a `RadialWash` (`src/components/RadialWash.tsx`, an SVG `<radialGradient>` that resamples the stops premultiplied so it matches the CSS ramp; measured to within a level on the CLI render and in the export).
 - [ ] No CSS `background-image` photographs — real `<img>` with explicit `width`/`height`/`object-fit`.
 - [ ] After any `<span>`/`<div>` → `<img>` conversion, grep the stylesheet for element-type selectors (`.foo span`) that just stopped matching.

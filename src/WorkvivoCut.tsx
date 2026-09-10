@@ -1466,10 +1466,16 @@ export const WorkvivoCut: React.FC<{
       {/* At 4983, hard cut to the customer logo wall, lit with the tenant colour, ending
           at 5166. No `brand` prop: the scene takes it from the theme, and passing a
           literal here is what kept this shot green for every customer. */}
+      {/* Premounted two seconds early: the wall is ninety Remotion <Img> tiles, each of
+          which holds delayRender until its file has decoded. Mounted on the cut itself they
+          would all open on frame 4983 at once — on a cold cache over the internet that is
+          the stall docs/browser-render-best-practices.md warns about at a dozen images.
+          Premounting lets the fetches settle under the sign-off's predecessor, invisibly. */}
       <Sequence
         name="Workvivo Customer Grid (4983 - 5166)"
         from={4983}
-        durationInFrames={5166 - 4983}>
+        durationInFrames={5166 - 4983}
+        premountFor={50}>
         <WorkvivoCustomerGridScene />
       </Sequence>
       {/* The sign-off: the lockup on the mesh field, dissolving into the tagline and held
