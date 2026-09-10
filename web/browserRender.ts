@@ -217,6 +217,11 @@ export const startRender = ({
       audioCodec: "aac",
       outputTarget: "web-fs",
       signal: controller.signal,
+      // Two minutes rather than the 30-second default. The logo wall alone is ninety
+      // <Img> tiles fetched from the server on a cold cache; a slow connection should
+      // finish late, not abort the whole export at frame 4983. renderStill below already
+      // waits three minutes for the same reason.
+      delayRenderTimeoutInMilliseconds: 120_000,
       videoBitrate: VIDEO_BITRATE,
       keyframeIntervalInSeconds: KEYFRAME_INTERVAL_SECONDS,
       // 192 kbps AAC rather than the default 128. Two megabytes over the whole cut, on a

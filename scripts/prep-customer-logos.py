@@ -23,6 +23,7 @@ typed, so the script does not depend on the pitch being exactly 608.
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -114,22 +115,29 @@ def main() -> None:
     row_runs = merge(segments(ink.sum(axis=1), 20), 60)
     cx = fit_centres(col_runs, COLS, im.width)
     cy = fit_centres(row_runs, ROWS, im.height)
-    pitch = min(cx[1] - cx[0], cy[1] - cy[0])
-    half = int(pitch / 2)
-    print(f"grid: pitch {pitch:.1f}px, columns from {cx[0]:.0f} to {cx[-1]:.0f}, rows from {cy[0]:.0f} to {cy[-1]:.0f}")
+    # Each axis keeps its own pitch: a reference with tighter rows than columns would
+    # otherwise get a window narrower than a column and cut wide artwork mid-glyph.
+    half_x, half_y = int((cx[1] - cx[0]) / 2), int((cy[1] - cy[0]) / 2)
+    print(f"grid: pitch {2 * half_x}x{2 * half_y}px, columns from {cx[0]:.0f} to {cx[-1]:.0f}, rows from {cy[0]:.0f} to {cy[-1]:.0f}")
 
     OUT.mkdir(parents=True, exist_ok=True)
-    written = 0
+    written: list[str] = []
     for r, row in enumerate(NAMES):
         for c, name in enumerate(row):
             if name is None:
                 continue
-            x0, x1 = max(0, int(cx[c]) - half), min(im.width, int(cx[c]) + half)
-            y0, y1 = max(0, int(cy[r]) - half), min(im.height, int(cy[r]) + half)
+            x0, x1 = max(0, int(cx[c]) - half_x), min(im.width, int(cx[c]) + half_x)
+            y0, y1 = max(0, int(cy[r]) - half_y), min(im.height, int(cy[r]) + half_y)
             window = ink[y0:y1, x0:x1]
             ys, xs = np.nonzero(window)
             if len(xs) == 0:
                 sys.exit(f"no artwork in cell row {r} col {c} ({name})")
+            # Artwork that reaches the window's own edge is running into the next cell —
+            # a mis-fitted grid — and is an error, unlike the image edge, which is expected.
+            at_window = (xs.min() == 0 and x0 > 0) or (xs.max() == window.shape[1] - 1 and x1 < im.width) \
+                or (ys.min() == 0 and y0 > 0) or (ys.max() == window.shape[0] - 1 and y1 < im.height)
+            if at_window:
+                sys.exit(f"artwork in row {r} col {c} ({name}) touches the cell window; the grid fit is off")
             bx0, bx1 = x0 + xs.min() - MARGIN, x0 + xs.max() + 1 + MARGIN
             by0, by1 = y0 + ys.min() - MARGIN, y0 + ys.max() + 1 + MARGIN
             bx0, by0 = max(0, bx0), max(0, by0)
@@ -138,8 +146,30 @@ def main() -> None:
             clipped = " (clipped by the image edge)" if bx0 == 0 or bx1 == im.width else ""
             tile.save(OUT / f"{name}.png", optimize=True)
             print(f"  {name}.png  {tile.width}x{tile.height}{clipped}")
-            written += 1
-    print(f"{written} tiles written to {OUT.relative_to(ROOT)}")
+            written.append(name)
+    print(f"{len(written)} tiles written to {OUT.relative_to(ROOT)}")
+    reconcile(set(written))
+
+
+TABLE = ROOT / "src/components/workvivo/WorkvivoCustomerLogos.tsx"
+
+
+def reconcile(written: set[str]) -> None:
+    """The table and this script name the same 90 files in two languages. Remotion's <Img>
+    cancels the whole render on a file that is not there, so a stem present on one side
+    and not the other is an error here, where it is cheap, rather than at frame 4983."""
+    referenced = set(re.findall(r"img/customer-logos/([a-z0-9-]+)\.png", TABLE.read_text()))
+    on_disk = {p.stem for p in OUT.glob("*.png")}
+    problems = []
+    if referenced - written:
+        problems.append(f"table names tiles this script does not write: {sorted(referenced - written)}")
+    if written - referenced:
+        problems.append(f"tiles written that the table never shows: {sorted(written - referenced)}")
+    if on_disk - written:
+        problems.append(f"stale files in {OUT.relative_to(ROOT)} from an earlier run: {sorted(on_disk - written)}")
+    if problems:
+        sys.exit("\n".join(problems))
+    print(f"table {TABLE.relative_to(ROOT)} and {OUT.relative_to(ROOT)} agree on all {len(written)} tiles")
 
 
 if __name__ == "__main__":

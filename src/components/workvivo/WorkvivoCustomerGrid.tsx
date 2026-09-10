@@ -19,7 +19,7 @@ export interface WorkvivoCustomerGridProps {
 
 /**
  * 16:9 full-screen Customer Logo Wall with square tiles in a 7x13 matrix,
- * centered around the iconic Workvivo hero mark on an illuminated red grid background.
+ * centered around the Workvivo mark on the tenant's flat brand field.
  */
 export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
   brand = DEFAULT_GRID_BRAND,
@@ -93,7 +93,10 @@ export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
       >
         {CUSTOMER_GRID_ROWS.map((row, rowIndex) =>
           row.map((item, colIndex) => {
-            const isCenter = rowIndex === 3 && colIndex === 6;
+            // The table says which cell is the centre; the indices below only measure
+            // distance from it. Tying the SVG to a hardcoded (3, 6) as well meant a row
+            // edit could draw the mark over a customer and drop the real centre to text.
+            const isCenter = item.center === true;
             // Radial distance from center card (row 3, col 6 in 7x13 matrix)
             const dx = colIndex - 6;
             const dy = rowIndex - 3;
@@ -218,11 +221,7 @@ export const WorkvivoCustomerGrid: React.FC<WorkvivoCustomerGridProps> = ({
                     src={staticFile(item.src)}
                     alt={item.name}
                   />
-                ) : (
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#333333" }}>
-                    {item.name}
-                  </span>
-                )}
+                ) : null}
               </div>
             );
           })

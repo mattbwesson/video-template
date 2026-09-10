@@ -12,7 +12,7 @@
  * They used to be drawn placeholders under invented names ("TrainCorp", "Fraport",
  * "Cordell"…); the reference names them, and those are the names here.
  */
-export const CUSTOMER_GRID_ROWS: Array<Array<{ id: string; name: string; src?: string }>> = [
+export const CUSTOMER_GRID_ROWS: Array<Array<{ id: string; name: string; src?: string; center?: true }>> = [
   // ROW 1
   [
     { id: "graincorp", name: "GrainCorp", src: "img/customer-logos/graincorp.png" },
@@ -69,8 +69,9 @@ export const CUSTOMER_GRID_ROWS: Array<Array<{ id: string; name: string; src?: s
     { id: "ryanair", name: "Ryanair", src: "img/customer-logos/ryanair.png" },
     { id: "valor", name: "Valor", src: "img/customer-logos/valor.png" },
     { id: "nhs_royal_berkshire", name: "NHS Royal Berkshire", src: "img/customer-logos/nhs-royal-berkshire.png" },
-    // CENTER: drawn by the grid from img/workvivo-tile.svg; this entry only keeps the row full.
-    { id: "workvivo_center", name: "Workvivo" },
+    // CENTER: the grid draws this cell from img/workvivo-tile.svg. `center` is what the
+    // grid keys on — not the cell's position — so a row edit cannot move the mark.
+    { id: "workvivo_center", name: "Workvivo", center: true },
     { id: "bupa", name: "Bupa", src: "img/customer-logos/bupa.png" },
     { id: "london_ambulance", name: "NHS London Ambulance Service", src: "img/customer-logos/london-ambulance-service.png" },
     { id: "amc", name: "AMC Theatres", src: "img/customer-logos/amc-theatres.png" },
