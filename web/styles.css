@@ -9,6 +9,12 @@
   --txt:#edeef3; --mute:#8b90a2;
   --brand:#44D760;
   --accent:#44D760; --accent-ink:#0b0c10; --accent-soft:rgba(68,215,96,.14); --accent-glow:rgba(68,215,96,.22);
+  /* The first step's three chapter colours. FIXED, and deliberately not derived from the
+     brand the way --accent is: these identify the film's three chapters, which are the same
+     three whoever the video is for, and a tenant's colour landing on one of them would say
+     that chapter was the branded one. Pink, orchid, violet — far enough apart to tell at
+     the size the timeline blocks are drawn. */
+  --chapter-1:#FF3D8C; --chapter-2:#C64BE0; --chapter-3:#7B5CFF;
   --display:"Bricolage Grotesque", system-ui, sans-serif;
   --body:"Instrument Sans", system-ui, -apple-system, sans-serif;
   --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;

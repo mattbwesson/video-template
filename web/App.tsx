@@ -13,36 +13,7 @@ import { PasscodeGate } from "./PasscodeGate";
 import { passcodeRequired, storedPasscode } from "./passcode";
 import { runResearch } from "./research";
 import { ResearchChip } from "./ResearchChip";
-import {
-  cleanHex,
-  css,
-  fromHsl,
-  inkOn,
-  isHex,
-  rgba,
-  toHsl,
-  uiAccentOf,
-} from "../src/customize/color";
-
-/**
- * Degrees of hue between one chapter's colour on the first step's timeline and the next.
- *
- * The strip has to make three segments tellable apart at a glance, which one colour cannot
- * do. Rotating the accent is what keeps that from becoming a second, unrelated palette: the
- * first chapter IS the accent, and the other two are the same colour walked round the
- * wheel — so a tenant's green gives a green-to-amber ramp and a pink gives pink-to-violet,
- * and either way the strip belongs to the rest of the page.
- *
- * -52, which is the first of the two steps the reference design takes between its own three
- * (338 -> 287 -> 251) rather than the average of them. The average looked right on paper
- * and was not: on the shipped green the first two chapters came out at 137 and 93, which
- * both read as "green" at the size these blocks are. The wider step separates them without
- * pushing the third anywhere a brand would not go.
- *
- * Saturation and lightness are left where `uiAccentOf` put them, which is the band that
- * stays legible on a near-black page.
- */
-const CHAPTER_HUE_STEP = -52;
+import { cleanHex, css, inkOn, isHex, rgba, uiAccentOf } from "../src/customize/color";
 
 /**
  * The wizard's own chrome takes the brand colour too, but not the same value the video
@@ -60,14 +31,6 @@ const applyUiAccent = (hex: string) => {
   root.setProperty("--accent-ink", inkOn(accent));
   root.setProperty("--accent-soft", rgba(accent, 0.13));
   root.setProperty("--accent-glow", rgba(accent, 0.2));
-
-  const { h, s, l } = toHsl(accent);
-  [0, 1, 2].forEach((i) =>
-    root.setProperty(
-      `--chapter-${i + 1}`,
-      css(fromHsl({ h: h + CHAPTER_HUE_STEP * i, s, l })),
-    ),
-  );
 };
 
 export const App: React.FC = () => {
@@ -95,8 +58,20 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  /**
+   * Merge a patch into the wizard's state.
+   *
+   * Takes an UPDATER as well as a plain object, and that is not a convenience. A step that
+   * reads the current state to work out the patch — toggling one chapter out of a list is
+   * the case that found this — closes over the value from its last render. Two clicks
+   * inside one React batch then both compute from the same stale value and the second
+   * silently undoes the first: the operator unticks two chapters, one comes back, and the
+   * render encodes a film they did not ask for. Passing a function defers the read to the
+   * updater, where the state is always current.
+   */
   const patch = useCallback(
-    (p: Partial<WizardState>) => setState((s) => ({ ...s, ...p })),
+    (p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>)) =>
+      setState((s) => ({ ...s, ...(typeof p === "function" ? p(s) : p) })),
     [],
   );
 

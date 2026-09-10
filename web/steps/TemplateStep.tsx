@@ -80,7 +80,8 @@ const CHEVRON = (
 
 export const TemplateStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  /** Accepts an updater as well as an object — see `toggle` for why that matters here. */
+  patch: (p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>)) => void;
   onNext: () => void;
 }> = ({ state, patch, onNext }) => {
   const picked = state.pillars;
@@ -100,13 +101,19 @@ export const TemplateStep: React.FC<{
    * the film's own order whatever order the boxes were clicked in. Nothing downstream
    * depends on that — `templateForPillars` orders them again — but state that is already
    * in the right order is state nobody has to remember to sort.
+   *
+   * It reads `s.pillars` from the UPDATER rather than `picked` from this render, and that
+   * is load-bearing rather than stylistic. Unticking two chapters in quick succession puts
+   * both clicks in one React batch; computing from `picked` meant both read the same stale
+   * list and the second click undid the first, leaving a chapter ticked that the operator
+   * had just turned off — and the render then encoded it.
    */
-  const toggle = (id: TemplateId) => {
-    const next = TEMPLATES.map((t) => t.id as TemplateId).filter((t) =>
-      t === id ? !picked.includes(id) : picked.includes(t),
-    );
-    patch({ pillars: next });
-  };
+  const toggle = (id: TemplateId) =>
+    patch((s) => ({
+      pillars: TEMPLATES.map((t) => t.id as TemplateId).filter((t) =>
+        t === id ? !s.pillars.includes(id) : s.pillars.includes(t),
+      ),
+    }));
 
   // The film these ticks currently add up to. Resolved here as well as on the reveal
   // screen, from the same function, so the length promised on this page is the length that
