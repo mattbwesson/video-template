@@ -1,11 +1,13 @@
 import React from "react";
-import { companyReady, type WizardState } from "../wizardState";
+import { companyReady, type Patch, type WizardState } from "../wizardState";
 
 export const CompanyStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onNext: () => void;
-}> = ({ state, patch, onNext }) => {
+  onBack: () => void;
+  backLabel: string;
+}> = ({ state, patch, onNext, onBack, backLabel }) => {
   const ready = companyReady(state);
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -17,12 +19,12 @@ export const CompanyStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step one <b>of four</b>
+        Step two <b>of five</b>
       </div>
       <h1>Who is this video for?</h1>
       <p className="vc-lede">
-        The company it is being cut for. Their name goes on screen and into
-        every line of copy the video speaks.
+        The company it is being cut for. Their name goes on screen and into every line of
+        copy the video speaks.
       </p>
 
       <div className="vc-field">
@@ -50,8 +52,8 @@ export const CompanyStep: React.FC<{
           <em>optional</em>
         </div>
         <p className="vc-subhint">
-          Saved with the project for the copywriting pass. It does not change
-          anything you will see in the preview yet.
+          Saved with the project for the copywriting pass. It does not change anything you
+          will see in the preview yet.
         </p>
         <label className="vc-sr" htmlFor="ctx">
           Additional context
@@ -68,6 +70,9 @@ export const CompanyStep: React.FC<{
       <div className="vc-foot">
         <button className="vc-btn" disabled={!ready} onClick={onNext}>
           Continue
+        </button>
+        <button className="vc-back" onClick={onBack}>
+          ← {backLabel}
         </button>
         <span className="vc-hintline">Press Enter to continue</span>
       </div>

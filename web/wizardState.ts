@@ -12,16 +12,35 @@ import { expandCopyOverrides } from "../src/customize/copyPaths";
 import { repairSelfShoutOut } from "../src/customize/shoutOut";
 import { followValueRenames } from "../src/customize/valueEcho";
 import type { HeaderOverrides } from "../src/customize/headers";
-import {
-  DEFAULT_BRAND_HEX,
-  clampBrandAccentHex,
-  type Hex,
-} from "../src/customize/color";
+import { DEFAULT_BRAND_HEX, clampBrandAccentHex, type Hex } from "../src/customize/color";
 import type { Upload } from "./uploads";
 import type { SlotFraming } from "./framing";
 import type { ResearchState } from "./research";
+import { type TemplateId } from "./templates";
+import { PILLAR_IDS } from "../src/cuts/plan";
 
 export type WizardState = {
+  /**
+   * Which of the film's three chapters the video keeps.
+   *
+   * ALL THREE to begin with, and the first step is a set of things to turn off rather than
+   * a set to pick from. The film is a finished edit that covers all three; an operator who
+   * reads the first screen and presses Continue should get that film, not the shortest one
+   * of them. See web/steps/TemplateStep.tsx.
+   *
+   * One or more, in any order — `templateForPillars` imposes the film's own order and
+   * resolves the set to a single cut with one intro at the front and one ending at the back.
+   *
+   * Every other answer in this state is cut-agnostic — a logo is a logo whichever film it
+   * lands in — so this is the one field that changes what gets rendered rather than what
+   * appears inside it. It affects nothing in `toInputProps` for that reason: the
+   * composition is chosen by the caller (see web/templates.ts), and the props are the same
+   * either way.
+   *
+   * Never empty in practice; the first step's Continue is gated on it. The resolver falls
+   * back to the default cut rather than trusting that.
+   */
+  pillars: TemplateId[];
   company: string;
   /**
    * Free text about the audience and the deal.
@@ -113,7 +132,29 @@ export type WizardState = {
   research: ResearchState;
 };
 
+/**
+ * How anything changes the wizard's state.
+ *
+ * The UPDATER form is the one that matters, and it is why this is a named type rather than
+ * six inline signatures. Anything whose patch DEPENDS on the current state — appending a
+ * swatch, dropping a shot, merging one copy override into the rest — must read that state
+ * inside the updater. Reading it from the enclosing render instead works right up until two
+ * of those land in the same React batch, at which point both compute from the same stale
+ * value and the second silently undoes the first.
+ *
+ * That is not hypothetical: it shipped. The first step's chapter toggles did exactly this,
+ * so unticking two chapters quickly left one of them ticked and the render encoded a film
+ * nobody asked for. See the note on `patch` in web/App.tsx.
+ *
+ * The plain-object form is still fine for a patch that does not read state — a text field
+ * setting its own value, a flag being cleared — and most call sites are that.
+ */
+export type Patch = (
+  p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>),
+) => void;
+
 export const INITIAL_STATE: WizardState = {
+  pillars: [...PILLAR_IDS],
   company: "",
   context: "",
   person: { name: "", title: "", photo: null },
@@ -140,11 +181,20 @@ export const INITIAL_STATE: WizardState = {
  * main character apart broke the back-links the first time precisely because each step
  * spelled its predecessor's name out itself.
  */
-export const STEPS = ["Company", "Character", "Brand", "Imagery"] as const;
+export const STEPS = ["Pillars", "Company", "Character", "Brand", "Imagery"] as const;
+
+/**
+ * The first step needs at least one pillar.
+ *
+ * It used to be a formality — a single-choice step landing on a default cannot be
+ * unanswered — and it is a real gate now that the step is a multi-select, because clearing
+ * every box IS a reachable state and a video of an intro cutting straight to an endcard is
+ * not something anyone means to ask for.
+ */
+export const pillarsReady = (s: WizardState): boolean => s.pillars.length > 0;
 
 /** The company is the one thing every other answer hangs off, so it stands alone. */
-export const companyReady = (s: WizardState): boolean =>
-  s.company.trim().length >= 2;
+export const companyReady = (s: WizardState): boolean => s.company.trim().length >= 2;
 
 /** All three parts of the persona are required: the cut shows every one of them. */
 export const personReady = (s: WizardState): boolean =>
@@ -235,10 +285,9 @@ export const toInputProps = (s: WizardState): VideoInputProps => {
   // objects together: a spread would replace `person` wholesale, and an operator who
   // left the title blank would silently get the baseline's "CEO" back instead of the
   // researched one.
-  const researched = COPY.merge(
-    s.research.status === "done" ? s.research.copy : {},
-    { capLengths: true },
-  );
+  const researched = COPY.merge(s.research.status === "done" ? s.research.copy : {}, {
+    capLengths: true,
+  });
 
   const written = COPY.merge(copyPatch, { capLengths: true, base: researched });
 

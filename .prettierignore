@@ -1,0 +1,19 @@
+# Build output and renders. Same set .gitignore already covers.
+build
+out
+.certs
+package-lock.json
+
+# Assets, not source.
+public
+
+# One 129,000-character line of base64 @font-face payload. Prettier would rewrap it,
+# which is a five-figure diff over bytes no human reads.
+src/components/workvivo/WorkvivoStyles.css
+
+# A standalone exported artifact, kept as it came out of the tool it was exported from.
+video-customizer-reveal-dark.html
+
+# Hand-wrapped prose and reference tables — docs/browser-render-best-practices.md and the
+# component library README carry wide tables whose column alignment Prettier rewrites.
+*.md

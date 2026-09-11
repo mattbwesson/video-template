@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FileDrop } from "../Dropzone";
 import { readImages } from "../uploads";
-import { buildReady, imageryReady, type WizardState } from "../wizardState";
+import { buildReady, imageryReady, type Patch, type WizardState } from "../wizardState";
 import {
   SUGGESTED_UPLOADS,
   imageSlotLabel,
@@ -10,16 +10,24 @@ import {
 
 export const ImageryStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onBuild: () => void;
   onBack: () => void;
   backLabel: string;
 }> = ({ state, patch, onBuild, onBack, backLabel }) => {
   const input = useRef<HTMLInputElement>(null);
 
+  /**
+   * Append dropped photos.
+   *
+   * The updater matters more here than anywhere else in this step: `readImages` is awaited,
+   * so two drops in quick succession resolve whenever their files finish decoding — in
+   * either order, and both long after the render that created these closures. Appending to
+   * `state.shots` would have the slower drop overwrite the faster one's photos entirely.
+   */
   const add = async (files: FileList | File[]) => {
     const ups = await readImages(files);
-    if (ups.length) patch({ shots: [...state.shots, ...ups] });
+    if (ups.length) patch((s) => ({ shots: [...s.shots, ...ups] }));
   };
 
   const n = state.shots.length;
@@ -29,13 +37,13 @@ export const ImageryStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step four <b>of four</b>
+        Step five <b>of five</b>
       </div>
       <h1>Add your imagery.</h1>
       <p className="vc-lede">
-        Faces first — the opening shot is ten portraits at once. Then product
-        shots, the office, the team. Around {SUGGESTED_UPLOADS} is plenty; the cut
-        has more picture slots than that and reuses photos across scenes.
+        Faces first — the opening shot is ten portraits at once. Then product shots, the
+        office, the team. Around {SUGGESTED_UPLOADS} is plenty; the cut has more picture
+        slots than that and reuses photos across scenes.
       </p>
 
       <div className="vc-shots">
@@ -69,8 +77,13 @@ export const ImageryStep: React.FC<{
                   <button
                     className="vc-kill"
                     aria-label={`Remove ${shot.name}`}
+                    /* By id, so two removals in one batch each take out their own photo
+                       rather than the second re-running against a list the first has
+                       already shortened. */
                     onClick={() =>
-                      patch({ shots: state.shots.filter((s) => s.id !== shot.id) })
+                      patch((s) => ({
+                        shots: s.shots.filter((keep) => keep.id !== shot.id),
+                      }))
                     }
                   >
                     ✕
@@ -125,8 +138,8 @@ export const ImageryStep: React.FC<{
         </button>
         {waiting && (
           <span className="vc-hintline">
-            Waiting on the copywriting pass — building now would show the demo's
-            own words, not {state.company.trim() || "your company"}'s.
+            Waiting on the copywriting pass — building now would show the demo's own
+            words, not {state.company.trim() || "your company"}'s.
           </span>
         )}
       </div>

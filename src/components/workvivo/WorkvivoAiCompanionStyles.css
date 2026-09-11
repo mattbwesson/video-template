@@ -1,0 +1,271 @@
+/* AI Companion, mobile — the HQ agent's empty state on the phone.
+   Prefixed wac- so nothing collides with whqc- (the same agent on desktop, which this
+   borrows its composer palette from) or wm-/wcmu-/wsmm- (the other phones).
+
+   Export rules this file is written to, all from docs/browser-render-best-practices.md:
+   no ::before/::after, no bare `span` selectors carrying layout, no radial-gradient, no
+   background-image, and every pill's border-radius is exactly half its own height — a
+   sentinel radius on a wide short box clamps per-axis in the export and comes out an
+   ellipse. Square boxes are the exception and may keep 50%. */
+
+.wac-screen {
+  width: 393px;
+  height: 852px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  color: #16161a;
+  /* SF Pro, not Inter. Mobile and desktop are a real platform split in Workvivo's type
+     system — see the component library README. Same stack as .wm-phone. */
+  font-family: -apple-system, "SF Pro Text", "SF Pro Display", "Helvetica Neue", Helvetica,
+    Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+/* ---------- status bar + island ---------- */
+
+.wac-top {
+  flex: none;
+  position: relative;
+}
+
+.wac-status {
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px 0 16px;
+  /* The glyphs are drawn with currentColor, so a light status bar is just a colour here.
+     The shared #i-signal / #sm-i-signal sets bake `fill="white"` and cannot do this. */
+  color: #16161a;
+}
+
+.wac-time {
+  font-size: 16px;
+  font-weight: 590;
+  letter-spacing: 0.2px;
+}
+
+.wac-sysico {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 12px;
+}
+
+.wac-sysico > svg {
+  display: block;
+}
+
+/* Dynamic Island. After the status bar in DOM order, not above it by z-index — the
+   export paints in DOM order and ignores the ladder. It clears the time and the glyph
+   cluster horizontally, so the overlap is only with the bar's empty middle. */
+.wac-island {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  width: 125px;
+  height: 36px;
+  /* Exactly half the height. 9999px on a 125x36 box exports as an ellipse. */
+  border-radius: 18px;
+  background: #000000;
+  transform: translateX(-50%);
+}
+
+/* ---------- title row ---------- */
+
+.wac-head {
+  flex: none;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+}
+
+/* Both controls are the same width so the title centres against the whole row rather
+   than against whatever is left over. `display: flex` is spelled out because the export
+   does not blockify inline elements that become flex items. */
+.wac-back,
+.wac-tune {
+  width: 24px;
+  flex: none;
+  display: flex;
+  align-items: center;
+}
+
+.wac-back {
+  color: #16161a;
+}
+
+/* Primary-500. This is product chrome — a control — not the per-tenant brand slot. */
+.wac-tune {
+  justify-content: flex-end;
+  color: #6103ed;
+}
+
+.wac-title {
+  flex: 1 1 0;
+  min-width: 0;
+  display: block;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.1px;
+  /* The title is a prop, so its length varies. Export text metrics differ from
+     Chromium's and a box that "just fits" is one measurement away from wrapping. */
+  white-space: nowrap;
+}
+
+/* ---------- rail + pane ---------- */
+
+.wac-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+}
+
+.wac-rail {
+  flex: none;
+  width: 46px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 0 0;
+  border-right: 1px solid #f0f0f3;
+  background: #ffffff;
+}
+
+.wac-railbtn {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Square box — the export's per-axis clamp lands on a correct rounded square. */
+  border-radius: 8px;
+  color: #55555f;
+}
+
+.wac-railbtn.wac-on {
+  background: #f0f0f3;
+  color: #16161a;
+}
+
+.wac-pane {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 12px 14px 0 12px;
+  background: #f7f7f8;
+}
+
+/* ---------- composer ---------- */
+
+/* Same construction and palette as .whqc-composer, at mobile scale: this is the one
+   agent composer, and the two surfaces drifting apart is what a shared library is for. */
+.wac-composer {
+  height: 78px;
+  padding: 12px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+.wac-ph {
+  font-size: 14px;
+  line-height: 18px;
+  color: #9ca3af;
+}
+
+.wac-tools {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wac-plus {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  box-sizing: border-box;
+}
+
+.wac-sources {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* inline-flex does not shrink to fit in the export — without this the chip stretches
+     to the composer's full width and reads as a page-wide oval. */
+  width: fit-content;
+  font-size: 12px;
+  color: #374151;
+}
+
+.wac-sources > svg {
+  color: #6b7280;
+}
+
+.wac-send {
+  margin-left: auto;
+  flex: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  background: #f0eefc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6103ed;
+}
+
+/* ---------- suggested prompts ---------- */
+
+.wac-prompts {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.wac-prompt {
+  padding: 12px 14px;
+  background: #ffffff;
+  border: 1px solid #ececf1;
+  border-radius: 12px;
+}
+
+.wac-prompt-title {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #16161a;
+}
+
+.wac-prompt-sub {
+  display: block;
+  margin-top: 3px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: #6b7280;
+}
+
+.wac-more {
+  padding: 16px 0 0;
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #4b5563;
+}

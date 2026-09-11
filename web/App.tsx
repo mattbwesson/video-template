@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Backdrop } from "./Backdrop";
+import { TemplateStep } from "./steps/TemplateStep";
 import { CompanyStep } from "./steps/CompanyStep";
 import { PersonStep } from "./steps/PersonStep";
 import { BrandStep } from "./steps/BrandStep";
@@ -12,14 +13,7 @@ import { PasscodeGate } from "./PasscodeGate";
 import { passcodeRequired, storedPasscode } from "./passcode";
 import { runResearch } from "./research";
 import { ResearchChip } from "./ResearchChip";
-import {
-  cleanHex,
-  css,
-  inkOn,
-  isHex,
-  rgba,
-  uiAccentOf,
-} from "../src/customize/color";
+import { cleanHex, css, inkOn, isHex, rgba, uiAccentOf } from "../src/customize/color";
 
 /**
  * The wizard's own chrome takes the brand colour too, but not the same value the video
@@ -64,8 +58,32 @@ export const App: React.FC = () => {
     };
   }, []);
 
+  /**
+   * Merge a patch into the wizard's state.
+   *
+   * Takes an UPDATER as well as a plain object, and that is not a convenience. A step that
+   * reads the current state to work out the patch — toggling one chapter out of a list is
+   * the case that found this — closes over the value from its last render. Two clicks
+   * inside one React batch then both compute from the same stale value and the second
+   * silently undoes the first: the operator unticks two chapters, one comes back, and the
+   * render encodes a film they did not ask for. Passing a function defers the read to the
+   * updater, where the state is always current.
+   *
+   * AN EMPTY PATCH RETURNS THE SAME OBJECT, not a copy of it, and that is load-bearing
+   * rather than an optimisation. An updater that decides there is nothing to do — a
+   * duplicate swatch, a batch of bakes that all failed — is the natural way to express
+   * that now the read happens inside the updater. Spreading it anyway would hand React a
+   * new identity for an unchanged state, and anything keyed on the whole state object
+   * would re-run: `Reveal`'s bake effect schedules ITS OWN next run that way, so a photo
+   * the canvas cannot read would re-bake every 220ms for the rest of the session.
+   * Returning `s` is what makes React bail out instead.
+   */
   const patch = useCallback(
-    (p: Partial<WizardState>) => setState((s) => ({ ...s, ...p })),
+    (p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>)) =>
+      setState((s) => {
+        const next = typeof p === "function" ? p(s) : p;
+        return Object.keys(next).length ? { ...s, ...next } : s;
+      }),
     [],
   );
 
@@ -165,16 +183,19 @@ export const App: React.FC = () => {
         f.type.startsWith("image/"),
       );
       if (!files.length || revealing) return;
-      if (step === 3) {
+      // Indices are the positions in STEPS, which now begins with Template. Template and
+      // Company have no drop target, so a paste on either is ignored rather than guessed
+      // at.
+      if (step === 4) {
         const ups = await readImages(files);
         setState((s) => ({ ...s, shots: [...s.shots, ...ups] }));
-      } else if (step === 2) {
+      } else if (step === 3) {
         // Same path as dropping it on the Brand step — matte knocked out, knockout
         // derived, palette pulled. Pasting used to store the raw file, which put a
         // white-boxed colour mark in every dark header.
         const accepted = await acceptLogoFile(files);
         if (accepted) setState((s) => ({ ...s, ...logoPatch(accepted, s) }));
-      } else if (step === 1) {
+      } else if (step === 2) {
         const up = await readOneImage(files);
         if (up) setState((s) => ({ ...s, person: { ...s.person, photo: up } }));
       }
@@ -241,26 +262,22 @@ export const App: React.FC = () => {
 
         <main>
           {step === 0 && (
+            <TemplateStep state={state} patch={patch} onNext={() => show(1)} />
+          )}
+          {step === 1 && (
             <CompanyStep
               state={state}
               patch={patch}
               onNext={() => {
                 startResearch(state);
-                show(1);
+                show(2);
               }}
-            />
-          )}
-          {step === 1 && (
-            <PersonStep
-              state={state}
-              patch={patch}
-              onNext={() => show(2)}
               onBack={() => show(0)}
               backLabel={STEPS[0]}
             />
           )}
           {step === 2 && (
-            <BrandStep
+            <PersonStep
               state={state}
               patch={patch}
               onNext={() => show(3)}
@@ -269,23 +286,28 @@ export const App: React.FC = () => {
             />
           )}
           {step === 3 && (
+            <BrandStep
+              state={state}
+              patch={patch}
+              onNext={() => show(4)}
+              onBack={() => show(2)}
+              backLabel={STEPS[2]}
+            />
+          )}
+          {step === 4 && (
             <ImageryStep
               state={state}
               patch={patch}
               onBuild={() => setRevealing(true)}
-              onBack={() => show(2)}
-              backLabel={STEPS[2]}
+              onBack={() => show(3)}
+              backLabel={STEPS[3]}
             />
           )}
         </main>
       </div>
 
       {revealing && (
-        <Reveal
-          state={state}
-          patch={patch}
-          onEdit={() => setRevealing(false)}
-        />
+        <Reveal state={state} patch={patch} onEdit={() => setRevealing(false)} />
       )}
     </>
   );

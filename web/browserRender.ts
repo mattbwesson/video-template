@@ -43,6 +43,12 @@
  */
 
 import type { VideoInputProps } from "../src/customize/videoCopy";
+import {
+  DEFAULT_TEMPLATE_ID,
+  templateById,
+  type TemplateId,
+  type VideoTemplate,
+} from "./templates";
 
 /** What the caller needs to draw a progress bar. */
 export type RenderProgress = {
@@ -108,9 +114,7 @@ export const renderReadiness = async (
       supported: res.canRender,
       // Warnings are not blockers — the renderer resolves around them (a different codec,
       // a different output target) and still produces a file.
-      blockers: res.issues
-        .filter((i) => i.severity === "error")
-        .map((i) => i.message),
+      blockers: res.issues.filter((i) => i.severity === "error").map((i) => i.message),
     };
   } catch (err) {
     return {
@@ -171,10 +175,15 @@ const KEYFRAME_INTERVAL_SECONDS = 2;
 
 export type RenderRequest = {
   inputProps: VideoInputProps;
-  durationInFrames: number;
-  fps: number;
-  width: number;
-  height: number;
+  /**
+   * Which cut to encode.
+   *
+   * The composition used to be a literal in this file. It is a parameter now because the
+   * wizard's first step chooses between templates, and the one thing that must not happen
+   * is the preview playing one film while the render encodes another — so the caller
+   * passes the same entry the `<Player>` is using. See web/templates.ts.
+   */
+  template: VideoTemplate;
   onProgress: (p: RenderProgress) => void;
 };
 
@@ -188,28 +197,22 @@ export type RenderRequest = {
  */
 export const startRender = ({
   inputProps,
-  durationInFrames,
-  fps,
-  width,
-  height,
+  template,
   onProgress,
 }: RenderRequest): RenderHandle => {
   const controller = new AbortController();
 
   const done = (async () => {
     const { renderMediaOnWeb } = await loadRenderer();
-    // Imported here rather than at module scope so the composition (and the whole scene
-    // tree behind it) is not pulled into the wizard's initial bundle.
-    const { CustomizedWorkvivo } = await import("../src/CustomizedWorkvivo");
 
     const result = await renderMediaOnWeb({
       composition: {
-        id: "CustomizedWorkvivo",
-        component: CustomizedWorkvivo,
-        durationInFrames,
-        fps,
-        width,
-        height,
+        id: template.id,
+        component: template.component,
+        durationInFrames: template.durationInFrames,
+        fps: template.fps,
+        width: template.width,
+        height: template.height,
       },
       inputProps,
       container: "mp4",
@@ -259,22 +262,28 @@ export const startRender = ({
  *
  * Dev-only in practice; nothing in the shipped UI calls it.
  */
+/**
+ * One frame, for checking export fidelity from the console.
+ *
+ * `templateId` defaults so the documented call — `renderStill(541)` — still works
+ * unchanged; see docs/browser-render-best-practices.md.
+ */
 export const renderStill = async (
   frame: number,
   inputProps: Partial<VideoInputProps> = {},
+  templateId: TemplateId = DEFAULT_TEMPLATE_ID,
 ): Promise<Blob> => {
   const { renderStillOnWeb } = await loadRenderer();
-  const { CustomizedWorkvivo } = await import("../src/CustomizedWorkvivo");
-  const { CUSTOMIZED_CUT_DURATION } = await import("../src/WorkvivoCut");
+  const template = templateById(templateId);
 
   const still = await renderStillOnWeb({
     composition: {
-      id: "CustomizedWorkvivo",
-      component: CustomizedWorkvivo,
-      durationInFrames: CUSTOMIZED_CUT_DURATION,
-      fps: 25,
-      width: 1920,
-      height: 1080,
+      id: template.id,
+      component: template.component,
+      durationInFrames: template.durationInFrames,
+      fps: template.fps,
+      width: template.width,
+      height: template.height,
     },
     frame,
     inputProps: inputProps as VideoInputProps,

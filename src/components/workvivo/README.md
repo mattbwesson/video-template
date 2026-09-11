@@ -48,6 +48,15 @@ Each exposes its images and brand colour as props so a customer run can swap the
 without touching the layout — e.g. `WorkvivoBillboardScreen` takes `brand`, `logoSrc`,
 `heroSrc`, `qrSrc`; `WorkvivoPhonesScene` takes `bubble`, `callerSrc`, `selfSrc`.
 
+## Phone screens
+
+`WorkvivoAiCompanion` (393×852), `WorkvivoJourneyPhone` (393×986) and
+`WorkvivoSeerManagerMobile` are screen *contents* at native 393pt, not devices — the
+caller owns the phone shell, as `WorkvivoPhonesScene` does with `.wm-phone` / `.wm-screen`.
+`WorkvivoAiCompanion` is the HQ agent's empty state on mobile, the counterpart to the
+`WorkvivoHqChat` desktop overlay; it borrows that overlay's composer construction and
+palette rather than restating them, and needs no provider.
+
 `WorkvivoPhonesScene` reuses the mobile library rather than re-deriving it: `.wm-phone`
 (393×852 shell, 16.5px bezel, 35.5px screen radius), `.wm-status` / `.wm-time` /
 `.wm-sysico`, the `#i-signal` / `#i-wifi` / `#i-battery` symbols out of

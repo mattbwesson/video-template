@@ -3,7 +3,7 @@ import { FileDrop } from "../Dropzone";
 import { acceptLogoFile, logoPatch } from "../applyLogo";
 import { processReversedLogo } from "../logoProcess";
 import { isImageFile, newUploadId } from "../uploads";
-import { brandReady, type WizardState } from "../wizardState";
+import { brandReady, type Patch, type WizardState } from "../wizardState";
 import {
   clampBrandAccentHex,
   cleanHex,
@@ -14,7 +14,7 @@ import {
 
 export const BrandStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onNext: () => void;
   onBack: () => void;
   backLabel: string;
@@ -24,12 +24,16 @@ export const BrandStep: React.FC<{
   const setLogo = async (files: FileList | File[]) => {
     const accepted = await acceptLogoFile(files);
     if (!accepted) return;
-    patch(logoPatch(accepted, state));
+    patch((s) => logoPatch(accepted, s));
     // The swatch pulses only when the drop actually changed the colour, so a logo swap
     // after the operator picked their own does not flash a colour that did not move.
     if (!state.colorTouched && accepted.palette.length) {
       swatchRef.current?.animate(
-        [{ transform: "scale(1)" }, { transform: "scale(1.04)" }, { transform: "scale(1)" }],
+        [
+          { transform: "scale(1)" },
+          { transform: "scale(1.04)" },
+          { transform: "scale(1)" },
+        ],
         { duration: 560, easing: "cubic-bezier(.2,.9,.3,1.2)" },
       );
     }
@@ -58,18 +62,37 @@ export const BrandStep: React.FC<{
     patch({ color: v, colorTouched: true });
   };
 
-  /** Promote a palette colour to the brand, demoting the current one into its place. */
-  const promote = (index: number) => {
-    const next = [...state.palette];
-    const chosen = next[index];
-    next[index] = state.color;
-    patch({ color: chosen, palette: next, colorTouched: true });
-  };
+  /**
+   * Promote a palette colour to the brand, demoting the current one into its place.
+   *
+   * By hex, not by the position it was rendered at, for the reason the remove button below
+   * gives: a removal landing in the same batch shortens the palette under a click that
+   * still holds its old index. Here that read past the end and put `undefined` into
+   * `color`. Looking the hex up in the CURRENT palette means a swatch that is already gone
+   * promotes nothing instead.
+   */
+  const promote = (hex: Hex) =>
+    patch((s) => {
+      const index = s.palette.indexOf(hex);
+      if (index < 0) return {};
+      const next = [...s.palette];
+      next[index] = s.color;
+      return { color: hex, palette: next, colorTouched: true };
+    });
 
+  /**
+   * Add a colour, if it is not already the brand or in the palette.
+   *
+   * The duplicate check is inside the updater with the append it guards. Outside it, two
+   * swatches added in one batch would both test against the palette as it was before
+   * either landed — so the same colour added twice quickly would pass the check twice.
+   */
   const addSwatch = (raw: string) => {
     const v = cleanHex(raw);
-    if (!isHex(v) || v === state.color || state.palette.includes(v)) return;
-    patch({ palette: [...state.palette, v] });
+    if (!isHex(v)) return;
+    patch((s) =>
+      v === s.color || s.palette.includes(v) ? {} : { palette: [...s.palette, v] },
+    );
   };
 
   const clamped: Hex = clampBrandAccentHex(state.color);
@@ -84,12 +107,12 @@ export const BrandStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step three <b>of four</b>
+        Step four <b>of five</b>
       </div>
       <h1>Bring your brand in.</h1>
       <p className="vc-lede">
-        Drop the logo and we will pull the colours straight out of it. Adjust if
-        we get it wrong.
+        Drop the logo and we will pull the colours straight out of it. Adjust if we get it
+        wrong.
       </p>
 
       <div className="vc-brandgrid">
@@ -144,8 +167,8 @@ export const BrandStep: React.FC<{
                 )}
               </div>
               <p className="vc-swatchnote">
-                Used on every dark header. If the made one has filled in a cut-out or
-                lost detail, drop your brand kit&rsquo;s reversed logo here.
+                Used on every dark header. If the made one has filled in a cut-out or lost
+                detail, drop your brand kit&rsquo;s reversed logo here.
               </p>
             </div>
           )}
@@ -204,14 +227,20 @@ export const BrandStep: React.FC<{
                     style={{ background: css(h) }}
                     title={`Make #${h} the main colour`}
                     aria-label={`Make #${h} the main colour`}
-                    onClick={() => promote(i)}
+                    onClick={() => promote(h)}
                   />
                   <button
                     className="vc-swx"
                     title={`Remove #${h}`}
                     aria-label={`Remove #${h}`}
+                    /* By VALUE, not by index. An updater alone would not be enough here:
+                       two swatches removed in one batch both run against fresh state, but
+                       the second still holds the index it was rendered with, and the first
+                       removal has already shifted everything after it along. `addSwatch`
+                       keeps the palette free of duplicates, so the hex identifies one
+                       entry. */
                     onClick={() =>
-                      patch({ palette: state.palette.filter((_, j) => j !== i) })
+                      patch((s) => ({ palette: s.palette.filter((c) => c !== h) }))
                     }
                   >
                     ✕

@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video Customizer — Step one</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#01031D; --panel:rgba(255,255,255,.045); --panel2:rgba(255,255,255,.075);
+  --hair:rgba(255,255,255,.11); --hair2:rgba(255,255,255,.20);
+  --txt:#EDEEF3; --mute:#9AA0B4; --dim:#6B7189;
+  --accent:#FF3D8C;
+  --c1:#FF3D8C; --c2:#C64BE0; --c3:#7B5CFF;
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Instrument Sans",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg)}
+body{font-family:var(--body);color:var(--txt);-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.5;
+  min-height:100vh;display:flex;flex-direction:column}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:8px}
+h1{font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:1;margin:0}
+.mono{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase}
+.num{font-variant-numeric:tabular-nums}
+
+/* ── ambient field ── */
+.bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0;background:#01031D}
+.bgstage{position:absolute;top:50%;left:50%;width:1920px;height:1080px;transform-origin:center center}
+.glow{position:absolute;border-radius:50%;transform:translate(-50%,-50%)}
+.glow.wash{width:2400px;height:1450px;left:50%;top:112%;filter:blur(64px);animation:breathe 15s ease-in-out infinite;
+  background:radial-gradient(closest-side,rgba(80,13,217,.95) 0%,rgba(60,2,160,.72) 34%,rgba(40,2,120,.40) 58%,rgba(22,2,78,.16) 80%,rgba(18,2,67,0) 100%)}
+.glow.band{width:1900px;height:780px;left:60%;top:88%;filter:blur(70px);
+  transform:translate(-50%,-50%) rotate(-24deg);animation:breatheBand 21s ease-in-out infinite -5s;
+  background:radial-gradient(closest-side,rgba(96,24,238,1) 0%,rgba(72,4,186,.78) 38%,rgba(50,2,145,.34) 70%,rgba(30,2,95,0) 100%)}
+.glow.left{width:900px;height:1250px;left:-4%;top:46%;filter:blur(78px);animation:breathe 23s ease-in-out infinite -11s;
+  background:radial-gradient(closest-side,rgba(52,1,150,1) 0%,rgba(39,1,112,.88) 30%,rgba(30,1,90,.44) 60%,rgba(20,1,70,.12) 82%,rgba(20,1,70,0) 100%)}
+.glow.right{width:1150px;height:900px;left:92%;top:90%;filter:blur(80px);animation:breathe 27s ease-in-out infinite -4s;
+  background:radial-gradient(closest-side,rgba(66,2,170,.30) 0%,rgba(18,2,67,.12) 48%,rgba(18,2,67,0) 100%)}
+@keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.06)}}
+@keyframes breatheBand{0%,100%{transform:translate(-50%,-50%) rotate(-24deg) scale(1)}50%{transform:translate(-50%,-50%) rotate(-24deg) scale(1.05)}}
+
+/* ── chrome ── */
+.top{position:relative;z-index:2;display:flex;align-items:center;gap:20px;padding:22px 34px}
+.brand{display:flex;align-items:center;gap:11px;font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:1.02rem}
+.brand .mark{width:26px;height:26px;border-radius:8px;background:#fff;color:#0b0c1c;display:grid;place-items:center}
+.steps{margin-left:auto;display:flex;gap:4px}
+.steps a{text-decoration:none;color:var(--dim);padding:7px 14px 9px;border-bottom:1.5px solid rgba(255,255,255,.10);
+  font-family:var(--mono);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;transition:.18s}
+.steps a[aria-current]{color:var(--txt);border-bottom-color:var(--accent)}
+.steps a:hover{color:var(--mute)}
+
+.wrap{position:relative;z-index:1;flex:1;width:min(760px,100%);margin:0 auto;padding:52px 26px 90px}
+
+/* ── head ── */
+.eyebrow{color:var(--dim);margin-bottom:16px}
+.eyebrow em{font-style:normal;color:var(--accent)}
+h1{font-size:clamp(2.4rem,6vw,3.5rem);margin-bottom:14px}
+.lede{color:var(--mute);max-width:52ch;margin:0 0 40px;font-size:1.02rem}
+
+/* ── the film ── */
+.film{border:1px solid var(--hair);border-radius:18px;background:rgba(9,10,28,.55);
+  backdrop-filter:blur(14px);padding:24px 24px 8px;transition:border-color .3s}
+.film.whole{border-color:rgba(255,61,140,.42);box-shadow:0 0 0 1px rgba(255,61,140,.10),0 34px 70px -46px #FF3D8C}
+.fhead{display:flex;align-items:flex-end;gap:20px;margin-bottom:18px}
+.fhead h2{font-family:var(--display);font-weight:800;font-size:1.45rem;letter-spacing:-.025em;margin:0 0 3px}
+.fhead p{margin:0;color:var(--mute);font-size:.87rem}
+.runtime{margin-left:auto;text-align:right;flex:none}
+.runtime .t{font-family:var(--display);font-weight:800;font-size:2.1rem;letter-spacing:-.03em;line-height:1;display:block}
+.runtime .l{color:var(--dim);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+
+/* ── timeline strip ── */
+.strip{display:flex;gap:3px;height:66px;margin-bottom:10px}
+.seg{flex:0 1 auto;min-width:0;border-radius:7px;position:relative;overflow:hidden;
+  transition:flex-grow .5s cubic-bezier(.2,.8,.2,1),opacity .34s,margin .5s cubic-bezier(.2,.8,.2,1)}
+.seg .lab{position:absolute;left:11px;bottom:9px;right:9px;font-size:.78rem;font-weight:600;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;transition:opacity .25s}
+.seg .len{position:absolute;left:11px;top:9px;font-family:var(--mono);font-size:.62rem;color:rgba(255,255,255,.7)}
+.seg.fixed{flex-grow:var(--w);background:
+  repeating-linear-gradient(115deg,rgba(255,255,255,.10) 0 5px,rgba(255,255,255,.035) 5px 11px);
+  border:1px solid rgba(255,255,255,.10)}
+.seg.fixed .lab{color:var(--mute);font-weight:500;font-size:.72rem}
+.seg.ch{flex-grow:var(--w);background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 55%,#160a2e));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}
+.seg.ch.off{flex-grow:0;opacity:0;margin-left:-3px}
+.seg.ch.hot{filter:brightness(1.18)}
+.shell{color:var(--dim);font-size:.78rem;margin:0 0 20px;padding-left:2px}
+
+/* ── chapter rows ── */
+.chs{list-style:none;margin:0;padding:0;border-top:1px solid var(--hair)}
+.chs li{border-bottom:1px solid var(--hair)}
+.chs li:last-child{border-bottom:0}
+.row{display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;padding:15px 2px}
+.box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--hair2);flex:none;margin-top:2px;
+  display:grid;place-items:center;transition:.16s}
+.box svg{width:11px;height:11px;opacity:0;transform:scale(.6);transition:.16s}
+.row[aria-checked="true"] .box{background:var(--c);border-color:transparent}
+.row[aria-checked="true"] .box svg{opacity:1;transform:none}
+.row .body{min-width:0;flex:1}
+.row .body b{display:block;font-weight:600;font-size:.98rem;letter-spacing:-.012em;transition:color .2s}
+.row .body span{display:block;color:var(--mute);font-size:.85rem;margin-top:2px}
+.row[aria-checked="false"] .body b{color:var(--mute)}
+.row[aria-checked="false"] .body span{color:var(--dim)}
+.row .len{font-family:var(--mono);font-size:.78rem;color:var(--mute);flex:none;margin-top:3px}
+.row:hover .box{border-color:var(--c)}
+.more{display:inline-flex;align-items:center;gap:6px;margin:0 0 16px 34px;color:var(--dim);font-size:.79rem;
+  transition:color .16s}
+.more:hover{color:var(--mute)}
+.more svg{transition:transform .25s}
+.more[aria-expanded="true"] svg{transform:rotate(180deg)}
+.det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.2,.8,.2,1)}
+.det.open{grid-template-rows:1fr}
+.det>div{overflow:hidden}
+.det p{margin:0 0 16px;padding:12px 14px 12px 34px;color:var(--mute);font-size:.85rem;max-width:60ch}
+
+/* ── footer action ── */
+.act{position:sticky;bottom:0;z-index:3;margin-top:30px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.go{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:#fff;font-weight:600;
+  padding:15px 26px;border-radius:999px;font-size:.98rem;transition:.18s;box-shadow:0 18px 40px -18px rgba(255,61,140,.9)}
+.go:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.go:disabled{opacity:.35;cursor:not-allowed;transform:none;box-shadow:none}
+.go .num{opacity:.72;font-weight:500}
+.hint{color:var(--dim);font-size:.85rem}
+
+@media(max-width:620px){
+  .top{padding:16px}
+  .steps{display:none}
+  .fhead{flex-wrap:wrap;align-items:flex-start}
+  .runtime{margin-left:0;text-align:left}
+  .strip{height:54px}
+  .seg .lab{font-size:.7rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms!important;transition-duration:.08s!important}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="bgstage">
+    <div class="glow wash"></div><div class="glow band"></div>
+    <div class="glow left"></div><div class="glow right"></div>
+  </div>
+</div>
+
+<header class="top">
+  <div class="brand">
+    <span class="mark"><svg viewBox="0 0 24 24" width="12" height="12"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></span>
+    Video Customizer
+  </div>
+  <nav class="steps">
+    <a href="#" aria-current="step">Pillars</a>
+    <a href="#">Company</a>
+    <a href="#">Character</a>
+    <a href="#">Brand</a>
+    <a href="#">Imagery</a>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <p class="eyebrow mono">Step one <em>of five</em></p>
+  <h1>What should the film cover?</h1>
+  <p class="lede">The film has three chapters and covers all of them. Turn off anything that will not
+    be relevant and the rest stitch back together.</p>
+
+  <section class="film whole" id="film">
+    <div class="fhead">
+      <div>
+        <h2 id="fTitle">The complete film</h2>
+        <p id="fSub">Every chapter, in the order it was edited.</p>
+      </div>
+      <div class="runtime">
+        <span class="t num" id="fTime">3:32</span>
+        <span class="l">Runtime</span>
+      </div>
+    </div>
+
+    <div class="strip" id="strip" aria-hidden="true"></div>
+    <p class="shell">The opening titles and end card (0:29) are in every version.</p>
+
+    <ul class="chs" id="chs"></ul>
+  </section>
+
+  <div class="act">
+    <button class="go" id="go">
+      <span id="goLabel">Continue with the full film</span>
+      <span class="num" id="goTime">3:32</span>
+    </button>
+    <span class="hint" id="hint">You can change this later without losing your other answers.</span>
+  </div>
+
+</main>
+
+<script>
+/* ============================================================
+   DATA
+   `secs` is the chapter's own length, without the shell.
+   `shell` is the opening titles plus end card, always included.
+   `master` is the runtime of the real full edit, which is longer
+   than the three trimmed chapters added together. It is used only
+   when all three chapters are on. Set it to null to always compute.
+   ============================================================ */
+const FILM = {
+  master : 212,
+  shell  : { open:{name:'Opening titles', secs:21}, end:{name:'End card', secs:8} },
+  chapters: [
+    { id:'comms', color:'var(--c1)', name:'Communications & Engagement', secs:73,
+      line:'Home feed, livestream, spaces, journeys and newsletters.',
+      detail:'The home feed and desktop, the livestream, spaces and the space page, journeys and newsletters, then the customer wall.' },
+    { id:'search', color:'var(--c2)', name:'Search & Knowledge', secs:20,
+      line:'Ask HQ, the HQ Agent and the mobile answer.',
+      detail:'The pillar card, Ask HQ, the HQ Agent and the answer on mobile. Joined with a dissolve and a dip through the brand colour.' },
+    { id:'people', color:'var(--c3)', name:'People Intelligence', secs:65,
+      line:'Analytics, the Seer run and the survey on mobile.',
+      detail:'The pillar card, Analytics and the Seer run, manager insights, the rater, comments and the survey on mobile, then the space feed, integrations and Admin Hub.' }
+  ]
+};
+
+/* ============================================================ */
+const $ = (s,r=document)=>r.querySelector(s);
+const on = new Set(FILM.chapters.map(c=>c.id));
+const SHELL = FILM.shell.open.secs + FILM.shell.end.secs;
+const clock = s => Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+const tick = '<svg viewBox="0 0 24 24" fill="none"><path d="M4 12.5l5.2 5.2L20 7" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const chev = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>';
+
+/* ---- timeline ---- */
+function buildStrip(){
+  const strip = $('#strip');
+  const seg = (cls,style,label,len) =>
+    `<div class="${cls}" style="${style}"><span class="len">${len}</span><span class="lab">${label}</span></div>`;
+  strip.innerHTML =
+    seg('seg fixed', `--w:${FILM.shell.open.secs}`, FILM.shell.open.name, clock(FILM.shell.open.secs)) +
+    FILM.chapters.map(c =>
+      seg(`seg ch`, `--w:${c.secs};--c:${c.color}`, c.name.replace(' & ',' + '), clock(c.secs))
+        .replace('<div class="seg ch"', `<div class="seg ch" data-seg="${c.id}"`)
+    ).join('') +
+    seg('seg fixed', `--w:${FILM.shell.end.secs}`, FILM.shell.end.name, clock(FILM.shell.end.secs));
+}
+
+/* ---- chapter rows ---- */
+function buildRows(){
+  $('#chs').innerHTML = FILM.chapters.map(c => `
+    <li style="--c:${c.color}">
+      <button class="row" role="checkbox" aria-checked="true" data-ch="${c.id}">
+        <span class="box">${tick}</span>
+        <span class="body"><b>${c.name}</b><span>${c.line}</span></span>
+        <span class="len num">${clock(c.secs)}</span>
+      </button>
+      <button class="more" aria-expanded="false" data-more="${c.id}">What is in it ${chev}</button>
+      <div class="det" data-det="${c.id}"><div><p>${c.detail}</p></div></div>
+    </li>`).join('');
+}
+
+/* ---- state ---- */
+function render(){
+  const n = on.size, all = n === FILM.chapters.length;
+  const secs = all && FILM.master
+    ? FILM.master
+    : SHELL + FILM.chapters.filter(c=>on.has(c.id)).reduce((a,c)=>a+c.secs,0);
+  const time = n ? clock(secs) : '0:00';
+
+  document.querySelectorAll('[data-seg]').forEach(el =>
+    el.classList.toggle('off', !on.has(el.dataset.seg)));
+  document.querySelectorAll('[data-ch]').forEach(el =>
+    el.setAttribute('aria-checked', on.has(el.dataset.ch)));
+
+  $('#strip').classList.toggle('empty', n === 0);
+  $('#film').classList.toggle('whole', all);
+  $('#fTime').textContent = time;
+
+  $('#fTitle').textContent = !n ? 'No chapters yet'
+    : all ? 'The complete film'
+    : n === 1 ? 'A single chapter cut' : 'A two chapter cut';
+
+  $('#fSub').textContent = !n ? 'Turn a chapter back on to build something.'
+    : all ? 'Every chapter, in the order it was edited.'
+    : 'The opening, the chapters you kept, then the ending.';
+
+  $('#go').disabled = n === 0;
+  $('#goLabel').textContent = all ? 'Continue with the full film' : 'Continue with this cut';
+  $('#goTime').textContent = n ? time : '';
+  $('#hint').textContent = n
+    ? 'You can change this later without losing your other answers.'
+    : 'Pick at least one chapter to keep going.';
+}
+
+/* ---- events ---- */
+document.addEventListener('click', e => {
+  const row = e.target.closest('[data-ch]');
+  if(row){
+    const id = row.dataset.ch;
+    on.has(id) ? on.delete(id) : on.add(id);
+    render();
+    return;
+  }
+  const more = e.target.closest('[data-more]');
+  if(more){
+    const open = more.getAttribute('aria-expanded') === 'true';
+    more.setAttribute('aria-expanded', !open);
+    $(`[data-det="${more.dataset.more}"]`).classList.toggle('open', !open);
+  }
+});
+/* hovering a row lights its slice of the timeline */
+document.addEventListener('mouseover', e => {
+  const row = e.target.closest('[data-ch]');
+  document.querySelectorAll('[data-seg]').forEach(el =>
+    el.classList.toggle('hot', !!row && el.dataset.seg === row.dataset.ch));
+});
+
+buildStrip(); buildRows(); render();
+</script>
+</body>
+</html>

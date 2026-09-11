@@ -52,6 +52,8 @@ export { CUSTOMER_GRID_ROWS } from "./WorkvivoCustomerLogos";
 /* ---------- surfaces, sections and primitives ---------- */
 
 export { WorkvivoAdminHub } from "./WorkvivoAdminHub";
+export { AI_COMPANION_H, AI_COMPANION_PROMPTS, AI_COMPANION_W, WorkvivoAiCompanion } from "./WorkvivoAiCompanion";
+export type { AiCompanionPrompt, AiCompanionTool, WorkvivoAiCompanionProps } from "./WorkvivoAiCompanion";
 export { WorkvivoAiComposeSettings } from "./WorkvivoAiComposeSettings";
 export { WorkvivoAnalytics } from "./WorkvivoAnalytics";
 export { ARTICLE_W, WorkvivoArticle } from "./WorkvivoArticle";

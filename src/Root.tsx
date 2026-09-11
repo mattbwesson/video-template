@@ -2,6 +2,11 @@ import React from "react";
 import { Composition } from "remotion";
 import { Main } from "./Main";
 import { VirginAirline } from "./VirginAirline";
+import { Zoetest } from "./Zoetest";
+import { ZoeTestSearch } from "./ZoeTestSearch";
+import { ZoeTestPeople } from "./ZoeTestPeople";
+import { ZoeTestAllPillars } from "./ZoeTestAllPillars";
+import { combinedDuration, PILLAR_IDS } from "./cuts/plan";
 import { Japanese } from "./Japanese";
 import { WorkvivoHqFan } from "./components/workvivo/WorkvivoHqFan";
 import { WorkvivoSurveyBuilder } from "./components/workvivo/WorkvivoSurveyBuilder";
@@ -36,6 +41,13 @@ import {
 import { WorkvivoCustomerGridScene } from "./WorkvivoCustomerGridScene";
 import { WorkvivoSeerSurveyMobileScene } from "./WorkvivoSeerSurveyMobileScene";
 import { CUSTOMIZED_CUT_DURATION } from "./WorkvivoCut";
+import {
+  DEMO_DURATION,
+  DEMO_FPS,
+  DEMO_HEIGHT,
+  DEMO_WIDTH,
+  WorkvivoProductDemo,
+} from "./WorkvivoProductDemo";
 import { DEFAULT_INPUT_PROPS } from "./customize/videoCopy";
 import { CustomizationProvider } from "./customize/CustomizationProvider";
 
@@ -94,6 +106,17 @@ export const RemotionRoot: React.FC = () => {
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
       />
+      {/* The Search & Knowledge cut: the film's opening, then frames 2236-2760 — the pillar
+          card with Search & Knowledge picked out and the chapter it introduces — then the
+          film's ending. See src/cuts/plan.ts for the windows and the joins. */}
+      <Composition
+        id="Zoe-test-search"
+        component={ZoeTestSearch}
+        durationInFrames={combinedDuration(["zoe-test-search"])}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
       {/* The same cut in Japanese. Same scenes, same 5300 frames — it differs in its words
           (passed as inputProps) and its typography (a `.jp`-scoped stylesheet), so nothing
           about it can reach L2VirginAirline above. See src/Japanese.tsx. */}
@@ -104,6 +127,59 @@ export const RemotionRoot: React.FC = () => {
         fps={VIRGIN_FPS}
         width={VIRGIN_WIDTH}
         height={VIRGIN_HEIGHT}
+      />
+      {/* The People Intelligence cut: the film's opening, then frames 3326-4983 — the
+          pillar card with People Intelligence ("turn signals into insight, action, and
+          results") picked out, the chapter it introduces and the integrations and admin run
+          that follows it — then the film's own ending. */}
+      <Composition
+        id="Zoe-test-people"
+        component={ZoeTestPeople}
+        durationInFrames={combinedDuration(["zoe-test-people"])}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* The Communication & Engagement cut: the film's opening, frames 390-2236, then the
+          film's ending.
+
+          Length comes from `planFor` rather than a literal, because the wizard reads the
+          same function: a composition that is one length in the Studio and another in an
+          operator's render is a bug nobody notices until the file is out. */}
+      <Composition
+        id="Zoe-test-comms"
+        component={Zoetest}
+        durationInFrames={combinedDuration(["zoe-test-comms"])}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* All three chapters between one intro and one ending — the wizard's multi-pillar
+          output, here so it can be scrubbed in the Studio.
+
+          Assembled by CombinedCut from the same windows the three cuts above are, with the
+          chapter list as an argument rather than a constant. Length comes from the same
+          `planFor` the wizard reads, so the Studio and an operator's render cannot be
+          different lengths. See src/cuts/plan.ts for the windows and the joins. */}
+      <Composition
+        id="Zoe-test-all-pillars"
+        component={ZoeTestAllPillars}
+        durationInFrames={combinedDuration(PILLAR_IDS)}
+        fps={VIRGIN_FPS}
+        width={VIRGIN_WIDTH}
+        height={VIRGIN_HEIGHT}
+      />
+      {/* A 30-second product tour, assembled from the component library rather than cut
+          from the film — no reference footage underneath. Takes the same inputProps as
+          CustomizedWorkvivo, so it renders in a prospect's brand. */}
+      <Composition
+        id="WorkvivoProductDemo"
+        component={WorkvivoProductDemo}
+        durationInFrames={DEMO_DURATION}
+        fps={DEMO_FPS}
+        width={DEMO_WIDTH}
+        height={DEMO_HEIGHT}
+        defaultProps={DEFAULT_INPUT_PROPS}
       />
       {/* What the wizard renders. The same scenes and the same 5300 frames, driven by
           inputProps. defaultProps is the approved baseline, so opening it in the Studio

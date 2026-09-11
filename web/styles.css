@@ -9,6 +9,17 @@
   --txt:#edeef3; --mute:#8b90a2;
   --brand:#44D760;
   --accent:#44D760; --accent-ink:#0b0c10; --accent-soft:rgba(68,215,96,.14); --accent-glow:rgba(68,215,96,.22);
+  /* The first step's three chapter colours. FIXED, and deliberately not derived from the
+     brand the way --accent is: these identify the film's three chapters, which are the same
+     three whoever the video is for, and a tenant's colour landing on one of them would say
+     that chapter was the branded one. Pink, orchid, violet — far enough apart to tell at
+     the size the timeline blocks are drawn.
+
+     THREE, because the film has three chapters. A fourth would resolve an undeclared
+     var(), which invalidates the whole gradient and draws the block transparent — so the
+     step asks for these with `var(--chapter-N, var(--accent))` and a new chapter shows up
+     in the accent colour until it is given one here. */
+  --chapter-1:#FF3D8C; --chapter-2:#C64BE0; --chapter-3:#7B5CFF;
   --display:"Bricolage Grotesque", system-ui, sans-serif;
   --body:"Instrument Sans", system-ui, -apple-system, sans-serif;
   --mono:"JetBrains Mono", ui-monospace, Menlo, monospace;
@@ -566,3 +577,92 @@ textarea.vc-ctx:focus{outline:0;border-color:var(--hair2);background:var(--panel
 .vc-whitefoot .vc-mono{color:var(--mute)}
 .vc-whitefoot .vc-link{margin-left:auto;font-size:.78rem}
 .vc-dim{margin-left:auto;opacity:.55}
+
+/* ---------- chapter chooser (first step) ---------- */
+/* One card holding the film: a header with the runtime, the timeline strip, then a row per
+   chapter. See web/steps/TemplateStep.tsx for what the strip is for. */
+.vc-num{font-variant-numeric:tabular-nums}
+
+.vc-film{border:1px solid var(--hair);border-radius:18px;background:rgba(9,10,28,.55);
+  backdrop-filter:blur(14px);padding:24px 24px 8px;margin-top:38px;transition:border-color .3s,box-shadow .3s}
+/* The whole film is the default and the recommendation, so it is the state the card is lit
+   in. Every other selection is a deliberate subtraction and reads as the quieter thing. */
+.vc-film.vc-whole{border-color:color-mix(in srgb,var(--accent) 42%,transparent);
+  box-shadow:0 0 0 1px var(--accent-soft),0 34px 70px -46px var(--accent)}
+
+.vc-fhead{display:flex;align-items:flex-end;gap:20px;margin-bottom:18px}
+.vc-fhead h2{font-family:var(--display);font-weight:800;font-size:1.45rem;letter-spacing:-.025em;margin:0 0 3px}
+.vc-fhead p{margin:0;color:var(--mute);font-size:.87rem}
+.vc-runtime{margin-left:auto;text-align:right;flex:none}
+.vc-runtime .vc-t{font-family:var(--display);font-weight:800;font-size:2.1rem;letter-spacing:-.03em;line-height:1;display:block}
+.vc-runtime .vc-l{color:#6B7189;display:block;margin-top:2px}
+
+/* The strip is the film to scale. `--w` is the segment's length IN FRAMES and is fed
+   straight to flex-grow, so the blocks are proportioned by the plan's own numbers and
+   nothing here has to know what a second is. */
+.vc-strip{display:flex;gap:3px;height:66px;margin-bottom:10px}
+.vc-seg{flex:0 1 auto;min-width:0;border-radius:7px;position:relative;overflow:hidden;
+  transition:flex-grow .5s cubic-bezier(.2,.8,.2,1),opacity .34s,margin .5s cubic-bezier(.2,.8,.2,1),filter .2s}
+.vc-seglab{position:absolute;left:11px;bottom:9px;right:9px;font-size:.78rem;font-weight:600;letter-spacing:-.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff}
+.vc-seglen{position:absolute;left:11px;top:9px;color:rgba(255,255,255,.7);font-size:.62rem}
+/* Hatched, not coloured: the opening and the ending cannot be turned off, so they must not
+   look like the three things that can. */
+.vc-seg.vc-fixed{flex-grow:var(--w);border:1px solid rgba(255,255,255,.10);background:
+  repeating-linear-gradient(115deg,rgba(255,255,255,.10) 0 5px,rgba(255,255,255,.035) 5px 11px)}
+.vc-seg.vc-fixed .vc-seglab{color:var(--mute);font-weight:500;font-size:.72rem}
+.vc-seg.vc-ch{flex-grow:var(--w);background:linear-gradient(160deg,var(--c),color-mix(in srgb,var(--c) 55%,#160a2e));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28)}
+/* Collapses to nothing rather than disappearing: flex-grow and opacity are both animated,
+   so the block visibly closes and its neighbours widen into the gap. The negative margin
+   swallows the 3px flex gap it would otherwise leave behind. */
+.vc-seg.vc-ch.vc-off{flex-grow:0;opacity:0;margin-left:-3px}
+.vc-seg.vc-ch.vc-hot{filter:brightness(1.18)}
+.vc-shelline{color:#6B7189;font-size:.78rem;margin:0 0 20px;padding-left:2px}
+
+.vc-chs{list-style:none;margin:0;padding:0;border-top:1px solid var(--hair)}
+.vc-chs li{border-bottom:1px solid var(--hair)}
+.vc-chs li:last-child{border-bottom:0}
+/* The row IS the label, so the whole thing is the hit target. The checkbox is kept in the
+   layout and only made invisible — removing it or hiding it with `display:none` would take
+   it out of the tab order. */
+.vc-row{position:relative;display:flex;align-items:flex-start;gap:14px;width:100%;text-align:left;
+  padding:15px 2px;cursor:pointer}
+.vc-row input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;margin:0}
+.vc-box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--hair2);flex:none;margin-top:2px;
+  display:grid;place-items:center;color:#fff;transition:.16s}
+.vc-box svg{width:11px;height:11px;opacity:0;transform:scale(.6);transition:.16s}
+/* The tick takes the CHAPTER's colour, not the accent, so a row and its slice of the strip
+   are visibly the same thing. */
+.vc-row input:checked ~ .vc-box{background:var(--c);border-color:transparent}
+.vc-row input:checked ~ .vc-box svg{opacity:1;transform:none}
+.vc-row:hover .vc-box{border-color:var(--c)}
+.vc-row input:focus-visible ~ .vc-box{outline:2px solid var(--accent);outline-offset:3px}
+.vc-rbody{min-width:0;flex:1}
+.vc-rbody b{display:block;font-weight:600;font-size:.98rem;letter-spacing:-.012em;transition:color .2s}
+.vc-rbody span{display:block;color:var(--mute);font-size:.85rem;margin-top:2px}
+.vc-row input:not(:checked) ~ .vc-rbody b{color:var(--mute)}
+.vc-row input:not(:checked) ~ .vc-rbody span{color:#6B7189}
+.vc-rlen{font-family:var(--mono);font-size:.78rem;color:var(--mute);flex:none;margin-top:3px}
+
+.vc-more{display:inline-flex;align-items:center;gap:6px;margin:0 0 16px 34px;color:#6B7189;font-size:.79rem;
+  background:none;border:0;font-family:inherit;cursor:pointer;transition:color .16s}
+.vc-more:hover{color:var(--mute)}
+.vc-more svg{transition:transform .25s}
+.vc-more[aria-expanded="true"] svg{transform:rotate(180deg)}
+/* grid-template-rows 0fr -> 1fr animates to the content's own height, which `height:auto`
+   cannot do and a fixed max-height would only approximate. */
+.vc-det{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s cubic-bezier(.2,.8,.2,1)}
+.vc-det.vc-open{grid-template-rows:1fr}
+.vc-det>div{overflow:hidden}
+.vc-det p{margin:0 0 16px;padding:12px 14px 12px 34px;color:var(--mute);font-size:.85rem;max-width:60ch}
+
+.vc-act{display:flex;align-items:center;gap:18px;margin-top:30px;flex-wrap:wrap}
+.vc-gotime{opacity:.72;font-weight:500}
+
+@media(max-width:620px){
+  .vc-fhead{flex-wrap:wrap;align-items:flex-start}
+  .vc-runtime{margin-left:0;text-align:left}
+  .vc-strip{height:54px}
+  .vc-seglab{font-size:.7rem}
+}

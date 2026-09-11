@@ -1,11 +1,11 @@
 import React from "react";
 import { FileDrop } from "../Dropzone";
 import { readOneImage } from "../uploads";
-import { personReady, type WizardState } from "../wizardState";
+import { personReady, type Patch, type WizardState } from "../wizardState";
 
 export const PersonStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onNext: () => void;
   onBack: () => void;
   backLabel: string;
@@ -14,7 +14,7 @@ export const PersonStep: React.FC<{
 
   const setPhoto = async (files: FileList | File[]) => {
     const up = await readOneImage(files);
-    if (up) patch({ person: { ...state.person, photo: up } });
+    if (up) patch((s) => ({ person: { ...s.person, photo: up } }));
   };
 
   // Enter advances from either field, matching the hint under the button.
@@ -27,12 +27,12 @@ export const PersonStep: React.FC<{
   return (
     <section className="vc-stage">
       <div className="vc-eyebrow vc-mono">
-        Step two <b>of four</b>
+        Step three <b>of five</b>
       </div>
       <h1>Who is the main character?</h1>
       <p className="vc-lede">
-        The person this video speaks to. Their headshot, name and title carry
-        the middle of the cut — they are the signed-in face on every screen.
+        The person this video speaks to. Their headshot, name and title carry the middle
+        of the cut — they are the signed-in face on every screen.
       </p>
 
       <div className="vc-field">
@@ -70,7 +70,7 @@ export const PersonStep: React.FC<{
               autoComplete="off"
               value={state.person.name}
               onChange={(e) =>
-                patch({ person: { ...state.person, name: e.target.value } })
+                patch((s) => ({ person: { ...s.person, name: e.target.value } }))
               }
               onKeyDown={onKeyDown}
             />
@@ -84,15 +84,15 @@ export const PersonStep: React.FC<{
               autoComplete="off"
               value={state.person.title}
               onChange={(e) =>
-                patch({ person: { ...state.person, title: e.target.value } })
+                patch((s) => ({ person: { ...s.person, title: e.target.value } }))
               }
               onKeyDown={onKeyDown}
             />
           </div>
         </div>
         <p className="vc-subhint vc-below">
-          A square-ish crop with the face high in the frame works best — every
-          place it appears is a circle.
+          A square-ish crop with the face high in the frame works best — every place it
+          appears is a circle.
         </p>
       </div>
 

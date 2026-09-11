@@ -1,8 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
-import { CustomizedWorkvivo } from "../src/CustomizedWorkvivo";
-import { CUSTOMIZED_CUT_DURATION } from "../src/WorkvivoCut";
-import { resolveSlotSource, toInputProps, type WizardState } from "./wizardState";
+import { templateForPillars } from "./templates";
+import {
+  resolveSlotSource,
+  toInputProps,
+  type Patch,
+  type WizardState,
+} from "./wizardState";
 import { SwapOverlay } from "./SwapOverlay";
 import { EditPanel } from "./EditPanel";
 import { RenderButton } from "./RenderButton";
@@ -18,12 +22,14 @@ import type { Upload } from "./uploads";
  * every component in it can be edited.
  *
  * The prototype stood a hand-animated slideshow in for the video. This is the actual
- * `CustomizedWorkvivo` composition running in `@remotion/player` on the same
- * `inputProps` a render would receive — so what the operator approves here is what comes
- * out the other end, rather than an impression of it.
+ * composition the operator chose on the first step, running in `@remotion/player` on the
+ * same `inputProps` a render would receive — so what the operator approves here is what
+ * comes out the other end, rather than an impression of it.
+ *
+ * Which composition that is comes from `templateForPillars`, and the SAME entry is handed
+ * to the render button below. Naming the composition in one place and its duration in
+ * another is how a preview and a render come to disagree.
  */
-
-const FPS = 25;
 
 /** How long the fly-in runs before the player is revealed underneath it. */
 const ASSEMBLY_MS = 1500;
@@ -42,7 +48,7 @@ const scatter = (i: number) => {
 
 export const Reveal: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onEdit: () => void;
 }> = ({ state, patch, onEdit }) => {
   const player = useRef<PlayerRef>(null);
@@ -67,6 +73,14 @@ export const Reveal: React.FC<{
   const [frameAspect, setFrameAspect] = useState(0);
 
   const inputProps = useMemo(() => toInputProps(state), [state]);
+  /**
+   * The cut the pillars chosen on the first step add up to.
+   *
+   * Resolved once here and threaded to the player, the footer readout and the render
+   * button, so all three are talking about the same film. One pillar resolves to its own
+   * approved composition, several to a combined one — see `templateForPillars`.
+   */
+  const template = useMemo(() => templateForPillars(state.pillars), [state.pillars]);
   const flying = state.shots.slice(0, 14);
 
   /** What each position is showing right now: a pin if there is one, else the deal. */
@@ -78,9 +92,7 @@ export const Reveal: React.FC<{
   const currentImage = editing?.image
     ? (state.imageOverrides[editing.image] ?? dealt[editing.image] ?? "")
     : "";
-  const currentIcon = editing?.icon
-    ? (state.iconOverrides[editing.icon] ?? "")
-    : "";
+  const currentIcon = editing?.icon ? (state.iconOverrides[editing.icon] ?? "") : "";
   /**
    * The banner's live treatment, resolved the same way the composition resolves it.
    *
@@ -131,9 +143,7 @@ export const Reveal: React.FC<{
     // shape the cut actually uses rather than flashing a square and correcting itself.
     // The rect is the element's own box, which for a `cover`-fitted photo IS the frame.
     const slot = editable.image;
-    const el = slot
-      ? screen.current?.querySelector(`[${SLOT_ATTR}="${slot}"]`)
-      : null;
+    const el = slot ? screen.current?.querySelector(`[${SLOT_ATTR}="${slot}"]`) : null;
     const rect = el?.getBoundingClientRect();
     setFrameAspect(
       rect && rect.width > 1 && rect.height > 1 ? rect.width / rect.height : 0,
@@ -143,43 +153,37 @@ export const Reveal: React.FC<{
   const assignImage = useCallback(
     (url: string) => {
       if (!editing?.image) return;
-      patch({
-        imageOverrides: { ...state.imageOverrides, [editing.image]: url },
-      });
+      const slot = editing.image;
+      patch((s) => ({ imageOverrides: { ...s.imageOverrides, [slot]: url } }));
     },
-    [editing, patch, state.imageOverrides],
+    [editing, patch],
   );
-
-  /**
-   * The freshest state, for callbacks that fire after an await.
-   *
-   * `patch` merges into whatever `setState` holds, but the object being merged has to be
-   * built from something — and building it from the `state` captured when a bake STARTED
-   * would undo anything the operator did while the canvas was working. A ref is the
-   * smallest way to read the current value at write time without threading a functional
-   * setter down from App.
-   */
-  const latest = useRef(state);
-  latest.current = state;
 
   /**
    * Attach finished bakes to their positions.
    *
    * Skips any entry that has since been deleted or re-dragged (`baked` non-empty means a
    * newer bake already landed), so a slow encode can never overwrite a newer crop.
+   *
+   * This used to read a `latest` ref that mirrored `state` on every render, because a bake
+   * finishes long after the render that started it and the `state` in that closure is
+   * stale. The ref existed only to get a current value at write time, which is what an
+   * updater does — so it is gone, and the freshness is the setter's problem rather than
+   * something this component maintains by hand.
    */
   const setBakes = useCallback(
-    (pairs: ReadonlyArray<readonly [string, string]>) => {
-      const framing = { ...latest.current.framing };
-      let changed = false;
-      for (const [slot, url] of pairs) {
-        const cur = framing[slot];
-        if (!cur || cur.baked) continue;
-        framing[slot] = { ...cur, baked: url };
-        changed = true;
-      }
-      if (changed) patch({ framing });
-    },
+    (pairs: ReadonlyArray<readonly [string, string]>) =>
+      patch((s) => {
+        const framing = { ...s.framing };
+        let changed = false;
+        for (const [slot, url] of pairs) {
+          const cur = framing[slot];
+          if (!cur || cur.baked) continue;
+          framing[slot] = { ...cur, baked: url };
+          changed = true;
+        }
+        return changed ? { framing } : {};
+      }),
     [patch],
   );
 
@@ -204,18 +208,20 @@ export const Reveal: React.FC<{
     (next: Framing) => {
       const slot = editing?.image;
       if (!slot) return;
-      const framing = { ...state.framing };
-      if (isDefaultFraming(next)) delete framing[slot];
-      else
-        framing[slot] = {
-          ...next,
-          src: currentImage,
-          aspect: frameAspect,
-          baked: "",
-        };
-      patch({ framing });
+      patch((s) => {
+        const framing = { ...s.framing };
+        if (isDefaultFraming(next)) delete framing[slot];
+        else
+          framing[slot] = {
+            ...next,
+            src: currentImage,
+            aspect: frameAspect,
+            baked: "",
+          };
+        return { framing };
+      });
     },
-    [editing, patch, state.framing, currentImage, frameAspect],
+    [editing, patch, currentImage, frameAspect],
   );
 
   /**
@@ -288,16 +294,17 @@ export const Reveal: React.FC<{
   const assignIcon = useCallback(
     (path: string, label: string) => {
       if (!editing?.icon) return;
-      const next: Partial<WizardState> = {
-        iconOverrides: { ...state.iconOverrides, [editing.icon]: path },
-      };
-      const caption = captionPathFor(editing.icon);
-      if (caption) {
-        next.copyOverrides = { ...state.copyOverrides, [caption]: label };
-      }
-      patch(next);
+      const icon = editing.icon;
+      const caption = captionPathFor(icon);
+      patch((s) => {
+        const next: Partial<WizardState> = {
+          iconOverrides: { ...s.iconOverrides, [icon]: path },
+        };
+        if (caption) next.copyOverrides = { ...s.copyOverrides, [caption]: label };
+        return next;
+      });
     },
-    [editing, patch, state.iconOverrides, state.copyOverrides],
+    [editing, patch],
   );
 
   /**
@@ -309,19 +316,22 @@ export const Reveal: React.FC<{
    */
   const resetIcon = useCallback(() => {
     if (!editing?.icon) return;
-    const icons = { ...state.iconOverrides };
-    delete icons[editing.icon];
-    const next: Partial<WizardState> = { iconOverrides: icons };
-    // The name that came WITH the icon goes back too, or "use the original" would restore
-    // Workday's mark under whatever the last pick was called.
-    const caption = captionPathFor(editing.icon);
-    if (caption) {
-      const copy = { ...state.copyOverrides };
-      delete copy[caption];
-      next.copyOverrides = copy;
-    }
-    patch(next);
-  }, [editing, patch, state.iconOverrides, state.copyOverrides]);
+    const icon = editing.icon;
+    const caption = captionPathFor(icon);
+    patch((s) => {
+      const icons = { ...s.iconOverrides };
+      delete icons[icon];
+      const next: Partial<WizardState> = { iconOverrides: icons };
+      // The name that came WITH the icon goes back too, or "use the original" would restore
+      // Workday's mark under whatever the last pick was called.
+      if (caption) {
+        const copy = { ...s.copyOverrides };
+        delete copy[caption];
+        next.copyOverrides = copy;
+      }
+      return next;
+    });
+  }, [editing, patch]);
 
   const editHeader = useCallback(
     // `next`, not `patch` — the outer `patch` is the wizard's own setter, and shadowing
@@ -329,25 +339,34 @@ export const Reveal: React.FC<{
     (next: Partial<HeaderTreatment>) => {
       if (!editing?.header) return;
       const slot = editing.header;
-      patch({
+      patch((s) => ({
         headerOverrides: {
-          ...state.headerOverrides,
-          [slot]: { ...(state.headerOverrides[slot] ?? {}), ...next },
+          ...s.headerOverrides,
+          [slot]: { ...(s.headerOverrides[slot] ?? {}), ...next },
         },
-      });
+      }));
     },
-    [editing, patch, state.headerOverrides],
+    [editing, patch],
   );
 
+  /**
+   * One copy edit, merged into the rest.
+   *
+   * This is the panel's hottest path and the one where a lost update is least likely to be
+   * noticed: every edit rebuilds the whole `copyOverrides` map, so reading it from the
+   * enclosing render meant two edits landing in one batch kept only the second — the first
+   * field would quietly revert to its baseline copy while the operator was looking at
+   * another one.
+   */
   const editText = useCallback(
     (path: string, value: string) =>
-      patch({ copyOverrides: { ...state.copyOverrides, [path]: value } }),
-    [patch, state.copyOverrides],
+      patch((s) => ({ copyOverrides: { ...s.copyOverrides, [path]: value } })),
+    [patch],
   );
 
   const addShots = useCallback(
-    (added: Upload[]) => patch({ shots: [...state.shots, ...added] }),
-    [patch, state.shots],
+    (added: Upload[]) => patch((s) => ({ shots: [...s.shots, ...added] })),
+    [patch],
   );
 
   const edits =
@@ -386,12 +405,12 @@ export const Reveal: React.FC<{
           <div className="vc-screen" ref={screen}>
             <Player
               ref={player}
-              component={CustomizedWorkvivo}
+              component={template.component}
               inputProps={inputProps}
-              durationInFrames={CUSTOMIZED_CUT_DURATION}
-              fps={FPS}
-              compositionWidth={1920}
-              compositionHeight={1080}
+              durationInFrames={template.durationInFrames}
+              fps={template.fps}
+              compositionWidth={template.width}
+              compositionHeight={template.height}
               style={{ width: "100%" }}
               controls
               // The cut opens on a hard scale-down and a mask close in the first 33
@@ -411,8 +430,9 @@ export const Reveal: React.FC<{
           </div>
           <div className="vc-pfoot">
             <span className="vc-mono">
-              {CUSTOMIZED_CUT_DURATION} frames ·{" "}
-              {(CUSTOMIZED_CUT_DURATION / FPS).toFixed(0)}s · 1920×1080
+              {template.label} · {template.durationInFrames} frames ·{" "}
+              {(template.durationInFrames / template.fps).toFixed(0)}s · {template.width}×
+              {template.height}
             </span>
             <span className="vc-mono vc-tip">
               {edits
@@ -439,10 +459,7 @@ export const Reveal: React.FC<{
               <RenderButton
                 inputProps={inputProps}
                 company={state.company}
-                durationInFrames={CUSTOMIZED_CUT_DURATION}
-                fps={FPS}
-                width={1920}
-                height={1080}
+                template={template}
               />
             </span>
           </div>
