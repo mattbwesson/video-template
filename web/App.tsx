@@ -68,10 +68,22 @@ export const App: React.FC = () => {
    * silently undoes the first: the operator unticks two chapters, one comes back, and the
    * render encodes a film they did not ask for. Passing a function defers the read to the
    * updater, where the state is always current.
+   *
+   * AN EMPTY PATCH RETURNS THE SAME OBJECT, not a copy of it, and that is load-bearing
+   * rather than an optimisation. An updater that decides there is nothing to do — a
+   * duplicate swatch, a batch of bakes that all failed — is the natural way to express
+   * that now the read happens inside the updater. Spreading it anyway would hand React a
+   * new identity for an unchanged state, and anything keyed on the whole state object
+   * would re-run: `Reveal`'s bake effect schedules ITS OWN next run that way, so a photo
+   * the canvas cannot read would re-bake every 220ms for the rest of the session.
+   * Returning `s` is what makes React bail out instead.
    */
   const patch = useCallback(
     (p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>)) =>
-      setState((s) => ({ ...s, ...(typeof p === "function" ? p(s) : p) })),
+      setState((s) => {
+        const next = typeof p === "function" ? p(s) : p;
+        return Object.keys(next).length ? { ...s, ...next } : s;
+      }),
     [],
   );
 

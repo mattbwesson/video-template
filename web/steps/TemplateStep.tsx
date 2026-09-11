@@ -183,7 +183,7 @@ export const TemplateStep: React.FC<{
                 style={
                   {
                     "--w": frames,
-                    "--c": `var(--chapter-${i + 1})`,
+                    "--c": `var(--chapter-${i + 1}, var(--accent))`,
                   } as React.CSSProperties
                 }
               >
@@ -215,7 +215,11 @@ export const TemplateStep: React.FC<{
             return (
               <li
                 key={t.id}
-                style={{ "--c": `var(--chapter-${i + 1})` } as React.CSSProperties}
+                style={
+                  {
+                    "--c": `var(--chapter-${i + 1}, var(--accent))`,
+                  } as React.CSSProperties
+                }
               >
                 <label
                   className="vc-row"

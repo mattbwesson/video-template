@@ -62,13 +62,22 @@ export const BrandStep: React.FC<{
     patch({ color: v, colorTouched: true });
   };
 
-  /** Promote a palette colour to the brand, demoting the current one into its place. */
-  const promote = (index: number) =>
+  /**
+   * Promote a palette colour to the brand, demoting the current one into its place.
+   *
+   * By hex, not by the position it was rendered at, for the reason the remove button below
+   * gives: a removal landing in the same batch shortens the palette under a click that
+   * still holds its old index. Here that read past the end and put `undefined` into
+   * `color`. Looking the hex up in the CURRENT palette means a swatch that is already gone
+   * promotes nothing instead.
+   */
+  const promote = (hex: Hex) =>
     patch((s) => {
+      const index = s.palette.indexOf(hex);
+      if (index < 0) return {};
       const next = [...s.palette];
-      const chosen = next[index];
       next[index] = s.color;
-      return { color: chosen, palette: next, colorTouched: true };
+      return { color: hex, palette: next, colorTouched: true };
     });
 
   /**
@@ -218,7 +227,7 @@ export const BrandStep: React.FC<{
                     style={{ background: css(h) }}
                     title={`Make #${h} the main colour`}
                     aria-label={`Make #${h} the main colour`}
-                    onClick={() => promote(i)}
+                    onClick={() => promote(h)}
                   />
                   <button
                     className="vc-swx"
