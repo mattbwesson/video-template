@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { FileDrop } from "../Dropzone";
 import { readImages } from "../uploads";
-import { buildReady, imageryReady, type WizardState } from "../wizardState";
+import { buildReady, imageryReady, type Patch, type WizardState } from "../wizardState";
 import {
   SUGGESTED_UPLOADS,
   imageSlotLabel,
@@ -10,16 +10,24 @@ import {
 
 export const ImageryStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onBuild: () => void;
   onBack: () => void;
   backLabel: string;
 }> = ({ state, patch, onBuild, onBack, backLabel }) => {
   const input = useRef<HTMLInputElement>(null);
 
+  /**
+   * Append dropped photos.
+   *
+   * The updater matters more here than anywhere else in this step: `readImages` is awaited,
+   * so two drops in quick succession resolve whenever their files finish decoding — in
+   * either order, and both long after the render that created these closures. Appending to
+   * `state.shots` would have the slower drop overwrite the faster one's photos entirely.
+   */
   const add = async (files: FileList | File[]) => {
     const ups = await readImages(files);
-    if (ups.length) patch({ shots: [...state.shots, ...ups] });
+    if (ups.length) patch((s) => ({ shots: [...s.shots, ...ups] }));
   };
 
   const n = state.shots.length;
@@ -69,8 +77,13 @@ export const ImageryStep: React.FC<{
                   <button
                     className="vc-kill"
                     aria-label={`Remove ${shot.name}`}
+                    /* By id, so two removals in one batch each take out their own photo
+                       rather than the second re-running against a list the first has
+                       already shortened. */
                     onClick={() =>
-                      patch({ shots: state.shots.filter((s) => s.id !== shot.id) })
+                      patch((s) => ({
+                        shots: s.shots.filter((keep) => keep.id !== shot.id),
+                      }))
                     }
                   >
                     ✕

@@ -3,7 +3,7 @@ import { FileDrop } from "../Dropzone";
 import { acceptLogoFile, logoPatch } from "../applyLogo";
 import { processReversedLogo } from "../logoProcess";
 import { isImageFile, newUploadId } from "../uploads";
-import { brandReady, type WizardState } from "../wizardState";
+import { brandReady, type Patch, type WizardState } from "../wizardState";
 import {
   clampBrandAccentHex,
   cleanHex,
@@ -14,7 +14,7 @@ import {
 
 export const BrandStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onNext: () => void;
   onBack: () => void;
   backLabel: string;
@@ -24,7 +24,7 @@ export const BrandStep: React.FC<{
   const setLogo = async (files: FileList | File[]) => {
     const accepted = await acceptLogoFile(files);
     if (!accepted) return;
-    patch(logoPatch(accepted, state));
+    patch((s) => logoPatch(accepted, s));
     // The swatch pulses only when the drop actually changed the colour, so a logo swap
     // after the operator picked their own does not flash a colour that did not move.
     if (!state.colorTouched && accepted.palette.length) {
@@ -63,17 +63,27 @@ export const BrandStep: React.FC<{
   };
 
   /** Promote a palette colour to the brand, demoting the current one into its place. */
-  const promote = (index: number) => {
-    const next = [...state.palette];
-    const chosen = next[index];
-    next[index] = state.color;
-    patch({ color: chosen, palette: next, colorTouched: true });
-  };
+  const promote = (index: number) =>
+    patch((s) => {
+      const next = [...s.palette];
+      const chosen = next[index];
+      next[index] = s.color;
+      return { color: chosen, palette: next, colorTouched: true };
+    });
 
+  /**
+   * Add a colour, if it is not already the brand or in the palette.
+   *
+   * The duplicate check is inside the updater with the append it guards. Outside it, two
+   * swatches added in one batch would both test against the palette as it was before
+   * either landed — so the same colour added twice quickly would pass the check twice.
+   */
   const addSwatch = (raw: string) => {
     const v = cleanHex(raw);
-    if (!isHex(v) || v === state.color || state.palette.includes(v)) return;
-    patch({ palette: [...state.palette, v] });
+    if (!isHex(v)) return;
+    patch((s) =>
+      v === s.color || s.palette.includes(v) ? {} : { palette: [...s.palette, v] },
+    );
   };
 
   const clamped: Hex = clampBrandAccentHex(state.color);
@@ -214,8 +224,14 @@ export const BrandStep: React.FC<{
                     className="vc-swx"
                     title={`Remove #${h}`}
                     aria-label={`Remove #${h}`}
+                    /* By VALUE, not by index. An updater alone would not be enough here:
+                       two swatches removed in one batch both run against fresh state, but
+                       the second still holds the index it was rendered with, and the first
+                       removal has already shifted everything after it along. `addSwatch`
+                       keeps the palette free of duplicates, so the hex identifies one
+                       entry. */
                     onClick={() =>
-                      patch({ palette: state.palette.filter((_, j) => j !== i) })
+                      patch((s) => ({ palette: s.palette.filter((c) => c !== h) }))
                     }
                   >
                     ✕

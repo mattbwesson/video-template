@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
 import { templateForPillars } from "./templates";
-import { resolveSlotSource, toInputProps, type WizardState } from "./wizardState";
+import {
+  resolveSlotSource,
+  toInputProps,
+  type Patch,
+  type WizardState,
+} from "./wizardState";
 import { SwapOverlay } from "./SwapOverlay";
 import { EditPanel } from "./EditPanel";
 import { RenderButton } from "./RenderButton";
@@ -43,7 +48,7 @@ const scatter = (i: number) => {
 
 export const Reveal: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onEdit: () => void;
 }> = ({ state, patch, onEdit }) => {
   const player = useRef<PlayerRef>(null);
@@ -148,43 +153,37 @@ export const Reveal: React.FC<{
   const assignImage = useCallback(
     (url: string) => {
       if (!editing?.image) return;
-      patch({
-        imageOverrides: { ...state.imageOverrides, [editing.image]: url },
-      });
+      const slot = editing.image;
+      patch((s) => ({ imageOverrides: { ...s.imageOverrides, [slot]: url } }));
     },
-    [editing, patch, state.imageOverrides],
+    [editing, patch],
   );
-
-  /**
-   * The freshest state, for callbacks that fire after an await.
-   *
-   * `patch` merges into whatever `setState` holds, but the object being merged has to be
-   * built from something — and building it from the `state` captured when a bake STARTED
-   * would undo anything the operator did while the canvas was working. A ref is the
-   * smallest way to read the current value at write time without threading a functional
-   * setter down from App.
-   */
-  const latest = useRef(state);
-  latest.current = state;
 
   /**
    * Attach finished bakes to their positions.
    *
    * Skips any entry that has since been deleted or re-dragged (`baked` non-empty means a
    * newer bake already landed), so a slow encode can never overwrite a newer crop.
+   *
+   * This used to read a `latest` ref that mirrored `state` on every render, because a bake
+   * finishes long after the render that started it and the `state` in that closure is
+   * stale. The ref existed only to get a current value at write time, which is what an
+   * updater does — so it is gone, and the freshness is the setter's problem rather than
+   * something this component maintains by hand.
    */
   const setBakes = useCallback(
-    (pairs: ReadonlyArray<readonly [string, string]>) => {
-      const framing = { ...latest.current.framing };
-      let changed = false;
-      for (const [slot, url] of pairs) {
-        const cur = framing[slot];
-        if (!cur || cur.baked) continue;
-        framing[slot] = { ...cur, baked: url };
-        changed = true;
-      }
-      if (changed) patch({ framing });
-    },
+    (pairs: ReadonlyArray<readonly [string, string]>) =>
+      patch((s) => {
+        const framing = { ...s.framing };
+        let changed = false;
+        for (const [slot, url] of pairs) {
+          const cur = framing[slot];
+          if (!cur || cur.baked) continue;
+          framing[slot] = { ...cur, baked: url };
+          changed = true;
+        }
+        return changed ? { framing } : {};
+      }),
     [patch],
   );
 
@@ -209,18 +208,20 @@ export const Reveal: React.FC<{
     (next: Framing) => {
       const slot = editing?.image;
       if (!slot) return;
-      const framing = { ...state.framing };
-      if (isDefaultFraming(next)) delete framing[slot];
-      else
-        framing[slot] = {
-          ...next,
-          src: currentImage,
-          aspect: frameAspect,
-          baked: "",
-        };
-      patch({ framing });
+      patch((s) => {
+        const framing = { ...s.framing };
+        if (isDefaultFraming(next)) delete framing[slot];
+        else
+          framing[slot] = {
+            ...next,
+            src: currentImage,
+            aspect: frameAspect,
+            baked: "",
+          };
+        return { framing };
+      });
     },
-    [editing, patch, state.framing, currentImage, frameAspect],
+    [editing, patch, currentImage, frameAspect],
   );
 
   /**
@@ -293,16 +294,17 @@ export const Reveal: React.FC<{
   const assignIcon = useCallback(
     (path: string, label: string) => {
       if (!editing?.icon) return;
-      const next: Partial<WizardState> = {
-        iconOverrides: { ...state.iconOverrides, [editing.icon]: path },
-      };
-      const caption = captionPathFor(editing.icon);
-      if (caption) {
-        next.copyOverrides = { ...state.copyOverrides, [caption]: label };
-      }
-      patch(next);
+      const icon = editing.icon;
+      const caption = captionPathFor(icon);
+      patch((s) => {
+        const next: Partial<WizardState> = {
+          iconOverrides: { ...s.iconOverrides, [icon]: path },
+        };
+        if (caption) next.copyOverrides = { ...s.copyOverrides, [caption]: label };
+        return next;
+      });
     },
-    [editing, patch, state.iconOverrides, state.copyOverrides],
+    [editing, patch],
   );
 
   /**
@@ -314,19 +316,22 @@ export const Reveal: React.FC<{
    */
   const resetIcon = useCallback(() => {
     if (!editing?.icon) return;
-    const icons = { ...state.iconOverrides };
-    delete icons[editing.icon];
-    const next: Partial<WizardState> = { iconOverrides: icons };
-    // The name that came WITH the icon goes back too, or "use the original" would restore
-    // Workday's mark under whatever the last pick was called.
-    const caption = captionPathFor(editing.icon);
-    if (caption) {
-      const copy = { ...state.copyOverrides };
-      delete copy[caption];
-      next.copyOverrides = copy;
-    }
-    patch(next);
-  }, [editing, patch, state.iconOverrides, state.copyOverrides]);
+    const icon = editing.icon;
+    const caption = captionPathFor(icon);
+    patch((s) => {
+      const icons = { ...s.iconOverrides };
+      delete icons[icon];
+      const next: Partial<WizardState> = { iconOverrides: icons };
+      // The name that came WITH the icon goes back too, or "use the original" would restore
+      // Workday's mark under whatever the last pick was called.
+      if (caption) {
+        const copy = { ...s.copyOverrides };
+        delete copy[caption];
+        next.copyOverrides = copy;
+      }
+      return next;
+    });
+  }, [editing, patch]);
 
   const editHeader = useCallback(
     // `next`, not `patch` — the outer `patch` is the wizard's own setter, and shadowing
@@ -334,25 +339,34 @@ export const Reveal: React.FC<{
     (next: Partial<HeaderTreatment>) => {
       if (!editing?.header) return;
       const slot = editing.header;
-      patch({
+      patch((s) => ({
         headerOverrides: {
-          ...state.headerOverrides,
-          [slot]: { ...(state.headerOverrides[slot] ?? {}), ...next },
+          ...s.headerOverrides,
+          [slot]: { ...(s.headerOverrides[slot] ?? {}), ...next },
         },
-      });
+      }));
     },
-    [editing, patch, state.headerOverrides],
+    [editing, patch],
   );
 
+  /**
+   * One copy edit, merged into the rest.
+   *
+   * This is the panel's hottest path and the one where a lost update is least likely to be
+   * noticed: every edit rebuilds the whole `copyOverrides` map, so reading it from the
+   * enclosing render meant two edits landing in one batch kept only the second — the first
+   * field would quietly revert to its baseline copy while the operator was looking at
+   * another one.
+   */
   const editText = useCallback(
     (path: string, value: string) =>
-      patch({ copyOverrides: { ...state.copyOverrides, [path]: value } }),
-    [patch, state.copyOverrides],
+      patch((s) => ({ copyOverrides: { ...s.copyOverrides, [path]: value } })),
+    [patch],
   );
 
   const addShots = useCallback(
-    (added: Upload[]) => patch({ shots: [...state.shots, ...added] }),
-    [patch, state.shots],
+    (added: Upload[]) => patch((s) => ({ shots: [...s.shots, ...added] })),
+    [patch],
   );
 
   const edits =

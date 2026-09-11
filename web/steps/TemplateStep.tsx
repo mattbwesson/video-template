@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import type { WizardState } from "../wizardState";
+import type { Patch, WizardState } from "../wizardState";
 import { TEMPLATES, templateForPillars, type TemplateId } from "../templates";
 import { lengthOf, WINDOWS } from "../../src/cuts/plan";
 
@@ -80,8 +80,7 @@ const CHEVRON = (
 
 export const TemplateStep: React.FC<{
   state: WizardState;
-  /** Accepts an updater as well as an object — see `toggle` for why that matters here. */
-  patch: (p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>)) => void;
+  patch: Patch;
   onNext: () => void;
 }> = ({ state, patch, onNext }) => {
   const picked = state.pillars;

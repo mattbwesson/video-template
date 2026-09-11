@@ -1,11 +1,11 @@
 import React from "react";
 import { FileDrop } from "../Dropzone";
 import { readOneImage } from "../uploads";
-import { personReady, type WizardState } from "../wizardState";
+import { personReady, type Patch, type WizardState } from "../wizardState";
 
 export const PersonStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onNext: () => void;
   onBack: () => void;
   backLabel: string;
@@ -14,7 +14,7 @@ export const PersonStep: React.FC<{
 
   const setPhoto = async (files: FileList | File[]) => {
     const up = await readOneImage(files);
-    if (up) patch({ person: { ...state.person, photo: up } });
+    if (up) patch((s) => ({ person: { ...s.person, photo: up } }));
   };
 
   // Enter advances from either field, matching the hint under the button.
@@ -70,7 +70,7 @@ export const PersonStep: React.FC<{
               autoComplete="off"
               value={state.person.name}
               onChange={(e) =>
-                patch({ person: { ...state.person, name: e.target.value } })
+                patch((s) => ({ person: { ...s.person, name: e.target.value } }))
               }
               onKeyDown={onKeyDown}
             />
@@ -84,7 +84,7 @@ export const PersonStep: React.FC<{
               autoComplete="off"
               value={state.person.title}
               onChange={(e) =>
-                patch({ person: { ...state.person, title: e.target.value } })
+                patch((s) => ({ person: { ...s.person, title: e.target.value } }))
               }
               onKeyDown={onKeyDown}
             />

@@ -132,6 +132,27 @@ export type WizardState = {
   research: ResearchState;
 };
 
+/**
+ * How anything changes the wizard's state.
+ *
+ * The UPDATER form is the one that matters, and it is why this is a named type rather than
+ * six inline signatures. Anything whose patch DEPENDS on the current state — appending a
+ * swatch, dropping a shot, merging one copy override into the rest — must read that state
+ * inside the updater. Reading it from the enclosing render instead works right up until two
+ * of those land in the same React batch, at which point both compute from the same stale
+ * value and the second silently undoes the first.
+ *
+ * That is not hypothetical: it shipped. The first step's chapter toggles did exactly this,
+ * so unticking two chapters quickly left one of them ticked and the render encoded a film
+ * nobody asked for. See the note on `patch` in web/App.tsx.
+ *
+ * The plain-object form is still fine for a patch that does not read state — a text field
+ * setting its own value, a flag being cleared — and most call sites are that.
+ */
+export type Patch = (
+  p: Partial<WizardState> | ((s: WizardState) => Partial<WizardState>),
+) => void;
+
 export const INITIAL_STATE: WizardState = {
   pillars: [...PILLAR_IDS],
   company: "",

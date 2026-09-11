@@ -1,9 +1,9 @@
 import React from "react";
-import { companyReady, type WizardState } from "../wizardState";
+import { companyReady, type Patch, type WizardState } from "../wizardState";
 
 export const CompanyStep: React.FC<{
   state: WizardState;
-  patch: (p: Partial<WizardState>) => void;
+  patch: Patch;
   onNext: () => void;
   onBack: () => void;
   backLabel: string;
